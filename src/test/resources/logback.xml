@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/enricopulatzo/logback-XSD/master/src/main/xsd/logback.xsd"
+	scan="true" scanPeriod="60 seconds">
+
+	<property name="project.name" value="utils" />
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%-5relative %-5level %logger{35} - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="application-appender"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${catalina.base:-./target}/logs/${project.name}.log</file>
+		<append>false</append>
+		<encoder>
+			<pattern>%-5p %d{MM/dd HH:mm:ss.SSS.SSS} [%t] %logger{36} %m%n</pattern>
+		</encoder>
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<maxIndex>10</maxIndex>
+			<fileNamePattern>${catalina.base:-./target}/logs/${project.name}.%i.log</fileNamePattern>
+		</rollingPolicy>
+		<triggeringPolicy
+			class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<maxFileSize>20000KB</maxFileSize>
+		</triggeringPolicy>
+	</appender>
+
+	<appender name="exception-appender"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${catalina.base:-./target}/logs/${project.name}-exception.log</file>
+		<append>false</append>
+		<encoder>
+			<pattern>%-5p %d{MM/dd HH:mm:ss.SSS.SSS} [%t] %logger{36} %m%n</pattern>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>ERROR</level>
+		</filter>
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<maxIndex>5</maxIndex>
+			<fileNamePattern>${catalina.base:-./target}/logs/${project.name}-exception.%i.log</fileNamePattern>
+		</rollingPolicy>
+		<triggeringPolicy
+			class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<maxFileSize>10000KB</maxFileSize>
+		</triggeringPolicy>
+	</appender>
+
+
+	<!-- Framework logger -->
+	<logger name="org.springframework" level="ERROR">
+		<appender-ref ref="exception-appender" />
+	</logger>
+
+	<!-- Application logger -->
+	<logger name="fr.landel.utils" level="INFO">
+		<appender-ref ref="application-appender" />
+	</logger>
+
+
+	<root level="INFO">
+		<appender-ref ref="STDOUT" />
+	</root>
+</configuration>

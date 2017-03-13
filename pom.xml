@@ -1,0 +1,124 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>fr.landel</groupId>
+		<artifactId>utils</artifactId>
+		<version>1.0.3</version>
+	</parent>
+
+	<groupId>fr.landel.utils</groupId>
+	<artifactId>utils-assertor</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+		
+	<name>utils-assertor</name>
+	<description>Assertion utilities (to easily assert arguments and throw specific exceptions)</description>
+
+	<scm>
+		<url>https://github.com/Gilandel/${project.artifactId}.git</url>
+		<connection>scm:git:git://github.com/Gilandel/${project.artifactId}.git</connection>
+		<developerConnection>scm:git:git@github.com:Gilandel/${project.artifactId}.git</developerConnection>
+		<tag>HEAD</tag>
+	</scm>
+	
+	<issueManagement>
+		<system>Github</system>
+		<url>http://github.com/Gilandel/${project.artifactId}/issues</url>
+	</issueManagement>
+	
+	<ciManagement>
+		<system>Travis</system>
+		<url>https://travis-ci.org/Gilandel/${project.artifactId}</url>
+	</ciManagement>
+	
+	<properties>
+		<gpg.home>${env.HOME}/build/Gilandel/${project.artifactId}/distribution</gpg.home>
+		
+		<!-- Dependencies version -->
+		<utils-commons.version>1.0.0</utils-commons.version>
+		<utils-microbenchmark.version>1.0.0</utils-microbenchmark.version>
+	</properties>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>add-perf-sources</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-test-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>src/perf/java</source>
+							</sources>
+						</configuration>
+					</execution>
+					<!-- <execution>
+						<id>add-perf-resources</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-test-resource</goal>
+						</goals>
+						<configuration>
+							<resources>
+								<resource>
+									<directory>src/perf/resources</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution> -->
+				</executions>
+			</plugin>
+
+			<!-- Add license header and generate third-party text file -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>generate-licenses-header-and-third-party</id>
+						<goals>
+							<goal>update-file-header</goal>
+							<goal>add-third-party</goal>
+						</goals>
+						<phase>process-sources</phase>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>fr.landel.utils</groupId>
+			<artifactId>utils-commons</artifactId>
+			<version>${utils-commons.version}</version>
+		</dependency>
+
+		<!-- Performance testing -->
+		<dependency>
+			<groupId>fr.landel</groupId>
+			<artifactId>utils-microbenchmark</artifactId>
+			<version>${utils-microbenchmark.version}</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+</project>
