@@ -37,7 +37,7 @@
 		
 		<!-- Dependencies version -->
 		<utils-commons.version>1.0.0</utils-commons.version>
-		<utils-microbenchmark.version>1.0.0</utils-microbenchmark.version>
+		<utils-microbenchmark.version>1.0.1</utils-microbenchmark.version>
 	</properties>
 	
 	<build>
@@ -115,7 +115,7 @@
 
 		<!-- Performance testing -->
 		<dependency>
-			<groupId>fr.landel</groupId>
+			<groupId>fr.landel.utils</groupId>
 			<artifactId>utils-microbenchmark</artifactId>
 			<version>${utils-microbenchmark.version}</version>
 			<scope>test</scope>
