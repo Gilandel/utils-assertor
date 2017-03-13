@@ -314,7 +314,7 @@ public class HelperAssertor extends ConstantsAssertor {
             case NOR:
                 ok = !previousOK | !currentOK;
                 break;
-            case AND:
+            case AND: // intentional fall-through
             default:
                 ok = previousOK & currentOK;
             }
