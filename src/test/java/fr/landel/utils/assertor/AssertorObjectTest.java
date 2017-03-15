@@ -32,7 +32,7 @@ import java.util.Locale;
 
 import org.junit.Test;
 
-import fr.landel.utils.assertor.expect.Expect;
+import fr.landel.utils.commons.expect.Expect;
 
 /**
  * Check {@link AssertorObject}

@@ -29,8 +29,8 @@ import java.util.function.Supplier;
 
 import org.junit.Test;
 
-import fr.landel.utils.assertor.expect.Expect;
-import fr.landel.utils.assertor.expect.ExpectException;
+import fr.landel.utils.commons.expect.Expect;
+import fr.landel.utils.commons.expect.ExpectException;
 
 /**
  * Test end points class

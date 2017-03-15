@@ -20,8 +20,8 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import fr.landel.utils.assertor.expect.Expect;
 import fr.landel.utils.commons.EnumChar;
+import fr.landel.utils.commons.expect.Expect;
 
 /**
  * Check {@link AssertorEnum}

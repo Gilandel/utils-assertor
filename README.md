@@ -135,9 +135,7 @@ Work progress:
     7. [isGTE](#isgte)
     8. [isLT](#islt)
     9. [isLTE](#islte)
-6. [Others](#others)
-  1. [Expect](#expect)
-7. [TODO](#todo)
+6. [TODO](#todo)
 
 ## Description
 
@@ -1463,91 +1461,6 @@ Assertor.that(null).isLTE(12).orElseThrow(); // -> throw an exception
 Assertor.that(12).isLTE(null).orElseThrow(); // -> throw an exception
 Assertor.that(null).not().isLTE(12).orElseThrow(); // -> throw an exception
 Assertor.that(12).not().isLTE(null).orElseThrow(); // -> throw an exception
-```
-
-## Others
-### Expect
-Validate a thrown exception and its message.
-
-* Signatures:
-	- exception(AssertConsumer<Throwable> consumer, Class<? extends Throwable> expectedException)
-	- exception(AssertConsumer<Throwable> consumer, Class<? extends Throwable> expectedException, String expectedMessage)
-	- exception(AssertConsumer<Throwable> consumer, Class<? extends Throwable> expectedException, final TriFunction<Boolean, String, String, E> exceptionFunction)
-	- exception(AssertConsumer<Throwable> consumer, Class<? extends Throwable> expectedException, String expectedMessage, final TriFunction<Boolean, String, String, E> exceptionFunction)
-
-* Parameters:
-	- consumer: The consumer or where the code to checked can be placed
-	- expectedException: The class of expected exception
-	- expectedMessage: The expected exception message
-	- exceptionFunction: The exception builder, only called on mismatch. Has 3 parameters:
-		- first: true, if the expected exception matches
-		- second: the expected message
-		- third: the actual message
-
-* Prerequisites:
-	- consumer NOT null
-	- expectedException NOT null
-
-* Examples:
-```java
-Expect.exception(() -> {
-    // throw new IllegalArgumentException("parameter cannot be null");
-    getMyType(null);
-}, IllegalArgumentException.class); // -> OK
-
-Expect.exception(() -> {
-    // throw new IOException("parameter cannot be null");
-    getMyType(null);
-}, IllegalArgumentException.class); // -> throw an ExpectException
-
-
-
-Expect.exception(() -> {
-     // throw new IllegalArgumentException("parameter cannot be null");
-     getMyType(null);
- }, IllegalArgumentException.class, "parameter cannot be null"); // -> OK
- 
- Expect.exception(() -> {
-     // throw new IllegalArgumentException("type cannot be null");
-     getMyType(null);
- }, IllegalArgumentException.class, "parameter cannot be null");  // -> throw an ExpectException
-
-
-
-// Obviously, you can save this in a static variable to share it.
-// This function is not provided by module to avoid a JUnit dependency.
-// ComparisonFailure come from: org.junit.ComparisonFailure
-
-TriFunction<Boolean, String, String> junitError = (catched, expected, actual) -> {
-    if (catched) {
-        return new ComparisonFailure("The exception message don't match.", expected, actual);
-    } else {
-        return new AssertionError("The expected exception never came up");
-    }
-};
-
-
-
-Expect.exception(() -> {
-    // throw new IllegalArgumentException("parameter cannot be null");
-    getMyType(null);
-}, IllegalArgumentException.class, junitError); // -> OK
-
-Expect.exception(() -> {
-    // throw new IOException("parameter cannot be null");
-    getMyType(null);
-}, IllegalArgumentException.class, junitError); // -> throw an AssertionError
-
-
-Expect.exception(() -> {
-     // throw new IllegalArgumentException("parameter cannot be null");
-     getMyType(null);
- }, IllegalArgumentException.class, "parameter cannot be null", junitError); // -> OK
- 
- Expect.exception(() -> {
-     // throw new IllegalArgumentException("type cannot be null");
-     getMyType(null);
- }, IllegalArgumentException.class, "parameter cannot be null", junitError);  // -> throw a ComparisonFailure
 ```
 
 ## TODO

@@ -24,7 +24,7 @@ import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
-import fr.landel.utils.assertor.expect.Expect;
+import fr.landel.utils.commons.expect.Expect;
 
 /**
  * Check assert matcher
