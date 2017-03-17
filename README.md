@@ -1,6 +1,6 @@
 # utils-assertor
 
-[![Build Status](https://api.travis-ci.org/Gilandel/utils-assertor.svg?branch=master)](https://travis-ci.org/Gilandel/utils-assertor)
+[![Build Status](https://api.travis-ci.org/Gilandel/utils-assertor.svg?branch=master)](https://travis-ci.org/Gilandel/utils-assertor/builds)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/778ffc15500647ce9d54b74fba878c8e)](https://www.codacy.com/app/gilles/utils-assertor)
 [![Dependency Status](https://www.versioneye.com/user/projects/58b29b6f7b9e15003a17e544/badge.svg?style=flat)](https://www.versioneye.com/user/projects/58b29b6f7b9e15003a17e544)
 [![codecov.io](https://codecov.io/github/Gilandel/utils-assertor/coverage.svg?branch=master)](https://codecov.io/github/Gilandel/utils-assertor?branch=master)
