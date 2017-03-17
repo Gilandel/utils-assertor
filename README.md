@@ -136,6 +136,7 @@ Work progress:
     8. [isLT](#islt)
     9. [isLTE](#islte)
 6. [TODO](#todo)
+7. [License](#license)
 
 ## Description
 
@@ -1466,3 +1467,6 @@ Assertor.that(12).not().isLTE(null).orElseThrow(); // -> throw an exception
 ## TODO
 
 - Build all messages in one step at the end (one call to String.format, which locale, if multiple?)
+
+## License
+See [https://github.com/Gilandel/utils/LICENSE](main project license): Apache License, version 2.0
