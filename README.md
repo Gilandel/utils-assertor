@@ -1469,4 +1469,4 @@ Assertor.that(12).not().isLTE(null).orElseThrow(); // -> throw an exception
 - Build all messages in one step at the end (one call to String.format, which locale, if multiple?)
 
 ## License
-See [https://github.com/Gilandel/utils/LICENSE](main project license): Apache License, version 2.0
+See [main project license](https://github.com/Gilandel/utils/LICENSE): Apache License, version 2.0
