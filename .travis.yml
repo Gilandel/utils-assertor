@@ -7,10 +7,19 @@ addons:
   apt:
     packages:
     - gnupg2
-  
+
+cache:
+  directories:
+  - $HOME/.m2
+
+before_cache:
+  - rm -rf $HOME/.m2/repository/$GROUP_ID_PATH
+
 before_install:
   - pip install --user codecov
   - curl http://www.jpm4j.org/install/script | sudo sh
+
+install:
   - sudo jpm install com.codacy:codacy-coverage-reporter:assembly
 
 script: mvn clean compile test cobertura:cobertura
@@ -18,14 +27,7 @@ script: mvn clean compile test cobertura:cobertura
 after_success:
   - codecov
   - codacy-coverage-reporter -l Java -r target/cobertura/coverage.xml
-  - curl $DEPLOYER_URL/deploy.sh | sh
-
-before_cache:
-  - rm -rf $HOME/.m2/repository/$GROUP_ID_PATH
-  
-cache:
-  directories:
-  - $HOME/.m2
+  - curl $DEPLOYER_URL/deploy.sh | bash
 
 notifications:
   email:
