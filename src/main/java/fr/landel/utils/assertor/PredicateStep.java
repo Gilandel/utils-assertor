@@ -661,11 +661,13 @@ public interface PredicateStep<S extends PredicateStep<S, T>, T> {
      * 
      * @param other
      *            the other or next checked {@link Iterable} to check
+     * @param <I>
+     *            the {@link Iterable} type
      * @param <X>
      *            the {@link Iterable} elements type
      * @return the predicate assertor
      */
-    default <X> PredicateAssertorIterable<X> and(final Iterable<X> other) {
+    default <I extends Iterable<X>, X> PredicateAssertorIterable<I, X> and(final I other) {
         return () -> HelperAssertor.and(this.getStep(), other, EnumType.ITERABLE);
     }
 
@@ -867,11 +869,13 @@ public interface PredicateStep<S extends PredicateStep<S, T>, T> {
      * 
      * @param other
      *            the other or next checked {@link Iterable} to check
+     * @param <I>
+     *            the {@link Iterable} type
      * @param <X>
      *            the {@link Iterable} elements type
      * @return the predicate assertor
      */
-    default <X> PredicateAssertorIterable<X> or(final Iterable<X> other) {
+    default <I extends Iterable<X>, X> PredicateAssertorIterable<I, X> or(final I other) {
         return () -> HelperAssertor.or(this.getStep(), other, EnumType.ITERABLE);
     }
 
@@ -1071,11 +1075,13 @@ public interface PredicateStep<S extends PredicateStep<S, T>, T> {
      * 
      * @param other
      *            the other or next checked {@link Iterable} to check
+     * @param <I>
+     *            the {@link Iterable} type
      * @param <X>
      *            the {@link Iterable} elements type
      * @return the predicate assertor
      */
-    default <X> PredicateAssertorIterable<X> xor(final Iterable<X> other) {
+    default <I extends Iterable<X>, X> PredicateAssertorIterable<I, X> xor(final I other) {
         return () -> HelperAssertor.xor(this.getStep(), other, EnumType.ITERABLE);
     }
 
@@ -1274,11 +1280,13 @@ public interface PredicateStep<S extends PredicateStep<S, T>, T> {
      * 
      * @param other
      *            the other or next checked {@link Iterable} to check
+     * @param <I>
+     *            the {@link Iterable} type
      * @param <X>
      *            the {@link Iterable} elements type
      * @return the predicate assertor
      */
-    default <X> PredicateAssertorIterable<X> nand(final Iterable<X> other) {
+    default <I extends Iterable<X>, X> PredicateAssertorIterable<I, X> nand(final I other) {
         return () -> HelperAssertor.nand(this.getStep(), other, EnumType.ITERABLE);
     }
 
@@ -1478,11 +1486,13 @@ public interface PredicateStep<S extends PredicateStep<S, T>, T> {
      * 
      * @param other
      *            the other or next checked {@link Iterable} to check
+     * @param <I>
+     *            the {@link Iterable} type
      * @param <X>
      *            the {@link Iterable} elements type
      * @return the predicate assertor
      */
-    default <X> PredicateAssertorIterable<X> nor(final Iterable<X> other) {
+    default <I extends Iterable<X>, X> PredicateAssertorIterable<I, X> nor(final I other) {
         return () -> HelperAssertor.nor(this.getStep(), other, EnumType.ITERABLE);
     }
 

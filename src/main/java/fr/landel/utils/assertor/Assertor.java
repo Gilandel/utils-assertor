@@ -122,14 +122,16 @@ public class Assertor {
      * 
      * @param iterable
      *            the {@link Iterable} to check
+     * @param <I>
+     *            the {@link Iterable} type
      * @param <T>
-     *            the type of {@link Iterable} under checking
+     *            the {@link Iterable} elements type
      * @return the predicate {@link Iterable} assertor
      */
-    public static <T> PredicateAssertorIterable<T> that(final Iterable<T> iterable) {
+    public static <I extends Iterable<T>, T> PredicateAssertorIterable<I, T> that(final I iterable) {
         return () -> new StepAssertor<>(iterable, EnumType.ITERABLE);
     }
-
+    
     /**
      * First step to check a {@link Map}.
      * 

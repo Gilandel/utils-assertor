@@ -29,15 +29,19 @@ import java.util.Locale;
  * @since Aug 3, 2016
  * @author Gilles
  *
+ * @param <I>
+ *            the {@link Iterable} type
+ * @param <T>
+ *            the {@link Iterable} elements type
  */
 @FunctionalInterface
-public interface PredicateAssertorIterable<T> extends PredicateAssertor<PredicateStepIterable<T>, Iterable<T>> {
+public interface PredicateAssertorIterable<I extends Iterable<T>, T> extends PredicateAssertor<PredicateStepIterable<I, T>, I> {
 
     /**
      * {@inheritDoc}
      */
     @Override
-    default PredicateStepIterable<T> get(final StepAssertor<Iterable<T>> result) {
+    default PredicateStepIterable<I, T> get(final StepAssertor<I> result) {
         return () -> result;
     }
 
@@ -45,7 +49,7 @@ public interface PredicateAssertorIterable<T> extends PredicateAssertor<Predicat
      * {@inheritDoc}
      */
     @Override
-    default PredicateAssertorIterable<T> not() {
+    default PredicateAssertorIterable<I, T> not() {
         return () -> HelperAssertor.not(getStep());
     }
 
@@ -65,7 +69,7 @@ public interface PredicateAssertorIterable<T> extends PredicateAssertor<Predicat
      *            The wanted size
      * @return The operator
      */
-    default PredicateStepIterable<T> hasSize(final int size) {
+    default PredicateStepIterable<I, T> hasSize(final int size) {
         return this.hasSize(size, null);
     }
 
@@ -89,7 +93,7 @@ public interface PredicateAssertorIterable<T> extends PredicateAssertor<Predicat
      *            The arguments of the message, use {@link String#format}
      * @return The operator
      */
-    default PredicateStepIterable<T> hasSize(final int size, final CharSequence message, final Object... arguments) {
+    default PredicateStepIterable<I, T> hasSize(final int size, final CharSequence message, final Object... arguments) {
         return this.hasSize(size, null, message, arguments);
     }
 
@@ -116,7 +120,7 @@ public interface PredicateAssertorIterable<T> extends PredicateAssertor<Predicat
      *            The arguments of the message, use {@link String#format}
      * @return The operator
      */
-    default PredicateStepIterable<T> hasSize(final int size, final Locale locale, final CharSequence message, final Object... arguments) {
+    default PredicateStepIterable<I, T> hasSize(final int size, final Locale locale, final CharSequence message, final Object... arguments) {
         return () -> AssertorIterable.hasSize(this.getStep(), size, MessageAssertor.of(locale, message, arguments));
     }
 
@@ -133,7 +137,7 @@ public interface PredicateAssertorIterable<T> extends PredicateAssertor<Predicat
      * 
      * @return The operator
      */
-    default PredicateStepIterable<T> isEmpty() {
+    default PredicateStepIterable<I, T> isEmpty() {
         return this.isEmpty(null);
     }
 
@@ -154,7 +158,7 @@ public interface PredicateAssertorIterable<T> extends PredicateAssertor<Predicat
      *            The arguments of the message, use {@link String#format}
      * @return The operator
      */
-    default PredicateStepIterable<T> isEmpty(final CharSequence message, final Object... arguments) {
+    default PredicateStepIterable<I, T> isEmpty(final CharSequence message, final Object... arguments) {
         return this.isEmpty(null, message, arguments);
     }
 
@@ -178,7 +182,7 @@ public interface PredicateAssertorIterable<T> extends PredicateAssertor<Predicat
      *            The arguments of the message, use {@link String#format}
      * @return The operator
      */
-    default PredicateStepIterable<T> isEmpty(final Locale locale, final CharSequence message, final Object... arguments) {
+    default PredicateStepIterable<I, T> isEmpty(final Locale locale, final CharSequence message, final Object... arguments) {
         return () -> AssertorIterable.isEmpty(this.getStep(), MessageAssertor.of(locale, message, arguments));
     }
 
@@ -196,7 +200,7 @@ public interface PredicateAssertorIterable<T> extends PredicateAssertor<Predicat
      * 
      * @return The operator
      */
-    default PredicateStepIterable<T> isNotEmpty() {
+    default PredicateStepIterable<I, T> isNotEmpty() {
         return this.isNotEmpty(null);
     }
 
@@ -218,7 +222,7 @@ public interface PredicateAssertorIterable<T> extends PredicateAssertor<Predicat
      *            The arguments of the message, use {@link String#format}
      * @return The operator
      */
-    default PredicateStepIterable<T> isNotEmpty(final CharSequence message, final Object... arguments) {
+    default PredicateStepIterable<I, T> isNotEmpty(final CharSequence message, final Object... arguments) {
         return this.isNotEmpty(null, message, arguments);
     }
 
@@ -243,7 +247,7 @@ public interface PredicateAssertorIterable<T> extends PredicateAssertor<Predicat
      *            The arguments of the message, use {@link String#format}
      * @return The operator
      */
-    default PredicateStepIterable<T> isNotEmpty(final Locale locale, final CharSequence message, final Object... arguments) {
+    default PredicateStepIterable<I, T> isNotEmpty(final Locale locale, final CharSequence message, final Object... arguments) {
         return () -> AssertorIterable.isNotEmpty(this.getStep(), MessageAssertor.of(locale, message, arguments));
     }
 
@@ -263,7 +267,7 @@ public interface PredicateAssertorIterable<T> extends PredicateAssertor<Predicat
      *            The value
      * @return The operator
      */
-    default PredicateStepIterable<T> contains(final T value) {
+    default PredicateStepIterable<I, T> contains(final T value) {
         return this.contains(value, null);
     }
 
@@ -287,7 +291,7 @@ public interface PredicateAssertorIterable<T> extends PredicateAssertor<Predicat
      *            The arguments of the message, use {@link String#format}
      * @return The operator
      */
-    default PredicateStepIterable<T> contains(final T value, final CharSequence message, final Object... arguments) {
+    default PredicateStepIterable<I, T> contains(final T value, final CharSequence message, final Object... arguments) {
         return this.contains(value, (Locale) null, message, arguments);
     }
 
@@ -314,7 +318,7 @@ public interface PredicateAssertorIterable<T> extends PredicateAssertor<Predicat
      *            The arguments of the message, use {@link String#format}
      * @return The operator
      */
-    default PredicateStepIterable<T> contains(final T value, final Locale locale, final CharSequence message, final Object... arguments) {
+    default PredicateStepIterable<I, T> contains(final T value, final Locale locale, final CharSequence message, final Object... arguments) {
         return () -> AssertorIterable.contains(this.getStep(), value, MessageAssertor.of(locale, message, arguments));
     }
 
@@ -334,7 +338,7 @@ public interface PredicateAssertorIterable<T> extends PredicateAssertor<Predicat
      *            The {@link Iterable} values
      * @return The operator
      */
-    default PredicateStepIterable<T> containsAll(final Iterable<T> values) {
+    default PredicateStepIterable<I, T> containsAll(final Iterable<T> values) {
         return this.containsAll(values, null);
     }
 
@@ -358,7 +362,7 @@ public interface PredicateAssertorIterable<T> extends PredicateAssertor<Predicat
      *            The arguments of the message, use {@link String#format}
      * @return The operator
      */
-    default PredicateStepIterable<T> containsAll(final Iterable<T> values, final CharSequence message, final Object... arguments) {
+    default PredicateStepIterable<I, T> containsAll(final Iterable<T> values, final CharSequence message, final Object... arguments) {
         return this.containsAll(values, null, message, arguments);
     }
 
@@ -385,7 +389,7 @@ public interface PredicateAssertorIterable<T> extends PredicateAssertor<Predicat
      *            The arguments of the message, use {@link String#format}
      * @return The operator
      */
-    default PredicateStepIterable<T> containsAll(final Iterable<T> values, final Locale locale, final CharSequence message,
+    default PredicateStepIterable<I, T> containsAll(final Iterable<T> values, final Locale locale, final CharSequence message,
             final Object... arguments) {
         return () -> AssertorIterable.containsAll(this.getStep(), values, MessageAssertor.of(locale, message, arguments));
     }
@@ -406,7 +410,7 @@ public interface PredicateAssertorIterable<T> extends PredicateAssertor<Predicat
      *            The {@link Iterable} values
      * @return The operator
      */
-    default PredicateStepIterable<T> containsAny(final Iterable<T> values) {
+    default PredicateStepIterable<I, T> containsAny(final Iterable<T> values) {
         return this.containsAny(values, null);
     }
 
@@ -430,7 +434,7 @@ public interface PredicateAssertorIterable<T> extends PredicateAssertor<Predicat
      *            The arguments of the message, use {@link String#format}
      * @return The operator
      */
-    default PredicateStepIterable<T> containsAny(final Iterable<T> values, final CharSequence message, final Object... arguments) {
+    default PredicateStepIterable<I, T> containsAny(final Iterable<T> values, final CharSequence message, final Object... arguments) {
         return this.containsAny(values, null, message, arguments);
     }
 
@@ -457,7 +461,7 @@ public interface PredicateAssertorIterable<T> extends PredicateAssertor<Predicat
      *            The arguments of the message, use {@link String#format}
      * @return The operator
      */
-    default PredicateStepIterable<T> containsAny(final Iterable<T> values, final Locale locale, final CharSequence message,
+    default PredicateStepIterable<I, T> containsAny(final Iterable<T> values, final Locale locale, final CharSequence message,
             final Object... arguments) {
         return () -> AssertorIterable.containsAny(this.getStep(), values, MessageAssertor.of(locale, message, arguments));
     }

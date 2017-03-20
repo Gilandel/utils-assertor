@@ -19,36 +19,40 @@ package fr.landel.utils.assertor;
  * @since Aug 3, 2016
  * @author Gilles
  *
+ * @param <I>
+ *            the {@link Iterable} type
+ * @param <T>
+ *            the {@link Iterable} elements type
  */
 @FunctionalInterface
-public interface PredicateStepIterable<T> extends PredicateStep<PredicateStepIterable<T>, Iterable<T>> {
+public interface PredicateStepIterable<I extends Iterable<T>, T> extends PredicateStep<PredicateStepIterable<I, T>, I> {
 
-    default PredicateStepIterable<T> get(final StepAssertor<Iterable<T>> result) {
+    default PredicateStepIterable<I, T> get(final StepAssertor<I> result) {
         return () -> result;
     }
 
     @Override
-    default PredicateAssertorIterable<T> and() {
+    default PredicateAssertorIterable<I, T> and() {
         return () -> HelperAssertor.and(this.getStep());
     }
 
     @Override
-    default PredicateAssertorIterable<T> or() {
+    default PredicateAssertorIterable<I, T> or() {
         return () -> HelperAssertor.or(this.getStep());
     }
 
     @Override
-    default PredicateAssertorIterable<T> xor() {
+    default PredicateAssertorIterable<I, T> xor() {
         return () -> HelperAssertor.xor(this.getStep());
     }
 
     @Override
-    default PredicateAssertorIterable<T> nand() {
+    default PredicateAssertorIterable<I, T> nand() {
         return () -> HelperAssertor.nand(this.getStep());
     }
 
     @Override
-    default PredicateAssertorIterable<T> nor() {
+    default PredicateAssertorIterable<I, T> nor() {
         return () -> HelperAssertor.nor(this.getStep());
     }
 }
