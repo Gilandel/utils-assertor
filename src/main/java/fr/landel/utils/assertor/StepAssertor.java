@@ -16,6 +16,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
@@ -63,7 +64,7 @@ public class StepAssertor<T> implements Serializable {
     private final EnumStep stepType;
 
     private final StepAssertor<?> previousStep;
-    private final StepAssertor<?> subStep;
+    private final Optional<StepAssertor<?>> subStep;
 
     private final T object;
     private final EnumType type;
@@ -112,7 +113,7 @@ public class StepAssertor<T> implements Serializable {
             final EnumType type, final boolean checked, final EnumOperator operator, final boolean not) {
 
         this.stepType = stepType;
-        this.subStep = subStep;
+        this.subStep = Optional.ofNullable(subStep);
 
         this.previousStep = previousStep;
 
@@ -338,7 +339,7 @@ public class StepAssertor<T> implements Serializable {
     /**
      * @return the subStep
      */
-    public StepAssertor<?> getSubStep() {
+    public Optional<StepAssertor<?>> getSubStep() {
         return this.subStep;
     }
 

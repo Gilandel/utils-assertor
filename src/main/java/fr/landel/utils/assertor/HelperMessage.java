@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -495,25 +496,33 @@ public final class HelperMessage extends ConstantsAssertor {
      */
     protected static StringBuilder getParam(final int index, final EnumType type) {
         final StringBuilder stringBuilder = new StringBuilder();
-        if (EnumType.CHAR_SEQUENCE.equals(type) || EnumType.TEMPORAL.equals(type)) {
-            stringBuilder.append(PREFIX_PERCENT).append(index).append(SUFFIX_CHAR_SEQUENCE);
-        } else if (EnumType.BOOLEAN.equals(type)) {
-            stringBuilder.append(PREFIX_PERCENT).append(index).append(SUFFIX_BOOLEAN);
-        } else if (EnumType.NUMBER_INTEGER.equals(type)) {
-            stringBuilder.append(PREFIX_PERCENT).append(index).append(SUFFIX_INTEGER);
-        } else if (EnumType.NUMBER_DECIMAL.equals(type)) {
-            stringBuilder.append(PREFIX_PERCENT).append(index).append(SUFFIX_DECIMAL);
-        } else if (EnumType.DATE.equals(type) || EnumType.CALENDAR.equals(type)) {
-            stringBuilder.append(PREFIX_PERCENT).append(index).append(SUFFIX_TIME_YEAR);
-            stringBuilder.append(PREFIX_PERCENT).append(index).append(SUFFIX_TIME_MONTH);
-            stringBuilder.append(PREFIX_PERCENT).append(index).append(SUFFIX_TIME_DAY);
-            stringBuilder.append(PREFIX_PERCENT).append(index).append(SUFFIX_TIME_HOUR);
-            stringBuilder.append(PREFIX_PERCENT).append(index).append(SUFFIX_TIME_MINUTE);
-            stringBuilder.append(PREFIX_PERCENT).append(index).append(SUFFIX_TIME_SECOND);
-            stringBuilder.append(PREFIX_PERCENT).append(index).append(SUFFIX_TIME_ZONE);
-        } else {
-            stringBuilder.append(PREFIX_PERCENT).append(index).append(SUFFIX_CHAR_SEQUENCE);
+
+        final Consumer<String> append = s -> stringBuilder.append(PREFIX_PERCENT).append(index).append(s);
+
+        switch (type) {
+        case BOOLEAN:
+            append.accept(SUFFIX_BOOLEAN);
+            break;
+        case NUMBER_INTEGER:
+            append.accept(SUFFIX_INTEGER);
+            break;
+        case NUMBER_DECIMAL:
+            append.accept(SUFFIX_DECIMAL);
+            break;
+        case DATE:
+        case CALENDAR:
+            append.accept(SUFFIX_TIME_YEAR);
+            append.accept(SUFFIX_TIME_MONTH);
+            append.accept(SUFFIX_TIME_DAY);
+            append.accept(SUFFIX_TIME_HOUR);
+            append.accept(SUFFIX_TIME_MINUTE);
+            append.accept(SUFFIX_TIME_SECOND);
+            append.accept(SUFFIX_TIME_ZONE);
+            break;
+        default: // CHAR_SEQUENCE, TEMPORAL, THROWABLE...
+            append.accept(SUFFIX_CHAR_SEQUENCE);
         }
+
         return stringBuilder;
     }
 

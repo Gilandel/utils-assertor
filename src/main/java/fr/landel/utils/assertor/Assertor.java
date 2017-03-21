@@ -131,7 +131,7 @@ public class Assertor {
     public static <I extends Iterable<T>, T> PredicateAssertorIterable<I, T> that(final I iterable) {
         return () -> new StepAssertor<>(iterable, EnumType.ITERABLE);
     }
-    
+
     /**
      * First step to check a {@link Map}.
      * 
@@ -193,6 +193,19 @@ public class Assertor {
      */
     public static <T extends Temporal & Comparable<T>> PredicateAssertorTemporal<T> that(final T temporal) {
         return () -> new StepAssertor<>(temporal, EnumType.TEMPORAL);
+    }
+
+    /**
+     * First step to check a comparable {@link Throwable}.
+     * 
+     * @param throwable
+     *            the {@link Throwable} to check
+     * @param <T>
+     *            the type of {@link Throwable}
+     * @return the predicate {@link Throwable} assertor
+     */
+    public static <T extends Throwable> PredicateAssertorThrowable<T> that(final T throwable) {
+        return () -> new StepAssertor<>(throwable, EnumType.THROWABLE);
     }
 
     /**

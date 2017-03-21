@@ -6,6 +6,10 @@
 [![codecov.io](https://codecov.io/github/Gilandel/utils-assertor/coverage.svg?branch=master)](https://codecov.io/github/Gilandel/utils-assertor?branch=master)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/fr.landel.utils/utils-assertor/badge.svg)](https://maven-badges.herokuapp.com/maven-central/fr.landel.utils/utils-assertor)
 
+[![Tokei LoC](https://tokei.rs/b1/github/Gilandel/utils-assertor)](https://github.com/Aaronepower/tokei)
+[![Tokei NoFiles](https://tokei.rs/b1/github/Gilandel/utils-assertor?category=files)](https://github.com/Aaronepower/tokei)
+[![Tokei LoComments](https://tokei.rs/b1/github/Gilandel/utils-assertor?category=comments)](https://github.com/Aaronepower/tokei)
+
 [![codecov.io tree](https://codecov.io/gh/Gilandel/utils-assertor/branch/master/graphs/tree.svg)](https://codecov.io/gh/Gilandel/utils-assertor/branch/master)
 [![codecov.io sunburst](https://codecov.io/gh/Gilandel/utils-assertor/branch/master/graphs/sunburst.svg)](https://codecov.io/gh/Gilandel/utils-assertor/branch/master)
 
@@ -19,30 +23,9 @@ Work progress:
 <dependency>
 	<groupId>fr.landel.utils</groupId>
 	<artifactId>utils-assertor</artifactId>
-	<version>1.1.1</version>
+	<version>1.0.1</version>
 </dependency>
 ```
-
-1. test
-  1. test
-  1. test
-    1. test
-    1. test
-1. test
-  1. test
-  1. test
-
-
-1. test
-  1. test
-  1. test
-    * test
-    * test
-1. test
-  1. test
-  1. test
-    - test
-    - test
 
 ## Summary
 
@@ -156,6 +139,13 @@ Work progress:
       1. [isGTE](#isgte)
       1. [isLT](#islt)
       1. [isLTE](#islte)
+   1. [Throwable](#throwable)
+      1. [isInstanceOf](#isinstanceof-1)
+      1. [isAssignableFrom](#isassignablefrom-2)
+      1. [hasCauseNull](#hascausenull)
+      1. [hasCauseNotNull](#hascausenotnull)
+      1. [hasCauseAssignableFrom](#hascauseassignablefrom)
+      1. [hasCauseInstanceOf](#hascauseinstanceof)
 1. [TODO](#todo)
 1. [License](#license)
 
@@ -178,12 +168,12 @@ For now it manages:
 
 ### Structure
 
-All assertions start with 'Assertor.that(object)' and following the type of the object, some methods are available.
+All assertions start with  `Assertor.that(object)` and following the type of the object, some methods are available.
 
 About structure, an assertion can be cut in three parts:
-- The definition of what we check: Assertor.that(myObject))...
-- The check: ...isNull().or().isInstance(Color.class)...
-- The output: ...orElseThrow()
+- The definition of what we check: `Assertor.that(myObject))...`
+- The check: `...isNull().or().isInstance(Color.class)...`
+- The output: `...orElseThrow()`
 
 Multiples objects can be check in the same line:
 ```java
@@ -191,12 +181,14 @@ Assertor.that(object1).isNull().and(object2).isNotNull().orElseThrow();
 Assertor.that(object1).isNull().or().not().isInstance(Color.class).or(object2).isEqual(object3).isOk();
 ```
 
-Mulitple outputs are available:
+Multiple outputs are available:
 - orElseThrow: throw an exception if assertion is false, otherwise returns the last checked parameter,
 - isOk: get the boolean result of the assertion,
 - getErrors: get the error message (java.util.Optional),
 - get: the result (java.util.Optional),
-- result: the result (fr.landel.utils.commons.Result).
+- getNullable: the result,
+- asResult: the result (fr.landel.utils.commons.Result),
+- asDefault: the result (fr.landel.utils.commons.Default).
 
 These three output methods are considerate as final.
 So when these methods are called a clear of intermediate conditions is done.
@@ -321,7 +313,7 @@ This method returns 'true' if the assertion is valid, otherwise returns 'false'.
 	Assertor.that("").isBlank("The first name is invalid").isOK(); // -> return true
 ```
 
-At the call of 'isOK()', the assertion is cleared, to avoid this, the parameter 'reset' can be set to 'false' (default: true).
+At the call of `isOK()`, the assertion is cleared, to avoid this, the parameter 'reset' can be set to 'false' (default: true).
 
 ### getErrors
 This method returns the assertion errors.
@@ -1486,9 +1478,16 @@ Assertor.that(null).not().isLTE(12).orElseThrow(); // -> throw an exception
 Assertor.that(12).not().isLTE(null).orElseThrow(); // -> throw an exception
 ```
 
+### Throwable
+#### isInstanceOf
+#### isAssignableFrom
+#### hasCauseNull
+#### hasCauseNotNull
+#### hasCauseAssignableFrom
+#### hasCauseInstanceOf
+
 ## TODO
 
-- Add support for checking Throwable, File, Path, Optional, Result, Default
 - Allow new extension (change PredicateStep design) 
 - Build all messages in one step at the end (one call to String.format, which locale, if multiple?)
 

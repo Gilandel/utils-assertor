@@ -98,6 +98,11 @@ public enum EnumType {
     TEMPORAL,
 
     /**
+     * Throwable type
+     */
+    THROWABLE,
+
+    /**
      * Calendar field (only used by converter)
      */
     CALENDAR_FIELD;

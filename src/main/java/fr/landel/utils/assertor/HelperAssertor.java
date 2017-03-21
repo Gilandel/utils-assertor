@@ -176,7 +176,7 @@ public class HelperAssertor extends ConstantsAssertor {
                 parameters.add(param);
                 break;
             case SUB:
-                if (s.getSubStep() != null) {
+                if (s.getSubStep().isPresent()) {
                     final Triple<Boolean, EnumOperator, ResultAssertor> output = HelperAssertor.managesSub(s, parameters, valid, operator,
                             message, loadMessage);
 
@@ -239,7 +239,7 @@ public class HelperAssertor extends ConstantsAssertor {
             final List<ParameterAssertor<?>> parameters, final boolean valid, final EnumOperator operator, final StringBuilder message,
             final boolean loadMessage) {
 
-        final StepAssertor<?> subStep = step.getSubStep();
+        final StepAssertor<?> subStep = step.getSubStep().get();
         EnumOperator nextOperator = operator;
         boolean nextValid = valid;
 
