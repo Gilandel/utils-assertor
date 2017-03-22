@@ -12,6 +12,7 @@
  */
 package fr.landel.utils.assertor;
 
+import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -30,7 +31,7 @@ public class AssertorThrowable extends ConstantsAssertor {
      * of {@code type} and has the specified message
      * 
      * <p>
-     * precondition: throwable, type and exceptionMessage cannot be null
+     * precondition: throwable and type cannot be null
      * </p>
      * 
      * @param step
@@ -48,10 +49,10 @@ public class AssertorThrowable extends ConstantsAssertor {
     protected static <T extends Throwable> StepAssertor<T> isInstanceOf(final StepAssertor<T> step, final Class<?> type,
             final CharSequence exceptionMessage, final MessageAssertor message) {
 
-        final Predicate<T> preChecker = (throwable) -> throwable != null && type != null && exceptionMessage != null;
+        final Predicate<T> preChecker = (throwable) -> throwable != null && type != null;
 
         final BiPredicate<T, Boolean> checker = (throwable, not) -> type.isInstance(throwable)
-                && exceptionMessage.equals(throwable.getMessage());
+                && Objects.equals(exceptionMessage, throwable.getMessage());
 
         return new StepAssertor<>(step, preChecker, checker, false, message, MSG.THROWABLE.INSTANCE, false,
                 new ParameterAssertor<>(type, EnumType.CLASS), new ParameterAssertor<>(exceptionMessage, EnumType.CHAR_SEQUENCE));
@@ -94,7 +95,7 @@ public class AssertorThrowable extends ConstantsAssertor {
      * from the {@code type} and has the specified message
      * 
      * <p>
-     * precondition: throwable, type and exceptionMessage cannot be null
+     * precondition: throwable and type cannot be null
      * </p>
      * 
      * @param step
@@ -112,10 +113,10 @@ public class AssertorThrowable extends ConstantsAssertor {
     protected static <T extends Throwable> StepAssertor<T> isAssignableFrom(final StepAssertor<T> step, final Class<?> type,
             final CharSequence exceptionMessage, final MessageAssertor message) {
 
-        final Predicate<T> preChecker = (throwable) -> throwable != null && type != null && exceptionMessage != null;
+        final Predicate<T> preChecker = (throwable) -> throwable != null && type != null;
 
-        final BiPredicate<T, Boolean> checker = (throwable, not) -> type.isAssignableFrom(type)
-                && exceptionMessage.equals(throwable.getMessage());
+        final BiPredicate<T, Boolean> checker = (throwable, not) -> type.isAssignableFrom(throwable.getClass())
+                && Objects.equals(exceptionMessage, throwable.getMessage());
 
         return new StepAssertor<>(step, preChecker, checker, false, message, MSG.THROWABLE.ASSIGNABLE, false,
                 new ParameterAssertor<>(type, EnumType.CLASS), new ParameterAssertor<>(exceptionMessage, EnumType.CHAR_SEQUENCE));
@@ -146,7 +147,7 @@ public class AssertorThrowable extends ConstantsAssertor {
 
         final Predicate<T> preChecker = (throwable) -> throwable != null && type != null && pattern != null;
 
-        final BiPredicate<T, Boolean> checker = (throwable, not) -> type.isAssignableFrom(type)
+        final BiPredicate<T, Boolean> checker = (throwable, not) -> type.isAssignableFrom(throwable.getClass())
                 && pattern.matcher(throwable.getMessage()).matches();
 
         return new StepAssertor<>(step, preChecker, checker, false, message, MSG.THROWABLE.ASSIGNABLE_PATTERN, false,
@@ -238,7 +239,7 @@ public class AssertorThrowable extends ConstantsAssertor {
      * instance of {@code causeType} and has the specified message
      * 
      * <p>
-     * precondition: throwable, causeType and exceptionMessage cannot be null
+     * precondition: throwable and causeType cannot be null
      * </p>
      * 
      * @param step
@@ -259,10 +260,10 @@ public class AssertorThrowable extends ConstantsAssertor {
     protected static <T extends Throwable> StepAssertor<T> hasCauseInstanceOf(final StepAssertor<T> step, final Class<?> causeType,
             final CharSequence exceptionMessage, final boolean resursively, final MessageAssertor message) {
 
-        final Predicate<T> preChecker = (throwable) -> throwable != null && causeType != null && exceptionMessage != null;
+        final Predicate<T> preChecker = (throwable) -> throwable != null && causeType != null;
 
         final BiPredicate<T, Boolean> checker = check(causeType, resursively,
-                t -> causeType.isInstance(t) && exceptionMessage.equals(t.getMessage()));
+                t -> causeType.isInstance(t) && Objects.equals(exceptionMessage, t.getMessage()));
 
         return new StepAssertor<>(step, preChecker, checker, false, message, MSG.THROWABLE.CAUSE_INSTANCE_MESSAGE, false,
                 new ParameterAssertor<>(causeType, EnumType.CLASS), new ParameterAssertor<>(exceptionMessage, EnumType.CHAR_SEQUENCE),
@@ -342,7 +343,7 @@ public class AssertorThrowable extends ConstantsAssertor {
      * assignable from {@code causeType} and has the specified message
      * 
      * <p>
-     * precondition: throwable, causeType and exceptionMessage cannot be null
+     * precondition: throwable and causeType cannot be null
      * </p>
      * 
      * @param step
@@ -363,10 +364,10 @@ public class AssertorThrowable extends ConstantsAssertor {
     protected static <T extends Throwable> StepAssertor<T> hasCauseAssignableFrom(final StepAssertor<T> step, final Class<?> causeType,
             final CharSequence exceptionMessage, final boolean resursively, final MessageAssertor message) {
 
-        final Predicate<T> preChecker = (throwable) -> throwable != null && causeType != null && exceptionMessage != null;
+        final Predicate<T> preChecker = (throwable) -> throwable != null && causeType != null;
 
         final BiPredicate<T, Boolean> checker = check(causeType, resursively,
-                t -> causeType.isAssignableFrom(t.getClass()) && exceptionMessage.equals(t.getMessage()));
+                t -> causeType.isAssignableFrom(t.getClass()) && Objects.equals(exceptionMessage, t.getMessage()));
 
         return new StepAssertor<>(step, preChecker, checker, false, message, MSG.THROWABLE.CAUSE_ASSIGNABLE_MESSAGE, false,
                 new ParameterAssertor<>(causeType, EnumType.CLASS), new ParameterAssertor<>(exceptionMessage, EnumType.CHAR_SEQUENCE),
@@ -415,8 +416,8 @@ public class AssertorThrowable extends ConstantsAssertor {
         final BiPredicate<T, Boolean> checker;
         if (resursively) {
             checker = (throwable, not) -> {
-                Throwable t;
-                while ((t = throwable.getCause()) != null) {
+                Throwable t = throwable;
+                while ((t = t.getCause()) != null) {
                     if (predicate.test(t)) {
                         return true;
                     }

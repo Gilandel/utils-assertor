@@ -55,5 +55,6 @@ public class AssertorTest extends AbstractTest {
         assertTrue(PredicateAssertorDate.class.isAssignableFrom(Assertor.that(new Date()).getClass()));
         assertTrue(PredicateAssertorCalendar.class.isAssignableFrom(Assertor.that(Calendar.getInstance()).getClass()));
         assertTrue(PredicateAssertorClass.class.isAssignableFrom(Assertor.that(String.class).getClass()));
+        assertTrue(PredicateAssertorThrowable.class.isAssignableFrom(Assertor.that(new IllegalArgumentException()).getClass()));
     }
 }

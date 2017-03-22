@@ -56,7 +56,7 @@ public interface PredicateAssertorThrowable<T extends Throwable> extends Predica
      * and has the specified message.
      * 
      * <p>
-     * precondition: throwable, clazz and throwableMessage cannot be null
+     * precondition: throwable and clazz cannot be null
      * </p>
      * 
      * <pre>
@@ -78,7 +78,7 @@ public interface PredicateAssertorThrowable<T extends Throwable> extends Predica
      * and has the specified message.
      * 
      * <p>
-     * precondition: throwable, clazz and throwableMessage cannot be null
+     * precondition: throwable and clazz cannot be null
      * </p>
      * 
      * <pre>
@@ -105,7 +105,7 @@ public interface PredicateAssertorThrowable<T extends Throwable> extends Predica
      * and has the specified message.
      * 
      * <p>
-     * precondition: throwable, clazz and throwableMessage cannot be null
+     * precondition: throwable and clazz cannot be null
      * </p>
      * 
      * <pre>
@@ -215,7 +215,7 @@ public interface PredicateAssertorThrowable<T extends Throwable> extends Predica
      * and has the specified message.
      * 
      * <p>
-     * precondition: throwable, clazz and throwableMessage cannot be null
+     * precondition: throwable and clazz cannot be null
      * </p>
      * 
      * <pre>
@@ -237,7 +237,7 @@ public interface PredicateAssertorThrowable<T extends Throwable> extends Predica
      * and has the specified message.
      * 
      * <p>
-     * precondition: throwable, clazz and throwableMessage cannot be null
+     * precondition: throwable and clazz cannot be null
      * </p>
      * 
      * <pre>
@@ -264,7 +264,7 @@ public interface PredicateAssertorThrowable<T extends Throwable> extends Predica
      * and has the specified message.
      * 
      * <p>
-     * precondition: throwable, clazz and throwableMessage cannot be null
+     * precondition: throwable and clazz cannot be null
      * </p>
      * 
      * <pre>
@@ -466,7 +466,7 @@ public interface PredicateAssertorThrowable<T extends Throwable> extends Predica
      * @return The operator
      */
     default PredicateStepThrowable<T> hasCauseNull(final CharSequence message, final Object... arguments) {
-        return this.hasCauseNotNull(null, message, arguments);
+        return this.hasCauseNull(null, message, arguments);
     }
 
     /**
@@ -585,7 +585,7 @@ public interface PredicateAssertorThrowable<T extends Throwable> extends Predica
      * true, the method will check the cause of cause recursively.
      * 
      * <p>
-     * precondition: throwable, clazz and exceptionMessage cannot be null
+     * precondition: throwable and clazz cannot be null
      * </p>
      * 
      * <pre>
@@ -612,7 +612,7 @@ public interface PredicateAssertorThrowable<T extends Throwable> extends Predica
      * true, the method will check the cause of cause recursively.
      * 
      * <p>
-     * precondition: throwable, clazz and exceptionMessage cannot be null
+     * precondition: throwable and clazz cannot be null
      * </p>
      * 
      * <pre>
@@ -643,7 +643,7 @@ public interface PredicateAssertorThrowable<T extends Throwable> extends Predica
      * true, the method will check the cause of cause recursively.
      * 
      * <p>
-     * precondition: throwable, clazz and exceptionMessage cannot be null
+     * precondition: throwable and clazz cannot be null
      * </p>
      * 
      * <pre>
@@ -856,7 +856,7 @@ public interface PredicateAssertorThrowable<T extends Throwable> extends Predica
      * true, the method will check the cause of cause recursively.
      * 
      * <p>
-     * precondition: throwable, clazz and exceptionMessage cannot be null
+     * precondition: throwable and clazz cannot be null
      * </p>
      * 
      * <pre>
@@ -883,7 +883,7 @@ public interface PredicateAssertorThrowable<T extends Throwable> extends Predica
      * true, the method will check the cause of cause recursively.
      * 
      * <p>
-     * precondition: throwable, clazz and exceptionMessage cannot be null
+     * precondition: throwable and clazz cannot be null
      * </p>
      * 
      * <pre>
@@ -914,7 +914,7 @@ public interface PredicateAssertorThrowable<T extends Throwable> extends Predica
      * true, the method will check the cause of cause recursively.
      * 
      * <p>
-     * precondition: throwable, clazz and exceptionMessage cannot be null
+     * precondition: throwable and clazz cannot be null
      * </p>
      * 
      * <pre>
