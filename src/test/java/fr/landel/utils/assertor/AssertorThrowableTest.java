@@ -11,8 +11,6 @@ import java.util.regex.Pattern;
 
 import org.junit.Test;
 
-import fr.landel.utils.commons.expect.Expect;
-
 /**
  * Check {@link AssertorThrowable}
  *
@@ -20,7 +18,7 @@ import fr.landel.utils.commons.expect.Expect;
  * @author Gilles
  *
  */
-public class AssertorThrowableTest extends ConstantsAssertor {
+public class AssertorThrowableTest extends AbstractTest {
 
     /**
      * Test method for {@link AssertorThrowable#AssertorThrowable()} .
@@ -72,55 +70,55 @@ public class AssertorThrowableTest extends ConstantsAssertor {
         assertTrue(Assertor.that(new IOException("msg")).isNull().nand(il).isInstanceOf(Color.class, "msg").isOK());
         assertTrue(Assertor.that(new IOException("msg")).isNotNull().nor(il).isInstanceOf(Color.class, "msg").isOK());
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(e).isInstanceOf(IOException.class).orElseThrow();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(e).isInstanceOf(IOException.class, pattern).orElseThrow();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(e).isInstanceOf(Exception.class, (Pattern) null).orElseThrow();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(e).isInstanceOf(IOException.class, (Pattern) null).orElseThrow();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(e).isInstanceOf(IOException.class).orElseThrow("msg");
         }, IllegalArgumentException.class, "msg");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(e).isInstanceOf(null, (String) null).orElseThrow("msg");
         }, IllegalArgumentException.class, "msg");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that((Throwable) null).isInstanceOf(null, (String) null).orElseThrow("msg");
         }, IllegalArgumentException.class, "msg");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that((Throwable) null).isInstanceOf(Exception.class, (String) null).orElseThrow("msg");
         }, IllegalArgumentException.class, "msg");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that((Throwable) null).isInstanceOf(Exception.class, (Pattern) null).orElseThrow();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that((Throwable) null).isInstanceOf(IOException.class, (Pattern) null).orElseThrow();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that((Throwable) null).isInstanceOf(null, (Pattern) null).orElseThrow();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that((Throwable) null).isInstanceOf(null, pattern).orElseThrow();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(e).isInstanceOf(null, pattern).orElseThrow();
         }, IllegalArgumentException.class);
     }
@@ -132,6 +130,7 @@ public class AssertorThrowableTest extends ConstantsAssertor {
     @Test
     public void testIsAssignableFrom() {
         final IOException e = new IOException();
+        final Exception ee = new Exception(e);
         final Exception em = new Exception("msg");
         final Pattern pattern = Pattern.compile("^m.*g$");
         final Pattern patternError = Pattern.compile("^m.*e$");
@@ -150,6 +149,9 @@ public class AssertorThrowableTest extends ConstantsAssertor {
 
         assertTrue(Assertor.that(em).not().isAssignableFrom(IOException.class, pattern).isOK());
         assertTrue(Assertor.that(em).not().isAssignableFrom(Exception.class, patternError).isOK());
+        assertTrue(Assertor.that(em).not().isAssignableFrom(Exception.class, patternError).isOK());
+
+        assertTrue(Assertor.that(e).not().isAssignableFrom(IOException.class, pattern).isOK());
 
         assertTrue(Assertor.that(new Exception()).not().isAssignableFrom(Exception.class, "").isOK());
         assertTrue(Assertor.that(new Exception()).not().isAssignableFrom(IOException.class, (String) null).isOK());
@@ -163,43 +165,43 @@ public class AssertorThrowableTest extends ConstantsAssertor {
         assertTrue(Assertor.that(e).isNotNull().and(Assertor.that(true).isTrue()).and().not().isAssignableFrom(Color.class, (String) null)
                 .isOK());
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(new Exception()).isAssignableFrom(IOException.class).orElseThrow();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(e).isAssignableFrom(IOException.class, (Pattern) null).orElseThrow();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(new Exception()).isAssignableFrom(IOException.class).orElseThrow("msg");
         }, IllegalArgumentException.class, "msg");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(new Exception()).isAssignableFrom(null, (String) null).orElseThrow("msg");
         }, IllegalArgumentException.class, "msg");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that((Throwable) null).isAssignableFrom(null, (String) null).orElseThrow("msg");
         }, IllegalArgumentException.class, "msg");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that((Throwable) null).isAssignableFrom(Exception.class, (String) null).orElseThrow("msg");
         }, IllegalArgumentException.class, "msg");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that((Throwable) null).isAssignableFrom(null, (Pattern) null).orElseThrow("msg");
         }, IllegalArgumentException.class, "msg");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that((Throwable) null).isAssignableFrom(null, pattern).orElseThrow("msg");
         }, IllegalArgumentException.class, "msg");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(e).isAssignableFrom(null, pattern).orElseThrow("msg");
         }, IllegalArgumentException.class, "msg");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(e).isAssignableFrom(null, (Pattern) null).orElseThrow("msg");
         }, IllegalArgumentException.class, "msg");
     }
@@ -224,11 +226,11 @@ public class AssertorThrowableTest extends ConstantsAssertor {
         assertTrue(Assertor.that(new IOException("msg")).isNotNull().or().hasCauseNull().isOK());
         assertTrue(Assertor.that(new IOException("msg")).isNotNull().xor().not().hasCauseNull().isOK());
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(new Exception()).not().hasCauseNull().orElseThrow();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that((Throwable) null).hasCauseNull().orElseThrow("msg");
         }, IllegalArgumentException.class, "msg");
     }
@@ -253,11 +255,11 @@ public class AssertorThrowableTest extends ConstantsAssertor {
         assertTrue(Assertor.that(new IOException("msg")).isNotNull().or().hasCauseNotNull().isOK());
         assertFalse(Assertor.that(new IOException("msg")).isNotNull().xor().not().hasCauseNotNull().isOK());
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(new Exception()).hasCauseNotNull().orElseThrow();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that((Throwable) null).hasCauseNotNull().orElseThrow("msg");
         }, IllegalArgumentException.class, "msg");
     }
@@ -310,57 +312,61 @@ public class AssertorThrowableTest extends ConstantsAssertor {
         assertTrue(Assertor.that(e).isNotNull().and(Assertor.that(true).isTrue()).and().not()
                 .hasCauseInstanceOf(Color.class, (String) null, true).isOK());
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(new Exception()).hasCauseInstanceOf(null, true).orElseThrow();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
-            Assertor.that(new Exception()).hasCauseInstanceOf(IOException.class, (String) null, true).orElseThrow();
-        }, IllegalArgumentException.class);
-
-        Expect.exception(() -> {
-            Assertor.that(new Exception()).hasCauseInstanceOf(IOException.class, (Pattern) null, true).orElseThrow();
-        }, IllegalArgumentException.class);
-
-        Expect.exception(() -> {
-            Assertor.that((Exception) null).hasCauseInstanceOf(IOException.class, (Pattern) null, true).orElseThrow();
-        }, IllegalArgumentException.class);
-
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that((Exception) null).hasCauseInstanceOf(null, true).orElseThrow();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
+            Assertor.that(new Exception()).hasCauseInstanceOf(IOException.class, (String) null, true).orElseThrow();
+        }, IllegalArgumentException.class);
+
+        assertException(() -> {
             Assertor.that((Exception) null).hasCauseInstanceOf(null, (Pattern) null, true).orElseThrow();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
-            Assertor.that((Exception) null).hasCauseInstanceOf(null, pattern, true).orElseThrow();
-        }, IllegalArgumentException.class);
-
-        Expect.exception(() -> {
-            Assertor.that((Exception) null).hasCauseInstanceOf(IOException.class, pattern, true).orElseThrow();
-        }, IllegalArgumentException.class);
-
-        Expect.exception(() -> {
-            Assertor.that((Exception) null).hasCauseInstanceOf(IOException.class, pattern, true).orElseThrow();
-        }, IllegalArgumentException.class);
-
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(new Exception()).hasCauseInstanceOf(IOException.class, (String) null, true).orElseThrow("msg");
         }, IllegalArgumentException.class, "msg");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(new Exception()).hasCauseInstanceOf(null, (String) null, true).orElseThrow("msg");
         }, IllegalArgumentException.class, "msg");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that((Throwable) null).hasCauseInstanceOf(null, (String) null, true).orElseThrow("msg");
         }, IllegalArgumentException.class, "msg");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that((Throwable) null).hasCauseInstanceOf(Exception.class, (String) null, true).orElseThrow("msg");
         }, IllegalArgumentException.class, "msg");
+
+        assertException(() -> {
+            Assertor.that(new Exception()).hasCauseInstanceOf(IOException.class, (Pattern) null, true).orElseThrow();
+        }, IllegalArgumentException.class);
+
+        assertException(() -> {
+            Assertor.that((Exception) null).hasCauseInstanceOf(IOException.class, (Pattern) null, true).orElseThrow();
+        }, IllegalArgumentException.class);
+
+        assertException(() -> {
+            Assertor.that((Exception) null).hasCauseInstanceOf(null, pattern, true).orElseThrow();
+        }, IllegalArgumentException.class);
+
+        assertException(() -> {
+            Assertor.that(new Exception()).hasCauseInstanceOf(null, pattern, true).orElseThrow();
+        }, IllegalArgumentException.class);
+
+        assertException(() -> {
+            Assertor.that((Exception) null).hasCauseInstanceOf(null, (Pattern) null, true).orElseThrow();
+        }, IllegalArgumentException.class);
+
+        assertException(() -> {
+            Assertor.that((Exception) null).hasCauseInstanceOf(IOException.class, pattern, true).orElseThrow();
+        }, IllegalArgumentException.class);
     }
 
     /**
@@ -371,6 +377,10 @@ public class AssertorThrowableTest extends ConstantsAssertor {
     public void testHasCauseAssignableFrom() {
         final IOException e = new IOException();
         final Exception ec = new Exception(e);
+        final Exception emem = new Exception("msg", new IOException("msg"));
+        final Exception eeem = new Exception(new IOException(new IOException("error")));
+        final Pattern pattern = Pattern.compile("^m.*g$");
+        final Pattern patternError = Pattern.compile("^m.*e$");
 
         assertTrue(Assertor.that(ec).hasCauseAssignableFrom(IOException.class, (String) null, true).isOK());
         assertTrue(Assertor.that(ec).hasCauseAssignableFrom(Exception.class, (String) null, true, "error", true).isOK());
@@ -380,24 +390,24 @@ public class AssertorThrowableTest extends ConstantsAssertor {
         assertTrue(Assertor.that(ec).hasCauseAssignableFrom(Exception.class, true, "error", true).isOK());
         assertTrue(Assertor.that(ec).hasCauseAssignableFrom(Exception.class, true, Locale.US, "error").isOK());
 
+        assertTrue(Assertor.that(ec).not().hasCauseAssignableFrom(IOException.class, patternError, true).isOK());
+        assertTrue(Assertor.that(ec).not().hasCauseAssignableFrom(IOException.class, pattern, true).isOK());
+        assertTrue(Assertor.that(emem).not().hasCauseAssignableFrom(IOException.class, patternError, true).isOK());
+        assertTrue(Assertor.that(emem).hasCauseAssignableFrom(IOException.class, pattern, true).isOK());
+        assertTrue(Assertor.that(emem).not().hasCauseAssignableFrom(IllegalArgumentException.class, pattern, true).isOK());
+        assertTrue(Assertor.that(emem).not().hasCauseAssignableFrom(IllegalArgumentException.class, patternError, true).isOK());
+
         assertFalse(Assertor.that(new Exception("msg", e)).hasCauseAssignableFrom(Exception.class, "msg", true).isOK());
-        assertTrue(Assertor.that(new Exception("msg", new IOException("msg"))).hasCauseAssignableFrom(Exception.class, "msg", true, "error")
-                .isOK());
-        assertTrue(Assertor.that(new Exception("msg", new IOException("msg")))
-                .hasCauseAssignableFrom(Exception.class, "msg", true, Locale.US, "error").isOK());
+        assertTrue(Assertor.that(emem).hasCauseAssignableFrom(Exception.class, "msg", true, "error").isOK());
+        assertTrue(Assertor.that(emem).hasCauseAssignableFrom(Exception.class, "msg", true, Locale.US, "error").isOK());
 
-        Pattern pattern = Pattern.compile("^m.*g$");
         assertFalse(Assertor.that(new Exception("msg", e)).hasCauseAssignableFrom(Exception.class, pattern, true).isOK());
-        assertTrue(Assertor.that(new Exception("msg", new IOException("msg")))
-                .hasCauseAssignableFrom(Exception.class, pattern, true, "error").isOK());
-        assertTrue(Assertor.that(new Exception("msg", new IOException("msg")))
-                .hasCauseAssignableFrom(Exception.class, pattern, true, Locale.US, "error").isOK());
+        assertTrue(Assertor.that(emem).hasCauseAssignableFrom(Exception.class, pattern, true, "error").isOK());
+        assertTrue(Assertor.that(emem).hasCauseAssignableFrom(Exception.class, pattern, true, Locale.US, "error").isOK());
 
-        assertTrue(Assertor.that(new Exception(new IOException(new IOException("error"))))
-                .hasCauseAssignableFrom(IOException.class, "error", true).isOK());
+        assertTrue(Assertor.that(eeem).hasCauseAssignableFrom(IOException.class, "error", true).isOK());
 
-        assertFalse(Assertor.that(new Exception(new IOException(new IOException("error"))))
-                .hasCauseAssignableFrom(IOException.class, "error", false).isOK());
+        assertFalse(Assertor.that(eeem).hasCauseAssignableFrom(IOException.class, "error", false).isOK());
 
         assertTrue(Assertor.that(new Exception()).not().hasCauseAssignableFrom(Exception.class, "", true).isOK());
         assertTrue(Assertor.that(new Exception()).not().hasCauseAssignableFrom(IOException.class, (String) null, true).isOK());
@@ -409,40 +419,64 @@ public class AssertorThrowableTest extends ConstantsAssertor {
         assertTrue(Assertor.that(e).isNotNull().and(Assertor.that(true).isTrue()).and().not()
                 .hasCauseAssignableFrom(Color.class, (String) null, true).isOK());
 
-        Expect.exception(() -> {
-            Assertor.that(new Exception()).hasCauseAssignableFrom(IOException.class, (String) null, true).orElseThrow();
-        }, IllegalArgumentException.class);
-
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(new Exception()).hasCauseAssignableFrom(null, true).orElseThrow();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that((Throwable) null).hasCauseAssignableFrom(null, true).orElseThrow();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that((Throwable) null).hasCauseAssignableFrom(IOException.class, true).orElseThrow();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
-            Assertor.that(new Exception()).hasCauseAssignableFrom(IOException.class, (Pattern) null, true).orElseThrow();
+        assertException(() -> {
+            Assertor.that(new Exception()).hasCauseAssignableFrom(IOException.class, (String) null, true).orElseThrow();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(new Exception()).hasCauseAssignableFrom(IOException.class, (String) null, true).orElseThrow("msg");
         }, IllegalArgumentException.class, "msg");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(new Exception()).hasCauseAssignableFrom(null, (String) null, true).orElseThrow("msg");
         }, IllegalArgumentException.class, "msg");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that((Throwable) null).hasCauseAssignableFrom(null, (String) null, true).orElseThrow("msg");
         }, IllegalArgumentException.class, "msg");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that((Throwable) null).hasCauseAssignableFrom(Exception.class, (String) null, true).orElseThrow("msg");
         }, IllegalArgumentException.class, "msg");
+
+        assertException(() -> {
+            Assertor.that(new Exception()).hasCauseAssignableFrom(IOException.class, (Pattern) null, true).orElseThrow();
+        }, IllegalArgumentException.class);
+
+        assertException(() -> {
+            Assertor.that(new Exception()).hasCauseAssignableFrom(null, (Pattern) null, true).orElseThrow();
+        }, IllegalArgumentException.class);
+
+        assertException(() -> {
+            Assertor.that(new Exception()).hasCauseAssignableFrom(null, pattern, true).orElseThrow();
+        }, IllegalArgumentException.class);
+
+        assertException(() -> {
+            Assertor.that((Exception) null).hasCauseAssignableFrom(null, pattern, true).orElseThrow();
+        }, IllegalArgumentException.class);
+
+        assertException(() -> {
+            Assertor.that((Exception) null).hasCauseAssignableFrom(null, (Pattern) null, true).orElseThrow();
+        }, IllegalArgumentException.class);
+
+        assertException(() -> {
+            Assertor.that((Exception) null).hasCauseAssignableFrom(IOException.class, (Pattern) null, true).orElseThrow();
+        }, IllegalArgumentException.class);
+
+        assertException(() -> {
+            Assertor.that((Exception) null).hasCauseAssignableFrom(IOException.class, pattern, true).orElseThrow();
+        }, IllegalArgumentException.class);
     }
 }

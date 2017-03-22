@@ -30,7 +30,6 @@ import java.util.GregorianCalendar;
 import org.junit.Test;
 
 import fr.landel.utils.commons.DateUtils;
-import fr.landel.utils.commons.expect.Expect;
 
 /**
  * Test {@link AssertorTemporal}
@@ -82,12 +81,12 @@ public class AssertorTemporalTest extends AbstractTest {
 
         final LocalDateTime localDateTime3 = DateUtils.getLocalDateTime(new Date(1464475553641L));
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(date1).isEqual(localDateTime3).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(localDateTime3).isEqual(date1).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
@@ -116,7 +115,7 @@ public class AssertorTemporalTest extends AbstractTest {
             assertNotNull(e);
         }
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(localDateTime1).isEqual((Date) null).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
@@ -250,15 +249,15 @@ public class AssertorTemporalTest extends AbstractTest {
         assertTrue(Assertor.that(localDateTime1).isNotAround(localDateTime2, Duration.ofSeconds(3)).isOK());
         assertTrue(Assertor.that(localDateTime1).isNotAround(localDateTime2, Duration.ZERO).isOK());
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that((LocalDateTime) null).isNotAround(localDateTime2, temporalAmount).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(DateUtils.getLocalDateTime(c1)).isNotAround((LocalDateTime) null, temporalAmount).orElseThrow();
             fail();
-        }, IllegalArgumentException.class, "neither temporal can be null", JUNIT_ERROR);
+        }, IllegalArgumentException.class, "neither temporal can be null");
     }
 
     /**
@@ -463,27 +462,27 @@ public class AssertorTemporalTest extends AbstractTest {
 
         assertFalse(Assertor.that(localDateTime1).isAfterOrEqual(localDateTime2).isOK());
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that((LocalDateTime) null).isAfterOrEqual(localDateTime2).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(localDateTime1).isAfterOrEqual((LocalDateTime) null).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that((LocalDateTime) null).isAfterOrEqual((LocalDateTime) null).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(localDateTime1).isAfterOrEqual(localDateTime2).orElseThrow(new IOException(), true);
             fail();
         }, IOException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(localDateTime1).isAfterOrEqual(localDateTime2, Duration.ofHours(1)).orElseThrow(new IOException(), true);
             fail();
         }, IOException.class);
@@ -505,42 +504,42 @@ public class AssertorTemporalTest extends AbstractTest {
         Assertor.that(localDateTime2).isBefore(localDateTime1, Duration.ofHours(1)).orElseThrow();
         Assertor.that(localDateTime2).not().isBefore(localDateTime1, Duration.ofHours(-1)).orElseThrow();
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(localDateTime2).isBefore(localDateTime1, Duration.ZERO).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(localDateTime1).isBefore(localDateTime2).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(localDateTime1).isBefore(localDateTime2, Duration.ofHours(1)).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(localDateTime1).isBefore(localDateTime1).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that((LocalDateTime) null).isBefore(localDateTime1).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(localDateTime1).isBefore((LocalDateTime) null).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that((LocalDateTime) null).isBefore((LocalDateTime) null).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(localDateTime1).isBefore(localDateTime1).orElseThrow(new IOException(), true);
             fail();
         }, IOException.class);
@@ -576,27 +575,27 @@ public class AssertorTemporalTest extends AbstractTest {
         final LocalDateTime localDateTime3 = DateUtils.getLocalDateTime(date3);
         final LocalDateTime localDateTime4 = DateUtils.getLocalDateTime(date4);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(localDateTime3).isBeforeOrEqual(localDateTime4).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that((LocalDateTime) null).isBeforeOrEqual(localDateTime4).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(localDateTime3).isBeforeOrEqual((LocalDateTime) null).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that((LocalDateTime) null).isBeforeOrEqual((LocalDateTime) null).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(localDateTime3).isBeforeOrEqual(localDateTime4).orElseThrow(new IOException(), true);
             fail();
         }, IOException.class);

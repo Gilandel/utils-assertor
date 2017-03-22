@@ -25,7 +25,6 @@ import java.util.GregorianCalendar;
 import org.junit.Test;
 
 import fr.landel.utils.commons.DateUtils;
-import fr.landel.utils.commons.expect.Expect;
 
 /**
  * Test {@link AssertorDate}
@@ -87,12 +86,12 @@ public class AssertorDateAndCalendarTest extends AbstractTest {
 
         final Date date3 = new Date(1464475553641L);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(date1).isEqual(date3).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(date3).isEqual(date1).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
@@ -117,7 +116,7 @@ public class AssertorDateAndCalendarTest extends AbstractTest {
             assertNotNull(e);
         }
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(date1).isEqual((Date) null).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
@@ -248,27 +247,27 @@ public class AssertorDateAndCalendarTest extends AbstractTest {
         assertFalse(Assertor.that(c1).isNotAround(c2, Calendar.SECOND, 0).isOK());
         assertTrue(Assertor.that(c1).isNotAround(c2, -1, 0).isOK());
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that((Calendar) null).isNotAround(c2, Calendar.SECOND, 5).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(c1).isNotAround((Calendar) null, Calendar.SECOND, 5).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(c1).isNotAround((Calendar) null, Calendar.SECOND, 5).orElseThrow();
             fail();
         }, IllegalArgumentException.class,
-                "neither dates can be null, calendar field has to be a supported value and calendar amount different to 0", JUNIT_ERROR);
+                "neither dates can be null, calendar field has to be a supported value and calendar amount different to 0");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(c1.getTime()).isNotAround((Date) null, Calendar.SECOND, 5).orElseThrow();
             fail();
         }, IllegalArgumentException.class,
-                "neither dates can be null, calendar field has to be a supported value and calendar amount different to 0", JUNIT_ERROR);
+                "neither dates can be null, calendar field has to be a supported value and calendar amount different to 0");
     }
 
     /**
@@ -479,22 +478,22 @@ public class AssertorDateAndCalendarTest extends AbstractTest {
         assertFalse(Assertor.that(date1).isAfterOrEqual(date2).isOK());
         assertFalse(Assertor.that(cal1).isAfterOrEqual(cal2).isOK());
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that((Date) null).isAfterOrEqual(date2).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(date1).isAfterOrEqual((Date) null).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that((Date) null).isAfterOrEqual((Date) null).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(date1).isAfterOrEqual(date2).orElseThrow(new IOException(), true);
             fail();
         }, IOException.class);
@@ -519,32 +518,32 @@ public class AssertorDateAndCalendarTest extends AbstractTest {
         Assertor.that(date2).not().isBefore(date1, Calendar.HOUR, -1).orElseThrow();
         Assertor.that(cal1).not().isBefore(cal2, Calendar.HOUR, 1).orElseThrow();
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(date1).isBefore(date2).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(date1).isBefore(date1).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that((Date) null).isBefore(date1).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(date1).isBefore((Date) null).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that((Date) null).isBefore((Date) null).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(date1).isBefore(date1).orElseThrow(new IOException(), true);
             fail();
         }, IOException.class);
@@ -579,27 +578,27 @@ public class AssertorDateAndCalendarTest extends AbstractTest {
         final Date date3 = new Date(1464475553641L);
         final Date date4 = new Date(1464475553640L);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(date3).isBeforeOrEqual(date4).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that((Date) null).isBeforeOrEqual(date4).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(date3).isBeforeOrEqual((Date) null).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that((Date) null).isBeforeOrEqual((Date) null).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(date3).isBeforeOrEqual(date4).orElseThrow(new IOException(), true);
             fail();
         }, IOException.class);

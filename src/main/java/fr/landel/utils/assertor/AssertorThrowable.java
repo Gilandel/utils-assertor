@@ -83,7 +83,7 @@ public class AssertorThrowable extends ConstantsAssertor {
 
         final Predicate<T> preChecker = (throwable) -> throwable != null && type != null && pattern != null;
 
-        final BiPredicate<T, Boolean> checker = (throwable, not) -> type.isInstance(throwable)
+        final BiPredicate<T, Boolean> checker = (throwable, not) -> type.isInstance(throwable) && throwable.getMessage() != null
                 && pattern.matcher(throwable.getMessage()).matches();
 
         return new StepAssertor<>(step, preChecker, checker, false, message, MSG.THROWABLE.INSTANCE_PATTERN, false,
@@ -148,7 +148,7 @@ public class AssertorThrowable extends ConstantsAssertor {
         final Predicate<T> preChecker = (throwable) -> throwable != null && type != null && pattern != null;
 
         final BiPredicate<T, Boolean> checker = (throwable, not) -> type.isAssignableFrom(throwable.getClass())
-                && pattern.matcher(throwable.getMessage()).matches();
+                && throwable.getMessage() != null && pattern.matcher(throwable.getMessage()).matches();
 
         return new StepAssertor<>(step, preChecker, checker, false, message, MSG.THROWABLE.ASSIGNABLE_PATTERN, false,
                 new ParameterAssertor<>(type, EnumType.CLASS), new ParameterAssertor<>(pattern, EnumType.UNKNOWN));
@@ -298,8 +298,8 @@ public class AssertorThrowable extends ConstantsAssertor {
 
         final Predicate<T> preChecker = (throwable) -> throwable != null && causeType != null && pattern != null;
 
-        final BiPredicate<T, Boolean> checker = check(causeType, resursively,
-                t -> causeType.isInstance(t) && pattern.matcher(t.getMessage()).matches());
+        final BiPredicate<T, Boolean> checker = check(causeType, resursively, throwable -> causeType.isInstance(throwable)
+                && throwable.getMessage() != null && pattern.matcher(throwable.getMessage()).matches());
 
         return new StepAssertor<>(step, preChecker, checker, false, message, MSG.THROWABLE.CAUSE_INSTANCE_PATTERN, false,
                 new ParameterAssertor<>(causeType, EnumType.CLASS), new ParameterAssertor<>(pattern, EnumType.UNKNOWN),
@@ -332,7 +332,8 @@ public class AssertorThrowable extends ConstantsAssertor {
 
         final Predicate<T> preChecker = (throwable) -> throwable != null && causeType != null;
 
-        final BiPredicate<T, Boolean> checker = check(causeType, resursively, t -> causeType.isAssignableFrom(t.getClass()));
+        final BiPredicate<T, Boolean> checker = check(causeType, resursively,
+                throwable -> causeType.isAssignableFrom(throwable.getClass()));
 
         return new StepAssertor<>(step, preChecker, checker, false, message, MSG.THROWABLE.CAUSE_ASSIGNABLE, false,
                 new ParameterAssertor<>(causeType, EnumType.CLASS), new ParameterAssertor<>(resursively, EnumType.BOOLEAN));
@@ -367,7 +368,7 @@ public class AssertorThrowable extends ConstantsAssertor {
         final Predicate<T> preChecker = (throwable) -> throwable != null && causeType != null;
 
         final BiPredicate<T, Boolean> checker = check(causeType, resursively,
-                t -> causeType.isAssignableFrom(t.getClass()) && Objects.equals(exceptionMessage, t.getMessage()));
+                throwable -> causeType.isAssignableFrom(throwable.getClass()) && Objects.equals(exceptionMessage, throwable.getMessage()));
 
         return new StepAssertor<>(step, preChecker, checker, false, message, MSG.THROWABLE.CAUSE_ASSIGNABLE_MESSAGE, false,
                 new ParameterAssertor<>(causeType, EnumType.CLASS), new ParameterAssertor<>(exceptionMessage, EnumType.CHAR_SEQUENCE),
@@ -402,8 +403,8 @@ public class AssertorThrowable extends ConstantsAssertor {
 
         final Predicate<T> preChecker = (throwable) -> throwable != null && causeType != null && pattern != null;
 
-        final BiPredicate<T, Boolean> checker = check(causeType, resursively,
-                t -> causeType.isAssignableFrom(t.getClass()) && pattern.matcher(t.getMessage()).matches());
+        final BiPredicate<T, Boolean> checker = check(causeType, resursively, throwable -> causeType.isAssignableFrom(throwable.getClass())
+                && throwable.getMessage() != null && pattern.matcher(throwable.getMessage()).matches());
 
         return new StepAssertor<>(step, preChecker, checker, false, message, MSG.THROWABLE.CAUSE_ASSIGNABLE_PATTERN, false,
                 new ParameterAssertor<>(causeType, EnumType.CLASS), new ParameterAssertor<>(pattern, EnumType.UNKNOWN),

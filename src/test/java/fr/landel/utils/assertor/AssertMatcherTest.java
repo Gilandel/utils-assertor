@@ -75,16 +75,16 @@ public class AssertMatcherTest extends AbstractTest {
         assertTrue(Assertor.that(colors).validates((object) -> Matchers.hasSize(nbColors).matches(object)).and()
                 .validates((object) -> Matchers.contains(matcherList).matches(object)).isOK());
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(colors).validates(null).and().validates((object) -> Matchers.contains(matcherList).matches(object)).orElseThrow();
             fail();
-        }, IllegalArgumentException.class, "the predicate cannot be null", JUNIT_ERROR);
+        }, IllegalArgumentException.class, "the predicate cannot be null");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that((List<Color>) null).validates((object) -> Matchers.hasSize(nbColors).matches(object)).and()
                     .validates((object) -> Matchers.contains(matcherList).matches(object)).orElseThrow();
             fail();
-        }, IllegalArgumentException.class, "the object 'null' should validate the predicate", JUNIT_ERROR);
+        }, IllegalArgumentException.class, "the object 'null' should validate the predicate");
     }
 
     /**

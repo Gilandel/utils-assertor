@@ -30,7 +30,6 @@ import java.util.Map;
 import org.junit.Test;
 
 import fr.landel.utils.commons.DateUtils;
-import fr.landel.utils.commons.expect.Expect;
 
 /**
  * Check {@link HelperMessage}
@@ -63,18 +62,18 @@ public class HelperMessageTest extends AbstractTest {
         assertEquals("message 23,26", HelperMessage.getMessage("default", Locale.FRANCE, "message %.2f", null, new Object[] {23.256f}));
 
         Assertor.setLocale(Locale.FRANCE);
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(23.6f).isEqual(25.6f).orElseThrow();
             fail();
-        }, IllegalArgumentException.class, "the number '23,600' should be equal to '25,600'", JUNIT_ERROR);
+        }, IllegalArgumentException.class, "the number '23,600' should be equal to '25,600'");
         Assertor.setLocale(Locale.US);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that("texte11").not().isEqual("texte11").orElseThrow("texte '%2$s*' is not equal to '%1$s*', %s", "args");
             fail();
         }, IllegalArgumentException.class, "texte 'texte11' is not equal to 'texte11', args");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that("texte11").isEqual(true).orElseThrow("texte '%2$s*' is not equal to '%1$s*', %s", "args");
             fail();
         }, IllegalArgumentException.class, "texte 'true' is not equal to 'texte11', args");
@@ -99,12 +98,11 @@ public class HelperMessageTest extends AbstractTest {
             assertEquals("texte 'texte12' is not equal to 'texte11' or 'texte11' != 'texte12'...", e.getMessage());
         }
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that("texte11").isBlank().or().isNotEqual("texte11").orElseThrow();
             fail("Expect an exception");
         }, IllegalArgumentException.class,
-                "the char sequence 'texte11' should be null, empty or blank OR the char sequence 'texte11' should NOT be equal to 'texte11'",
-                JUNIT_ERROR);
+                "the char sequence 'texte11' should be null, empty or blank OR the char sequence 'texte11' should NOT be equal to 'texte11'");
 
         try {
             Assertor.that("texte11").isNotBlank().and().isNotEqual("texte11").orElseThrow();
@@ -137,34 +135,31 @@ public class HelperMessageTest extends AbstractTest {
      */
     @Test
     public void testGetMessage3() {
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that("texte11").isBlank().or("texte12").not().startsWith("text").or().isBlank().orElseThrow();
             fail("Expect an exception");
         }, IllegalArgumentException.class,
                 "the char sequence 'texte11' should be null, empty or blank"
                         + " OR the char sequence 'texte12' should NOT start with 'text'"
-                        + " OR the char sequence 'texte12' should be null, empty or blank",
-                JUNIT_ERROR);
+                        + " OR the char sequence 'texte12' should be null, empty or blank");
 
         // prerequisites == false
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that("texte11").isBlank().or("texte12").not().startsWith("text").or().isBlank().orElseThrow();
             fail("Expect an exception");
         }, IllegalArgumentException.class,
                 "the char sequence 'texte11' should be null, empty or blank"
                         + " OR the char sequence 'texte12' should NOT start with 'text'"
-                        + " OR the char sequence 'texte12' should be null, empty or blank",
-                JUNIT_ERROR);
+                        + " OR the char sequence 'texte12' should be null, empty or blank");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that("texte11").isBlank().or("texte12").not().startsWith("text").or().isBlank()
                     .orElseThrow((errors, parameters) -> new IllegalArgumentException(errors));
             fail("Expect an exception");
         }, IllegalArgumentException.class,
                 "the char sequence 'texte11' should be null, empty or blank"
                         + " OR the char sequence 'texte12' should NOT start with 'text'"
-                        + " OR the char sequence 'texte12' should be null, empty or blank",
-                JUNIT_ERROR);
+                        + " OR the char sequence 'texte12' should be null, empty or blank");
         // previous assertion is invalid (prerequisites == false), only first
         // prerequisite error set as message
         assertEquals("the char sequence cannot be null and the searched substring cannot be null or empty",

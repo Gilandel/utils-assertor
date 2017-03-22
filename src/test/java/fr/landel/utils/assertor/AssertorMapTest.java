@@ -26,8 +26,6 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import fr.landel.utils.commons.expect.Expect;
-
 /**
  * Check {@link AssertorMap}
  *
@@ -67,17 +65,17 @@ public class AssertorMapTest extends AbstractTest {
 
         map.put(el, 1);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             assertMap.isEmpty().orElseThrow();
             fail(ERROR);
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             assertMap.isEmpty().orElseThrow("map is not empty");
             fail(ERROR);
         }, IllegalArgumentException.class, "map is not empty");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             assertMap.isEmpty().orElseThrow(new IOException(), true);
             fail(ERROR);
         }, IOException.class);
@@ -102,24 +100,24 @@ public class AssertorMapTest extends AbstractTest {
 
         assertMap.isNotEmpty().orElseThrow();
 
-        Expect.exception(() -> {
+        assertException(() -> {
             assertMap.not().isNotEmpty().orElseThrow();
             fail(ERROR);
         }, IllegalArgumentException.class);
 
         map.clear();
 
-        Expect.exception(() -> {
+        assertException(() -> {
             assertMap.isNotEmpty().orElseThrow();
             fail(ERROR);
         }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             assertMap.isNotEmpty().orElseThrow("map is empty");
             fail(ERROR);
         }, IllegalArgumentException.class, "map is empty");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             assertMap.isNotEmpty().orElseThrow(new IOException(), true);
             fail(ERROR);
         }, IOException.class);

@@ -19,8 +19,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import fr.landel.utils.commons.expect.Expect;
-
 /**
  * Check {@link AssertorNumber}
  *
@@ -65,11 +63,11 @@ public class AssertorNumberTest extends AbstractTest {
 
         Assertor.that(2).isEqual(2).and(Assertor.that(12).isGT(10)).isOK();
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(2).isEqual(1, "error1 %1$s* %s %2$s*", 0).orElseThrow();
         }, IllegalArgumentException.class, "error1 2 0 1");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(2).isEqual(1, "error1").orElseThrow("error2");
         }, IllegalArgumentException.class, "error2");
     }
@@ -91,15 +89,15 @@ public class AssertorNumberTest extends AbstractTest {
 
         assertEquals("error1", Assertor.that(2).isNotEqual(2, "error1").getErrors().get());
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(2).isNotEqual(2, "error1 %1$s* %s", 0).orElseThrow();
         }, IllegalArgumentException.class, "error1 2 0");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(2).isNotEqual(2, "error1").orElseThrow("error2");
         }, IllegalArgumentException.class, "error2");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(2).not().isNotEqual(1, "error1").orElseThrow("error2");
         }, IllegalArgumentException.class, "error2");
     }
@@ -122,15 +120,15 @@ public class AssertorNumberTest extends AbstractTest {
 
         assertEquals("error1", Assertor.that(2).isZero("error1").getErrors().get());
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(2).isZero("error1 %1$s* %s", 0).orElseThrow();
         }, IllegalArgumentException.class, "error1 2 0");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(-1).isZero("error1").orElseThrow("error2");
         }, IllegalArgumentException.class, "error2");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(0).not().isZero("error1").orElseThrow("error2");
         }, IllegalArgumentException.class, "error2");
     }
@@ -153,15 +151,15 @@ public class AssertorNumberTest extends AbstractTest {
 
         assertEquals("error1", Assertor.that(0).isPositive("error1").getErrors().get());
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(0).isPositive("error1 %1$s* %s", 0).orElseThrow();
         }, IllegalArgumentException.class, "error1 0 0");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(-1).isPositive("error1").orElseThrow("error2");
         }, IllegalArgumentException.class, "error2");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(0.0001d).not().isPositive("error1").orElseThrow("error2");
         }, IllegalArgumentException.class, "error2");
     }
@@ -184,15 +182,15 @@ public class AssertorNumberTest extends AbstractTest {
 
         assertEquals("error1", Assertor.that(0).isNegative("error1").getErrors().get());
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(0).isNegative("error1 %1$s* %s", 0).orElseThrow();
         }, IllegalArgumentException.class, "error1 0 0");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(1).isNegative("error1").orElseThrow("error2");
         }, IllegalArgumentException.class, "error2");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(-0.00001d).not().isNegative("error1").orElseThrow("error2");
         }, IllegalArgumentException.class, "error2");
     }
@@ -216,11 +214,11 @@ public class AssertorNumberTest extends AbstractTest {
 
         assertEquals("error1", Assertor.that(2).isGT(2, "error1").getErrors().get());
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(2).isGT(2, "error1 %1$s* %s", 0).orElseThrow();
         }, IllegalArgumentException.class, "error1 2 0");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(2).isGT(2, "error1").orElseThrow("error2");
         }, IllegalArgumentException.class, "error2");
     }
@@ -244,11 +242,11 @@ public class AssertorNumberTest extends AbstractTest {
 
         assertEquals("error1", Assertor.that(2).isGTE(3, "error1").getErrors().get());
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(2).isGTE(3, "error1 %1$s* %s", 0).orElseThrow();
         }, IllegalArgumentException.class, "error1 2 0");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(2).isGTE(3, "error1").orElseThrow("error2");
         }, IllegalArgumentException.class, "error2");
     }
@@ -271,11 +269,11 @@ public class AssertorNumberTest extends AbstractTest {
         assertTrue(Assertor.that((Integer) null).isLT(1, "error1").isOK());
         assertEquals("error1", Assertor.that(2).isLT(1, "error1").getErrors().get());
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(2).isLT(1, "error1 %1$s* %s", 0).orElseThrow();
         }, IllegalArgumentException.class, "error1 2 0");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(2).isLT(1, "error1").orElseThrow("error2");
         }, IllegalArgumentException.class, "error2");
     }
@@ -298,11 +296,11 @@ public class AssertorNumberTest extends AbstractTest {
         assertTrue(Assertor.that((Integer) null).isLTE(1, "error1").isOK());
         assertEquals("error1", Assertor.that(2).isLTE(1, "error1").getErrors().get());
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(2).isLTE(1, "error1 %1$s* %s", 0).orElseThrow();
         }, IllegalArgumentException.class, "error1 2 0");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(2).isLTE(1, "error1").orElseThrow("error2");
         }, IllegalArgumentException.class, "error2");
     }
