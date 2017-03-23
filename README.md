@@ -690,14 +690,148 @@ Assertor.that(object).not().validates(null).orElseThrow(); // -> throw an except
 
 ### Array
 #### hasLength
+Assert that array has the specified length.
+
+* Signatures:
+	- hasLength(int length)
+	- hasLength(int length, CharSequence message, Object[] arguments)
+	- hasLength(int length, Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites:
+	- array NOT null
+	- length >= 0
+
+* Examples:
+```java
+Assertor.that(new String[] {"text"}).hasLength(3).orElseThrow(); // -> throw an exception
+Assertor.that(new String[] {"text"}).hasLength(1, "Bad status").orElseThrow(); // -> OK
+Assertor.that(new String[] {"text"}).not().hasLength(3).orElseThrow(); // -> OK
+
+// prerequisite errors
+Assertor.that((Object[]) null).hasLength(4, "Bad status").orElseThrow(); // -> throw an exception
+Assertor.that(new String[] {"text"}).hasLength(-1, "Bad status").orElseThrow(); // -> throw an exception
+Assertor.that((Object[]) null).not().hasLength(4, "Bad status").orElseThrow(); // -> throw an exception
+Assertor.that(new String[] {"text"}).not().hasLength(-1, "Bad status").orElseThrow(); // -> throw an exception
+```
+
 #### isEmpty
+Assert that array is empty or null.
+
+* Signatures:
+	- isEmpty()
+	- isEmpty(CharSequence message, Object[] arguments)
+	- isEmpty(Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites: None
+
+* Examples:
+```java
+Assertor.that(new String[] {"text"}).isEmpty().orElseThrow(); // -> throw an exception
+Assertor.that((String[]) null).isEmpty("Param '%1$s*' not empty").orElseThrow(); // -> OK
+Assertor.that(new String[0]).isEmpty("Param '%1$s*' not empty").orElseThrow(); // -> OK
+Assertor.that(new String[] {"text"}).not().isEmpty("Param '%1$s*' not empty").orElseThrow(); // -> OK
+```
+
 #### isNotEmpty
+Assert that array is NOT empty and NOT null.
+
+* Signatures:
+	- isNotEmpty()
+	- isNotEmpty(CharSequence message, Object[] arguments)
+	- isNotEmpty(Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites: None
+
+* Examples:
+```java
+Assertor.that((String[]) null).isNotEmpty().orElseThrow(); // -> throw an exception
+Assertor.that(new String[0]).isNotEmpty().orElseThrow(); // -> throw an exception
+Assertor.that(new String[] {"text"}).isNotEmpty("Param '%1$s*' empty or null").orElseThrow(); // -> OK
+Assertor.that(new String[0]).not().isNotEmpty("Param '%1$s*' empty or null").orElseThrow(); // -> OK
+```
+
 #### contains
+Assert that array contains the element.
+
+* Signatures:
+	- contains(T element)
+	- contains(T element, CharSequence message, Object[] arguments)
+	- contains(T element, Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites:
+	- array NOT null and NOT empty
+
+* Examples:
+```java
+Assertor.that(new String[] {"text"}).contains("text").orElseThrow(); // -> OK
+Assertor.that(new String[] {null, ""}).contains(null, "Param '%1$s*' not contains '%2$s*'").orElseThrow(); // -> OK
+
+// prerequisite errors
+Assertor.that((String[]) null).contains("t", "Param '%1$s*' not null or empty").orElseThrow(); // -> throw an exception
+Assertor.that(new String[0]).contains(null, "Param '%1$s*' not null or empty").orElseThrow(); // -> throw an exception
+Assertor.that((String[]) null).not().contains("t", "Param '%1$s*' not null or empty").orElseThrow(); // -> throw an exception
+Assertor.that(new String[0]).not().contains(null, "Param '%1$s*' not null or empty").orElseThrow(); // -> throw an exception
+```
+
 #### containsAll
+Assert that array contains all elements.
+
+* Signatures:
+	- containsAll(T[] elements)
+	- containsAll(T[] elements, CharSequence message, Object[] arguments)
+	- containsAll(T[] elements, Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites:
+	- array NOT null and NOT empty
+	- elements NOT null and NOT empty
+
+* Examples:
+```java
+Assertor.that(new String[] {"text"}).containsAll(new String[] {"text"}).orElseThrow(); // -> OK
+Assertor.that(new String[] {null, ""}).containsAll(new String[] {null}, "Param '%1$s*' not contains '%2$s*'").orElseThrow(); // -> OK
+Assertor.that(new String[] {null, ""}).containsAll(new String[] {null, "text"}, "Param '%1$s*' not contains '%2$s*'").orElseThrow(); // -> throw an exception
+
+// prerequisite errors
+Assertor.that((String[]) null).containsAll(new String[] {"t"}, "Param '%1$s*' not null or empty").orElseThrow(); // -> throw an exception
+Assertor.that(new String[0]).containsAll(new String[] {null}, "Param '%1$s*' not null or empty").orElseThrow(); // -> throw an exception
+Assertor.that(new String[] {"text"}).containsAll(null, "Param '%1$s*' not null or empty").orElseThrow(); // -> throw an exception
+Assertor.that(new String[] {"text"}).containsAll(new String[0], "Param '%1$s*' not null or empty").orElseThrow(); // -> throw an exception
+Assertor.that((String[]) null).not().containsAll("t", "Param '%1$s*' not null or empty").orElseThrow(); // -> throw an exception
+Assertor.that(new String[0]).not().containsAll(new String[] {null}, "Param '%1$s*' not null or empty").orElseThrow(); // -> throw an exception
+Assertor.that(new String[] {"text"}).not().containsAll(null, "Param '%1$s*' not null or empty").orElseThrow(); // -> throw an exception
+Assertor.that(new String[] {"text"}).not().containsAll(new String[0], "Param '%1$s*' not null or empty").orElseThrow(); // -> throw an exception
+```
+
 #### containsAny
+Assert that array contains any elements.
+
+* Signatures:
+	- containsAny(T[] elements)
+	- containsAny(T[] elements, CharSequence message, Object[] arguments)
+	- containsAny(T[] elements, Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites:
+	- array NOT null and NOT empty
+	- elements NOT null and NOT empty
+
+* Examples:
+```java
+Assertor.that(new String[] {"text"}).containsAny(new String[] {"text"}).orElseThrow(); // -> OK
+Assertor.that(new String[] {null, ""}).containsAny(new String[] {null}, "Param '%1$s*' not contains '%2$s*'").orElseThrow(); // -> OK
+Assertor.that(new String[] {null, ""}).containsAny(new String[] {null, "text"}, "Param '%1$s*' not contains '%2$s*'").orElseThrow(); // -> OK
+
+// prerequisite errors
+Assertor.that((String[]) null).containsAny(new String[] {"t"}, "Param '%1$s*' not null or empty").orElseThrow(); // -> throw an exception
+Assertor.that(new String[0]).containsAny(new String[] {null}, "Param '%1$s*' not null or empty").orElseThrow(); // -> throw an exception
+Assertor.that(new String[] {"text"}).containsAny(null, "Param '%1$s*' not null or empty").orElseThrow(); // -> throw an exception
+Assertor.that(new String[] {"text"}).containsAny(new String[0], "Param '%1$s*' not null or empty").orElseThrow(); // -> throw an exception
+Assertor.that((String[]) null).not().containsAny("t", "Param '%1$s*' not null or empty").orElseThrow(); // -> throw an exception
+Assertor.that(new String[0]).not().containsAny(new String[] {null}, "Param '%1$s*' not null or empty").orElseThrow(); // -> throw an exception
+Assertor.that(new String[] {"text"}).not().containsAny(null, "Param '%1$s*' not null or empty").orElseThrow(); // -> throw an exception
+Assertor.that(new String[] {"text"}).not().containsAny(new String[0], "Param '%1$s*' not null or empty").orElseThrow(); // -> throw an exception
+```
 
 ### Boolean
-
 #### isTrue
 Assert that the boolean is true.
 
@@ -752,9 +886,9 @@ Assertor.that("text").hasLength(4, "Bad status").orElseThrow(); // -> OK
 Assertor.that("text").not().hasLength(3).orElseThrow(); // -> OK
 
 // prerequisite errors
-Assertor.that(null).hasLength(4, "Bad status").orElseThrow(); // -> throw an exception
+Assertor.that((String) null).hasLength(4, "Bad status").orElseThrow(); // -> throw an exception
 Assertor.that("text").hasLength(-1, "Bad status").orElseThrow(); // -> throw an exception
-Assertor.that(null).not().hasLength(4, "Bad status").orElseThrow(); // -> throw an exception
+Assertor.that((String) null).not().hasLength(4, "Bad status").orElseThrow(); // -> throw an exception
 Assertor.that("text").not().hasLength(-1, "Bad status").orElseThrow(); // -> throw an exception
 ```
 
@@ -771,7 +905,7 @@ Assert that char sequence is empty or null.
 * Examples:
 ```java
 Assertor.that("text").isEmpty().orElseThrow(); // -> throw an exception
-Assertor.that((CharSequence) null).isEmpty("Param '%1$s*' not empty").orElseThrow(); // -> OK
+Assertor.that((String) null).isEmpty("Param '%1$s*' not empty").orElseThrow(); // -> OK
 Assertor.that("").isEmpty("Param '%1$s*' not empty").orElseThrow(); // -> OK
 Assertor.that("text").not().isEmpty("Param '%1$s*' not empty").orElseThrow(); // -> OK
 ```
@@ -788,10 +922,10 @@ Assert that char sequence is NOT empty and NOT null.
 
 * Examples:
 ```java
-Assertor.that((CharSequence) null).isNotEmpty().orElseThrow(); // -> throw an exception
+Assertor.that((String) null).isNotEmpty().orElseThrow(); // -> throw an exception
 Assertor.that("").isNotEmpty().orElseThrow(); // -> throw an exception
 Assertor.that("text").isNotEmpty("Param '%1$s*' empty or null").orElseThrow(); // -> OK
-
+Assertor.that("").not().isNotEmpty("Param '%1$s*' empty or null").orElseThrow(); // -> OK
 ```
 
 #### isBlank
@@ -807,7 +941,7 @@ Assert that char sequence is blank or empty or null.
 * Examples:
 ```java
 Assertor.that("text").isBlank().orElseThrow(); // -> throw an exception
-Assertor.that(null).isBlank("Param '%1$s*' not blank").orElseThrow(); // -> OK
+Assertor.that((String) null).isBlank("Param '%1$s*' not blank").orElseThrow(); // -> OK
 Assertor.that("").isBlank("Param '%1$s*' not blank").orElseThrow(); // -> OK
 Assertor.that("   ").isBlank("Param '%1$s*' not blank").orElseThrow(); // -> OK
 Assertor.that("text").not().isBlank("Param '%1$s*' not blank").orElseThrow(); // -> OK
@@ -828,7 +962,7 @@ Assert that char sequence is NOT blank and NOT empty and NOT null.
 Assertor.that("text").isNotBlank().orElseThrow(); // -> OK
 Assertor.that("text").isNotBlank("Param '%1$s*' not blank").orElseThrow(); // -> OK
 Assertor.that("text").isNotBlank().orElseThrow(); // -> OK
-Assertor.that(null).isNotBlank("Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
+Assertor.that((String) null).isNotBlank("Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
 Assertor.that("").isNotBlank("Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
 Assertor.that("   ").isNotBlank("Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
 ```
@@ -1009,10 +1143,10 @@ Assertor.that("text").contains("y").orElseThrow(); // -> throw an exception
 Assertor.that("text").not().contains("y").orElseThrow(); // -> OK
 
 // prerequisite errors
-Assertor.that(null).contains("t", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
+Assertor.that((String) null).contains("t", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
 Assertor.that("text").contains(null, "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
 Assertor.that("text").contains("", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
-Assertor.that(null).not().contains("t", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
+Assertor.that((String) null).not().contains("t", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
 Assertor.that("text").not().contains(null, "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
 Assertor.that("text").not().contains("", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
 ```
@@ -1038,10 +1172,10 @@ Assertor.that("text").startsWith("y").orElseThrow(); // -> throw an exception
 Assertor.that("text").not().startsWith("y").orElseThrow(); // -> OK
 
 // prerequisite errors
-Assertor.that(null).startsWith("t", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
+Assertor.that((String) null).startsWith("t", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
 Assertor.that("text").startsWith(null, "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
 Assertor.that("text").startsWith("", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
-Assertor.that(null).not().startsWith("t", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
+Assertor.that((String) null).not().startsWith("t", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
 Assertor.that("text").not().startsWith(null, "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
 Assertor.that("text").not().startsWith("", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
 ```
@@ -1067,10 +1201,10 @@ Assertor.that("text").startsWithIgnoreCase("y").orElseThrow(); // -> throw an ex
 Assertor.that("text").not().startsWithIgnoreCase("y").orElseThrow(); // -> OK
 
 // prerequisite errors
-Assertor.that(null).startsWithIgnoreCase("t", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
+Assertor.that((String) null).startsWithIgnoreCase("t", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
 Assertor.that("text").startsWithIgnoreCase(null, "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
 Assertor.that("text").startsWithIgnoreCase("", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
-Assertor.that(null).not().startsWithIgnoreCase("t", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
+Assertor.that((String) null).not().startsWithIgnoreCase("t", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
 Assertor.that("text").not().startsWithIgnoreCase(null, "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
 Assertor.that("text").not().startsWithIgnoreCase("", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
 ```
@@ -1096,10 +1230,10 @@ Assertor.that("text").endsWith("y").orElseThrow(); // -> throw an exception
 Assertor.that("text").not().endsWith("y").orElseThrow(); // -> OK
 
 // prerequisite errors
-Assertor.that(null).endsWith("t", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
+Assertor.that((String) null).endsWith("t", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
 Assertor.that("text").endsWith(null, "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
 Assertor.that("text").endsWith("", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
-Assertor.that(null).not().endsWith("t", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
+Assertor.that((String) null).not().endsWith("t", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
 Assertor.that("text").not().endsWith(null, "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
 Assertor.that("text").not().endsWith("", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
 ```
@@ -1125,10 +1259,10 @@ Assertor.that("text").endsWithIgnoreCase("y").orElseThrow(); // -> throw an exce
 Assertor.that("text").not().endsWithIgnoreCase("y").orElseThrow(); // -> OK
 
 // prerequisite errors
-Assertor.that(null).endsWithIgnoreCase("t", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
+Assertor.that((String) null).endsWithIgnoreCase("t", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
 Assertor.that("text").endsWithIgnoreCase(null, "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
 Assertor.that("text").endsWithIgnoreCase("", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
-Assertor.that(null).not().endsWithIgnoreCase("t", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
+Assertor.that((String) null).not().endsWithIgnoreCase("t", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
 Assertor.that("text").not().endsWithIgnoreCase(null, "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
 Assertor.that("text").not().endsWithIgnoreCase("", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
 ```
@@ -1159,9 +1293,9 @@ Assertor.that("text").matches("y").orElseThrow(); // -> throw an exception
 Assertor.that("text").not().matches("y").orElseThrow(); // -> OK
 
 // prerequisite errors
-Assertor.that(null).matches("t", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
+Assertor.that((String) null).matches("t", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
 Assertor.that("text").matches(null, "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
-Assertor.that(null).not().matches("t", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
+Assertor.that((String) null).not().matches("t", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
 Assertor.that("text").not().matches(null, "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
 ```
 
@@ -1191,9 +1325,9 @@ Assertor.that("text").find("y").orElseThrow(); // -> throw an exception
 Assertor.that("text").not().find("y").orElseThrow(); // -> OK
 
 // prerequisite errors
-Assertor.that(null).find("t", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
+Assertor.that((String) null).find("t", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
 Assertor.that("text").find(null, "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
-Assertor.that(null).not().find("t", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
+Assertor.that((String) null).not().find("t", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
 Assertor.that("text").not().find(null, "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
 ```
 

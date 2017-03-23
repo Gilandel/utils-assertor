@@ -30,8 +30,8 @@ public class AssertorArray extends ConstantsAssertor {
      * Prepare the next step to validate the array length.
      * 
      * <p>
-     * precondition: {@code length} has to be a positive number and
-     * {@code array} cannot be {@code null}
+     * precondition: {@code length} has to be a positive number or equal to zero
+     * and {@code array} cannot be {@code null}
      * </p>
      * 
      * @param step
@@ -103,7 +103,7 @@ public class AssertorArray extends ConstantsAssertor {
      * Prepare the next step to validate if the array contains the element.
      * 
      * <p>
-     * precondition: {@code array} cannot be {@code null}
+     * precondition: {@code array} cannot be {@code null} or empty
      * </p>
      * 
      * @param step
@@ -118,7 +118,7 @@ public class AssertorArray extends ConstantsAssertor {
      */
     protected static <T> StepAssertor<T[]> contains(final StepAssertor<T[]> step, final T element, final MessageAssertor message) {
 
-        final Predicate<T[]> preChecker = (object) -> object != null;
+        final Predicate<T[]> preChecker = (object) -> ArrayUtils.isNotEmpty(object);
 
         final BiPredicate<T[], Boolean> checker = (object, not) -> AssertorArray.has(object, element);
 
@@ -129,7 +129,7 @@ public class AssertorArray extends ConstantsAssertor {
     private static <T> StepAssertor<T[]> contains(final StepAssertor<T[]> step, final T[] array, final boolean all, final CharSequence key,
             final MessageAssertor message) {
 
-        final Predicate<T[]> preChecker = (object) -> array != null && object != null;
+        final Predicate<T[]> preChecker = (object) -> ArrayUtils.isNotEmpty(array) && ArrayUtils.isNotEmpty(object);
 
         final BiPredicate<T[], Boolean> checker = (object, not) -> AssertorArray.has(object, array, all, not);
 
@@ -141,7 +141,7 @@ public class AssertorArray extends ConstantsAssertor {
      * the specified array
      * 
      * <p>
-     * precondition: neither of {@code array} can be {@code null}
+     * precondition: neither of {@code array} can be {@code null} or empty
      * </p>
      * 
      * @param step
@@ -164,7 +164,7 @@ public class AssertorArray extends ConstantsAssertor {
      * the specified array
      * 
      * <p>
-     * precondition: neither of {@code array} can be {@code null}
+     * precondition: neither of {@code array} can be {@code null} or empty
      * </p>
      * 
      * @param step

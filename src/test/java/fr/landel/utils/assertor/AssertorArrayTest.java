@@ -134,7 +134,7 @@ public class AssertorArrayTest extends AbstractTest {
         assertException(() -> {
             Assertor.that((Object[]) null).contains(null).orElseThrow();
             fail();
-        }, IllegalArgumentException.class, "the array cannot be null");
+        }, IllegalArgumentException.class, "the array cannot be null or empty");
 
         assertException(() -> {
             Assertor.that(new String[] {"1", "3"}).contains(null).orElseThrow("array hasn't null element");
@@ -193,7 +193,7 @@ public class AssertorArrayTest extends AbstractTest {
     @Test
     public void testDoesNotContain() {
         assertFalse(Assertor.that(new String[] {null, "2"}).not().contains("2").isOK());
-        assertTrue(Assertor.that(new String[] {}).not().contains((String) null).isOK());
+        assertFalse(Assertor.that(new String[] {}).not().contains((String) null).isOK());
         assertFalse(Assertor.that((String[]) null).not().contains("").isOK());
 
         assertTrue(Assertor.that(new String[] {null, "2", "3"}).not().containsAll(new String[] {null, "4"}).isOK());
