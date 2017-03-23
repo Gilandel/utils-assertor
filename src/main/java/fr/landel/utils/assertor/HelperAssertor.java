@@ -15,11 +15,14 @@ package fr.landel.utils.assertor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.collections4.Transformer;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 
 import fr.landel.utils.commons.EnumChar;
+import fr.landel.utils.commons.StringUtils;
 
 /**
  * 
@@ -132,7 +135,14 @@ public class HelperAssertor extends ConstantsAssertor {
 
         final List<ParameterAssertor<?>> parameters = new ArrayList<>();
 
+        Optional<Pair<Boolean, String>> dontNeedCheck = Optional.empty();
+
         for (StepAssertor<?> s : steps) {
+
+            if (dontNeedCheck.isPresent()) {
+                return new ResultAssertor(true, dontNeedCheck.get().getKey(), dontNeedCheck.get().getValue(), parameters);
+            }
+
             switch (s.getStepType()) {
             case CREATION:
                 object = s.getObject();
@@ -146,14 +156,12 @@ public class HelperAssertor extends ConstantsAssertor {
             case ASSERTION:
                 parameters.addAll(s.getParameters());
 
-                if (!EnumOperator.AND.equals(operator) || valid) {
-                    // if precondition returns false, we end all treatments
-                    if (!HelperAssertor.preCheck(s, object)) {
-                        return HelperAssertor.getPreconditionMessage(s, param, parameters, loadMessage);
+                // if precondition returns false, we end all treatments
+                if (!HelperAssertor.preCheck(s, object)) {
+                    return HelperAssertor.getPreconditionMessage(s, param, parameters, loadMessage);
 
-                    } else {
-                        valid = HelperAssertor.validatesAndGetMessage(s, param, object, valid, not, operator, message, loadMessage);
-                    }
+                } else {
+                    valid = HelperAssertor.validatesAndGetMessage(s, param, object, valid, not, operator, message, loadMessage);
                 }
 
                 not = false;
@@ -161,6 +169,8 @@ public class HelperAssertor extends ConstantsAssertor {
                 break;
             case OPERATOR:
                 operator = s.getOperator();
+
+                dontNeedCheck = checkValidityAndOperator(valid, operator, message);
 
                 break;
             case NOT:
@@ -174,6 +184,9 @@ public class HelperAssertor extends ConstantsAssertor {
                 param = new ParameterAssertor<>(object, type, checked);
 
                 parameters.add(param);
+
+                dontNeedCheck = checkValidityAndOperator(valid, operator, message);
+
                 break;
             case SUB:
                 if (s.getSubStep().isPresent()) {
@@ -185,6 +198,8 @@ public class HelperAssertor extends ConstantsAssertor {
                     } else {
                         valid = output.getLeft();
                         operator = output.getMiddle();
+
+                        dontNeedCheck = checkValidityAndOperator(valid, operator, message);
                     }
                 }
                 break;
@@ -193,6 +208,30 @@ public class HelperAssertor extends ConstantsAssertor {
         }
 
         return new ResultAssertor(true, valid, message.toString(), parameters);
+    }
+
+    private static Optional<Pair<Boolean, String>> checkValidityAndOperator(final boolean valid, final EnumOperator operator,
+            final StringBuilder message) {
+
+        Pair<Boolean, String> result = null;
+
+        if ((!valid && EnumOperator.NOR.equals(operator)) || (valid && EnumOperator.OR.equals(operator))) {
+
+            result = Pair.of(true, message.toString());
+
+        } else if ((valid && EnumOperator.NAND.equals(operator)) || (!valid && EnumOperator.AND.equals(operator))) {
+
+            final String formattedMessage;
+            if (message.length() > 0) {
+                formattedMessage = StringUtils.inject(ConstantsAssertor.getProperty(MSG.INVALID_WITH_MESSAGE), valid, operator, message);
+            } else {
+                formattedMessage = StringUtils.inject(ConstantsAssertor.getProperty(MSG.INVALID_WITHOUT_MESSAGE), valid, operator);
+            }
+
+            result = Pair.of(false, formattedMessage);
+        }
+
+        return Optional.ofNullable(result);
     }
 
     private static <T> ResultAssertor getPreconditionMessage(final StepAssertor<T> step, final ParameterAssertor<?> param,

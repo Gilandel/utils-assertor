@@ -1,3 +1,15 @@
+/*-
+ * #%L
+ * utils-assertor
+ * %%
+ * Copyright (C) 2016 - 2017 Gilandel
+ * %%
+ * Authors: Gilles Landel
+ * URL: https://github.com/Gilandel
+ * 
+ * This file is under Apache License, version 2.0 (2004).
+ * #L%
+ */
 package fr.landel.utils.assertor;
 
 import static org.junit.Assert.assertFalse;
@@ -130,7 +142,6 @@ public class AssertorThrowableTest extends AbstractTest {
     @Test
     public void testIsAssignableFrom() {
         final IOException e = new IOException();
-        final Exception ee = new Exception(e);
         final Exception em = new Exception("msg");
         final Pattern pattern = Pattern.compile("^m.*g$");
         final Pattern patternError = Pattern.compile("^m.*e$");

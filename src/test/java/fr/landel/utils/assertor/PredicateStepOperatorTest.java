@@ -75,6 +75,9 @@ public class PredicateStepOperatorTest extends AbstractTest {
         assertTrue(Assertor.that(text).isNotEmpty().and((Object) 0).isNotNull().isOK());
         assertFalse(Assertor.that(text).isNotEmpty().and((Object) 0).isNull().isOK());
 
+        assertTrue(Assertor.that(text).isNotEmpty().and(new Exception()).isNotNull().isOK());
+        assertFalse(Assertor.that(text).isNotEmpty().and(new Exception()).isNull().isOK());
+
         assertFalse(Assertor.that(Color.BLACK).isNull().and().isEqual(Color.black).isOK());
         assertFalse(Assertor.that(Color.BLACK).isNull().and((Object) 0).isNotNull().isOK());
     }
@@ -119,6 +122,9 @@ public class PredicateStepOperatorTest extends AbstractTest {
 
         assertTrue(Assertor.that(text).isEmpty().or((Object) 0).isNotNull().isOK());
         assertFalse(Assertor.that(text).isEmpty().or((Object) 0).isNull().isOK());
+
+        assertTrue(Assertor.that(text).isEmpty().or(new Exception()).isNotNull().isOK());
+        assertFalse(Assertor.that(text).isEmpty().or(new Exception()).isNull().isOK());
 
         assertTrue(Assertor.that(Color.BLACK).isNull().or().isEqual(Color.black).isOK());
         assertTrue(Assertor.that(Color.BLACK).isNull().or((Object) 0).isNotNull().isOK());
@@ -167,6 +173,9 @@ public class PredicateStepOperatorTest extends AbstractTest {
         assertTrue(Assertor.that(text).isEmpty().xor((Object) 0).isNotNull().isOK());
         assertFalse(Assertor.that(text).isEmpty().xor((Object) 0).isNull().isOK());
 
+        assertTrue(Assertor.that(text).isEmpty().xor(new Exception()).isNotNull().isOK());
+        assertFalse(Assertor.that(text).isEmpty().xor(new Exception()).isNull().isOK());
+
         assertTrue(Assertor.that(Color.BLACK).isNull().xor().isEqual(Color.black).isOK());
         assertTrue(Assertor.that(Color.BLACK).isNull().xor((Object) 0).isNotNull().isOK());
 
@@ -213,6 +222,9 @@ public class PredicateStepOperatorTest extends AbstractTest {
 
         assertFalse(Assertor.that(text).isEmpty().nand((Object) 0).isNotNull().isOK());
         assertTrue(Assertor.that(text).isEmpty().nand((Object) 0).isNull().isOK());
+
+        assertFalse(Assertor.that(text).isEmpty().nand(new Exception()).isNotNull().isOK());
+        assertTrue(Assertor.that(text).isEmpty().nand(new Exception()).isNull().isOK());
 
         assertFalse(Assertor.that(Color.BLACK).isNull().nand().isEqual(Color.black).isOK());
         assertFalse(Assertor.that(Color.BLACK).isNull().nand((Object) 0).isNotNull().isOK());
@@ -261,9 +273,22 @@ public class PredicateStepOperatorTest extends AbstractTest {
         assertTrue(Assertor.that(text).isEmpty().nor((Object) 0).isNotNull().isOK());
         assertTrue(Assertor.that(text).isEmpty().nor((Object) 0).isNull().isOK());
 
+        assertTrue(Assertor.that(text).isEmpty().nor(new Exception()).isNotNull().isOK());
+        assertTrue(Assertor.that(text).isEmpty().nor(new Exception()).isNull().isOK());
+
         assertTrue(Assertor.that(Color.BLACK).isNull().nor().isEqual(Color.black).isOK());
         assertTrue(Assertor.that(Color.BLACK).isNull().nor((Object) 0).isNotNull().isOK());
 
         assertTrue(Assertor.that(Color.BLACK).isNotNull().nor(Assertor.that(text).isEmpty()).isOK());
+    }
+
+    /**
+     * Test combination.
+     */
+    @Test
+    public void test() {
+        // "true" and "OR" => true (collections preconditions are invalid, but
+        // aren't checked because of previous check)
+        Assertor.that(true).isTrue().or(Collections.emptyList()).contains("test").orElseThrow(JUNIT_THROWABLE);
     }
 }
