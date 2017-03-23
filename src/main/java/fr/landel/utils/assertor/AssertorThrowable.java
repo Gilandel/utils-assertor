@@ -228,7 +228,7 @@ public class AssertorThrowable extends ConstantsAssertor {
 
         final Predicate<T> preChecker = (throwable) -> throwable != null && causeType != null;
 
-        final BiPredicate<T, Boolean> checker = check(causeType, resursively, t -> causeType.isInstance(t));
+        final BiPredicate<T, Boolean> checker = check(resursively, t -> causeType.isInstance(t));
 
         return new StepAssertor<>(step, preChecker, checker, false, message, MSG.THROWABLE.CAUSE_INSTANCE, false,
                 new ParameterAssertor<>(causeType, EnumType.CLASS), new ParameterAssertor<>(resursively, EnumType.BOOLEAN));
@@ -262,7 +262,7 @@ public class AssertorThrowable extends ConstantsAssertor {
 
         final Predicate<T> preChecker = (throwable) -> throwable != null && causeType != null;
 
-        final BiPredicate<T, Boolean> checker = check(causeType, resursively,
+        final BiPredicate<T, Boolean> checker = check(resursively,
                 t -> causeType.isInstance(t) && Objects.equals(exceptionMessage, t.getMessage()));
 
         return new StepAssertor<>(step, preChecker, checker, false, message, MSG.THROWABLE.CAUSE_INSTANCE_MESSAGE, false,
@@ -298,7 +298,7 @@ public class AssertorThrowable extends ConstantsAssertor {
 
         final Predicate<T> preChecker = (throwable) -> throwable != null && causeType != null && pattern != null;
 
-        final BiPredicate<T, Boolean> checker = check(causeType, resursively, throwable -> causeType.isInstance(throwable)
+        final BiPredicate<T, Boolean> checker = check(resursively, throwable -> causeType.isInstance(throwable)
                 && throwable.getMessage() != null && pattern.matcher(throwable.getMessage()).matches());
 
         return new StepAssertor<>(step, preChecker, checker, false, message, MSG.THROWABLE.CAUSE_INSTANCE_PATTERN, false,
@@ -332,8 +332,7 @@ public class AssertorThrowable extends ConstantsAssertor {
 
         final Predicate<T> preChecker = (throwable) -> throwable != null && causeType != null;
 
-        final BiPredicate<T, Boolean> checker = check(causeType, resursively,
-                throwable -> causeType.isAssignableFrom(throwable.getClass()));
+        final BiPredicate<T, Boolean> checker = check(resursively, throwable -> causeType.isAssignableFrom(throwable.getClass()));
 
         return new StepAssertor<>(step, preChecker, checker, false, message, MSG.THROWABLE.CAUSE_ASSIGNABLE, false,
                 new ParameterAssertor<>(causeType, EnumType.CLASS), new ParameterAssertor<>(resursively, EnumType.BOOLEAN));
@@ -367,7 +366,7 @@ public class AssertorThrowable extends ConstantsAssertor {
 
         final Predicate<T> preChecker = (throwable) -> throwable != null && causeType != null;
 
-        final BiPredicate<T, Boolean> checker = check(causeType, resursively,
+        final BiPredicate<T, Boolean> checker = check(resursively,
                 throwable -> causeType.isAssignableFrom(throwable.getClass()) && Objects.equals(exceptionMessage, throwable.getMessage()));
 
         return new StepAssertor<>(step, preChecker, checker, false, message, MSG.THROWABLE.CAUSE_ASSIGNABLE_MESSAGE, false,
@@ -403,7 +402,7 @@ public class AssertorThrowable extends ConstantsAssertor {
 
         final Predicate<T> preChecker = (throwable) -> throwable != null && causeType != null && pattern != null;
 
-        final BiPredicate<T, Boolean> checker = check(causeType, resursively, throwable -> causeType.isAssignableFrom(throwable.getClass())
+        final BiPredicate<T, Boolean> checker = check(resursively, throwable -> causeType.isAssignableFrom(throwable.getClass())
                 && throwable.getMessage() != null && pattern.matcher(throwable.getMessage()).matches());
 
         return new StepAssertor<>(step, preChecker, checker, false, message, MSG.THROWABLE.CAUSE_ASSIGNABLE_PATTERN, false,
@@ -411,8 +410,7 @@ public class AssertorThrowable extends ConstantsAssertor {
                 new ParameterAssertor<>(resursively, EnumType.BOOLEAN));
     }
 
-    private static <T extends Throwable> BiPredicate<T, Boolean> check(final Class<?> superType, final boolean resursively,
-            final Predicate<Throwable> predicate) {
+    private static <T extends Throwable> BiPredicate<T, Boolean> check(final boolean resursively, final Predicate<Throwable> predicate) {
 
         final BiPredicate<T, Boolean> checker;
         if (resursively) {
