@@ -136,6 +136,16 @@ public class ConstantsAssertor {
         String PRE = ".pre";
 
         /**
+         * Invalid combination with message
+         */
+        String INVALID_WITH_MESSAGE = "invalid.with.message";
+
+        /**
+         * Invalid combination without message
+         */
+        String INVALID_WITHOUT_MESSAGE = "invalid.without.message";
+
+        /**
          * Object constants
          *
          * @since Aug 10, 2016
@@ -558,6 +568,71 @@ public class ConstantsAssertor {
              * Message key for enumeration ordinal
              */
             String ORDINAL = "enum.ordinal";
+        }
+
+        /**
+         * THROWABLE constants
+         *
+         * @since Mar 21, 2017
+         * @author Gilles
+         *
+         */
+        static interface THROWABLE {
+
+            /**
+             * Message key for throwable instance of
+             */
+            String INSTANCE = "throwable.instance";
+
+            /**
+             * Message key for throwable instance of
+             */
+            String INSTANCE_PATTERN = "throwable.instance.pattern";
+
+            /**
+             * Message key for throwsable assignable from
+             */
+            String ASSIGNABLE = "throwable.assignable";
+
+            /**
+             * Message key for throwsable assignable from
+             */
+            String ASSIGNABLE_PATTERN = "throwable.assignable.pattern";
+
+            /**
+             * Message key for throwable has cause
+             */
+            String CAUSE = "throwable.cause";
+
+            /**
+             * Message key for throwable cause instance of
+             */
+            String CAUSE_INSTANCE = "throwable.cause.instance";
+
+            /**
+             * Message key for throwable cause instance of
+             */
+            String CAUSE_INSTANCE_MESSAGE = "throwable.cause.instance.message";
+
+            /**
+             * Message key for throwable cause instance of
+             */
+            String CAUSE_INSTANCE_PATTERN = "throwable.cause.instance.pattern";
+
+            /**
+             * Message key for throwable cause assignable from
+             */
+            String CAUSE_ASSIGNABLE = "throwable.cause.assignable";
+
+            /**
+             * Message key for throwable cause assignable from
+             */
+            String CAUSE_ASSIGNABLE_MESSAGE = "throwable.cause.assignable.message";
+
+            /**
+             * Message key for throwable cause assignable from
+             */
+            String CAUSE_ASSIGNABLE_PATTERN = "throwable.cause.assignable.pattern";
         }
     }
 }

@@ -32,7 +32,7 @@ public class EnumTypeTest {
     @Test
     public void test() {
         assertNotNull(EnumType.values());
-        assertEquals(15, EnumType.values().length);
+        assertEquals(16, EnumType.values().length);
 
         assertEquals(EnumType.ARRAY, EnumType.valueOf("ARRAY"));
         assertEquals(EnumType.ARRAY, EnumType.valueOf(EnumType.class, "ARRAY"));
@@ -51,7 +51,8 @@ public class EnumTypeTest {
         check(11, EnumType.ITERABLE, "ITERABLE");
         check(12, EnumType.MAP, "MAP");
         check(13, EnumType.TEMPORAL, "TEMPORAL");
-        check(14, EnumType.CALENDAR_FIELD, "CALENDAR_FIELD");
+        check(14, EnumType.THROWABLE, "THROWABLE");
+        check(15, EnumType.CALENDAR_FIELD, "CALENDAR_FIELD");
     }
 
     private void check(final int ordinal, final EnumType type, final String name) {

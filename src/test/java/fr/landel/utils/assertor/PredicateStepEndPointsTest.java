@@ -29,7 +29,6 @@ import java.util.function.Supplier;
 
 import org.junit.Test;
 
-import fr.landel.utils.commons.expect.Expect;
 import fr.landel.utils.commons.expect.ExpectException;
 
 /**
@@ -57,104 +56,102 @@ public class PredicateStepEndPointsTest extends AbstractTest {
      */
     @Test
     public void testOrElseThrow() {
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that("text").isEmpty().orElseThrow();
             fail();
-        }, IllegalArgumentException.class, JUNIT_ERROR);
+        }, IllegalArgumentException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that("text").isEmpty().orElseThrow((Exception) null, false);
             fail();
-        }, IllegalArgumentException.class, "the char sequence 'text' should be null or empty", JUNIT_ERROR);
+        }, IllegalArgumentException.class, "the char sequence 'text' should be null or empty");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that((CharSequence) null).hasLength(-1).orElseThrow((Exception) null, false);
             fail();
-        }, IllegalArgumentException.class, "the length has to be greater than or equal to 0 and the char sequence cannot be null",
-                JUNIT_ERROR);
+        }, IllegalArgumentException.class, "the length has to be greater than or equal to 0 and the char sequence cannot be null");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that((CharSequence) null).hasLength(-1).orElseThrow((Exception) null, true);
             fail();
-        }, IllegalArgumentException.class, "the length has to be greater than or equal to 0 and the char sequence cannot be null",
-                JUNIT_ERROR);
+        }, IllegalArgumentException.class, "the length has to be greater than or equal to 0 and the char sequence cannot be null");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that((CharSequence) null).hasLength(-1).orElseThrow((Supplier<Throwable>) null);
             fail();
-        }, NullPointerException.class, JUNIT_ERROR);
+        }, NullPointerException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that((CharSequence) null).hasLength(-1).orElseThrow((error, parameters) -> new IOException(String.valueOf(error)));
             fail();
-        }, IOException.class, "the length has to be greater than or equal to 0 and the char sequence cannot be null", JUNIT_ERROR);
+        }, IOException.class, "the length has to be greater than or equal to 0 and the char sequence cannot be null");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that("text").isEmpty().orElseThrow((CharSequence) null);
             fail();
-        }, IllegalArgumentException.class, "the char sequence 'text' should be null or empty", JUNIT_ERROR);
+        }, IllegalArgumentException.class, "the char sequence 'text' should be null or empty");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that("text").isEmpty().orElseThrow("test");
             fail();
-        }, IllegalArgumentException.class, "test", JUNIT_ERROR);
+        }, IllegalArgumentException.class, "test");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that("text").isEmpty().orElseThrow("test: '%s*'");
             fail();
-        }, IllegalArgumentException.class, "test: 'text'", JUNIT_ERROR);
+        }, IllegalArgumentException.class, "test: 'text'");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that("text").isEmpty().and("").isEmpty().orElseThrow("%s %2$s test: '%1$s*', '%s*', '%1$s*'.%s*.%2$s*.", "this is",
                     "a");
             fail();
-        }, IllegalArgumentException.class, "this is a test: 'text', 'text', 'text'...", JUNIT_ERROR);
+        }, IllegalArgumentException.class, "this is a test: 'text', 'text', 'text'...");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that("text").isEmpty().orElseThrow(() -> new IOException());
             fail();
-        }, IOException.class, JUNIT_ERROR);
+        }, IOException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that((String) null).hasLength(1).orElseThrow(() -> new IOException());
             fail();
-        }, IOException.class, JUNIT_ERROR);
+        }, IOException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that("text").isEmpty().orElseThrow(new IOException(), false);
             fail();
-        }, IOException.class, JUNIT_ERROR);
+        }, IOException.class);
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that("text").isEmpty().orElseThrow(null, false);
             fail();
-        }, IllegalArgumentException.class, "the char sequence 'text' should be null or empty", JUNIT_ERROR);
+        }, IllegalArgumentException.class, "the char sequence 'text' should be null or empty");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that("text").isEmpty("unused message").orElseThrow("test");
             fail();
-        }, IllegalArgumentException.class, "test", JUNIT_ERROR);
+        }, IllegalArgumentException.class, "test");
 
         assertEquals("text", Assertor.that("text").isNotEmpty().orElseThrow(() -> new IllegalArgumentException()));
         assertEquals("text", Assertor.that("text").isNotEmpty().orElseThrow(DEFAULT_EXCEPTION_BUILDER));
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that("text").isEmpty().orElseThrow(DEFAULT_EXCEPTION_BUILDER);
-        }, IllegalArgumentException.class, "the char sequence 'text' should be null or empty", JUNIT_ERROR);
+        }, IllegalArgumentException.class, "the char sequence 'text' should be null or empty");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that("text").isEmpty().orElseThrow(EXCEPTION_BUILDER);
             fail();
-        }, IOException.class, "the char sequence 'text' should be null or empty", JUNIT_ERROR);
+        }, IOException.class, "the char sequence 'text' should be null or empty");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that("text").isEmpty().orElseThrow(() -> new IllegalArgumentException("error"));
-        }, IllegalArgumentException.class, "error", JUNIT_ERROR);
+        }, IllegalArgumentException.class, "error");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that("text").isEmpty().orElseThrow(() -> new IOException("error"));
             fail();
-        }, IOException.class, "error", JUNIT_ERROR);
+        }, IOException.class, "error");
 
         // Check if the checked instance is correctly returned
         final Exception exception = new IllegalArgumentException();
@@ -166,7 +163,7 @@ public class PredicateStepEndPointsTest extends AbstractTest {
      */
     @Test(expected = ExpectException.class)
     public void testOrElseThrowException() {
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that("text").isNotEmpty().orElseThrow();
         }, IllegalArgumentException.class);
     }
@@ -224,7 +221,7 @@ public class PredicateStepEndPointsTest extends AbstractTest {
         assertEquals("text", Assertor.that("text").isNotBlank().orElseGet(() -> "def"));
         assertEquals("def", Assertor.that((String) null).isNotBlank().orElseGet(() -> "def"));
         assertNull(Assertor.that("text").isBlank().orElseGet(() -> null));
-        Expect.exception(() -> Assertor.that("text").isBlank().orElseGet(null), NullPointerException.class, JUNIT_ERROR);
+        assertException(() -> Assertor.that("text").isBlank().orElseGet(null), NullPointerException.class);
     }
 
     /**
@@ -233,7 +230,7 @@ public class PredicateStepEndPointsTest extends AbstractTest {
     @Test
     public void testGet() {
         assertFalse(Assertor.that("text").isBlank().get().isPresent());
-        Expect.exception(() -> Assertor.that("text").isBlank().get().get(), NoSuchElementException.class, JUNIT_ERROR);
+        assertException(() -> Assertor.that("text").isBlank().get().get(), NoSuchElementException.class);
         assertEquals("default", Assertor.that("text").isBlank().get().orElse("default"));
 
         assertTrue(Assertor.that("text").isNotBlank().get().isPresent());
@@ -252,7 +249,7 @@ public class PredicateStepEndPointsTest extends AbstractTest {
     @Test
     public void testGetResult() {
         assertFalse(Assertor.that("text").isBlank().asResult().isPresent());
-        Expect.exception(() -> Assertor.that("text").isBlank().asResult().get(), NoSuchElementException.class, JUNIT_ERROR);
+        assertException(() -> Assertor.that("text").isBlank().asResult().get(), NoSuchElementException.class);
         assertEquals("default", Assertor.that("text").isBlank().asResult().orElse("default"));
 
         assertTrue(Assertor.that("text").isNotBlank().asResult().isPresent());

@@ -23,8 +23,6 @@ import java.util.Objects;
 
 import org.junit.Test;
 
-import fr.landel.utils.commons.expect.Expect;
-
 /**
  * Check {@link AssertorBoolean}
  *
@@ -69,17 +67,17 @@ public class AssertorBooleanTest extends AbstractTest {
             fail("The test isn't correct");
         }
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(true).isFalse().orElseThrow("not false");
             fail();
         }, IllegalArgumentException.class, "not false");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(true).isFalse("%s, '%s*'", "not false").orElseThrow();
             fail();
         }, IllegalArgumentException.class, "not false, 'true'");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(true).isFalse().orElseThrow(new IOException("not false"), true);
             fail();
         }, IOException.class, "not false");
@@ -108,19 +106,19 @@ public class AssertorBooleanTest extends AbstractTest {
             fail("The test isn't correct");
         }
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(false).isTrue().orElseThrow("not true");
             fail();
-        }, IllegalArgumentException.class, "not true", JUNIT_ERROR);
+        }, IllegalArgumentException.class, "not true");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(false).isTrue("%s, '%s*'", "not true").orElseThrow();
             fail();
-        }, IllegalArgumentException.class, "not true, 'false'", JUNIT_ERROR);
+        }, IllegalArgumentException.class, "not true, 'false'");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(false).isTrue().orElseThrow(new IOException("not true"), true);
             fail();
-        }, IOException.class, "not true", JUNIT_ERROR);
+        }, IOException.class, "not true");
     }
 }

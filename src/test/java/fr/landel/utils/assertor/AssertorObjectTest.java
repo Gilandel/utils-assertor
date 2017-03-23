@@ -32,8 +32,6 @@ import java.util.Locale;
 
 import org.junit.Test;
 
-import fr.landel.utils.commons.expect.Expect;
-
 /**
  * Check {@link AssertorObject}
  *
@@ -383,17 +381,17 @@ public class AssertorObjectTest extends AbstractTest {
             fail("The test isn't correct");
         }
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(new Exception()).isInstanceOf(IOException.class).orElseThrow("not instance of");
             fail();
         }, IllegalArgumentException.class, "not instance of");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that((Object) null).isInstanceOf(IOException.class).orElseThrow("not instance of");
             fail();
         }, IllegalArgumentException.class, "not instance of");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(new Exception()).isInstanceOf(null).orElseThrow("not instance of");
             fail();
         }, IllegalArgumentException.class, "not instance of");
@@ -409,7 +407,7 @@ public class AssertorObjectTest extends AbstractTest {
         assertFalse(Assertor.that((Color) null).isAssignableFrom(Color.class).isOK());
         assertFalse(Assertor.that(Color.BLACK).isAssignableFrom(null).isOK());
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that((Object) null).isAssignableFrom(Exception.class).orElseThrow("msg");
         }, IllegalArgumentException.class, "msg");
 
@@ -450,24 +448,24 @@ public class AssertorObjectTest extends AbstractTest {
 
         assertTrue(Assertor.that((Class<?>) null).hasHashCode(0).isOK());
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(IOException.class).hasHashCode(5, "The hash codes don't match (%d != %2$d*)", hashCode).orElseThrow();
-        }, IllegalArgumentException.class, "The hash codes don't match (" + hashCode + " != 5)", JUNIT_ERROR);
+        }, IllegalArgumentException.class, "The hash codes don't match (" + hashCode + " != 5)");
 
-        Expect.exception(() -> Assertor.that(Exception.class).hasHashCode(1, "bad hash code").orElseThrow(), IllegalArgumentException.class,
-                "bad hash code", JUNIT_ERROR);
+        assertException(() -> Assertor.that(Exception.class).hasHashCode(1, "bad hash code").orElseThrow(), IllegalArgumentException.class,
+                "bad hash code");
 
-        Expect.exception(() -> Assertor.that(Exception.class).hasHashCode(1).orElseThrow(), IllegalArgumentException.class,
-                "the object 'Exception' should have the hash code '1'", JUNIT_ERROR);
+        assertException(() -> Assertor.that(Exception.class).hasHashCode(1).orElseThrow(), IllegalArgumentException.class,
+                "the object 'Exception' should have the hash code '1'");
 
-        Expect.exception(() -> Assertor.that((Class<?>) null).hasHashCode(1).orElseThrow(), IllegalArgumentException.class,
-                "the object 'null' should have the hash code '1'", JUNIT_ERROR);
+        assertException(() -> Assertor.that((Class<?>) null).hasHashCode(1).orElseThrow(), IllegalArgumentException.class,
+                "the object 'null' should have the hash code '1'");
 
-        Expect.exception(() -> Assertor.that(Exception.class).hasHashCode(0).orElseThrow(), IllegalArgumentException.class,
-                "the object 'Exception' should have the hash code '0'", JUNIT_ERROR);
+        assertException(() -> Assertor.that(Exception.class).hasHashCode(0).orElseThrow(), IllegalArgumentException.class,
+                "the object 'Exception' should have the hash code '0'");
 
-        Expect.exception(() -> Assertor.that((Class<?>) null).not().hasHashCode(0).orElseThrow(), IllegalArgumentException.class,
-                "the object 'null' should NOT have the hash code '0'", JUNIT_ERROR);
+        assertException(() -> Assertor.that((Class<?>) null).not().hasHashCode(0).orElseThrow(), IllegalArgumentException.class,
+                "the object 'null' should NOT have the hash code '0'");
     }
 
     /**

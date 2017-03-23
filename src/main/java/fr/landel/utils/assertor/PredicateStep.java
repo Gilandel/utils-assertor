@@ -710,6 +710,20 @@ public interface PredicateStep<S extends PredicateStep<S, T>, T> {
     }
 
     /**
+     * Append an operator 'AND' on the current step with the ability to check a
+     * comparable {@link Throwable}.
+     * 
+     * @param other
+     *            the other or next checked {@link Throwable} to check
+     * @param <X>
+     *            the throwable type
+     * @return the predicate assertor
+     */
+    default <X extends Throwable> PredicateAssertorThrowable<X> and(final X other) {
+        return () -> HelperAssertor.and(this.getStep(), other, EnumType.THROWABLE);
+    }
+
+    /**
      * Append an operator 'AND' on the current step with the ability to check an
      * {@link Enum}.
      * 
@@ -915,6 +929,20 @@ public interface PredicateStep<S extends PredicateStep<S, T>, T> {
      */
     default <X extends Temporal & Comparable<X>> PredicateAssertorTemporal<X> or(final X other) {
         return () -> HelperAssertor.or(this.getStep(), other, EnumType.TEMPORAL);
+    }
+
+    /**
+     * Append an operator 'OR' on the current step with the ability to check a
+     * comparable {@link Throwable}.
+     * 
+     * @param other
+     *            the other or next checked {@link Throwable} to check
+     * @param <X>
+     *            the throwable type
+     * @return the predicate assertor
+     */
+    default <X extends Throwable> PredicateAssertorThrowable<X> or(final X other) {
+        return () -> HelperAssertor.or(this.getStep(), other, EnumType.THROWABLE);
     }
 
     /**
@@ -1124,6 +1152,20 @@ public interface PredicateStep<S extends PredicateStep<S, T>, T> {
     }
 
     /**
+     * Append an operator 'XOR' on the current step with the ability to check a
+     * comparable {@link Throwable}.
+     * 
+     * @param other
+     *            the other or next checked {@link Throwable} to check
+     * @param <X>
+     *            the throwable type
+     * @return the predicate assertor
+     */
+    default <X extends Throwable> PredicateAssertorThrowable<X> xor(final X other) {
+        return () -> HelperAssertor.xor(this.getStep(), other, EnumType.THROWABLE);
+    }
+
+    /**
      * Append an operator 'XOR' on the current step with the ability to check an
      * {@link Enum}.
      * 
@@ -1326,6 +1368,20 @@ public interface PredicateStep<S extends PredicateStep<S, T>, T> {
      */
     default <X extends Temporal & Comparable<X>> PredicateAssertorTemporal<X> nand(final X other) {
         return () -> HelperAssertor.nand(this.getStep(), other, EnumType.TEMPORAL);
+    }
+
+    /**
+     * Append an operator 'NAND' on the current step with the ability to check a
+     * comparable {@link Throwable}.
+     * 
+     * @param other
+     *            the other or next checked {@link Throwable} to check
+     * @param <X>
+     *            the throwable type
+     * @return the predicate assertor
+     */
+    default <X extends Throwable> PredicateAssertorThrowable<X> nand(final X other) {
+        return () -> HelperAssertor.nand(this.getStep(), other, EnumType.THROWABLE);
     }
 
     /**
@@ -1532,6 +1588,20 @@ public interface PredicateStep<S extends PredicateStep<S, T>, T> {
      */
     default <X extends Temporal & Comparable<X>> PredicateAssertorTemporal<X> nor(final X other) {
         return () -> HelperAssertor.nor(this.getStep(), other, EnumType.TEMPORAL);
+    }
+
+    /**
+     * Append an operator 'NOR' on the current step with the ability to check a
+     * comparable {@link Throwable}.
+     * 
+     * @param other
+     *            the other or next checked {@link Throwable} to check
+     * @param <X>
+     *            the throwable type
+     * @return the predicate assertor
+     */
+    default <X extends Throwable> PredicateAssertorThrowable<X> nor(final X other) {
+        return () -> HelperAssertor.nor(this.getStep(), other, EnumType.THROWABLE);
     }
 
     /**

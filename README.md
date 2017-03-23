@@ -6,6 +6,10 @@
 [![codecov.io](https://codecov.io/github/Gilandel/utils-assertor/coverage.svg?branch=master)](https://codecov.io/github/Gilandel/utils-assertor?branch=master)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/fr.landel.utils/utils-assertor/badge.svg)](https://maven-badges.herokuapp.com/maven-central/fr.landel.utils/utils-assertor)
 
+[![Tokei LoC](https://tokei.rs/b1/github/Gilandel/utils-assertor)](https://github.com/Aaronepower/tokei)
+[![Tokei NoFiles](https://tokei.rs/b1/github/Gilandel/utils-assertor?category=files)](https://github.com/Aaronepower/tokei)
+[![Tokei LoComments](https://tokei.rs/b1/github/Gilandel/utils-assertor?category=comments)](https://github.com/Aaronepower/tokei)
+
 [![codecov.io tree](https://codecov.io/gh/Gilandel/utils-assertor/branch/master/graphs/tree.svg)](https://codecov.io/gh/Gilandel/utils-assertor/branch/master)
 [![codecov.io sunburst](https://codecov.io/gh/Gilandel/utils-assertor/branch/master/graphs/sunburst.svg)](https://codecov.io/gh/Gilandel/utils-assertor/branch/master)
 
@@ -19,124 +23,131 @@ Work progress:
 <dependency>
 	<groupId>fr.landel.utils</groupId>
 	<artifactId>utils-assertor</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 </dependency>
 ```
 
 ## Summary
 
 1. [Summary](#summary)
-2. [Description](#description)
-  1. [Structure](#structure)
-  2. [Reset explanations](#reset-explanations)
-  3. [Message (locale, arguments and parameters)](#message-locale-arguments-and-parameters)
-3. [Output details](#output-details)
-  1. [orElseThrow](#orelsethrow)
-  2. [isOK](#isok)
-  3. [getErrors](#geterrors)
-  4. [get](#get)
-  5. [getNullable](#getnullable)
-  6. [asResult](#asresult)
-  7. [asDefault](#asdefault)
-4. [Operators](#operators)
-  1. [NOT](#not)
-  2. [AND](#and)
-  3. [OR](#or)
-  4. [XOR](#xor)
-  5. [NAND](#nand)
-  6. [NOR](#nor)
-5. [Available methods](#available-methods)
-  1. [For all (Object, Boolean...)](#for-all-object-boolean)
-    1. [isNull](#isnull)
-    2. [isNotNull](#isnotnull)
-    3. [isEqual](#isequal)
-    4. [isNotEqual](#isnotequal)
-    5. [isInstance](#isinstance)
-    6. [isAssignableFrom](#isassignablefrom)
-    7. [hasHashCode](#hashashcode)
-    8. [validates](#validates)
-  2. [Array](#array)
-    1. [hasLength](#haslength)
-    2. [isEmpty](#isempty)
-    3. [isNotEmpty](#isnotempty)
-    4. [contains](#contains)
-    5. [containsAll](#containsall)
-    6. [containsAny](#containsany)
-  3. [Boolean](#boolean)
-    1. [isTrue](#istrue)
-    2. [isFalse](#isfalse)
-  4. [CharSequence](#charsequence)
-    1. [hasLength](#haslength)
-    2. [isEmpty](#isempty-1)
-    3. [isNotEmpty](#isnotempty-1)
-    4. [isBlank](#isblank)
-    5. [isNotBlank](#isnotblank)
-    6. [isEqual](#isequal-1)
-    7. [isNotEqual](#isnotequal-1)
-    8. [isEqualIgnoreCase](#isequalignorecase)
-    9. [isNotEqualIgnoreCase](#isnotequalignorecase)
-    10. [isEqualIgnoreLineReturns](#isequalignorelinereturns)
-    11. [isNotEqualIgnoreLineReturns](#isnotequalignorelinereturns)
-    12. [isEqualIgnoreCaseAndLineReturns](#isequalignorecaseandlinereturns)
-    13. [isNotEqualIgnoreCaseAndLineReturns](#isnotequalignorecaseandlinereturns)
-    14. [contains](#contains-1)
-    15. [startsWith](#startswith)
-    16. [startsWithIgnoreCase](#startswithignorecase)
-    17. [endsWith](#endswith)
-    18. [endsWithIgnoreCase](#endswithignorecase)
-    19. [matches](#matches)
-    20. [find](#find)
-  5. [Class](#class)
-    1. [isAssignableFrom](#isassignablefrom-1)
-    2. [hasName](#hasname)
-    3. [hasSimpleName](#hassimplename)
-    4. [hasCanonicalName](#hascanonicalname)
-    5. [hasPackageName](#haspackagename)
-    6. [hasTypeName](#hastypename)
-  6. [Date & Calendar](#date-calendar)
-    1. [isAround](#isaround)
-    2. [isNotAround](#isnotaround)
-    3. [isAfter](#isafter)
-    4. [isAfterOrEqual](#isafterorequal)
-    5. [isBefore](#isbefore)
-    6. [isBeforeOrEqual](#isbeforeorequal)
-  7. [Temporal](#temporal)
-    1. [isAround](#isaround-1)
-    2. [isNotAround](#isnotaround-1)
-    3. [isAfter](#isafter-1)
-    4. [isAfterOrEqual](#isafterorequal-1)
-    5. [isBefore](#isbefore-1)
-    6. [isBeforeOrEqual](#isbeforeorequal-1)
-  8. [Enum](#enum)
-    1. [hasName](#hasname-1)
-    2. [hasNameIgnoreCase](#hasnameignorecase)
-    3. [hasOrdinal](#hasordinal)
-  9. [Iterable](#iterable)
-    1. [hasSize](#hassize)
-    2. [isEmpty](#isempty-1)
-    3. [isNotEmpty](#isnotempty-1)
-    4. [contains](#contains-2)
-    5. [containsAll](#containsall-1)
-    6. [containsAny](#containsany-1)
-  10. [Map](#map)
-    1. [hasSize](#hassize-1)
-    2. [isEmpty](#isempty-2)
-    3. [isNotEmpty](#isnotempty-2)
-    4. [contains](#contains-3)
-    5. [containsAll](#containsall-2)
-    6. [containsAny](#containsany-2)
-  11. [Number](#number)
-    1. [isEqual](#isequal-2)
-    2. [isNotEqual](#isnotequal-2)
-    3. [isZero](#iszero)
-    4. [isPositive](#ispositive)
-    5. [isNegative](#isnegative)
-    6. [isGT](#isgt)
-    7. [isGTE](#isgte)
-    8. [isLT](#islt)
-    9. [isLTE](#islte)
-6. [TODO](#todo)
-7. [License](#license)
+1. [Description](#description)
+   1. [Structure](#structure)
+   1. [Reset explanations](#reset-explanations)
+   1. [Message (locale, arguments and parameters)](#message-locale-arguments-and-parameters)
+1. [Output details](#output-details)
+   1. [orElseThrow](#orelsethrow)
+   1. [isOK](#isok)
+   1. [getErrors](#geterrors)
+   1. [get](#get)
+   1. [getNullable](#getnullable)
+   1. [asResult](#asresult)
+   1. [asDefault](#asdefault)
+1. [Operators](#operators)
+   1. [NOT](#not)
+   1. [AND](#and)
+   1. [OR](#or)
+   1. [XOR](#xor)
+   1. [NAND](#nand)
+   1. [NOR](#nor)
+1. [Available methods](#available-methods)
+   1. [For all (Object, Boolean...)](#for-all-object-boolean)
+      1. [isNull](#isnull)
+      1. [isNotNull](#isnotnull)
+      1. [isEqual](#isequal)
+      1. [isNotEqual](#isnotequal)
+      1. [isInstance](#isinstance)
+      1. [isAssignableFrom](#isassignablefrom)
+      1. [hasHashCode](#hashashcode)
+      1. [validates](#validates)
+   1. [Array](#array)
+      1. [hasLength](#haslength)
+      1. [isEmpty](#isempty)
+      1. [isNotEmpty](#isnotempty)
+      1. [contains](#contains)
+      1. [containsAll](#containsall)
+      1. [containsAny](#containsany)
+   1. [Boolean](#boolean)
+      1. [isTrue](#istrue)
+      1. [isFalse](#isfalse)
+   1. [CharSequence](#charsequence)
+      1. [hasLength](#haslength)
+      1. [isEmpty](#isempty-1)
+      1. [isNotEmpty](#isnotempty-1)
+      1. [isBlank](#isblank)
+      1. [isNotBlank](#isnotblank)
+      1. [isEqual](#isequal-1)
+      1. [isNotEqual](#isnotequal-1)
+      1. [isEqualIgnoreCase](#isequalignorecase)
+      1. [isNotEqualIgnoreCase](#isnotequalignorecase)
+      1. [isEqualIgnoreLineReturns](#isequalignorelinereturns)
+      1. [isNotEqualIgnoreLineReturns](#isnotequalignorelinereturns)
+      1. [isEqualIgnoreCaseAndLineReturns](#isequalignorecaseandlinereturns)
+      1. [isNotEqualIgnoreCaseAndLineReturns](#isnotequalignorecaseandlinereturns)
+   1. [contains](#contains-1)
+      1. [startsWith](#startswith)
+      1. [startsWithIgnoreCase](#startswithignorecase)
+      1. [endsWith](#endswith)
+      1. [endsWithIgnoreCase](#endswithignorecase)
+      1. [matches](#matches)
+      1. [find](#find)
+   1. [Class](#class)
+      1. [isAssignableFrom](#isassignablefrom-1)
+      1. [hasName](#hasname)
+      1. [hasSimpleName](#hassimplename)
+      1. [hasCanonicalName](#hascanonicalname)
+      1. [hasPackageName](#haspackagename)
+      1. [hasTypeName](#hastypename)
+   1. [Date & Calendar](#date-calendar)
+      1. [isAround](#isaround)
+      1. [isNotAround](#isnotaround)
+      1. [isAfter](#isafter)
+      1. [isAfterOrEqual](#isafterorequal)
+      1. [isBefore](#isbefore)
+      1. [isBeforeOrEqual](#isbeforeorequal)
+   1. [Temporal](#temporal)
+      1. [isAround](#isaround-1)
+      1. [isNotAround](#isnotaround-1)
+      1. [isAfter](#isafter-1)
+      1. [isAfterOrEqual](#isafterorequal-1)
+      1. [isBefore](#isbefore-1)
+      1. [isBeforeOrEqual](#isbeforeorequal-1)
+   1. [Enum](#enum)
+      1. [hasName](#hasname-1)
+      1. [hasNameIgnoreCase](#hasnameignorecase)
+      1. [hasOrdinal](#hasordinal)
+   1. [Iterable](#iterable)
+      1. [hasSize](#hassize)
+      1. [isEmpty](#isempty-1)
+      1. [isNotEmpty](#isnotempty-1)
+      1. [contains](#contains-2)
+      1. [containsAll](#containsall-1)
+      1. [containsAny](#containsany-1)
+   1. [Map](#map)
+      1. [hasSize](#hassize-1)
+      1. [isEmpty](#isempty-2)
+      1. [isNotEmpty](#isnotempty-2)
+      1. [contains](#contains-3)
+      1. [containsAll](#containsall-2)
+      1. [containsAny](#containsany-2)
+   1. [Number](#number)
+      1. [isEqual](#isequal-2)
+      1. [isNotEqual](#isnotequal-2)
+      1. [isZero](#iszero)
+      1. [isPositive](#ispositive)
+      1. [isNegative](#isnegative)
+      1. [isGT](#isgt)
+      1. [isGTE](#isgte)
+      1. [isLT](#islt)
+      1. [isLTE](#islte)
+   1. [Throwable](#throwable)
+      1. [isInstanceOf](#isinstanceof-1)
+      1. [isAssignableFrom](#isassignablefrom-2)
+      1. [hasCauseNull](#hascausenull)
+      1. [hasCauseNotNull](#hascausenotnull)
+      1. [hasCauseAssignableFrom](#hascauseassignablefrom)
+      1. [hasCauseInstanceOf](#hascauseinstanceof)
+1. [TODO](#todo)
+1. [License](#license)
 
 ## Description
 
@@ -149,6 +160,7 @@ For now it manages:
 - CharSequence (String, StringBuilder...)
 - Class
 - Date & Calendar
+- Temporal
 - Enum
 - Iterable (Set, List...)
 - Map
@@ -156,12 +168,12 @@ For now it manages:
 
 ### Structure
 
-All assertions start with 'Assertor.that(object)' and following the type of the object, some methods are available.
+All assertions start with  `Assertor.that(object)` and following the type of the object, some methods are available.
 
 About structure, an assertion can be cut in three parts:
-- The definition of what we check: Assertor.that(myObject))...
-- The check: ...isNull().or().isInstance(Color.class)...
-- The output: ...orElseThrow()
+- The definition of what we check: `Assertor.that(myObject))...`
+- The check: `...isNull().or().isInstance(Color.class)...`
+- The output: `...orElseThrow()`
 
 Multiples objects can be check in the same line:
 ```java
@@ -169,12 +181,14 @@ Assertor.that(object1).isNull().and(object2).isNotNull().orElseThrow();
 Assertor.that(object1).isNull().or().not().isInstance(Color.class).or(object2).isEqual(object3).isOk();
 ```
 
-Mulitple outputs are available:
+Multiple outputs are available:
 - orElseThrow: throw an exception if assertion is false, otherwise returns the last checked parameter,
 - isOk: get the boolean result of the assertion,
 - getErrors: get the error message (java.util.Optional),
 - get: the result (java.util.Optional),
-- result: the result (fr.landel.utils.commons.Result).
+- getNullable: the result,
+- asResult: the result (fr.landel.utils.commons.Result),
+- asDefault: the result (fr.landel.utils.commons.Default).
 
 These three output methods are considerate as final.
 So when these methods are called a clear of intermediate conditions is done.
@@ -299,7 +313,7 @@ This method returns 'true' if the assertion is valid, otherwise returns 'false'.
 	Assertor.that("").isBlank("The first name is invalid").isOK(); // -> return true
 ```
 
-At the call of 'isOK()', the assertion is cleared, to avoid this, the parameter 'reset' can be set to 'false' (default: true).
+At the call of `isOK()`, the assertion is cleared, to avoid this, the parameter 'reset' can be set to 'false' (default: true).
 
 ### getErrors
 This method returns the assertion errors.
@@ -1464,8 +1478,17 @@ Assertor.that(null).not().isLTE(12).orElseThrow(); // -> throw an exception
 Assertor.that(12).not().isLTE(null).orElseThrow(); // -> throw an exception
 ```
 
+### Throwable
+#### isInstanceOf
+#### isAssignableFrom
+#### hasCauseNull
+#### hasCauseNotNull
+#### hasCauseAssignableFrom
+#### hasCauseInstanceOf
+
 ## TODO
 
+- Allow new extension (change PredicateStep design) 
 - Build all messages in one step at the end (one call to String.format, which locale, if multiple?)
 
 ## License

@@ -21,7 +21,6 @@ import java.io.IOException;
 import org.junit.Test;
 
 import fr.landel.utils.commons.EnumChar;
-import fr.landel.utils.commons.expect.Expect;
 
 /**
  * Check {@link AssertorEnum}
@@ -78,29 +77,29 @@ public class AssertorEnumTest extends AbstractTest {
             fail("The test isn't correct");
         }
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(EnumChar.ASTERISK).hasName("asterisk").orElseThrow("not found");
             fail();
         }, IllegalArgumentException.class, "not found");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(EnumChar.ASTERISK).hasName("asterisk", "%s, '%s*'", "not found").orElseThrow();
             fail();
 
             // to string = unicode character
         }, IllegalArgumentException.class, "not found, '*'");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(EnumChar.ASTERISK).hasName("asterisk").orElseThrow(new IOException("not found"), true);
             fail();
         }, IOException.class, "not found");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that((EnumChar) null).hasName("asterisk").orElseThrow(new IOException("not found"), true);
             fail();
         }, IOException.class, "not found");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(EnumChar.ASTERISK).hasName("").orElseThrow(new IOException("not found"), true);
             fail();
         }, IOException.class, "not found");
@@ -131,24 +130,24 @@ public class AssertorEnumTest extends AbstractTest {
             fail("The test isn't correct");
         }
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(EnumOperator.OR).hasOrdinal(0).orElseThrow("not correct");
             fail();
-        }, IllegalArgumentException.class, "not correct", JUNIT_ERROR);
+        }, IllegalArgumentException.class, "not correct");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(EnumOperator.OR).hasOrdinal(0, "%s, '%s*'", "not correct").orElseThrow();
             fail();
-        }, IllegalArgumentException.class, "not correct, ' OR '", JUNIT_ERROR);
+        }, IllegalArgumentException.class, "not correct, ' OR '");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that((EnumOperator) null).hasOrdinal(0).orElseThrow(new IOException("not correct"), true);
             fail();
-        }, IOException.class, "not correct", JUNIT_ERROR);
+        }, IOException.class, "not correct");
 
-        Expect.exception(() -> {
+        assertException(() -> {
             Assertor.that(EnumOperator.OR).hasOrdinal(-1).orElseThrow(new IOException("not correct"), true);
             fail();
-        }, IOException.class, "not correct", JUNIT_ERROR);
+        }, IOException.class, "not correct");
     }
 }
