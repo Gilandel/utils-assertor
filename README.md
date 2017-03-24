@@ -98,6 +98,8 @@ Work progress:
       1. [hasPackageName](#haspackagename)
       1. [hasTypeName](#hastypename)
    1. [Date & Calendar](#date-calendar)
+      1. [isEqual](#isequal-2)
+      1. [isNotEqual](#isnotequal-2)
       1. [isAround](#isaround)
       1. [isNotAround](#isnotaround)
       1. [isAfter](#isafter)
@@ -105,6 +107,8 @@ Work progress:
       1. [isBefore](#isbefore)
       1. [isBeforeOrEqual](#isbeforeorequal)
    1. [Temporal](#temporal)
+      1. [isEqual](#isequal-3)
+      1. [isNotEqual](#isnotequal-3)
       1. [isAround](#isaround-1)
       1. [isNotAround](#isnotaround-1)
       1. [isAfter](#isafter-1)
@@ -130,8 +134,8 @@ Work progress:
       1. [containsAll](#containsall-2)
       1. [containsAny](#containsany-2)
    1. [Number](#number)
-      1. [isEqual](#isequal-2)
-      1. [isNotEqual](#isnotequal-2)
+      1. [isEqual](#isequal-4)
+      1. [isNotEqual](#isnotequal-4)
       1. [isZero](#iszero)
       1. [isPositive](#ispositive)
       1. [isNegative](#isnegative)
@@ -140,8 +144,8 @@ Work progress:
       1. [isLT](#islt)
       1. [isLTE](#islte)
    1. [Throwable](#throwable)
-      1. [isInstanceOf](#isinstanceof-1)
       1. [isAssignableFrom](#isassignablefrom-2)
+      1. [isInstanceOf](#isinstanceof-1)
       1. [hasCauseNull](#hascausenull)
       1. [hasCauseNotNull](#hascausenotnull)
       1. [hasCauseAssignableFrom](#hascauseassignablefrom)
@@ -1333,25 +1337,194 @@ Assertor.that("text").not().find(null, "Param '%1$s*' not blank").orElseThrow();
 
 ### Class
 #### isAssignableFrom
-Assert that class is assignable from .
+Assert that class is assignable from clazz.
 * Signatures:
-	- 
+	- isAssignableFrom(Class<?> clazz)
+	- isAssignableFrom(Class<?> clazz, CharSequence message, Object[] arguments)
+	- isAssignableFrom(Class<?> clazz, Locale locale, CharSequence message, Object[] arguments)
 
 * Prerequisites:
-	- char sequence NOT null
-	- pattern / regex NOT null
+	- classes NOT null
 
 * Examples:
 ```java
+Assertor.that(IOException.class).isAssignableFrom(Exception.class).orElseThrow(); // -> OK
+Assertor.that(Exception.class).isAssignableFrom(Exception.class).orElseThrow(); // -> OK
+Assertor.that(Exception.class).isAssignableFrom(IOException.class).orElseThrow(); // -> throw an exception
+
+// prerequisite errors
+Assertor.that((Exception) null).isAssignableFrom(IOException.class).orElseThrow(); // -> throw an exception
+Assertor.that(Exception.class).isAssignableFrom(null).orElseThrow(); // -> throw an exception
 ```
 
 #### hasName
+Assert that class has the specified name.
+* Signatures:
+	- hasName(CharSequence name)
+	- hasName(CharSequence name, CharSequence message, Object[] arguments)
+	- hasName(CharSequence name, Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites:
+	- class NOT null
+	- name NOT null and NOT empty
+
+* Examples:
+```java
+Assertor.that(IOException.class).hasName("java.io.IOException").orElseThrow(); // -> OK
+Assertor.that(Exception.class).hasName("java.lang.Exception").orElseThrow(); // -> OK
+Assertor.that(Exception.class).hasName("Exception").orElseThrow(); // -> throw an exception
+
+// prerequisite errors
+Assertor.that((Exception) null).hasName("java.lang.Exception").orElseThrow(); // -> throw an exception
+Assertor.that(Exception.class).hasName(null).orElseThrow(); // -> throw an exception
+Assertor.that(Exception.class).hasName("").orElseThrow(); // -> throw an exception
+```
+
 #### hasSimpleName
+Assert that class has the specified simple name.
+* Signatures:
+	- hasSimpleName(CharSequence name)
+	- hasSimpleName(CharSequence name, CharSequence message, Object[] arguments)
+	- hasSimpleName(CharSequence name, Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites:
+	- class NOT null
+	- name NOT null and NOT empty
+
+* Examples:
+```java
+Assertor.that(IOException.class).hasSimpleName("IOException").orElseThrow(); // -> OK
+Assertor.that(Exception.class).hasSimpleName("Exception").orElseThrow(); // -> OK
+Assertor.that(Exception.class).hasSimpleName("java.lang.Exception").orElseThrow(); // -> throw an exception
+
+// prerequisite errors
+Assertor.that((Exception) null).hasSimpleName("Exception").orElseThrow(); // -> throw an exception
+Assertor.that(Exception.class).hasSimpleName(null).orElseThrow(); // -> throw an exception
+Assertor.that(Exception.class).hasSimpleName("").orElseThrow(); // -> throw an exception
+```
+
 #### hasCanonicalName
+Assert that class has the specified canonical name.
+* Signatures:
+	- hasCanonicalName(CharSequence name)
+	- hasCanonicalName(CharSequence name, CharSequence message, Object[] arguments)
+	- hasCanonicalName(CharSequence name, Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites:
+	- class NOT null
+	- name NOT null and NOT empty
+
+* Examples:
+```java
+Assertor.that(IOException.class).hasCanonicalName(IOException.class.getCanonicalName()).orElseThrow(); // -> OK
+Assertor.that(Exception.class).hasCanonicalName("java.lang.Exception").orElseThrow(); // -> OK
+Assertor.that(Exception.class).hasCanonicalName("Exception").orElseThrow(); // -> throw an exception
+
+// prerequisite errors
+Assertor.that((Exception) null).hasCanonicalName("Exception").orElseThrow(); // -> throw an exception
+Assertor.that(Exception.class).hasCanonicalName(null).orElseThrow(); // -> throw an exception
+Assertor.that(Exception.class).hasCanonicalName("").orElseThrow(); // -> throw an exception
+```
+
 #### hasPackageName
+Assert that class has the specified package name.
+* Signatures:
+	- hasPackageName(CharSequence name)
+	- hasPackageName(CharSequence name, CharSequence message, Object[] arguments)
+	- hasPackageName(CharSequence name, Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites:
+	- class NOT null
+	- name NOT null and NOT empty
+
+* Examples:
+```java
+Assertor.that(IOException.class).hasPackageName(IOException.class.getPackage().getName()).orElseThrow(); // -> OK
+Assertor.that(Exception.class).hasPackageName("java.lang").orElseThrow(); // -> OK
+Assertor.that(Exception.class).hasPackageName("java").orElseThrow(); // -> throw an exception
+
+// prerequisite errors
+Assertor.that((Exception) null).hasPackageName("java.lang").orElseThrow(); // -> throw an exception
+Assertor.that(Exception.class).hasPackageName(null).orElseThrow(); // -> throw an exception
+Assertor.that(Exception.class).hasPackageName("").orElseThrow(); // -> throw an exception
+```
+
 #### hasTypeName
+Assert that class has the specified package name.
+* Signatures:
+	- hasTypeName(CharSequence name)
+	- hasTypeName(CharSequence name, CharSequence message, Object[] arguments)
+	- hasTypeName(CharSequence name, Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites:
+	- class NOT null
+	- name NOT null and NOT empty
+
+* Examples:
+```java
+Assertor.that(long.class).hasTypeName(lang.class.getTypeName()).orElseThrow(); // -> OK
+Assertor.that(Long.class).hasTypeName("java.lang.Long").orElseThrow(); // -> OK
+Assertor.that(Long.class).hasTypeName("long").orElseThrow(); // -> throw an exception
+
+// prerequisite errors
+Assertor.that((Exception) null).hasTypeName("java.lang").orElseThrow(); // -> throw an exception
+Assertor.that(Exception.class).hasTypeName(null).orElseThrow(); // -> throw an exception
+Assertor.that(Exception.class).hasTypeName("").orElseThrow(); // -> throw an exception
+```
 
 ### Date & Calendar
+#### isEqual
+Assert that dates are equal.
+
+* Signatures:
+	- isEqual(Calendar date)
+	- isEqual(Calendar date, CharSequence message, Object[] arguments)
+	- isEqual(Calendar date, Locale locale, CharSequence message, Object[] arguments)
+	- isEqual(Date date)
+	- isEqual(Date date, CharSequence message, Object[] arguments)
+	- isEqual(Date date, Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites: none
+
+* Examples:
+```java
+final Calendar date1 = new GregorianCalendar(2016, 05, 29, 5, 5, 6);
+final Calendar date2 = new GregorianCalendar(2016, 05, 29, 5, 5, 5);
+
+Assertor.that(date1).isEqual(date2).orElseThrow(); // -> throw an exception
+Assertor.that(date1).isEqual(date1).orElseThrow(); // -> OK
+Assertor.that((Calendar) null).isEqual(date2).orElseThrow(); // -> throw an exception
+Assertor.that(date1).isEqual(null).orElseThrow(); // -> throw an exception
+Assertor.that(date1).isEqual(date2, "Bad status").orElseThrow(); // -> throw an exception
+Assertor.that(date1).not().isEqual(date2).orElseThrow(); // -> throw an exception
+```
+
+#### isNotEqual
+Assert that dates are NOT equal.
+
+* Signatures:
+	- isNotEqual(Calendar date)
+	- isNotEqual(Calendar date, CharSequence message, Object[] arguments)
+	- isNotEqual(Calendar date, Locale locale, CharSequence message, Object[] arguments)
+	- isNotEqual(Date date)
+	- isNotEqual(Date date, CharSequence message, Object[] arguments)
+	- isNotEqual(Date date, Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites: none
+
+* Examples:
+```java
+final Calendar date1 = new GregorianCalendar(2016, 05, 29, 5, 5, 6);
+final Calendar date2 = new GregorianCalendar(2016, 05, 29, 5, 5, 5);
+
+Assertor.that(date1).isNotEqual(date2).orElseThrow(); // -> throw an exception
+Assertor.that(date1).isNotEqual(date1).orElseThrow(); // -> OK
+Assertor.that((Calendar) null).isNotEqual(date2).orElseThrow(); // -> throw an exception
+Assertor.that(date1).isNotEqual(null).orElseThrow(); // -> throw an exception
+Assertor.that(date1).isNotEqual(date2, "Bad status").orElseThrow(); // -> throw an exception
+Assertor.that(date1).not().isNotEqual(date2).orElseThrow(); // -> throw an exception
+```
+
 #### isAround
 Assert that date1 is around the date2.
 * Signatures:
@@ -1369,11 +1542,8 @@ Assert that date1 is around the date2.
 
 * Examples:
 ```java
-final Calendar date1 = Calendar.getInstance();
-final Calendar date2 = Calendar.getInstance();
-
-date1.set(2016, 05, 29, 5, 5, 6);
-date2.set(2016, 05, 29, 5, 5, 5);
+final Calendar date1 = new GregorianCalendar(2016, 05, 29, 5, 5, 6);
+final Calendar date2 = new GregorianCalendar(2016, 05, 29, 5, 5, 5);
 
 Assertor.that(date1).isAround(date2, Calendar.SECOND, 5).orElseThrow(); // -> OK
 Assertor.that(date1).isAround(date2, Calendar.HOUR, 5).orElseThrow(); // -> OK
@@ -1437,9 +1607,15 @@ Assertor.that(date1).not().isNotAround(date2, Calendar.HOUR, 0).orElseThrow(); /
 #### isAfter
 Assert that date1 is after the date2.
 * Signatures:
+	- isAfter(Calendar date)
+	- isAfter(Calendar date, CharSequence message, Object[] arguments)
+	- isAfter(Calendar date, Locale locale, CharSequence message, Object[] arguments)
 	- isAfter(Calendar date, int calendarField, int calendarAmount)
 	- isAfter(Calendar date, int calendarField, int calendarAmount, CharSequence message, Object[] arguments)
 	- isAfter(Calendar date, int calendarField, int calendarAmount, Locale locale, CharSequence message, Object[] arguments)
+	- isAfter(Date date)
+	- isAfter(Date date, CharSequence message, Object[] arguments)
+	- isAfter(Date date, Locale locale, CharSequence message, Object[] arguments)
 	- isAfter(Date date, int calendarField, int calendarAmount)
 	- isAfter(Date date, int calendarField, int calendarAmount, CharSequence message, Object[] arguments)
 	- isAfter(Date date, int calendarField, int calendarAmount, Locale locale, CharSequence message, Object[] arguments)
@@ -1451,41 +1627,429 @@ Assert that date1 is after the date2.
 
 * Examples:
 ```java
-final Calendar date1 = Calendar.getInstance();
-final Calendar date2 = Calendar.getInstance();
+final Calendar date1 = new GregorianCalendar(2016, 05, 29, 6, 5, 5);
+final Calendar date2 = new GregorianCalendar(2016, 05, 29, 5, 5, 5);
 
-date1.set(2016, 05, 29, 5, 5, 5);
-date2.set(2016, 05, 29, 6, 5, 5);
+Assertor.that(date1).isAfter(date2).orElseThrow(); // -> OK
+Assertor.that(date2).isAfter(date1).orElseThrow(); // -> throw an exception
+Assertor.that(date2).not().isAfter(date1).orElseThrow(); // -> OK
 
-Assertor.that(date1).isNotAround(date2, Calendar.SECOND, 5).orElseThrow(); // -> OK
-Assertor.that(date1).isNotAround(date2, Calendar.MINUTE, 5).orElseThrow(); // -> OK
-Assertor.that(date1).isNotAround(date2, Calendar.HOUR, 5).orElseThrow(); // -> throw an exception
-Assertor.that(date1).not().isNotAround(date2, Calendar.HOUR, 5).orElseThrow(); // -> OK
+Assertor.that(date1).isAfter(date2, Calendar.SECOND, 5).orElseThrow(); // -> OK
+Assertor.that(date1).isAfter(date2, Calendar.MINUTE, 5).orElseThrow(); // -> OK
+Assertor.that(date1).isAfter(date2, Calendar.HOUR, 5).orElseThrow(); // -> throw an exception
+Assertor.that(date1).not().isAfter(date2, Calendar.HOUR, 5).orElseThrow(); // -> OK
 
 // prerequisite errors
-Assertor.that(null).isNotAround(date2, Calendar.SECOND, 5).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(date1).isNotAround(null, Calendar.SECOND, 5).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(date1).isNotAround(date2, Calendar.FIELD_COUNT, -5).orElseThrow(); // -> throw an exception (invalid calendarField)
-Assertor.that(date1).isNotAround(date2, -100, -5).orElseThrow(); // -> throw an exception (invalid calendarField)
-Assertor.that(date1).isNotAround(date2, Calendar.HOUR, 0).orElseThrow(); // -> throw an exception (invalid calendarAmount)
-Assertor.that(null).not().isNotAround(date2, Calendar.SECOND, 5).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(date1).not().isNotAround(null, Calendar.SECOND, 5).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(date1).not().isNotAround(date2, Calendar.FIELD_COUNT, -5).orElseThrow(); // -> throw an exception (invalid calendarField)
-Assertor.that(date1).not().isNotAround(date2, -100, -5).orElseThrow(); // -> throw an exception (invalid calendarField)
-Assertor.that(date1).not().isNotAround(date2, Calendar.HOUR, 0).orElseThrow(); // -> throw an exception (invalid calendarAmount)
+Assertor.that(null).isAfter(date2).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(date1).isAfter(null).orElseThrow(); // -> throw an exception (date null)
+
+Assertor.that(null).isAfter(date2, Calendar.SECOND, 5).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(date1).isAfter(null, Calendar.SECOND, 5).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(date1).isAfter(date2, Calendar.FIELD_COUNT, -5).orElseThrow(); // -> throw an exception (invalid calendarField)
+Assertor.that(date1).isAfter(date2, -100, -5).orElseThrow(); // -> throw an exception (invalid calendarField)
+Assertor.that(date1).isAfter(date2, Calendar.HOUR, 0).orElseThrow(); // -> throw an exception (invalid calendarAmount)
+Assertor.that(null).not().isAfter(date2, Calendar.SECOND, 5).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(date1).not().isAfter(null, Calendar.SECOND, 5).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(date1).not().isAfter(date2, Calendar.FIELD_COUNT, -5).orElseThrow(); // -> throw an exception (invalid calendarField)
+Assertor.that(date1).not().isAfter(date2, -100, -5).orElseThrow(); // -> throw an exception (invalid calendarField)
+Assertor.that(date1).not().isAfter(date2, Calendar.HOUR, 0).orElseThrow(); // -> throw an exception (invalid calendarAmount)
 ```
 
 #### isAfterOrEqual
+Assert that date1 is after or equals the date2.
+* Signatures:
+	- isAfterOrEqual(Calendar date)
+	- isAfterOrEqual(Calendar date, CharSequence message, Object[] arguments)
+	- isAfterOrEqual(Calendar date, Locale locale, CharSequence message, Object[] arguments)
+	- isAfterOrEqual(Calendar date)
+	- isAfterOrEqual(Calendar date, int calendarField, int calendarAmount, CharSequence message, Object[] arguments)
+	- isAfterOrEqual(Calendar date, int calendarField, int calendarAmount, Locale locale, CharSequence message, Object[] arguments)
+	- isAfterOrEqual(Date date)
+	- isAfterOrEqual(Date date, CharSequence message, Object[] arguments)
+	- isAfterOrEqual(Date date, Locale locale, CharSequence message, Object[] arguments)
+	- isAfterOrEqual(Date date, int calendarField, int calendarAmount)
+	- isAfterOrEqual(Date date, int calendarField, int calendarAmount, CharSequence message, Object[] arguments)
+	- isAfterOrEqual(Date date, int calendarField, int calendarAmount, Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites:
+	- dates NOT null
+	- calendarField valid (see calendar field, ex: Calendar.ERA, Calendar.YEAR...)
+	- calendarAmount NOT equal to zero
+
+* Examples:
+```java
+final Calendar date1 = new GregorianCalendar(2016, 05, 29, 6, 5, 5);
+final Calendar date2 = new GregorianCalendar(2016, 05, 29, 5, 5, 5);
+
+Assertor.that(date1).isAfterOrEqual(date1).orElseThrow(); // -> OK
+Assertor.that(date1).isAfterOrEqual(date2).orElseThrow(); // -> OK
+Assertor.that(date2).isAfterOrEqual(date1).orElseThrow(); // -> throw an exception
+Assertor.that(date2).not().isAfterOrEqual(date1).orElseThrow(); // -> OK
+
+Assertor.that(date1).isAfterOrEqual(date2, Calendar.SECOND, 5).orElseThrow(); // -> OK
+Assertor.that(date1).isAfterOrEqual(date2, Calendar.MINUTE, 5).orElseThrow(); // -> OK
+Assertor.that(date1).isAfterOrEqual(date2, Calendar.HOUR, 5).orElseThrow(); // -> throw an exception
+Assertor.that(date1).not().isAfterOrEqual(date2, Calendar.HOUR, 5).orElseThrow(); // -> OK
+
+// prerequisite errors
+Assertor.that(null).isAfterOrEqual(date2).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(date1).isAfterOrEqual(null).orElseThrow(); // -> throw an exception (date null)
+
+Assertor.that(null).isAfterOrEqual(date2, Calendar.SECOND, 5).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(date1).isAfterOrEqual(null, Calendar.SECOND, 5).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(date1).isAfterOrEqual(date2, Calendar.FIELD_COUNT, -5).orElseThrow(); // -> throw an exception (invalid calendarField)
+Assertor.that(date1).isAfterOrEqual(date2, -100, -5).orElseThrow(); // -> throw an exception (invalid calendarField)
+Assertor.that(date1).isAfterOrEqual(date2, Calendar.HOUR, 0).orElseThrow(); // -> throw an exception (invalid calendarAmount)
+Assertor.that(null).not().isAfterOrEqual(date2, Calendar.SECOND, 5).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(date1).not().isAfterOrEqual(null, Calendar.SECOND, 5).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(date1).not().isAfterOrEqual(date2, Calendar.FIELD_COUNT, -5).orElseThrow(); // -> throw an exception (invalid calendarField)
+Assertor.that(date1).not().isAfterOrEqual(date2, -100, -5).orElseThrow(); // -> throw an exception (invalid calendarField)
+Assertor.that(date1).not().isAfterOrEqual(date2, Calendar.HOUR, 0).orElseThrow(); // -> throw an exception (invalid calendarAmount)
+```
+
 #### isBefore
+Assert that date1 is before the date2.
+* Signatures:
+	- isBefore(Calendar date)
+	- isBefore(Calendar date, CharSequence message, Object[] arguments)
+	- isBefore(Calendar date, Locale locale, CharSequence message, Object[] arguments)
+	- isBefore(Calendar date, int calendarField, int calendarAmount)
+	- isBefore(Calendar date, int calendarField, int calendarAmount, CharSequence message, Object[] arguments)
+	- isBefore(Calendar date, int calendarField, int calendarAmount, Locale locale, CharSequence message, Object[] arguments)
+	- isBefore(Date date)
+	- isBefore(Date date, CharSequence message, Object[] arguments)
+	- isBefore(Date date, Locale locale, CharSequence message, Object[] arguments)
+	- isBefore(Date date, int calendarField, int calendarAmount)
+	- isBefore(Date date, int calendarField, int calendarAmount, CharSequence message, Object[] arguments)
+	- isBefore(Date date, int calendarField, int calendarAmount, Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites:
+	- dates NOT null
+	- calendarField valid (see calendar field, ex: Calendar.ERA, Calendar.YEAR...)
+	- calendarAmount NOT equal to zero
+
+* Examples:
+```java
+final Calendar date1 = new GregorianCalendar(2016, 05, 29, 5, 5, 5);
+final Calendar date2 = new GregorianCalendar(2016, 05, 29, 6, 5, 5);
+
+Assertor.that(date1).isBefore(date2).orElseThrow(); // -> OK
+Assertor.that(date2).isBefore(date1).orElseThrow(); // -> throw an exception
+Assertor.that(date2).not().isBefore(date1).orElseThrow(); // -> OK
+
+Assertor.that(date1).isBefore(date2, Calendar.SECOND, 5).orElseThrow(); // -> OK
+Assertor.that(date1).isBefore(date2, Calendar.MINUTE, 5).orElseThrow(); // -> OK
+Assertor.that(date1).isBefore(date2, Calendar.HOUR, 5).orElseThrow(); // -> throw an exception
+Assertor.that(date1).not().isBefore(date2, Calendar.HOUR, 5).orElseThrow(); // -> OK
+
+// prerequisite errors
+Assertor.that(null).isBefore(date2).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(date1).isBefore(null).orElseThrow(); // -> throw an exception (date null)
+
+Assertor.that(null).isBefore(date2, Calendar.SECOND, 5).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(date1).isBefore(null, Calendar.SECOND, 5).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(date1).isBefore(date2, Calendar.FIELD_COUNT, -5).orElseThrow(); // -> throw an exception (invalid calendarField)
+Assertor.that(date1).isBefore(date2, -100, -5).orElseThrow(); // -> throw an exception (invalid calendarField)
+Assertor.that(date1).isBefore(date2, Calendar.HOUR, 0).orElseThrow(); // -> throw an exception (invalid calendarAmount)
+Assertor.that(null).not().isBefore(date2, Calendar.SECOND, 5).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(date1).not().isBefore(null, Calendar.SECOND, 5).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(date1).not().isBefore(date2, Calendar.FIELD_COUNT, -5).orElseThrow(); // -> throw an exception (invalid calendarField)
+Assertor.that(date1).not().isBefore(date2, -100, -5).orElseThrow(); // -> throw an exception (invalid calendarField)
+Assertor.that(date1).not().isBefore(date2, Calendar.HOUR, 0).orElseThrow(); // -> throw an exception (invalid calendarAmount)
+```
+
 #### isBeforeOrEqual
+Assert that date1 is before or equals the date2.
+* Signatures:
+	- isBeforeOrEqual(Calendar date)
+	- isBeforeOrEqual(Calendar date, CharSequence message, Object[] arguments)
+	- isBeforeOrEqual(Calendar date, Locale locale, CharSequence message, Object[] arguments)
+	- isBeforeOrEqual(Calendar date)
+	- isBeforeOrEqual(Calendar date, int calendarField, int calendarAmount, CharSequence message, Object[] arguments)
+	- isBeforeOrEqual(Calendar date, int calendarField, int calendarAmount, Locale locale, CharSequence message, Object[] arguments)
+	- isBeforeOrEqual(Date date)
+	- isBeforeOrEqual(Date date, CharSequence message, Object[] arguments)
+	- isBeforeOrEqual(Date date, Locale locale, CharSequence message, Object[] arguments)
+	- isBeforeOrEqual(Date date, int calendarField, int calendarAmount)
+	- isBeforeOrEqual(Date date, int calendarField, int calendarAmount, CharSequence message, Object[] arguments)
+	- isBeforeOrEqual(Date date, int calendarField, int calendarAmount, Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites:
+	- dates NOT null
+	- calendarField valid (see calendar field, ex: Calendar.ERA, Calendar.YEAR...)
+	- calendarAmount NOT equal to zero
+
+* Examples:
+```java
+final Calendar date1 = new GregorianCalendar(2016, 05, 29, 5, 5, 5);
+final Calendar date2 = new GregorianCalendar(2016, 05, 29, 6, 5, 5);
+
+Assertor.that(date1).isBeforeOrEqual(date1).orElseThrow(); // -> OK
+Assertor.that(date1).isBeforeOrEqual(date2).orElseThrow(); // -> OK
+Assertor.that(date2).isBeforeOrEqual(date1).orElseThrow(); // -> throw an exception
+Assertor.that(date2).not().isBeforeOrEqual(date1).orElseThrow(); // -> OK
+
+Assertor.that(date1).isBeforeOrEqual(date2, Calendar.SECOND, 5).orElseThrow(); // -> OK
+Assertor.that(date1).isBeforeOrEqual(date2, Calendar.MINUTE, 5).orElseThrow(); // -> OK
+Assertor.that(date1).isBeforeOrEqual(date2, Calendar.HOUR, 5).orElseThrow(); // -> throw an exception
+Assertor.that(date1).not().isBeforeOrEqual(date2, Calendar.HOUR, 5).orElseThrow(); // -> OK
+
+// prerequisite errors
+Assertor.that(null).isBeforeOrEqual(date2).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(date1).isBeforeOrEqual(null).orElseThrow(); // -> throw an exception (date null)
+
+Assertor.that(null).isBeforeOrEqual(date2, Calendar.SECOND, 5).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(date1).isBeforeOrEqual(null, Calendar.SECOND, 5).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(date1).isBeforeOrEqual(date2, Calendar.FIELD_COUNT, -5).orElseThrow(); // -> throw an exception (invalid calendarField)
+Assertor.that(date1).isBeforeOrEqual(date2, -100, -5).orElseThrow(); // -> throw an exception (invalid calendarField)
+Assertor.that(date1).isBeforeOrEqual(date2, Calendar.HOUR, 0).orElseThrow(); // -> throw an exception (invalid calendarAmount)
+Assertor.that(null).not().isBeforeOrEqual(date2, Calendar.SECOND, 5).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(date1).not().isBeforeOrEqual(null, Calendar.SECOND, 5).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(date1).not().isBeforeOrEqual(date2, Calendar.FIELD_COUNT, -5).orElseThrow(); // -> throw an exception (invalid calendarField)
+Assertor.that(date1).not().isBeforeOrEqual(date2, -100, -5).orElseThrow(); // -> throw an exception (invalid calendarField)
+Assertor.that(date1).not().isBeforeOrEqual(date2, Calendar.HOUR, 0).orElseThrow(); // -> throw an exception (invalid calendarAmount)
+```
 
 ### Temporal
+#### isEqual
+Assert that dates are equal.
+
+* Signatures:
+	- isEqual(T temporal)
+	- isEqual(T temporal, CharSequence message, Object[] arguments)
+	- isEqual(T temporal, Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites: none
+
+* Examples:
+```java
+LocalDateTime date1 = LocalDateTime.now();
+LocalDateTime date2 = LocalDateTime.now().plusHours(1);
+
+Assertor.that(date1).isEqual(date2).orElseThrow(); // -> throw an exception
+Assertor.that(date1).isEqual(date1).orElseThrow(); // -> OK
+Assertor.that((LocalDateTime) null).isEqual(date2).orElseThrow(); // -> throw an exception
+Assertor.that(date1).isEqual(null).orElseThrow(); // -> throw an exception
+Assertor.that(date1).isEqual(date2, "Bad status").orElseThrow(); // -> throw an exception
+Assertor.that(date1).not().isEqual(date2).orElseThrow(); // -> throw an exception
+```
+
+#### isNotEqual
+Assert that dates are NOT equal.
+
+* Signatures:
+	- isNotEqual(T temporal)
+	- isNotEqual(T temporal, CharSequence message, Object[] arguments)
+	- isNotEqual(T temporal, Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites: none
+
+* Examples:
+```java
+final LocalDateTime date1 = LocalDateTime.now();
+final LocalDateTime date2 = LocalDateTime.now().plusHours(1);
+
+Assertor.that(date1).isNotEqual(date2).orElseThrow(); // -> throw an exception
+Assertor.that(date1).isNotEqual(date1).orElseThrow(); // -> OK
+Assertor.that((LocalDateTime) null).isNotEqual(date2).orElseThrow(); // -> throw an exception
+Assertor.that(date1).isNotEqual(null).orElseThrow(); // -> throw an exception
+Assertor.that(date1).isNotEqual(date2, "Bad status").orElseThrow(); // -> throw an exception
+Assertor.that(date1).not().isNotEqual(date2).orElseThrow(); // -> throw an exception
+```
+
 #### isAround
+Assert that date1 is around the date2.
+* Signatures:
+	- isAround(T temporal, TemporalAmount temporalAmount)
+	- isAround(T temporal, TemporalAmount temporalAmount, CharSequence message, Object[] arguments)
+	- isAround(T temporal, TemporalAmount temporalAmount, Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites:
+	- temporals NOT null, only if temporalAmount NOT null
+
+* Examples:
+```java
+final LocalDateTime date1 = LocalDateTime.now().plusSeconds(1);
+final LocalDateTime date2 = LocalDateTime.now();
+
+Assertor.that(date1).isAround(date2, Duration.ofSeconds(5)).orElseThrow(); // -> OK
+Assertor.that(date1).isAround(date2, Duration.ofHours(5)).orElseThrow(); // -> OK
+Assertor.that(date1).isAround(date2, Duration.ofMillis(5)).orElseThrow(); // -> throw an exception
+Assertor.that(date1).not().isAround(date2, Duration.ofMillis(5)).orElseThrow(); // -> OK
+
+// prerequisite errors
+Assertor.that(null).isAround(date2, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(date1).isAround(null, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(null).not().isAround(date2, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(date1).not().isAround(null, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
+```
+
 #### isNotAround
+Assert that date1 is NOT around the date2.
+* Signatures:
+	- isNotAround(T temporal, TemporalAmount temporalAmount)
+	- isNotAround(T temporal, TemporalAmount temporalAmount, CharSequence message, Object[] arguments)
+	- isNotAround(T temporal, TemporalAmount temporalAmount, Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites:
+	- temporals NOT null, only if temporalAmount NOT null
+
+* Examples:
+```java
+final LocalDateTime date1 = LocalDateTime.now().plusSeconds(1);
+final LocalDateTime date2 = LocalDateTime.now();
+
+Assertor.that(date1).isNotAround(date2, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception
+Assertor.that(date1).isNotAround(date2, Duration.ofHours(5)).orElseThrow(); // -> throw an exception
+Assertor.that(date1).isNotAround(date2, Duration.ofMillis(5)).orElseThrow(); // -> OK
+Assertor.that(date1).not().isNotAround(date2, Duration.ofMillis(5)).orElseThrow(); // -> throw an exception
+
+// prerequisite errors
+Assertor.that(null).isAround(date2, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(date1).isAround(null, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(null).not().isAround(date2, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(date1).not().isAround(null, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
+```
+
 #### isAfter
+Assert that date1 is after the date2.
+* Signatures:
+	- isAfter(T temporal)
+	- isAfter(T temporal, CharSequence message, Object[] arguments)
+	- isAfter(T temporal, Locale locale, CharSequence message, Object[] arguments)
+	- isAfter(T temporal, TemporalAmount temporalAmount)
+	- isAfter(T temporal, TemporalAmount temporalAmount, CharSequence message, Object[] arguments)
+	- isAfter(T temporal, TemporalAmount temporalAmount, Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites:
+	- temporals NOT null, only if temporalAmount NOT null
+
+* Examples:
+```java
+final LocalDateTime date1 = LocalDateTime.now().plusHours(1);
+final LocalDateTime date2 = LocalDateTime.now();
+
+Assertor.that(date1).isAfter(date2).orElseThrow(); // -> OK
+Assertor.that(date1).isAfter(date1).orElseThrow(); // -> throw an exception
+Assertor.that(date2).isAfter(date1).orElseThrow(); // -> throw an exception
+Assertor.that(date2).not().isAfter(date1).orElseThrow(); // -> OK
+
+Assertor.that(date1).isAfter(date2, Duration.ofSeconds(5)).orElseThrow(); // -> OK
+Assertor.that(date1).isAfter(date2, Duration.ofMinutes(5)).orElseThrow(); // -> OK
+Assertor.that(date1).isAfter(date2, Duration.ofHours(5)).orElseThrow(); // -> throw an exception
+Assertor.that(date1).not().isAfter(date2, Duration.ofHours(5)).orElseThrow(); // -> OK
+
+// prerequisite errors
+Assertor.that(null).isAfter(date2, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(date1).isAfter(null, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(null).not().isAfter(date2, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(date1).not().isAfter(null, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
+```
+
 #### isAfterOrEqual
+Assert that date1 is after or equals the date2.
+* Signatures:
+	- isAfterOrEqual(T temporal)
+	- isAfterOrEqual(T temporal, CharSequence message, Object[] arguments)
+	- isAfterOrEqual(T temporal, Locale locale, CharSequence message, Object[] arguments)
+	- isAfterOrEqual(T temporal, TemporalAmount temporalAmount)
+	- isAfterOrEqual(T temporal, TemporalAmount temporalAmount, CharSequence message, Object[] arguments)
+	- isAfterOrEqual(T temporal, TemporalAmount temporalAmount, Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites:
+	- temporals NOT null, only if temporalAmount NOT null
+
+* Examples:
+```java
+final LocalDateTime date1 = LocalDateTime.now().plusHours(1);
+final LocalDateTime date2 = LocalDateTime.now();
+
+Assertor.that(date1).isAfterOrEqual(date2).orElseThrow(); // -> OK
+Assertor.that(date1).isAfterOrEqual(date1).orElseThrow(); // -> OK
+Assertor.that(date2).isAfterOrEqual(date1).orElseThrow(); // -> throw an exception
+Assertor.that(date2).not().isAfterOrEqual(date1).orElseThrow(); // -> OK
+
+Assertor.that(date1).isAfterOrEqual(date2, Duration.ofSeconds(5)).orElseThrow(); // -> OK
+Assertor.that(date1).isAfterOrEqual(date2, Duration.ofMinutes(5)).orElseThrow(); // -> OK
+Assertor.that(date1).isAfterOrEqual(date2, Duration.ofHours(5)).orElseThrow(); // -> throw an exception
+Assertor.that(date1).not().isAfterOrEqual(date2, Duration.ofHours(5)).orElseThrow(); // -> OK
+
+// prerequisite errors
+Assertor.that(null).isAfterOrEqual(date2, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(date1).isAfterOrEqual(null, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(null).not().isAfterOrEqual(date2, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(date1).not().isAfterOrEqual(null, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
+```
+
 #### isBefore
+Assert that date1 is before the date2.
+* Signatures:
+	- isBefore(T temporal)
+	- isBefore(T temporal, CharSequence message, Object[] arguments)
+	- isBefore(T temporal, Locale locale, CharSequence message, Object[] arguments)
+	- isBefore(T temporal, TemporalAmount temporalAmount)
+	- isBefore(T temporal, TemporalAmount temporalAmount, CharSequence message, Object[] arguments)
+	- isBefore(T temporal, TemporalAmount temporalAmount, Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites:
+	- temporals NOT null, only if temporalAmount NOT null
+
+* Examples:
+```java
+final LocalDateTime date1 = LocalDateTime.now();
+final LocalDateTime date2 = LocalDateTime.now().plusHours(1);
+
+Assertor.that(date1).isBefore(date2).orElseThrow(); // -> OK
+Assertor.that(date1).isBefore(date1).orElseThrow(); // -> throw an exception
+Assertor.that(date2).isBefore(date1).orElseThrow(); // -> throw an exception
+Assertor.that(date2).not().isBefore(date1).orElseThrow(); // -> OK
+
+Assertor.that(date1).isBefore(date2, Duration.ofSeconds(5)).orElseThrow(); // -> OK
+Assertor.that(date1).isBefore(date2, Duration.ofMinutes(5)).orElseThrow(); // -> OK
+Assertor.that(date1).isBefore(date2, Duration.ofHours(5)).orElseThrow(); // -> throw an exception
+Assertor.that(date1).not().isBefore(date2, Duration.ofHours(5)).orElseThrow(); // -> OK
+
+// prerequisite errors
+Assertor.that(null).isBefore(date2, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(date1).isBefore(null, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(null).not().isBefore(date2, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(date1).not().isBefore(null, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
+```
+
 #### isBeforeOrEqual
+Assert that date1 is before or equals the date2.
+* Signatures:
+	- isBeforeOrEqual(T temporal)
+	- isBeforeOrEqual(T temporal, CharSequence message, Object[] arguments)
+	- isBeforeOrEqual(T temporal, Locale locale, CharSequence message, Object[] arguments)
+	- isBeforeOrEqual(T temporal, TemporalAmount temporalAmount)
+	- isBeforeOrEqual(T temporal, TemporalAmount temporalAmount, CharSequence message, Object[] arguments)
+	- isBeforeOrEqual(T temporal, TemporalAmount temporalAmount, Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites:
+	- temporals NOT null, only if temporalAmount NOT null
+
+* Examples:
+```java
+final LocalDateTime date1 = LocalDateTime.now();
+final LocalDateTime date2 = LocalDateTime.now().plusHours(1);
+
+Assertor.that(date1).isBeforeOrEqual(date2).orElseThrow(); // -> OK
+Assertor.that(date1).isBeforeOrEqual(date1).orElseThrow(); // -> OK
+Assertor.that(date2).isBeforeOrEqual(date1).orElseThrow(); // -> throw an exception
+Assertor.that(date2).not().isBeforeOrEqual(date1).orElseThrow(); // -> OK
+
+Assertor.that(date1).isBeforeOrEqual(date2, Duration.ofSeconds(5)).orElseThrow(); // -> OK
+Assertor.that(date1).isBeforeOrEqual(date2, Duration.ofMinutes(5)).orElseThrow(); // -> OK
+Assertor.that(date1).isBeforeOrEqual(date2, Duration.ofHours(5)).orElseThrow(); // -> throw an exception
+Assertor.that(date1).not().isBeforeOrEqual(date2, Duration.ofHours(5)).orElseThrow(); // -> OK
+
+// prerequisite errors
+Assertor.that(null).isBeforeOrEqual(date2, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(date1).isBeforeOrEqual(null, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(null).not().isBeforeOrEqual(date2, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(date1).not().isBeforeOrEqual(null, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
+```
 
 ### Enum
 #### hasName
@@ -1510,10 +2074,102 @@ Assertor.that(date1).not().isNotAround(date2, Calendar.HOUR, 0).orElseThrow(); /
 
 ### Number
 #### isEqual
+Assert that numbers are equal.
+
+* Signatures:
+	- isEqual(N number)
+	- isEqual(N number, CharSequence message, Object[] arguments)
+	- isEqual(N number, Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites: none
+
+* Examples:
+```java
+Assertor.that(-12).isEqual(11).orElseThrow(); // -> throw an exception
+Assertor.that(1).isEqual(1).orElseThrow(); // -> OK
+Assertor.that((Long) null).isEqual(1).orElseThrow(); // -> throw an exception
+Assertor.that(1).isEqual(null).orElseThrow(); // -> throw an exception
+Assertor.that(12).isEqual(1, "Bad status").orElseThrow(); // -> throw an exception
+Assertor.that(-12).not().isEqual(1).orElseThrow(); // -> OK
+```
+
 #### isNotEqual
+Assert that numbers are NOT equal.
+
+* Signatures:
+	- isNotEqual(N number)
+	- isNotEqual(N number, CharSequence message, Object[] arguments)
+	- isNotEqual(N number, Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites: none
+
+* Examples:
+```java
+Assertor.that(-12).isNotEqual(-12).orElseThrow(); // -> throw an exception
+Assertor.that(1).isNotEqual(12).orElseThrow(); // -> OK
+Assertor.that((Long) null).isNotEqual(1).orElseThrow(); // -> OK
+Assertor.that(1).isNotEqual(null).orElseThrow(); // -> OK
+Assertor.that(12).isNotEqual(12, "Bad status").orElseThrow(); // -> throw an exception
+Assertor.that(-12).not().isNotEqual(1).orElseThrow(); // -> throw an exception
+```
+
 #### isZero
+Assert that number equals zero.
+
+* Signatures:
+	- isZero()
+	- isZero(CharSequence message, Object[] arguments)
+	- isZero(Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites: none
+
+* Examples:
+```java
+Assertor.that(-12).isZero().orElseThrow(); // -> throw an exception
+Assertor.that(0).isZero().orElseThrow(); // -> OK
+Assertor.that((Long) null).isZero().orElseThrow(); // -> throw an exception
+Assertor.that(12).isZero("Bad status").orElseThrow(); // -> throw an exception
+Assertor.that(-12).not().isZero().orElseThrow(); // -> throw an exception
+```
+
 #### isPositive
+Assert that number is positive.
+
+* Signatures:
+	- isPositive()
+	- isPositive(CharSequence message, Object[] arguments)
+	- isPositive(Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites: none
+
+* Examples:
+```java
+Assertor.that(-12).isPositive().orElseThrow(); // -> throw an exception
+Assertor.that((Integer) null).isPositive().orElseThrow(); // -> throw an exception
+Assertor.that(0).isPositive().orElseThrow(); // -> throw an exception
+Assertor.that(12).isPositive("Bad status").orElseThrow(); // -> OK
+Assertor.that(-12).not().isPositive().orElseThrow(); // -> OK
+```
+
 #### isNegative
+Assert that number is negative.
+
+* Signatures:
+	- isNegative()
+	- isNegative(CharSequence message, Object[] arguments)
+	- isNegative(Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites: none
+
+* Examples:
+```java
+Assertor.that(12).isNegative().orElseThrow(); // -> throw an exception
+Assertor.that(0).isNegative().orElseThrow(); // -> throw an exception
+Assertor.that((Integer) null).isNegative().orElseThrow(); // -> throw an exception
+Assertor.that(-12).isNegative("Bad status").orElseThrow(); // -> OK
+Assertor.that(12).not().isNegative().orElseThrow(); // -> OK
+```
+
 #### isGT
 Assert that number is greater than specified number.
 
@@ -1613,17 +2269,202 @@ Assertor.that(12).not().isLTE(null).orElseThrow(); // -> throw an exception
 ```
 
 ### Throwable
-#### isInstanceOf
 #### isAssignableFrom
+Assert that throwable is assignable from clazz and has the specified message or matches the pattern.
+* Signatures:
+	- isAssignableFrom(Class<?> clazz, CharSequence throwableMessage)
+	- isAssignableFrom(Class<?> clazz, CharSequence throwableMessage, CharSequence message, Object[] arguments)
+	- isAssignableFrom(Class<?> clazz, CharSequence throwableMessage, Locale locale, CharSequence message, Object[] arguments)
+	- isAssignableFrom(Class<?> clazz, Pattern pattern)
+	- isAssignableFrom(Class<?> clazz, Pattern pattern, CharSequence message, Object[] arguments)
+	- isAssignableFrom(Class<?> clazz, Pattern pattern, Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites:
+	- throwable NOT null
+	- class NOT null
+	- pattern NOT null (only for pattern signature)
+
+* Examples:
+```java
+Assertor.that(new IOException("test")).isAssignableFrom(Exception.class, "test").orElseThrow(); // -> OK
+Assertor.that(new Exception("error")).isAssignableFrom(Exception.class, "error").orElseThrow(); // -> OK
+Assertor.that(new IOException()).isAssignableFrom(Exception.class, (String) null).orElseThrow(); // -> OK
+Assertor.that(new Exception("error")).isAssignableFrom(IOException.class, "error").orElseThrow(); // -> throw an exception
+Assertor.that(new IOException("test")).isAssignableFrom(Exception.class, "tes").orElseThrow(); // -> throw an exception
+
+Assertor.that(new IOException("test")).isAssignableFrom(Exception.class, Pattern.compile("^t.*t$")).orElseThrow(); // -> OK
+Assertor.that(new Exception("error")).isAssignableFrom(Exception.class, Pattern.compile("^e.*$")).orElseThrow(); // -> OK
+Assertor.that(new Exception("error")).isAssignableFrom(IOException.class, Pattern.compile("^x.*$")).orElseThrow(); // -> throw an exception
+Assertor.that(new IOException("test")).isAssignableFrom(Exception.class, Pattern.compile("^t")).orElseThrow(); // -> throw an exception
+
+// prerequisite errors
+Assertor.that((Exception) null).isAssignableFrom(Exception.class, "error").orElseThrow(); // -> throw an exception
+Assertor.that(new Exception("error")).isAssignableFrom(null, "error").orElseThrow(); // -> throw an exception
+
+Assertor.that((Exception) null).isAssignableFrom(Exception.class, "error").orElseThrow(); // -> throw an exception
+Assertor.that(new Exception("error")).isAssignableFrom(null, Pattern.compile("^e.*$")).orElseThrow(); // -> throw an exception
+Assertor.that(new Exception("error")).isAssignableFrom(Exception.class, (Pattern) null).orElseThrow(); // -> throw an exception
+```
+
+#### isInstanceOf
+Assert that throwable is an instance of object and has the specified message or matches the pattern.
+* Signatures:
+	- isInstanceOf(Class<?> clazz, CharSequence throwableMessage)
+	- isInstanceOf(Class<?> clazz, CharSequence throwableMessage, CharSequence message, Object[] arguments)
+	- isInstanceOf(Class<?> clazz, CharSequence throwableMessage, Locale locale, CharSequence message, Object[] arguments)
+	- isInstanceOf(Class<?> clazz, Pattern pattern)
+	- isInstanceOf(Class<?> clazz, Pattern pattern, CharSequence message, Object[] arguments)
+	- isInstanceOf(Class<?> clazz, Pattern pattern, Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites:
+	- throwable NOT null
+	- class NOT null
+	- pattern NOT null (only for pattern signature)
+
+* Examples:
+```java
+Assertor.that(new IOException("test")).isInstanceOf(Exception.class, "test").orElseThrow(); // -> throw an exception
+Assertor.that(new Exception("error")).isInstanceOf(Exception.class, "error").orElseThrow(); // -> OK
+Assertor.that(new IOException()).isInstanceOf(Exception.class, null).orElseThrow(); // -> throw an exception
+Assertor.that(new Exception("error")).isInstanceOf(IOException.class, "error").orElseThrow(); // -> throw an exception
+Assertor.that(new IOException("test")).isInstanceOf(Exception.class, "tes").orElseThrow(); // -> throw an exception
+
+Assertor.that(new IOException("test")).isInstanceOf(Exception.class, Pattern.compile("^t.*t$")).orElseThrow(); // -> throw an exception
+Assertor.that(new Exception("error")).isInstanceOf(Exception.class, Pattern.compile("^e.*$")).orElseThrow(); // -> OK
+Assertor.that(new Exception("error")).isInstanceOf(IOException.class, Pattern.compile("^x.*$")).orElseThrow(); // -> throw an exception
+Assertor.that(new IOException("test")).isInstanceOf(Exception.class, Pattern.compile("^t")).orElseThrow(); // -> throw an exception
+
+// prerequisite errors
+Assertor.that((Exception) null).isInstanceOf(Exception.class, "error").orElseThrow(); // -> throw an exception
+Assertor.that(new Exception("error")).isInstanceOf(null, "error").orElseThrow(); // -> throw an exception
+
+Assertor.that((Exception) null).isInstanceOf(Exception.class, Pattern.compile("^e.*$")).orElseThrow(); // -> throw an exception
+Assertor.that(new Exception("error")).isInstanceOf(null, Pattern.compile("^e.*$")).orElseThrow(); // -> throw an exception
+Assertor.that(new Exception("error")).isInstanceOf(Exception.class, (Pattern) null).orElseThrow(); // -> throw an exception
+```
+
 #### hasCauseNull
+Assert that throwable has a cause.
+* Signatures:
+	- hasCauseNull()
+	- hasCauseNull(CharSequence message, Object[] arguments)
+	- hasCauseNull(Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites:
+	- throwable NOT null
+
+* Examples:
+```java
+Assertor.that(new IOException(new Exception("test"))).hasCauseNull().orElseThrow(); // -> throw an exception
+Assertor.that(new IOException("test")).hasCauseNull().orElseThrow(); // -> OK
+
+// prerequisite errors
+Assertor.that((Exception) null).hasCauseNull().orElseThrow(); // -> throw an exception
+```
+
 #### hasCauseNotNull
+Assert that throwable has no cause.
+* Signatures:
+	- hasCauseNotNull()
+	- hasCauseNotNull(CharSequence message, Object[] arguments)
+	- hasCauseNotNull(Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites:
+	- throwable NOT null
+
+* Examples:
+```java
+Assertor.that(new IOException(new Exception("test"))).hasCauseNotNull().orElseThrow(); // -> OK
+Assertor.that(new IOException("test")).hasCauseNotNull().orElseThrow(); // -> throw an exception
+
+// prerequisite errors
+Assertor.that((Exception) null).hasCauseNotNull().orElseThrow(); // -> throw an exception
+```
+
 #### hasCauseAssignableFrom
+Assert that throwable is assignable from clazz and has the specified message.
+If recursively is set to true, the cause of exception are checked recursively until cause matches.
+* Signatures:
+	- hasCauseAssignableFrom(Class<?> clazz, CharSequence throwableMessage, boolean recursively)
+	- hasCauseAssignableFrom(Class<?> clazz, CharSequence throwableMessage, boolean recursively, CharSequence message, Object[] arguments)
+	- hasCauseAssignableFrom(Class<?> clazz, CharSequence throwableMessage, boolean recursively, Locale locale, CharSequence message, Object[] arguments)
+	- hasCauseAssignableFrom(Class<?> clazz, Pattern pattern, boolean recursively)
+	- hasCauseAssignableFrom(Class<?> clazz, Pattern pattern, boolean recursively, CharSequence message, Object[] arguments)
+	- hasCauseAssignableFrom(Class<?> clazz, Pattern pattern, boolean recursively, Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites:
+	- throwable NOT null
+	- class NOT null
+	- pattern NOT null (only for pattern signature)
+
+* Examples:
+```java
+Assertor.that(new IOException("test")).hasCauseAssignableFrom(Exception.class, "test", false).orElseThrow(); // -> OK
+Assertor.that(new Exception("error")).hasCauseAssignableFrom(Exception.class, "error", false).orElseThrow(); // -> OK
+Assertor.that(new Exception(new IOException("error"))).hasCauseAssignableFrom(Exception.class, "error", true).orElseThrow(); // -> OK
+Assertor.that(new Exception(new IOException("error"))).hasCauseAssignableFrom(IOException.class, "error", false).orElseThrow(); // -> throw an exception
+Assertor.that(new IOException()).hasCauseAssignableFrom(Exception.class, null, false).orElseThrow(); // -> OK
+Assertor.that(new Exception("error")).hasCauseAssignableFrom(IOException.class, "error", false).orElseThrow(); // -> throw an exception
+Assertor.that(new IOException("test")).hasCauseAssignableFrom(Exception.class, "tes, false").orElseThrow(); // -> throw an exception
+
+Assertor.that(new IOException("test")).hasCauseAssignableFrom(Exception.class, Pattern.compile("^t.*t$"), false).orElseThrow(); // -> OK
+Assertor.that(new Exception("error")).hasCauseAssignableFrom(Exception.class, Pattern.compile("^e.*$"), false).orElseThrow(); // -> OK
+Assertor.that(new Exception("error")).hasCauseAssignableFrom(IOException.class, Pattern.compile("^e.*$"), false).orElseThrow(); // -> throw an exception
+Assertor.that(new IOException("test")).hasCauseAssignableFrom(Exception.class, Pattern.compile("^t.*$"), false).orElseThrow(); // -> OK
+
+// prerequisite errors
+Assertor.that((Exception) null).hasCauseAssignableFrom(Exception.class, "error", false).orElseThrow(); // -> throw an exception
+Assertor.that(new Exception("error")).hasCauseAssignableFrom(null, "error", false).orElseThrow(); // -> throw an exception
+
+Assertor.that((Exception) null).hasCauseAssignableFrom(Exception.class, Pattern.compile("^e.*$"), false).orElseThrow(); // -> throw an exception
+Assertor.that(new Exception("error")).hasCauseAssignableFrom(null, Pattern.compile("^e.*$"), false).orElseThrow(); // -> throw an exception
+Assertor.that(new IOException()).hasCauseAssignableFrom(Exception.class, (Pattern) null, false).orElseThrow(); // -> throw an exception
+```
+
 #### hasCauseInstanceOf
+Assert that throwable is an instance of object and has the specified message.
+If recursively is set to true, the cause of exception are checked recursively until cause matches.
+* Signatures:
+	- hasCauseInstanceOf(Class<?> clazz, CharSequence throwableMessage, boolean recursively)
+	- hasCauseInstanceOf(Class<?> clazz, CharSequence throwableMessage, boolean recursively, CharSequence message, Object[] arguments)
+	- hasCauseInstanceOf(Class<?> clazz, CharSequence throwableMessage, boolean recursively, Locale locale, CharSequence message, Object[] arguments)
+	- hasCauseInstanceOf(Class<?> clazz, Pattern pattern, boolean recursively)
+	- hasCauseInstanceOf(Class<?> clazz, Pattern pattern, boolean recursively, CharSequence message, Object[] arguments)
+	- hasCauseInstanceOf(Class<?> clazz, Pattern pattern, boolean recursively, Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites:
+	- throwable NOT null
+	- class NOT null
+	- pattern NOT null (only for pattern signature)
+
+* Examples:
+```java
+Assertor.that(new IOException("test")).hasCauseInstanceOf(Exception.class, "test", false).orElseThrow(); // -> throw an exception
+Assertor.that(new Exception("error")).hasCauseInstanceOf(Exception.class, "error", false).orElseThrow(); // -> OK
+Assertor.that(new Exception(new IOException("error"))).hasCauseInstanceOf(IOException.class, "error", true).orElseThrow(); // -> OK
+Assertor.that(new Exception(new IOException("error"))).hasCauseInstanceOf(IOException.class, "error", false).orElseThrow(); // -> throw an exception
+Assertor.that(new IOException()).hasCauseInstanceOf(Exception.class, null, false).orElseThrow(); // -> throw an exception
+Assertor.that(new Exception("error")).hasCauseInstanceOf(IOException.class, "error", false).orElseThrow(); // -> throw an exception
+Assertor.that(new IOException("test")).hasCauseInstanceOf(Exception.class, "tes, false").orElseThrow(); // -> throw an exception
+
+Assertor.that(new IOException("test")).hasCauseInstanceOf(Exception.class, Pattern.compile("^t.*t$"), false).orElseThrow(); // -> throw an exception
+Assertor.that(new Exception("error")).hasCauseInstanceOf(Exception.class, Pattern.compile("^e.*$"), false).orElseThrow(); // -> OK
+Assertor.that(new Exception("error")).hasCauseInstanceOf(IOException.class, Pattern.compile("^e.*$"), false).orElseThrow(); // -> throw an exception
+Assertor.that(new IOException("test")).hasCauseInstanceOf(Exception.class, Pattern.compile("^t.*$"), false).orElseThrow(); // -> throw an exception
+
+// prerequisite errors
+Assertor.that((Exception) null).hasCauseInstanceOf(Exception.class, "error", false).orElseThrow(); // -> throw an exception
+Assertor.that(new Exception("error")).hasCauseInstanceOf(null, "error", false).orElseThrow(); // -> throw an exception
+
+Assertor.that((Exception) null).hasCauseInstanceOf(Exception.class, Pattern.compile("^e.*$"), false).orElseThrow(); // -> throw an exception
+Assertor.that(new Exception("error")).hasCauseInstanceOf(null, Pattern.compile("^e.*$"), false).orElseThrow(); // -> throw an exception
+Assertor.that(new IOException()).hasCauseInstanceOf(Exception.class, (Pattern) null, false).orElseThrow(); // -> throw an exception
+```
 
 ## TODO
 
-- Allow new extension (change PredicateStep design) 
-- Build all messages in one step at the end (one call to String.format, which locale, if multiple?)
+- Allow new extension (change PredicateStep design)
+- Build all messages in one step at the end only if all message locales are same
 
 ## License
 See [main project license](https://github.com/Gilandel/utils/LICENSE): Apache License, version 2.0
