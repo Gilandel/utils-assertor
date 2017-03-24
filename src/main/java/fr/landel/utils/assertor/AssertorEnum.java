@@ -94,7 +94,8 @@ public class AssertorEnum extends ConstantsAssertor {
      * ordinal
      * 
      * <p>
-     * precondition: the {@code ordinal} cannot be lower than 0
+     * precondition: the enum cannot be {@code null} and {@code ordinal} cannot
+     * be lower than 0
      * </p>
      * 
      * @param step

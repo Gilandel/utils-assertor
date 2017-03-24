@@ -17,7 +17,7 @@ Work progress:
 ![Code status](http://vbc3.com/script/progressbar.php?text=Code&progress=100)
 ![Test status](http://vbc3.com/script/progressbar.php?text=Test&progress=100)
 ![Benchmark status](http://vbc3.com/script/progressbar.php?text=Benchmark&progress=100)
-![JavaDoc status](http://vbc3.com/script/progressbar.php?text=JavaDoc&progress=95)
+![JavaDoc status](http://vbc3.com/script/progressbar.php?text=JavaDoc&progress=100)
 
 ```xml
 <dependency>
@@ -186,7 +186,7 @@ Assertor.that(object1).isNull().or().not().isInstance(Color.class).or(object2).i
 ```
 
 Multiple outputs are available:
-- orElseThrow: throw an exception if assertion is false, otherwise returns the last checked parameter,
+- orElseThrow: throws an exception if assertion is false, otherwise returns the last checked parameter,
 - isOk: get the boolean result of the assertion,
 - getErrors: get the error message (java.util.Optional),
 - get: the result (java.util.Optional),
@@ -618,10 +618,10 @@ Assertor.that(object).isInstance(class1).orElseThrow();
 Assertor.that(object).isInstance(class1, "Input is not an instance of the class '%2$s*'").orElseThrow();
 
 // prerequisite errors
-Assertor.that(null).isInstance(class1).orElseThrow(); // -> throw an exception
-Assertor.that(object).isInstance(null).orElseThrow(); // -> throw an exception
-Assertor.that(null).not().isInstance(class1).orElseThrow(); // -> throw an exception
-Assertor.that(object).not().isInstance(null).orElseThrow(); // -> throw an exception
+Assertor.that(null).isInstance(class1).orElseThrow(); // -> throws an exception
+Assertor.that(object).isInstance(null).orElseThrow(); // -> throws an exception
+Assertor.that(null).not().isInstance(class1).orElseThrow(); // -> throws an exception
+Assertor.that(object).not().isInstance(null).orElseThrow(); // -> throws an exception
 ```
 
 #### isAssignableFrom
@@ -642,10 +642,10 @@ Assertor.that(object).isAssignableFrom(class1).orElseThrow();
 Assertor.that(object).isAssignableFrom(class1, "Input is not assignable from the class '%2$s*'").orElseThrow();
 
 // prerequisite errors
-Assertor.that(null).isAssignableFrom(class1).orElseThrow(); // -> throw an exception
-Assertor.that(object).isAssignableFrom(null).orElseThrow(); // -> throw an exception
-Assertor.that(null).not().isAssignableFrom(class1).orElseThrow(); // -> throw an exception
-Assertor.that(object).not().isAssignableFrom(null).orElseThrow(); // -> throw an exception
+Assertor.that(null).isAssignableFrom(class1).orElseThrow(); // -> throws an exception
+Assertor.that(object).isAssignableFrom(null).orElseThrow(); // -> throws an exception
+Assertor.that(null).not().isAssignableFrom(class1).orElseThrow(); // -> throws an exception
+Assertor.that(object).not().isAssignableFrom(null).orElseThrow(); // -> throws an exception
 ```
 
 #### hasHashCode
@@ -688,8 +688,8 @@ Assertor.that("/var/log/dev.log").validates((path) -> {
 }, Locale.US, "Path is invalid").isOK();
 
 // prerequisite errors
-Assertor.that(object).validates(null).orElseThrow(); // -> throw an exception
-Assertor.that(object).not().validates(null).orElseThrow(); // -> throw an exception
+Assertor.that(object).validates(null).orElseThrow(); // -> throws an exception
+Assertor.that(object).not().validates(null).orElseThrow(); // -> throws an exception
 ```
 
 ### Array
@@ -707,15 +707,15 @@ Assert that array has the specified length.
 
 * Examples:
 ```java
-Assertor.that(new String[] {"text"}).hasLength(3).orElseThrow(); // -> throw an exception
+Assertor.that(new String[] {"text"}).hasLength(3).orElseThrow(); // -> throws an exception
 Assertor.that(new String[] {"text"}).hasLength(1, "Bad status").orElseThrow(); // -> OK
 Assertor.that(new String[] {"text"}).not().hasLength(3).orElseThrow(); // -> OK
 
 // prerequisite errors
-Assertor.that((Object[]) null).hasLength(4, "Bad status").orElseThrow(); // -> throw an exception
-Assertor.that(new String[] {"text"}).hasLength(-1, "Bad status").orElseThrow(); // -> throw an exception
-Assertor.that((Object[]) null).not().hasLength(4, "Bad status").orElseThrow(); // -> throw an exception
-Assertor.that(new String[] {"text"}).not().hasLength(-1, "Bad status").orElseThrow(); // -> throw an exception
+Assertor.that((Object[]) null).hasLength(4, "Bad status").orElseThrow(); // -> throws an exception
+Assertor.that(new String[] {"text"}).hasLength(-1, "Bad status").orElseThrow(); // -> throws an exception
+Assertor.that((Object[]) null).not().hasLength(4, "Bad status").orElseThrow(); // -> throws an exception
+Assertor.that(new String[] {"text"}).not().hasLength(-1, "Bad status").orElseThrow(); // -> throws an exception
 ```
 
 #### isEmpty
@@ -730,7 +730,7 @@ Assert that array is empty or null.
 
 * Examples:
 ```java
-Assertor.that(new String[] {"text"}).isEmpty().orElseThrow(); // -> throw an exception
+Assertor.that(new String[] {"text"}).isEmpty().orElseThrow(); // -> throws an exception
 Assertor.that((String[]) null).isEmpty("Param '%1$s*' not empty").orElseThrow(); // -> OK
 Assertor.that(new String[0]).isEmpty("Param '%1$s*' not empty").orElseThrow(); // -> OK
 Assertor.that(new String[] {"text"}).not().isEmpty("Param '%1$s*' not empty").orElseThrow(); // -> OK
@@ -748,8 +748,8 @@ Assert that array is NOT empty and NOT null.
 
 * Examples:
 ```java
-Assertor.that((String[]) null).isNotEmpty().orElseThrow(); // -> throw an exception
-Assertor.that(new String[0]).isNotEmpty().orElseThrow(); // -> throw an exception
+Assertor.that((String[]) null).isNotEmpty().orElseThrow(); // -> throws an exception
+Assertor.that(new String[0]).isNotEmpty().orElseThrow(); // -> throws an exception
 Assertor.that(new String[] {"text"}).isNotEmpty("Param '%1$s*' empty or null").orElseThrow(); // -> OK
 Assertor.that(new String[0]).not().isNotEmpty("Param '%1$s*' empty or null").orElseThrow(); // -> OK
 ```
@@ -771,10 +771,10 @@ Assertor.that(new String[] {"text"}).contains("text").orElseThrow(); // -> OK
 Assertor.that(new String[] {null, ""}).contains(null, "Param '%1$s*' not contains '%2$s*'").orElseThrow(); // -> OK
 
 // prerequisite errors
-Assertor.that((String[]) null).contains("t", "Param '%1$s*' not null or empty").orElseThrow(); // -> throw an exception
-Assertor.that(new String[0]).contains(null, "Param '%1$s*' not null or empty").orElseThrow(); // -> throw an exception
-Assertor.that((String[]) null).not().contains("t", "Param '%1$s*' not null or empty").orElseThrow(); // -> throw an exception
-Assertor.that(new String[0]).not().contains(null, "Param '%1$s*' not null or empty").orElseThrow(); // -> throw an exception
+Assertor.that((String[]) null).contains("t", "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+Assertor.that(new String[0]).contains(null, "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+Assertor.that((String[]) null).not().contains("t", "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+Assertor.that(new String[0]).not().contains(null, "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
 ```
 
 #### containsAll
@@ -793,17 +793,17 @@ Assert that array contains all elements.
 ```java
 Assertor.that(new String[] {"text"}).containsAll(new String[] {"text"}).orElseThrow(); // -> OK
 Assertor.that(new String[] {null, ""}).containsAll(new String[] {null}, "Param '%1$s*' not contains '%2$s*'").orElseThrow(); // -> OK
-Assertor.that(new String[] {null, ""}).containsAll(new String[] {null, "text"}, "Param '%1$s*' not contains '%2$s*'").orElseThrow(); // -> throw an exception
+Assertor.that(new String[] {null, ""}).containsAll(new String[] {null, "text"}, "Param '%1$s*' not contains '%2$s*'").orElseThrow(); // -> throws an exception
 
 // prerequisite errors
-Assertor.that((String[]) null).containsAll(new String[] {"t"}, "Param '%1$s*' not null or empty").orElseThrow(); // -> throw an exception
-Assertor.that(new String[0]).containsAll(new String[] {null}, "Param '%1$s*' not null or empty").orElseThrow(); // -> throw an exception
-Assertor.that(new String[] {"text"}).containsAll(null, "Param '%1$s*' not null or empty").orElseThrow(); // -> throw an exception
-Assertor.that(new String[] {"text"}).containsAll(new String[0], "Param '%1$s*' not null or empty").orElseThrow(); // -> throw an exception
-Assertor.that((String[]) null).not().containsAll("t", "Param '%1$s*' not null or empty").orElseThrow(); // -> throw an exception
-Assertor.that(new String[0]).not().containsAll(new String[] {null}, "Param '%1$s*' not null or empty").orElseThrow(); // -> throw an exception
-Assertor.that(new String[] {"text"}).not().containsAll(null, "Param '%1$s*' not null or empty").orElseThrow(); // -> throw an exception
-Assertor.that(new String[] {"text"}).not().containsAll(new String[0], "Param '%1$s*' not null or empty").orElseThrow(); // -> throw an exception
+Assertor.that((String[]) null).containsAll(new String[] {"t"}, "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+Assertor.that(new String[0]).containsAll(new String[] {null}, "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+Assertor.that(new String[] {"text"}).containsAll(null, "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+Assertor.that(new String[] {"text"}).containsAll(new String[0], "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+Assertor.that((String[]) null).not().containsAll(new String[] {"t"}, "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+Assertor.that(new String[0]).not().containsAll(new String[] {null}, "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+Assertor.that(new String[] {"text"}).not().containsAll(null, "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+Assertor.that(new String[] {"text"}).not().containsAll(new String[0], "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
 ```
 
 #### containsAny
@@ -825,14 +825,14 @@ Assertor.that(new String[] {null, ""}).containsAny(new String[] {null}, "Param '
 Assertor.that(new String[] {null, ""}).containsAny(new String[] {null, "text"}, "Param '%1$s*' not contains '%2$s*'").orElseThrow(); // -> OK
 
 // prerequisite errors
-Assertor.that((String[]) null).containsAny(new String[] {"t"}, "Param '%1$s*' not null or empty").orElseThrow(); // -> throw an exception
-Assertor.that(new String[0]).containsAny(new String[] {null}, "Param '%1$s*' not null or empty").orElseThrow(); // -> throw an exception
-Assertor.that(new String[] {"text"}).containsAny(null, "Param '%1$s*' not null or empty").orElseThrow(); // -> throw an exception
-Assertor.that(new String[] {"text"}).containsAny(new String[0], "Param '%1$s*' not null or empty").orElseThrow(); // -> throw an exception
-Assertor.that((String[]) null).not().containsAny("t", "Param '%1$s*' not null or empty").orElseThrow(); // -> throw an exception
-Assertor.that(new String[0]).not().containsAny(new String[] {null}, "Param '%1$s*' not null or empty").orElseThrow(); // -> throw an exception
-Assertor.that(new String[] {"text"}).not().containsAny(null, "Param '%1$s*' not null or empty").orElseThrow(); // -> throw an exception
-Assertor.that(new String[] {"text"}).not().containsAny(new String[0], "Param '%1$s*' not null or empty").orElseThrow(); // -> throw an exception
+Assertor.that((String[]) null).containsAny(new String[] {"t"}, "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+Assertor.that(new String[0]).containsAny(new String[] {null}, "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+Assertor.that(new String[] {"text"}).containsAny(null, "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+Assertor.that(new String[] {"text"}).containsAny(new String[0], "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+Assertor.that((String[]) null).not().containsAny(new String[] {"t"}, "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+Assertor.that(new String[0]).not().containsAny(new String[] {null}, "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+Assertor.that(new String[] {"text"}).not().containsAny(null, "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+Assertor.that(new String[] {"text"}).not().containsAny(new String[0], "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
 ```
 
 ### Boolean
@@ -848,7 +848,7 @@ Assert that the boolean is true.
 
 * Examples:
 ```java
-Assertor.that(bool).isTrue().orElseThrow(); // -> throw an exception, if bool == true
+Assertor.that(bool).isTrue().orElseThrow(); // -> throws an exception, if bool == true
 Assertor.that(false).isTrue("Bad status").orElseThrow(); // -> OK
 Assertor.that(true).not().isTrue("Bad status").orElseThrow(); // -> OK
 ```
@@ -865,7 +865,7 @@ Assert that the boolean is false.
 
 * Examples:
 ```java
-Assertor.that(bool).isFalse().orElseThrow(); // -> throw an exception, if bool == true
+Assertor.that(bool).isFalse().orElseThrow(); // -> throws an exception, if bool == true
 Assertor.that(false).isFalse("Bad status").orElseThrow(); // -> OK
 Assertor.that(true).not().isFalse("Bad status").orElseThrow(); // -> OK
 ```
@@ -885,15 +885,15 @@ Assert that char sequence has the specified length.
 
 * Examples:
 ```java
-Assertor.that("text").hasLength(3).orElseThrow(); // -> throw an exception
+Assertor.that("text").hasLength(3).orElseThrow(); // -> throws an exception
 Assertor.that("text").hasLength(4, "Bad status").orElseThrow(); // -> OK
 Assertor.that("text").not().hasLength(3).orElseThrow(); // -> OK
 
 // prerequisite errors
-Assertor.that((String) null).hasLength(4, "Bad status").orElseThrow(); // -> throw an exception
-Assertor.that("text").hasLength(-1, "Bad status").orElseThrow(); // -> throw an exception
-Assertor.that((String) null).not().hasLength(4, "Bad status").orElseThrow(); // -> throw an exception
-Assertor.that("text").not().hasLength(-1, "Bad status").orElseThrow(); // -> throw an exception
+Assertor.that((String) null).hasLength(4, "Bad status").orElseThrow(); // -> throws an exception
+Assertor.that("text").hasLength(-1, "Bad status").orElseThrow(); // -> throws an exception
+Assertor.that((String) null).not().hasLength(4, "Bad status").orElseThrow(); // -> throws an exception
+Assertor.that("text").not().hasLength(-1, "Bad status").orElseThrow(); // -> throws an exception
 ```
 
 #### isEmpty
@@ -908,7 +908,7 @@ Assert that char sequence is empty or null.
 
 * Examples:
 ```java
-Assertor.that("text").isEmpty().orElseThrow(); // -> throw an exception
+Assertor.that("text").isEmpty().orElseThrow(); // -> throws an exception
 Assertor.that((String) null).isEmpty("Param '%1$s*' not empty").orElseThrow(); // -> OK
 Assertor.that("").isEmpty("Param '%1$s*' not empty").orElseThrow(); // -> OK
 Assertor.that("text").not().isEmpty("Param '%1$s*' not empty").orElseThrow(); // -> OK
@@ -926,8 +926,8 @@ Assert that char sequence is NOT empty and NOT null.
 
 * Examples:
 ```java
-Assertor.that((String) null).isNotEmpty().orElseThrow(); // -> throw an exception
-Assertor.that("").isNotEmpty().orElseThrow(); // -> throw an exception
+Assertor.that((String) null).isNotEmpty().orElseThrow(); // -> throws an exception
+Assertor.that("").isNotEmpty().orElseThrow(); // -> throws an exception
 Assertor.that("text").isNotEmpty("Param '%1$s*' empty or null").orElseThrow(); // -> OK
 Assertor.that("").not().isNotEmpty("Param '%1$s*' empty or null").orElseThrow(); // -> OK
 ```
@@ -944,7 +944,7 @@ Assert that char sequence is blank or empty or null.
 
 * Examples:
 ```java
-Assertor.that("text").isBlank().orElseThrow(); // -> throw an exception
+Assertor.that("text").isBlank().orElseThrow(); // -> throws an exception
 Assertor.that((String) null).isBlank("Param '%1$s*' not blank").orElseThrow(); // -> OK
 Assertor.that("").isBlank("Param '%1$s*' not blank").orElseThrow(); // -> OK
 Assertor.that("   ").isBlank("Param '%1$s*' not blank").orElseThrow(); // -> OK
@@ -966,9 +966,9 @@ Assert that char sequence is NOT blank and NOT empty and NOT null.
 Assertor.that("text").isNotBlank().orElseThrow(); // -> OK
 Assertor.that("text").isNotBlank("Param '%1$s*' not blank").orElseThrow(); // -> OK
 Assertor.that("text").isNotBlank().orElseThrow(); // -> OK
-Assertor.that((String) null).isNotBlank("Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
-Assertor.that("").isNotBlank("Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
-Assertor.that("   ").isNotBlank("Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
+Assertor.that((String) null).isNotBlank("Param '%1$s*' not blank").orElseThrow(); // -> throws an exception
+Assertor.that("").isNotBlank("Param '%1$s*' not blank").orElseThrow(); // -> throws an exception
+Assertor.that("   ").isNotBlank("Param '%1$s*' not blank").orElseThrow(); // -> throws an exception
 ```
 
 #### isEqual
@@ -984,10 +984,10 @@ Assert that char sequence is equal to the string
 * Examples:
 ```java
 Assertor.that("text").isEqual("text").orElseThrow(); // -> OK
-Assertor.that("text").isEqual("ex", "Param '%1$s*' not equal").orElseThrow(); -> throw an exception
-Assertor.that("text").isEqual("TexT").orElseThrow(); -> throw an exception
-Assertor.that("text").isEqual("y").orElseThrow(); // -> throw an exception
-Assertor.that("text").not().isEqual("text").orElseThrow(); // -> throw an exception
+Assertor.that("text").isEqual("ex", "Param '%1$s*' not equal").orElseThrow(); -> throws an exception
+Assertor.that("text").isEqual("TexT").orElseThrow(); -> throws an exception
+Assertor.that("text").isEqual("y").orElseThrow(); // -> throws an exception
+Assertor.that("text").not().isEqual("text").orElseThrow(); // -> throws an exception
 ```
 
 #### isNotEqual
@@ -1002,11 +1002,11 @@ Assert that char sequence is NOT equal to the string
 
 * Examples:
 ```java
-Assertor.that("text").isNotEqual("text").orElseThrow(); // -> throw an exception
+Assertor.that("text").isNotEqual("text").orElseThrow(); // -> throws an exception
 Assertor.that("text").isNotEqual("ex", "Param '%1$s*' equal").orElseThrow(); // -> OK
 Assertor.that("text").isNotEqual("TexT").orElseThrow(); // -> OK
 Assertor.that("text").isNotEqual("y").orElseThrow(); // -> OK
-Assertor.that("text").not().isNotEqual("text").orElseThrow(); -> throw an exception
+Assertor.that("text").not().isNotEqual("text").orElseThrow(); -> throws an exception
 ```
 
 #### isEqualIgnoreCase
@@ -1022,10 +1022,10 @@ Assert that char sequence is equal to the string, ignoring case considerations
 * Examples:
 ```java
 Assertor.that("text").isEqualIgnoreCase("text").orElseThrow(); // -> OK
-Assertor.that("text").isEqualIgnoreCase("ex", "Param '%1$s*' equal").orElseThrow(); // -> throw an exception
+Assertor.that("text").isEqualIgnoreCase("ex", "Param '%1$s*' equal").orElseThrow(); // -> throws an exception
 Assertor.that("text").isEqualIgnoreCase("TexT").orElseThrow(); // -> OK
-Assertor.that("text").isEqualIgnoreCase("y").orElseThrow(); // -> throw an exception
-Assertor.that("text").not().isEqualIgnoreCase("text").orElseThrow(); -> throw an exception
+Assertor.that("text").isEqualIgnoreCase("y").orElseThrow(); // -> throws an exception
+Assertor.that("text").not().isEqualIgnoreCase("text").orElseThrow(); -> throws an exception
 
 #### isNotEqualIgnoreCase
 Assert that char sequence is NOT equal to the string, ignoring case considerations
@@ -1039,9 +1039,9 @@ Assert that char sequence is NOT equal to the string, ignoring case consideratio
 
 * Examples:
 ```java
-Assertor.that("text").isNotEqualIgnoreCase("text").orElseThrow(); // -> throw an exception
+Assertor.that("text").isNotEqualIgnoreCase("text").orElseThrow(); // -> throws an exception
 Assertor.that("text").isNotEqualIgnoreCase("ex", "Param '%1$s*' equal").orElseThrow(); // -> OK
-Assertor.that("text").isNotEqualIgnoreCase("TexT").orElseThrow(); // -> throw an exception
+Assertor.that("text").isNotEqualIgnoreCase("TexT").orElseThrow(); // -> throws an exception
 Assertor.that("text").isNotEqualIgnoreCase("y").orElseThrow(); // -> OK
 Assertor.that("text").not().isNotEqualIgnoreCase("text").orElseThrow(); -> OK
 ```
@@ -1059,11 +1059,11 @@ Assert that char sequence is equal to the string, ignoring line returns consider
 * Examples:
 ```java
 Assertor.that("text").isEqualIgnoreLineReturns("text").orElseThrow(); // -> OK
-Assertor.that("text").isEqualIgnoreLineReturns("ex", "Param '%1$s*' equal").orElseThrow(); // -> throw an exception
+Assertor.that("text").isEqualIgnoreLineReturns("ex", "Param '%1$s*' equal").orElseThrow(); // -> throws an exception
 Assertor.that("text").isEqualIgnoreLineReturns("tex\nt").orElseThrow(); // -> OK
-Assertor.that("text").isEqualIgnoreLineReturns("Tex\nT").orElseThrow(); // -> throw an exception
-Assertor.that("text").isEqualIgnoreLineReturns("y").orElseThrow(); // -> throw an exception
-Assertor.that("text").not().isEqualIgnoreLineReturns("text").orElseThrow(); -> throw an exception
+Assertor.that("text").isEqualIgnoreLineReturns("Tex\nT").orElseThrow(); // -> throws an exception
+Assertor.that("text").isEqualIgnoreLineReturns("y").orElseThrow(); // -> throws an exception
+Assertor.that("text").not().isEqualIgnoreLineReturns("text").orElseThrow(); -> throws an exception
 ```
 
 #### isNotEqualIgnoreLineReturns
@@ -1078,9 +1078,9 @@ Assert that char sequence is NOT equal to the string, ignoring line returns cons
 
 * Examples:
 ```java
-Assertor.that("text").isNotEqualIgnoreLineReturns("text").orElseThrow(); // -> throw an exception
+Assertor.that("text").isNotEqualIgnoreLineReturns("text").orElseThrow(); // -> throws an exception
 Assertor.that("text").isNotEqualIgnoreLineReturns("ex", "Param '%1$s*' equal").orElseThrow(); // -> OK
-Assertor.that("text").isNotEqualIgnoreLineReturns("tex\nt").orElseThrow(); // -> throw an exception
+Assertor.that("text").isNotEqualIgnoreLineReturns("tex\nt").orElseThrow(); // -> throws an exception
 Assertor.that("text").isNotEqualIgnoreLineReturns("Tex\nT").orElseThrow(); // -> OK
 Assertor.that("text").isNotEqualIgnoreLineReturns("y").orElseThrow(); // -> OK
 Assertor.that("text").not().isNotEqualIgnoreLineReturns("text").orElseThrow(); -> OK
@@ -1099,11 +1099,11 @@ Assert that char sequence is equal to the string, ignoring case and line returns
 * Examples:
 ```java
 Assertor.that("text").isEqualIgnoreCaseAndLineReturns("text").orElseThrow(); // -> OK
-Assertor.that("text").isEqualIgnoreCaseAndLineReturns("ex", "Param '%1$s*' equal").orElseThrow(); // -> throw an exception
+Assertor.that("text").isEqualIgnoreCaseAndLineReturns("ex", "Param '%1$s*' equal").orElseThrow(); // -> throws an exception
 Assertor.that("text").isEqualIgnoreCaseAndLineReturns("tex\nt").orElseThrow(); // -> OK
 Assertor.that("text").isEqualIgnoreCaseAndLineReturns("Tex\nT").orElseThrow(); // -> OK
-Assertor.that("text").isEqualIgnoreCaseAndLineReturns("y").orElseThrow(); // -> throw an exception
-Assertor.that("text").not().isEqualIgnoreCaseAndLineReturns("text").orElseThrow(); -> throw an exception
+Assertor.that("text").isEqualIgnoreCaseAndLineReturns("y").orElseThrow(); // -> throws an exception
+Assertor.that("text").not().isEqualIgnoreCaseAndLineReturns("text").orElseThrow(); -> throws an exception
 ```
 
 #### isNotEqualIgnoreCaseAndLineReturns
@@ -1118,10 +1118,10 @@ Assert that char sequence is NOT equal to the string, ignoring case and line ret
 
 * Examples:
 ```java
-Assertor.that("text").isNotEqualIgnoreCaseAndLineReturns("text").orElseThrow(); // -> throw an exception
+Assertor.that("text").isNotEqualIgnoreCaseAndLineReturns("text").orElseThrow(); // -> throws an exception
 Assertor.that("text").isNotEqualIgnoreCaseAndLineReturns("ex", "Param '%1$s*' equal").orElseThrow(); // -> OK
-Assertor.that("text").isNotEqualIgnoreCaseAndLineReturns("tex\nt").orElseThrow(); // -> throw an exception
-Assertor.that("text").isNotEqualIgnoreCaseAndLineReturns("Tex\nT").orElseThrow(); // -> throw an exception
+Assertor.that("text").isNotEqualIgnoreCaseAndLineReturns("tex\nt").orElseThrow(); // -> throws an exception
+Assertor.that("text").isNotEqualIgnoreCaseAndLineReturns("Tex\nT").orElseThrow(); // -> throws an exception
 Assertor.that("text").isNotEqualIgnoreCaseAndLineReturns("y").orElseThrow(); // -> OK
 Assertor.that("text").not().isNotEqualIgnoreCaseAndLineReturns("text").orElseThrow(); -> OK
 ```
@@ -1143,16 +1143,16 @@ Assert that char sequence contains the substring.
 Assertor.that("text").contains("t").orElseThrow(); // -> OK
 Assertor.that("text").contains("ex", "Param '%1$s*' not contains '%2$s*'").orElseThrow(); // -> OK
 Assertor.that("text").contains("text").orElseThrow(); // -> OK
-Assertor.that("text").contains("y").orElseThrow(); // -> throw an exception
+Assertor.that("text").contains("y").orElseThrow(); // -> throws an exception
 Assertor.that("text").not().contains("y").orElseThrow(); // -> OK
 
 // prerequisite errors
-Assertor.that((String) null).contains("t", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
-Assertor.that("text").contains(null, "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
-Assertor.that("text").contains("", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
-Assertor.that((String) null).not().contains("t", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
-Assertor.that("text").not().contains(null, "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
-Assertor.that("text").not().contains("", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
+Assertor.that((String) null).contains("t", "Param '%1$s*' not blank").orElseThrow(); // -> throws an exception
+Assertor.that("text").contains(null, "Param '%1$s*' not blank").orElseThrow(); // -> throws an exception
+Assertor.that("text").contains("", "Param '%1$s*' not blank").orElseThrow(); // -> throws an exception
+Assertor.that((String) null).not().contains("t", "Param '%1$s*' not blank").orElseThrow(); // -> throws an exception
+Assertor.that("text").not().contains(null, "Param '%1$s*' not blank").orElseThrow(); // -> throws an exception
+Assertor.that("text").not().contains("", "Param '%1$s*' not blank").orElseThrow(); // -> throws an exception
 ```
 
 #### startsWith
@@ -1169,19 +1169,19 @@ Assert that char sequence starts with the substring.
 * Examples:
 ```java
 Assertor.that("text").startsWith("t").orElseThrow(); // -> OK
-Assertor.that("text").startsWith("T").orElseThrow(); // -> throw an exception
-Assertor.that("text").startsWith("ex", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
+Assertor.that("text").startsWith("T").orElseThrow(); // -> throws an exception
+Assertor.that("text").startsWith("ex", "Param '%1$s*' not blank").orElseThrow(); // -> throws an exception
 Assertor.that("text").startsWith("text").orElseThrow(); // -> OK
-Assertor.that("text").startsWith("y").orElseThrow(); // -> throw an exception
+Assertor.that("text").startsWith("y").orElseThrow(); // -> throws an exception
 Assertor.that("text").not().startsWith("y").orElseThrow(); // -> OK
 
 // prerequisite errors
-Assertor.that((String) null).startsWith("t", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
-Assertor.that("text").startsWith(null, "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
-Assertor.that("text").startsWith("", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
-Assertor.that((String) null).not().startsWith("t", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
-Assertor.that("text").not().startsWith(null, "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
-Assertor.that("text").not().startsWith("", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
+Assertor.that((String) null).startsWith("t", "Param '%1$s*' not blank").orElseThrow(); // -> throws an exception
+Assertor.that("text").startsWith(null, "Param '%1$s*' not blank").orElseThrow(); // -> throws an exception
+Assertor.that("text").startsWith("", "Param '%1$s*' not blank").orElseThrow(); // -> throws an exception
+Assertor.that((String) null).not().startsWith("t", "Param '%1$s*' not blank").orElseThrow(); // -> throws an exception
+Assertor.that("text").not().startsWith(null, "Param '%1$s*' not blank").orElseThrow(); // -> throws an exception
+Assertor.that("text").not().startsWith("", "Param '%1$s*' not blank").orElseThrow(); // -> throws an exception
 ```
 
 #### startsWithIgnoreCase
@@ -1199,18 +1199,18 @@ Assert that char sequence starts with the substring (case insensitive).
 ```java
 Assertor.that("text").startsWithIgnoreCase("t").orElseThrow(); // -> OK
 Assertor.that("text").startsWithIgnoreCase("T").orElseThrow(); // -> OK
-Assertor.that("text").startsWithIgnoreCase("ex", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
+Assertor.that("text").startsWithIgnoreCase("ex", "Param '%1$s*' not blank").orElseThrow(); // -> throws an exception
 Assertor.that("text").startsWithIgnoreCase("text").orElseThrow(); // -> OK
-Assertor.that("text").startsWithIgnoreCase("y").orElseThrow(); // -> throw an exception
+Assertor.that("text").startsWithIgnoreCase("y").orElseThrow(); // -> throws an exception
 Assertor.that("text").not().startsWithIgnoreCase("y").orElseThrow(); // -> OK
 
 // prerequisite errors
-Assertor.that((String) null).startsWithIgnoreCase("t", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
-Assertor.that("text").startsWithIgnoreCase(null, "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
-Assertor.that("text").startsWithIgnoreCase("", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
-Assertor.that((String) null).not().startsWithIgnoreCase("t", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
-Assertor.that("text").not().startsWithIgnoreCase(null, "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
-Assertor.that("text").not().startsWithIgnoreCase("", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
+Assertor.that((String) null).startsWithIgnoreCase("t", "Param '%1$s*' not blank").orElseThrow(); // -> throws an exception
+Assertor.that("text").startsWithIgnoreCase(null, "Param '%1$s*' not blank").orElseThrow(); // -> throws an exception
+Assertor.that("text").startsWithIgnoreCase("", "Param '%1$s*' not blank").orElseThrow(); // -> throws an exception
+Assertor.that((String) null).not().startsWithIgnoreCase("t", "Param '%1$s*' not blank").orElseThrow(); // -> throws an exception
+Assertor.that("text").not().startsWithIgnoreCase(null, "Param '%1$s*' not blank").orElseThrow(); // -> throws an exception
+Assertor.that("text").not().startsWithIgnoreCase("", "Param '%1$s*' not blank").orElseThrow(); // -> throws an exception
 ```
 
 #### endsWith
@@ -1227,19 +1227,19 @@ Assert that char sequence ends with the substring.
 * Examples:
 ```java
 Assertor.that("text").endsWith("t").orElseThrow(); // -> OK
-Assertor.that("text").endsWith("T").orElseThrow(); // -> throw an exception
-Assertor.that("text").endsWith("ex", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
+Assertor.that("text").endsWith("T").orElseThrow(); // -> throws an exception
+Assertor.that("text").endsWith("ex", "Param '%1$s*' not blank").orElseThrow(); // -> throws an exception
 Assertor.that("text").endsWith("text").orElseThrow(); // -> OK
-Assertor.that("text").endsWith("y").orElseThrow(); // -> throw an exception
+Assertor.that("text").endsWith("y").orElseThrow(); // -> throws an exception
 Assertor.that("text").not().endsWith("y").orElseThrow(); // -> OK
 
 // prerequisite errors
-Assertor.that((String) null).endsWith("t", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
-Assertor.that("text").endsWith(null, "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
-Assertor.that("text").endsWith("", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
-Assertor.that((String) null).not().endsWith("t", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
-Assertor.that("text").not().endsWith(null, "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
-Assertor.that("text").not().endsWith("", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
+Assertor.that((String) null).endsWith("t", "Param '%1$s*' not blank").orElseThrow(); // -> throws an exception
+Assertor.that("text").endsWith(null, "Param '%1$s*' not blank").orElseThrow(); // -> throws an exception
+Assertor.that("text").endsWith("", "Param '%1$s*' not blank").orElseThrow(); // -> throws an exception
+Assertor.that((String) null).not().endsWith("t", "Param '%1$s*' not blank").orElseThrow(); // -> throws an exception
+Assertor.that("text").not().endsWith(null, "Param '%1$s*' not blank").orElseThrow(); // -> throws an exception
+Assertor.that("text").not().endsWith("", "Param '%1$s*' not blank").orElseThrow(); // -> throws an exception
 ```
 
 #### endsWithIgnoreCase
@@ -1257,18 +1257,18 @@ Assert that char sequence ends with the substring (case insensitive).
 ```java
 Assertor.that("text").endsWithIgnoreCase("t").orElseThrow(); // -> OK
 Assertor.that("text").endsWithIgnoreCase("T").orElseThrow(); // -> OK
-Assertor.that("text").endsWithIgnoreCase("ex", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
+Assertor.that("text").endsWithIgnoreCase("ex", "Param '%1$s*' not blank").orElseThrow(); // -> throws an exception
 Assertor.that("text").endsWithIgnoreCase("text").orElseThrow(); // -> OK
-Assertor.that("text").endsWithIgnoreCase("y").orElseThrow(); // -> throw an exception
+Assertor.that("text").endsWithIgnoreCase("y").orElseThrow(); // -> throws an exception
 Assertor.that("text").not().endsWithIgnoreCase("y").orElseThrow(); // -> OK
 
 // prerequisite errors
-Assertor.that((String) null).endsWithIgnoreCase("t", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
-Assertor.that("text").endsWithIgnoreCase(null, "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
-Assertor.that("text").endsWithIgnoreCase("", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
-Assertor.that((String) null).not().endsWithIgnoreCase("t", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
-Assertor.that("text").not().endsWithIgnoreCase(null, "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
-Assertor.that("text").not().endsWithIgnoreCase("", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
+Assertor.that((String) null).endsWithIgnoreCase("t", "Param '%1$s*' not blank").orElseThrow(); // -> throws an exception
+Assertor.that("text").endsWithIgnoreCase(null, "Param '%1$s*' not blank").orElseThrow(); // -> throws an exception
+Assertor.that("text").endsWithIgnoreCase("", "Param '%1$s*' not blank").orElseThrow(); // -> throws an exception
+Assertor.that((String) null).not().endsWithIgnoreCase("t", "Param '%1$s*' not blank").orElseThrow(); // -> throws an exception
+Assertor.that("text").not().endsWithIgnoreCase(null, "Param '%1$s*' not blank").orElseThrow(); // -> throws an exception
+Assertor.that("text").not().endsWithIgnoreCase("", "Param '%1$s*' not blank").orElseThrow(); // -> throws an exception
 ```
 
 #### matches
@@ -1288,19 +1288,19 @@ Assert that char sequence matches the specified pattern / regex.
 * Examples:
 ```java
 Assertor.that("text").matches("[xet]{4}").orElseThrow(); // -> OK
-Assertor.that("text").matches("[xet]{3}").orElseThrow(); // -> throw an exception
+Assertor.that("text").matches("[xet]{3}").orElseThrow(); // -> throws an exception
 Assertor.that("text").matches("\\w+").orElseThrow(); // -> OK
-Assertor.that("text").matches("xt").orElseThrow(); // -> throw an exception
-Assertor.that("text").matches("ex", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
+Assertor.that("text").matches("xt").orElseThrow(); // -> throws an exception
+Assertor.that("text").matches("ex", "Param '%1$s*' not blank").orElseThrow(); // -> throws an exception
 Assertor.that("text").matches("text").orElseThrow(); // -> OK
-Assertor.that("text").matches("y").orElseThrow(); // -> throw an exception
+Assertor.that("text").matches("y").orElseThrow(); // -> throws an exception
 Assertor.that("text").not().matches("y").orElseThrow(); // -> OK
 
 // prerequisite errors
-Assertor.that((String) null).matches("t", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
-Assertor.that("text").matches(null, "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
-Assertor.that((String) null).not().matches("t", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
-Assertor.that("text").not().matches(null, "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
+Assertor.that((String) null).matches("t", "Param '%1$s*' not blank").orElseThrow(); // -> throws an exception
+Assertor.that("text").matches(null, "Param '%1$s*' not blank").orElseThrow(); // -> throws an exception
+Assertor.that((String) null).not().matches("t", "Param '%1$s*' not blank").orElseThrow(); // -> throws an exception
+Assertor.that("text").not().matches(null, "Param '%1$s*' not blank").orElseThrow(); // -> throws an exception
 ```
 
 #### find
@@ -1323,16 +1323,16 @@ Assertor.that("text").find("[xet]{4}").orElseThrow(); // -> OK
 Assertor.that("text").find("[xet]{3}").orElseThrow(); // -> OK
 Assertor.that("text").find("\\w+").orElseThrow(); // -> OK
 Assertor.that("text").find("xt").orElseThrow(); // -> OK
-Assertor.that("text").find("ex", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
+Assertor.that("text").find("ex", "Param '%1$s*' not blank").orElseThrow(); // -> throws an exception
 Assertor.that("text").find("text").orElseThrow(); // -> OK
-Assertor.that("text").find("y").orElseThrow(); // -> throw an exception
+Assertor.that("text").find("y").orElseThrow(); // -> throws an exception
 Assertor.that("text").not().find("y").orElseThrow(); // -> OK
 
 // prerequisite errors
-Assertor.that((String) null).find("t", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
-Assertor.that("text").find(null, "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
-Assertor.that((String) null).not().find("t", "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
-Assertor.that("text").not().find(null, "Param '%1$s*' not blank").orElseThrow(); // -> throw an exception
+Assertor.that((String) null).find("t", "Param '%1$s*' not blank").orElseThrow(); // -> throws an exception
+Assertor.that("text").find(null, "Param '%1$s*' not blank").orElseThrow(); // -> throws an exception
+Assertor.that((String) null).not().find("t", "Param '%1$s*' not blank").orElseThrow(); // -> throws an exception
+Assertor.that("text").not().find(null, "Param '%1$s*' not blank").orElseThrow(); // -> throws an exception
 ```
 
 ### Class
@@ -1350,11 +1350,11 @@ Assert that class is assignable from clazz.
 ```java
 Assertor.that(IOException.class).isAssignableFrom(Exception.class).orElseThrow(); // -> OK
 Assertor.that(Exception.class).isAssignableFrom(Exception.class).orElseThrow(); // -> OK
-Assertor.that(Exception.class).isAssignableFrom(IOException.class).orElseThrow(); // -> throw an exception
+Assertor.that(Exception.class).isAssignableFrom(IOException.class).orElseThrow(); // -> throws an exception
 
 // prerequisite errors
-Assertor.that((Exception) null).isAssignableFrom(IOException.class).orElseThrow(); // -> throw an exception
-Assertor.that(Exception.class).isAssignableFrom(null).orElseThrow(); // -> throw an exception
+Assertor.that((Exception) null).isAssignableFrom(IOException.class).orElseThrow(); // -> throws an exception
+Assertor.that(Exception.class).isAssignableFrom(null).orElseThrow(); // -> throws an exception
 ```
 
 #### hasName
@@ -1372,12 +1372,12 @@ Assert that class has the specified name.
 ```java
 Assertor.that(IOException.class).hasName("java.io.IOException").orElseThrow(); // -> OK
 Assertor.that(Exception.class).hasName("java.lang.Exception").orElseThrow(); // -> OK
-Assertor.that(Exception.class).hasName("Exception").orElseThrow(); // -> throw an exception
+Assertor.that(Exception.class).hasName("Exception").orElseThrow(); // -> throws an exception
 
 // prerequisite errors
-Assertor.that((Exception) null).hasName("java.lang.Exception").orElseThrow(); // -> throw an exception
-Assertor.that(Exception.class).hasName(null).orElseThrow(); // -> throw an exception
-Assertor.that(Exception.class).hasName("").orElseThrow(); // -> throw an exception
+Assertor.that((Exception) null).hasName("java.lang.Exception").orElseThrow(); // -> throws an exception
+Assertor.that(Exception.class).hasName(null).orElseThrow(); // -> throws an exception
+Assertor.that(Exception.class).hasName("").orElseThrow(); // -> throws an exception
 ```
 
 #### hasSimpleName
@@ -1395,12 +1395,12 @@ Assert that class has the specified simple name.
 ```java
 Assertor.that(IOException.class).hasSimpleName("IOException").orElseThrow(); // -> OK
 Assertor.that(Exception.class).hasSimpleName("Exception").orElseThrow(); // -> OK
-Assertor.that(Exception.class).hasSimpleName("java.lang.Exception").orElseThrow(); // -> throw an exception
+Assertor.that(Exception.class).hasSimpleName("java.lang.Exception").orElseThrow(); // -> throws an exception
 
 // prerequisite errors
-Assertor.that((Exception) null).hasSimpleName("Exception").orElseThrow(); // -> throw an exception
-Assertor.that(Exception.class).hasSimpleName(null).orElseThrow(); // -> throw an exception
-Assertor.that(Exception.class).hasSimpleName("").orElseThrow(); // -> throw an exception
+Assertor.that((Exception) null).hasSimpleName("Exception").orElseThrow(); // -> throws an exception
+Assertor.that(Exception.class).hasSimpleName(null).orElseThrow(); // -> throws an exception
+Assertor.that(Exception.class).hasSimpleName("").orElseThrow(); // -> throws an exception
 ```
 
 #### hasCanonicalName
@@ -1418,12 +1418,12 @@ Assert that class has the specified canonical name.
 ```java
 Assertor.that(IOException.class).hasCanonicalName(IOException.class.getCanonicalName()).orElseThrow(); // -> OK
 Assertor.that(Exception.class).hasCanonicalName("java.lang.Exception").orElseThrow(); // -> OK
-Assertor.that(Exception.class).hasCanonicalName("Exception").orElseThrow(); // -> throw an exception
+Assertor.that(Exception.class).hasCanonicalName("Exception").orElseThrow(); // -> throws an exception
 
 // prerequisite errors
-Assertor.that((Exception) null).hasCanonicalName("Exception").orElseThrow(); // -> throw an exception
-Assertor.that(Exception.class).hasCanonicalName(null).orElseThrow(); // -> throw an exception
-Assertor.that(Exception.class).hasCanonicalName("").orElseThrow(); // -> throw an exception
+Assertor.that((Exception) null).hasCanonicalName("Exception").orElseThrow(); // -> throws an exception
+Assertor.that(Exception.class).hasCanonicalName(null).orElseThrow(); // -> throws an exception
+Assertor.that(Exception.class).hasCanonicalName("").orElseThrow(); // -> throws an exception
 ```
 
 #### hasPackageName
@@ -1441,12 +1441,12 @@ Assert that class has the specified package name.
 ```java
 Assertor.that(IOException.class).hasPackageName(IOException.class.getPackage().getName()).orElseThrow(); // -> OK
 Assertor.that(Exception.class).hasPackageName("java.lang").orElseThrow(); // -> OK
-Assertor.that(Exception.class).hasPackageName("java").orElseThrow(); // -> throw an exception
+Assertor.that(Exception.class).hasPackageName("java").orElseThrow(); // -> throws an exception
 
 // prerequisite errors
-Assertor.that((Exception) null).hasPackageName("java.lang").orElseThrow(); // -> throw an exception
-Assertor.that(Exception.class).hasPackageName(null).orElseThrow(); // -> throw an exception
-Assertor.that(Exception.class).hasPackageName("").orElseThrow(); // -> throw an exception
+Assertor.that((Exception) null).hasPackageName("java.lang").orElseThrow(); // -> throws an exception
+Assertor.that(Exception.class).hasPackageName(null).orElseThrow(); // -> throws an exception
+Assertor.that(Exception.class).hasPackageName("").orElseThrow(); // -> throws an exception
 ```
 
 #### hasTypeName
@@ -1464,12 +1464,12 @@ Assert that class has the specified package name.
 ```java
 Assertor.that(long.class).hasTypeName(lang.class.getTypeName()).orElseThrow(); // -> OK
 Assertor.that(Long.class).hasTypeName("java.lang.Long").orElseThrow(); // -> OK
-Assertor.that(Long.class).hasTypeName("long").orElseThrow(); // -> throw an exception
+Assertor.that(Long.class).hasTypeName("long").orElseThrow(); // -> throws an exception
 
 // prerequisite errors
-Assertor.that((Exception) null).hasTypeName("java.lang").orElseThrow(); // -> throw an exception
-Assertor.that(Exception.class).hasTypeName(null).orElseThrow(); // -> throw an exception
-Assertor.that(Exception.class).hasTypeName("").orElseThrow(); // -> throw an exception
+Assertor.that((Exception) null).hasTypeName("java.lang").orElseThrow(); // -> throws an exception
+Assertor.that(Exception.class).hasTypeName(null).orElseThrow(); // -> throws an exception
+Assertor.that(Exception.class).hasTypeName("").orElseThrow(); // -> throws an exception
 ```
 
 ### Date & Calendar
@@ -1491,12 +1491,12 @@ Assert that dates are equal.
 final Calendar date1 = new GregorianCalendar(2016, 05, 29, 5, 5, 6);
 final Calendar date2 = new GregorianCalendar(2016, 05, 29, 5, 5, 5);
 
-Assertor.that(date1).isEqual(date2).orElseThrow(); // -> throw an exception
+Assertor.that(date1).isEqual(date2).orElseThrow(); // -> throws an exception
 Assertor.that(date1).isEqual(date1).orElseThrow(); // -> OK
-Assertor.that((Calendar) null).isEqual(date2).orElseThrow(); // -> throw an exception
-Assertor.that(date1).isEqual(null).orElseThrow(); // -> throw an exception
-Assertor.that(date1).isEqual(date2, "Bad status").orElseThrow(); // -> throw an exception
-Assertor.that(date1).not().isEqual(date2).orElseThrow(); // -> throw an exception
+Assertor.that((Calendar) null).isEqual(date2).orElseThrow(); // -> throws an exception
+Assertor.that(date1).isEqual(null).orElseThrow(); // -> throws an exception
+Assertor.that(date1).isEqual(date2, "Bad status").orElseThrow(); // -> throws an exception
+Assertor.that(date1).not().isEqual(date2).orElseThrow(); // -> throws an exception
 ```
 
 #### isNotEqual
@@ -1517,12 +1517,12 @@ Assert that dates are NOT equal.
 final Calendar date1 = new GregorianCalendar(2016, 05, 29, 5, 5, 6);
 final Calendar date2 = new GregorianCalendar(2016, 05, 29, 5, 5, 5);
 
-Assertor.that(date1).isNotEqual(date2).orElseThrow(); // -> throw an exception
+Assertor.that(date1).isNotEqual(date2).orElseThrow(); // -> throws an exception
 Assertor.that(date1).isNotEqual(date1).orElseThrow(); // -> OK
-Assertor.that((Calendar) null).isNotEqual(date2).orElseThrow(); // -> throw an exception
-Assertor.that(date1).isNotEqual(null).orElseThrow(); // -> throw an exception
-Assertor.that(date1).isNotEqual(date2, "Bad status").orElseThrow(); // -> throw an exception
-Assertor.that(date1).not().isNotEqual(date2).orElseThrow(); // -> throw an exception
+Assertor.that((Calendar) null).isNotEqual(date2).orElseThrow(); // -> throws an exception
+Assertor.that(date1).isNotEqual(null).orElseThrow(); // -> throws an exception
+Assertor.that(date1).isNotEqual(date2, "Bad status").orElseThrow(); // -> throws an exception
+Assertor.that(date1).not().isNotEqual(date2).orElseThrow(); // -> throws an exception
 ```
 
 #### isAround
@@ -1547,20 +1547,20 @@ final Calendar date2 = new GregorianCalendar(2016, 05, 29, 5, 5, 5);
 
 Assertor.that(date1).isAround(date2, Calendar.SECOND, 5).orElseThrow(); // -> OK
 Assertor.that(date1).isAround(date2, Calendar.HOUR, 5).orElseThrow(); // -> OK
-Assertor.that(date1).isAround(date2, Calendar.MILLISECOND, 5).orElseThrow(); // -> throw an exception
+Assertor.that(date1).isAround(date2, Calendar.MILLISECOND, 5).orElseThrow(); // -> throws an exception
 Assertor.that(date1).not().isAround(date2, Calendar.MILLISECOND, 5).orElseThrow(); // -> OK
 
 // prerequisite errors
-Assertor.that(null).isAround(date2, Calendar.SECOND, 5).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(date1).isAround(null, Calendar.SECOND, 5).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(date1).isAround(date2, Calendar.FIELD_COUNT, -5).orElseThrow(); // -> throw an exception (invalid calendarField)
-Assertor.that(date1).isAround(date2, -100, -5).orElseThrow(); // -> throw an exception (invalid calendarField)
-Assertor.that(date1).isAround(date2, Calendar.HOUR, 0).orElseThrow(); // -> throw an exception (invalid calendarAmount)
-Assertor.that(null).not().isAround(date2, Calendar.SECOND, 5).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(date1).not().isAround(null, Calendar.SECOND, 5).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(date1).not().isAround(date2, Calendar.FIELD_COUNT, -5).orElseThrow(); // -> throw an exception (invalid calendarField)
-Assertor.that(date1).not().isAround(date2, -100, -5).orElseThrow(); // -> throw an exception (invalid calendarField)
-Assertor.that(date1).not().isAround(date2, Calendar.HOUR, 0).orElseThrow(); // -> throw an exception (invalid calendarAmount)
+Assertor.that(null).isAround(date2, Calendar.SECOND, 5).orElseThrow(); // -> throws an exception (date null)
+Assertor.that(date1).isAround(null, Calendar.SECOND, 5).orElseThrow(); // -> throws an exception (date null)
+Assertor.that(date1).isAround(date2, Calendar.FIELD_COUNT, -5).orElseThrow(); // -> throws an exception (invalid calendarField)
+Assertor.that(date1).isAround(date2, -100, -5).orElseThrow(); // -> throws an exception (invalid calendarField)
+Assertor.that(date1).isAround(date2, Calendar.HOUR, 0).orElseThrow(); // -> throws an exception (invalid calendarAmount)
+Assertor.that(null).not().isAround(date2, Calendar.SECOND, 5).orElseThrow(); // -> throws an exception (date null)
+Assertor.that(date1).not().isAround(null, Calendar.SECOND, 5).orElseThrow(); // -> throws an exception (date null)
+Assertor.that(date1).not().isAround(date2, Calendar.FIELD_COUNT, -5).orElseThrow(); // -> throws an exception (invalid calendarField)
+Assertor.that(date1).not().isAround(date2, -100, -5).orElseThrow(); // -> throws an exception (invalid calendarField)
+Assertor.that(date1).not().isAround(date2, Calendar.HOUR, 0).orElseThrow(); // -> throws an exception (invalid calendarAmount)
 ```
 
 #### isNotAround
@@ -1588,20 +1588,20 @@ date2.set(2016, 05, 29, 6, 5, 5);
 
 Assertor.that(date1).isNotAround(date2, Calendar.SECOND, 5).orElseThrow(); // -> OK
 Assertor.that(date1).isNotAround(date2, Calendar.MINUTE, 5).orElseThrow(); // -> OK
-Assertor.that(date1).isNotAround(date2, Calendar.HOUR, 5).orElseThrow(); // -> throw an exception
+Assertor.that(date1).isNotAround(date2, Calendar.HOUR, 5).orElseThrow(); // -> throws an exception
 Assertor.that(date1).not().isNotAround(date2, Calendar.HOUR, 5).orElseThrow(); // -> OK
 
 // prerequisite errors
-Assertor.that(null).isNotAround(date2, Calendar.SECOND, 5).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(date1).isNotAround(null, Calendar.SECOND, 5).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(date1).isNotAround(date2, Calendar.FIELD_COUNT, -5).orElseThrow(); // -> throw an exception (invalid calendarField)
-Assertor.that(date1).isNotAround(date2, -100, -5).orElseThrow(); // -> throw an exception (invalid calendarField)
-Assertor.that(date1).isNotAround(date2, Calendar.HOUR, 0).orElseThrow(); // -> throw an exception (invalid calendarAmount)
-Assertor.that(null).not().isNotAround(date2, Calendar.SECOND, 5).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(date1).not().isNotAround(null, Calendar.SECOND, 5).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(date1).not().isNotAround(date2, Calendar.FIELD_COUNT, -5).orElseThrow(); // -> throw an exception (invalid calendarField)
-Assertor.that(date1).not().isNotAround(date2, -100, -5).orElseThrow(); // -> throw an exception (invalid calendarField)
-Assertor.that(date1).not().isNotAround(date2, Calendar.HOUR, 0).orElseThrow(); // -> throw an exception (invalid calendarAmount)
+Assertor.that(null).isNotAround(date2, Calendar.SECOND, 5).orElseThrow(); // -> throws an exception (date null)
+Assertor.that(date1).isNotAround(null, Calendar.SECOND, 5).orElseThrow(); // -> throws an exception (date null)
+Assertor.that(date1).isNotAround(date2, Calendar.FIELD_COUNT, -5).orElseThrow(); // -> throws an exception (invalid calendarField)
+Assertor.that(date1).isNotAround(date2, -100, -5).orElseThrow(); // -> throws an exception (invalid calendarField)
+Assertor.that(date1).isNotAround(date2, Calendar.HOUR, 0).orElseThrow(); // -> throws an exception (invalid calendarAmount)
+Assertor.that(null).not().isNotAround(date2, Calendar.SECOND, 5).orElseThrow(); // -> throws an exception (date null)
+Assertor.that(date1).not().isNotAround(null, Calendar.SECOND, 5).orElseThrow(); // -> throws an exception (date null)
+Assertor.that(date1).not().isNotAround(date2, Calendar.FIELD_COUNT, -5).orElseThrow(); // -> throws an exception (invalid calendarField)
+Assertor.that(date1).not().isNotAround(date2, -100, -5).orElseThrow(); // -> throws an exception (invalid calendarField)
+Assertor.that(date1).not().isNotAround(date2, Calendar.HOUR, 0).orElseThrow(); // -> throws an exception (invalid calendarAmount)
 ```
 
 #### isAfter
@@ -1631,28 +1631,28 @@ final Calendar date1 = new GregorianCalendar(2016, 05, 29, 6, 5, 5);
 final Calendar date2 = new GregorianCalendar(2016, 05, 29, 5, 5, 5);
 
 Assertor.that(date1).isAfter(date2).orElseThrow(); // -> OK
-Assertor.that(date2).isAfter(date1).orElseThrow(); // -> throw an exception
+Assertor.that(date2).isAfter(date1).orElseThrow(); // -> throws an exception
 Assertor.that(date2).not().isAfter(date1).orElseThrow(); // -> OK
 
 Assertor.that(date1).isAfter(date2, Calendar.SECOND, 5).orElseThrow(); // -> OK
 Assertor.that(date1).isAfter(date2, Calendar.MINUTE, 5).orElseThrow(); // -> OK
-Assertor.that(date1).isAfter(date2, Calendar.HOUR, 5).orElseThrow(); // -> throw an exception
+Assertor.that(date1).isAfter(date2, Calendar.HOUR, 5).orElseThrow(); // -> throws an exception
 Assertor.that(date1).not().isAfter(date2, Calendar.HOUR, 5).orElseThrow(); // -> OK
 
 // prerequisite errors
-Assertor.that(null).isAfter(date2).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(date1).isAfter(null).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(null).isAfter(date2).orElseThrow(); // -> throws an exception (date null)
+Assertor.that(date1).isAfter(null).orElseThrow(); // -> throws an exception (date null)
 
-Assertor.that(null).isAfter(date2, Calendar.SECOND, 5).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(date1).isAfter(null, Calendar.SECOND, 5).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(date1).isAfter(date2, Calendar.FIELD_COUNT, -5).orElseThrow(); // -> throw an exception (invalid calendarField)
-Assertor.that(date1).isAfter(date2, -100, -5).orElseThrow(); // -> throw an exception (invalid calendarField)
-Assertor.that(date1).isAfter(date2, Calendar.HOUR, 0).orElseThrow(); // -> throw an exception (invalid calendarAmount)
-Assertor.that(null).not().isAfter(date2, Calendar.SECOND, 5).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(date1).not().isAfter(null, Calendar.SECOND, 5).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(date1).not().isAfter(date2, Calendar.FIELD_COUNT, -5).orElseThrow(); // -> throw an exception (invalid calendarField)
-Assertor.that(date1).not().isAfter(date2, -100, -5).orElseThrow(); // -> throw an exception (invalid calendarField)
-Assertor.that(date1).not().isAfter(date2, Calendar.HOUR, 0).orElseThrow(); // -> throw an exception (invalid calendarAmount)
+Assertor.that(null).isAfter(date2, Calendar.SECOND, 5).orElseThrow(); // -> throws an exception (date null)
+Assertor.that(date1).isAfter(null, Calendar.SECOND, 5).orElseThrow(); // -> throws an exception (date null)
+Assertor.that(date1).isAfter(date2, Calendar.FIELD_COUNT, -5).orElseThrow(); // -> throws an exception (invalid calendarField)
+Assertor.that(date1).isAfter(date2, -100, -5).orElseThrow(); // -> throws an exception (invalid calendarField)
+Assertor.that(date1).isAfter(date2, Calendar.HOUR, 0).orElseThrow(); // -> throws an exception (invalid calendarAmount)
+Assertor.that(null).not().isAfter(date2, Calendar.SECOND, 5).orElseThrow(); // -> throws an exception (date null)
+Assertor.that(date1).not().isAfter(null, Calendar.SECOND, 5).orElseThrow(); // -> throws an exception (date null)
+Assertor.that(date1).not().isAfter(date2, Calendar.FIELD_COUNT, -5).orElseThrow(); // -> throws an exception (invalid calendarField)
+Assertor.that(date1).not().isAfter(date2, -100, -5).orElseThrow(); // -> throws an exception (invalid calendarField)
+Assertor.that(date1).not().isAfter(date2, Calendar.HOUR, 0).orElseThrow(); // -> throws an exception (invalid calendarAmount)
 ```
 
 #### isAfterOrEqual
@@ -1683,28 +1683,28 @@ final Calendar date2 = new GregorianCalendar(2016, 05, 29, 5, 5, 5);
 
 Assertor.that(date1).isAfterOrEqual(date1).orElseThrow(); // -> OK
 Assertor.that(date1).isAfterOrEqual(date2).orElseThrow(); // -> OK
-Assertor.that(date2).isAfterOrEqual(date1).orElseThrow(); // -> throw an exception
+Assertor.that(date2).isAfterOrEqual(date1).orElseThrow(); // -> throws an exception
 Assertor.that(date2).not().isAfterOrEqual(date1).orElseThrow(); // -> OK
 
 Assertor.that(date1).isAfterOrEqual(date2, Calendar.SECOND, 5).orElseThrow(); // -> OK
 Assertor.that(date1).isAfterOrEqual(date2, Calendar.MINUTE, 5).orElseThrow(); // -> OK
-Assertor.that(date1).isAfterOrEqual(date2, Calendar.HOUR, 5).orElseThrow(); // -> throw an exception
+Assertor.that(date1).isAfterOrEqual(date2, Calendar.HOUR, 5).orElseThrow(); // -> throws an exception
 Assertor.that(date1).not().isAfterOrEqual(date2, Calendar.HOUR, 5).orElseThrow(); // -> OK
 
 // prerequisite errors
-Assertor.that(null).isAfterOrEqual(date2).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(date1).isAfterOrEqual(null).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(null).isAfterOrEqual(date2).orElseThrow(); // -> throws an exception (date null)
+Assertor.that(date1).isAfterOrEqual(null).orElseThrow(); // -> throws an exception (date null)
 
-Assertor.that(null).isAfterOrEqual(date2, Calendar.SECOND, 5).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(date1).isAfterOrEqual(null, Calendar.SECOND, 5).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(date1).isAfterOrEqual(date2, Calendar.FIELD_COUNT, -5).orElseThrow(); // -> throw an exception (invalid calendarField)
-Assertor.that(date1).isAfterOrEqual(date2, -100, -5).orElseThrow(); // -> throw an exception (invalid calendarField)
-Assertor.that(date1).isAfterOrEqual(date2, Calendar.HOUR, 0).orElseThrow(); // -> throw an exception (invalid calendarAmount)
-Assertor.that(null).not().isAfterOrEqual(date2, Calendar.SECOND, 5).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(date1).not().isAfterOrEqual(null, Calendar.SECOND, 5).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(date1).not().isAfterOrEqual(date2, Calendar.FIELD_COUNT, -5).orElseThrow(); // -> throw an exception (invalid calendarField)
-Assertor.that(date1).not().isAfterOrEqual(date2, -100, -5).orElseThrow(); // -> throw an exception (invalid calendarField)
-Assertor.that(date1).not().isAfterOrEqual(date2, Calendar.HOUR, 0).orElseThrow(); // -> throw an exception (invalid calendarAmount)
+Assertor.that(null).isAfterOrEqual(date2, Calendar.SECOND, 5).orElseThrow(); // -> throws an exception (date null)
+Assertor.that(date1).isAfterOrEqual(null, Calendar.SECOND, 5).orElseThrow(); // -> throws an exception (date null)
+Assertor.that(date1).isAfterOrEqual(date2, Calendar.FIELD_COUNT, -5).orElseThrow(); // -> throws an exception (invalid calendarField)
+Assertor.that(date1).isAfterOrEqual(date2, -100, -5).orElseThrow(); // -> throws an exception (invalid calendarField)
+Assertor.that(date1).isAfterOrEqual(date2, Calendar.HOUR, 0).orElseThrow(); // -> throws an exception (invalid calendarAmount)
+Assertor.that(null).not().isAfterOrEqual(date2, Calendar.SECOND, 5).orElseThrow(); // -> throws an exception (date null)
+Assertor.that(date1).not().isAfterOrEqual(null, Calendar.SECOND, 5).orElseThrow(); // -> throws an exception (date null)
+Assertor.that(date1).not().isAfterOrEqual(date2, Calendar.FIELD_COUNT, -5).orElseThrow(); // -> throws an exception (invalid calendarField)
+Assertor.that(date1).not().isAfterOrEqual(date2, -100, -5).orElseThrow(); // -> throws an exception (invalid calendarField)
+Assertor.that(date1).not().isAfterOrEqual(date2, Calendar.HOUR, 0).orElseThrow(); // -> throws an exception (invalid calendarAmount)
 ```
 
 #### isBefore
@@ -1734,28 +1734,28 @@ final Calendar date1 = new GregorianCalendar(2016, 05, 29, 5, 5, 5);
 final Calendar date2 = new GregorianCalendar(2016, 05, 29, 6, 5, 5);
 
 Assertor.that(date1).isBefore(date2).orElseThrow(); // -> OK
-Assertor.that(date2).isBefore(date1).orElseThrow(); // -> throw an exception
+Assertor.that(date2).isBefore(date1).orElseThrow(); // -> throws an exception
 Assertor.that(date2).not().isBefore(date1).orElseThrow(); // -> OK
 
 Assertor.that(date1).isBefore(date2, Calendar.SECOND, 5).orElseThrow(); // -> OK
 Assertor.that(date1).isBefore(date2, Calendar.MINUTE, 5).orElseThrow(); // -> OK
-Assertor.that(date1).isBefore(date2, Calendar.HOUR, 5).orElseThrow(); // -> throw an exception
+Assertor.that(date1).isBefore(date2, Calendar.HOUR, 5).orElseThrow(); // -> throws an exception
 Assertor.that(date1).not().isBefore(date2, Calendar.HOUR, 5).orElseThrow(); // -> OK
 
 // prerequisite errors
-Assertor.that(null).isBefore(date2).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(date1).isBefore(null).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(null).isBefore(date2).orElseThrow(); // -> throws an exception (date null)
+Assertor.that(date1).isBefore(null).orElseThrow(); // -> throws an exception (date null)
 
-Assertor.that(null).isBefore(date2, Calendar.SECOND, 5).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(date1).isBefore(null, Calendar.SECOND, 5).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(date1).isBefore(date2, Calendar.FIELD_COUNT, -5).orElseThrow(); // -> throw an exception (invalid calendarField)
-Assertor.that(date1).isBefore(date2, -100, -5).orElseThrow(); // -> throw an exception (invalid calendarField)
-Assertor.that(date1).isBefore(date2, Calendar.HOUR, 0).orElseThrow(); // -> throw an exception (invalid calendarAmount)
-Assertor.that(null).not().isBefore(date2, Calendar.SECOND, 5).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(date1).not().isBefore(null, Calendar.SECOND, 5).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(date1).not().isBefore(date2, Calendar.FIELD_COUNT, -5).orElseThrow(); // -> throw an exception (invalid calendarField)
-Assertor.that(date1).not().isBefore(date2, -100, -5).orElseThrow(); // -> throw an exception (invalid calendarField)
-Assertor.that(date1).not().isBefore(date2, Calendar.HOUR, 0).orElseThrow(); // -> throw an exception (invalid calendarAmount)
+Assertor.that(null).isBefore(date2, Calendar.SECOND, 5).orElseThrow(); // -> throws an exception (date null)
+Assertor.that(date1).isBefore(null, Calendar.SECOND, 5).orElseThrow(); // -> throws an exception (date null)
+Assertor.that(date1).isBefore(date2, Calendar.FIELD_COUNT, -5).orElseThrow(); // -> throws an exception (invalid calendarField)
+Assertor.that(date1).isBefore(date2, -100, -5).orElseThrow(); // -> throws an exception (invalid calendarField)
+Assertor.that(date1).isBefore(date2, Calendar.HOUR, 0).orElseThrow(); // -> throws an exception (invalid calendarAmount)
+Assertor.that(null).not().isBefore(date2, Calendar.SECOND, 5).orElseThrow(); // -> throws an exception (date null)
+Assertor.that(date1).not().isBefore(null, Calendar.SECOND, 5).orElseThrow(); // -> throws an exception (date null)
+Assertor.that(date1).not().isBefore(date2, Calendar.FIELD_COUNT, -5).orElseThrow(); // -> throws an exception (invalid calendarField)
+Assertor.that(date1).not().isBefore(date2, -100, -5).orElseThrow(); // -> throws an exception (invalid calendarField)
+Assertor.that(date1).not().isBefore(date2, Calendar.HOUR, 0).orElseThrow(); // -> throws an exception (invalid calendarAmount)
 ```
 
 #### isBeforeOrEqual
@@ -1786,28 +1786,28 @@ final Calendar date2 = new GregorianCalendar(2016, 05, 29, 6, 5, 5);
 
 Assertor.that(date1).isBeforeOrEqual(date1).orElseThrow(); // -> OK
 Assertor.that(date1).isBeforeOrEqual(date2).orElseThrow(); // -> OK
-Assertor.that(date2).isBeforeOrEqual(date1).orElseThrow(); // -> throw an exception
+Assertor.that(date2).isBeforeOrEqual(date1).orElseThrow(); // -> throws an exception
 Assertor.that(date2).not().isBeforeOrEqual(date1).orElseThrow(); // -> OK
 
 Assertor.that(date1).isBeforeOrEqual(date2, Calendar.SECOND, 5).orElseThrow(); // -> OK
 Assertor.that(date1).isBeforeOrEqual(date2, Calendar.MINUTE, 5).orElseThrow(); // -> OK
-Assertor.that(date1).isBeforeOrEqual(date2, Calendar.HOUR, 5).orElseThrow(); // -> throw an exception
+Assertor.that(date1).isBeforeOrEqual(date2, Calendar.HOUR, 5).orElseThrow(); // -> throws an exception
 Assertor.that(date1).not().isBeforeOrEqual(date2, Calendar.HOUR, 5).orElseThrow(); // -> OK
 
 // prerequisite errors
-Assertor.that(null).isBeforeOrEqual(date2).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(date1).isBeforeOrEqual(null).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(null).isBeforeOrEqual(date2).orElseThrow(); // -> throws an exception (date null)
+Assertor.that(date1).isBeforeOrEqual(null).orElseThrow(); // -> throws an exception (date null)
 
-Assertor.that(null).isBeforeOrEqual(date2, Calendar.SECOND, 5).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(date1).isBeforeOrEqual(null, Calendar.SECOND, 5).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(date1).isBeforeOrEqual(date2, Calendar.FIELD_COUNT, -5).orElseThrow(); // -> throw an exception (invalid calendarField)
-Assertor.that(date1).isBeforeOrEqual(date2, -100, -5).orElseThrow(); // -> throw an exception (invalid calendarField)
-Assertor.that(date1).isBeforeOrEqual(date2, Calendar.HOUR, 0).orElseThrow(); // -> throw an exception (invalid calendarAmount)
-Assertor.that(null).not().isBeforeOrEqual(date2, Calendar.SECOND, 5).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(date1).not().isBeforeOrEqual(null, Calendar.SECOND, 5).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(date1).not().isBeforeOrEqual(date2, Calendar.FIELD_COUNT, -5).orElseThrow(); // -> throw an exception (invalid calendarField)
-Assertor.that(date1).not().isBeforeOrEqual(date2, -100, -5).orElseThrow(); // -> throw an exception (invalid calendarField)
-Assertor.that(date1).not().isBeforeOrEqual(date2, Calendar.HOUR, 0).orElseThrow(); // -> throw an exception (invalid calendarAmount)
+Assertor.that(null).isBeforeOrEqual(date2, Calendar.SECOND, 5).orElseThrow(); // -> throws an exception (date null)
+Assertor.that(date1).isBeforeOrEqual(null, Calendar.SECOND, 5).orElseThrow(); // -> throws an exception (date null)
+Assertor.that(date1).isBeforeOrEqual(date2, Calendar.FIELD_COUNT, -5).orElseThrow(); // -> throws an exception (invalid calendarField)
+Assertor.that(date1).isBeforeOrEqual(date2, -100, -5).orElseThrow(); // -> throws an exception (invalid calendarField)
+Assertor.that(date1).isBeforeOrEqual(date2, Calendar.HOUR, 0).orElseThrow(); // -> throws an exception (invalid calendarAmount)
+Assertor.that(null).not().isBeforeOrEqual(date2, Calendar.SECOND, 5).orElseThrow(); // -> throws an exception (date null)
+Assertor.that(date1).not().isBeforeOrEqual(null, Calendar.SECOND, 5).orElseThrow(); // -> throws an exception (date null)
+Assertor.that(date1).not().isBeforeOrEqual(date2, Calendar.FIELD_COUNT, -5).orElseThrow(); // -> throws an exception (invalid calendarField)
+Assertor.that(date1).not().isBeforeOrEqual(date2, -100, -5).orElseThrow(); // -> throws an exception (invalid calendarField)
+Assertor.that(date1).not().isBeforeOrEqual(date2, Calendar.HOUR, 0).orElseThrow(); // -> throws an exception (invalid calendarAmount)
 ```
 
 ### Temporal
@@ -1826,12 +1826,12 @@ Assert that dates are equal.
 LocalDateTime date1 = LocalDateTime.now();
 LocalDateTime date2 = LocalDateTime.now().plusHours(1);
 
-Assertor.that(date1).isEqual(date2).orElseThrow(); // -> throw an exception
+Assertor.that(date1).isEqual(date2).orElseThrow(); // -> throws an exception
 Assertor.that(date1).isEqual(date1).orElseThrow(); // -> OK
-Assertor.that((LocalDateTime) null).isEqual(date2).orElseThrow(); // -> throw an exception
-Assertor.that(date1).isEqual(null).orElseThrow(); // -> throw an exception
-Assertor.that(date1).isEqual(date2, "Bad status").orElseThrow(); // -> throw an exception
-Assertor.that(date1).not().isEqual(date2).orElseThrow(); // -> throw an exception
+Assertor.that((LocalDateTime) null).isEqual(date2).orElseThrow(); // -> throws an exception
+Assertor.that(date1).isEqual(null).orElseThrow(); // -> throws an exception
+Assertor.that(date1).isEqual(date2, "Bad status").orElseThrow(); // -> throws an exception
+Assertor.that(date1).not().isEqual(date2).orElseThrow(); // -> throws an exception
 ```
 
 #### isNotEqual
@@ -1849,12 +1849,12 @@ Assert that dates are NOT equal.
 final LocalDateTime date1 = LocalDateTime.now();
 final LocalDateTime date2 = LocalDateTime.now().plusHours(1);
 
-Assertor.that(date1).isNotEqual(date2).orElseThrow(); // -> throw an exception
+Assertor.that(date1).isNotEqual(date2).orElseThrow(); // -> throws an exception
 Assertor.that(date1).isNotEqual(date1).orElseThrow(); // -> OK
-Assertor.that((LocalDateTime) null).isNotEqual(date2).orElseThrow(); // -> throw an exception
-Assertor.that(date1).isNotEqual(null).orElseThrow(); // -> throw an exception
-Assertor.that(date1).isNotEqual(date2, "Bad status").orElseThrow(); // -> throw an exception
-Assertor.that(date1).not().isNotEqual(date2).orElseThrow(); // -> throw an exception
+Assertor.that((LocalDateTime) null).isNotEqual(date2).orElseThrow(); // -> throws an exception
+Assertor.that(date1).isNotEqual(null).orElseThrow(); // -> throws an exception
+Assertor.that(date1).isNotEqual(date2, "Bad status").orElseThrow(); // -> throws an exception
+Assertor.that(date1).not().isNotEqual(date2).orElseThrow(); // -> throws an exception
 ```
 
 #### isAround
@@ -1874,14 +1874,14 @@ final LocalDateTime date2 = LocalDateTime.now();
 
 Assertor.that(date1).isAround(date2, Duration.ofSeconds(5)).orElseThrow(); // -> OK
 Assertor.that(date1).isAround(date2, Duration.ofHours(5)).orElseThrow(); // -> OK
-Assertor.that(date1).isAround(date2, Duration.ofMillis(5)).orElseThrow(); // -> throw an exception
+Assertor.that(date1).isAround(date2, Duration.ofMillis(5)).orElseThrow(); // -> throws an exception
 Assertor.that(date1).not().isAround(date2, Duration.ofMillis(5)).orElseThrow(); // -> OK
 
 // prerequisite errors
-Assertor.that(null).isAround(date2, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(date1).isAround(null, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(null).not().isAround(date2, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(date1).not().isAround(null, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(null).isAround(date2, Duration.ofSeconds(5)).orElseThrow(); // -> throws an exception (date null)
+Assertor.that(date1).isAround(null, Duration.ofSeconds(5)).orElseThrow(); // -> throws an exception (date null)
+Assertor.that(null).not().isAround(date2, Duration.ofSeconds(5)).orElseThrow(); // -> throws an exception (date null)
+Assertor.that(date1).not().isAround(null, Duration.ofSeconds(5)).orElseThrow(); // -> throws an exception (date null)
 ```
 
 #### isNotAround
@@ -1899,16 +1899,16 @@ Assert that date1 is NOT around the date2.
 final LocalDateTime date1 = LocalDateTime.now().plusSeconds(1);
 final LocalDateTime date2 = LocalDateTime.now();
 
-Assertor.that(date1).isNotAround(date2, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception
-Assertor.that(date1).isNotAround(date2, Duration.ofHours(5)).orElseThrow(); // -> throw an exception
+Assertor.that(date1).isNotAround(date2, Duration.ofSeconds(5)).orElseThrow(); // -> throws an exception
+Assertor.that(date1).isNotAround(date2, Duration.ofHours(5)).orElseThrow(); // -> throws an exception
 Assertor.that(date1).isNotAround(date2, Duration.ofMillis(5)).orElseThrow(); // -> OK
-Assertor.that(date1).not().isNotAround(date2, Duration.ofMillis(5)).orElseThrow(); // -> throw an exception
+Assertor.that(date1).not().isNotAround(date2, Duration.ofMillis(5)).orElseThrow(); // -> throws an exception
 
 // prerequisite errors
-Assertor.that(null).isAround(date2, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(date1).isAround(null, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(null).not().isAround(date2, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(date1).not().isAround(null, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(null).isAround(date2, Duration.ofSeconds(5)).orElseThrow(); // -> throws an exception (date null)
+Assertor.that(date1).isAround(null, Duration.ofSeconds(5)).orElseThrow(); // -> throws an exception (date null)
+Assertor.that(null).not().isAround(date2, Duration.ofSeconds(5)).orElseThrow(); // -> throws an exception (date null)
+Assertor.that(date1).not().isAround(null, Duration.ofSeconds(5)).orElseThrow(); // -> throws an exception (date null)
 ```
 
 #### isAfter
@@ -1930,20 +1930,20 @@ final LocalDateTime date1 = LocalDateTime.now().plusHours(1);
 final LocalDateTime date2 = LocalDateTime.now();
 
 Assertor.that(date1).isAfter(date2).orElseThrow(); // -> OK
-Assertor.that(date1).isAfter(date1).orElseThrow(); // -> throw an exception
-Assertor.that(date2).isAfter(date1).orElseThrow(); // -> throw an exception
+Assertor.that(date1).isAfter(date1).orElseThrow(); // -> throws an exception
+Assertor.that(date2).isAfter(date1).orElseThrow(); // -> throws an exception
 Assertor.that(date2).not().isAfter(date1).orElseThrow(); // -> OK
 
 Assertor.that(date1).isAfter(date2, Duration.ofSeconds(5)).orElseThrow(); // -> OK
 Assertor.that(date1).isAfter(date2, Duration.ofMinutes(5)).orElseThrow(); // -> OK
-Assertor.that(date1).isAfter(date2, Duration.ofHours(5)).orElseThrow(); // -> throw an exception
+Assertor.that(date1).isAfter(date2, Duration.ofHours(5)).orElseThrow(); // -> throws an exception
 Assertor.that(date1).not().isAfter(date2, Duration.ofHours(5)).orElseThrow(); // -> OK
 
 // prerequisite errors
-Assertor.that(null).isAfter(date2, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(date1).isAfter(null, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(null).not().isAfter(date2, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(date1).not().isAfter(null, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(null).isAfter(date2, Duration.ofSeconds(5)).orElseThrow(); // -> throws an exception (date null)
+Assertor.that(date1).isAfter(null, Duration.ofSeconds(5)).orElseThrow(); // -> throws an exception (date null)
+Assertor.that(null).not().isAfter(date2, Duration.ofSeconds(5)).orElseThrow(); // -> throws an exception (date null)
+Assertor.that(date1).not().isAfter(null, Duration.ofSeconds(5)).orElseThrow(); // -> throws an exception (date null)
 ```
 
 #### isAfterOrEqual
@@ -1966,19 +1966,19 @@ final LocalDateTime date2 = LocalDateTime.now();
 
 Assertor.that(date1).isAfterOrEqual(date2).orElseThrow(); // -> OK
 Assertor.that(date1).isAfterOrEqual(date1).orElseThrow(); // -> OK
-Assertor.that(date2).isAfterOrEqual(date1).orElseThrow(); // -> throw an exception
+Assertor.that(date2).isAfterOrEqual(date1).orElseThrow(); // -> throws an exception
 Assertor.that(date2).not().isAfterOrEqual(date1).orElseThrow(); // -> OK
 
 Assertor.that(date1).isAfterOrEqual(date2, Duration.ofSeconds(5)).orElseThrow(); // -> OK
 Assertor.that(date1).isAfterOrEqual(date2, Duration.ofMinutes(5)).orElseThrow(); // -> OK
-Assertor.that(date1).isAfterOrEqual(date2, Duration.ofHours(5)).orElseThrow(); // -> throw an exception
+Assertor.that(date1).isAfterOrEqual(date2, Duration.ofHours(5)).orElseThrow(); // -> throws an exception
 Assertor.that(date1).not().isAfterOrEqual(date2, Duration.ofHours(5)).orElseThrow(); // -> OK
 
 // prerequisite errors
-Assertor.that(null).isAfterOrEqual(date2, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(date1).isAfterOrEqual(null, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(null).not().isAfterOrEqual(date2, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(date1).not().isAfterOrEqual(null, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(null).isAfterOrEqual(date2, Duration.ofSeconds(5)).orElseThrow(); // -> throws an exception (date null)
+Assertor.that(date1).isAfterOrEqual(null, Duration.ofSeconds(5)).orElseThrow(); // -> throws an exception (date null)
+Assertor.that(null).not().isAfterOrEqual(date2, Duration.ofSeconds(5)).orElseThrow(); // -> throws an exception (date null)
+Assertor.that(date1).not().isAfterOrEqual(null, Duration.ofSeconds(5)).orElseThrow(); // -> throws an exception (date null)
 ```
 
 #### isBefore
@@ -2000,20 +2000,20 @@ final LocalDateTime date1 = LocalDateTime.now();
 final LocalDateTime date2 = LocalDateTime.now().plusHours(1);
 
 Assertor.that(date1).isBefore(date2).orElseThrow(); // -> OK
-Assertor.that(date1).isBefore(date1).orElseThrow(); // -> throw an exception
-Assertor.that(date2).isBefore(date1).orElseThrow(); // -> throw an exception
+Assertor.that(date1).isBefore(date1).orElseThrow(); // -> throws an exception
+Assertor.that(date2).isBefore(date1).orElseThrow(); // -> throws an exception
 Assertor.that(date2).not().isBefore(date1).orElseThrow(); // -> OK
 
 Assertor.that(date1).isBefore(date2, Duration.ofSeconds(5)).orElseThrow(); // -> OK
 Assertor.that(date1).isBefore(date2, Duration.ofMinutes(5)).orElseThrow(); // -> OK
-Assertor.that(date1).isBefore(date2, Duration.ofHours(5)).orElseThrow(); // -> throw an exception
+Assertor.that(date1).isBefore(date2, Duration.ofHours(5)).orElseThrow(); // -> throws an exception
 Assertor.that(date1).not().isBefore(date2, Duration.ofHours(5)).orElseThrow(); // -> OK
 
 // prerequisite errors
-Assertor.that(null).isBefore(date2, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(date1).isBefore(null, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(null).not().isBefore(date2, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(date1).not().isBefore(null, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(null).isBefore(date2, Duration.ofSeconds(5)).orElseThrow(); // -> throws an exception (date null)
+Assertor.that(date1).isBefore(null, Duration.ofSeconds(5)).orElseThrow(); // -> throws an exception (date null)
+Assertor.that(null).not().isBefore(date2, Duration.ofSeconds(5)).orElseThrow(); // -> throws an exception (date null)
+Assertor.that(date1).not().isBefore(null, Duration.ofSeconds(5)).orElseThrow(); // -> throws an exception (date null)
 ```
 
 #### isBeforeOrEqual
@@ -2036,41 +2036,383 @@ final LocalDateTime date2 = LocalDateTime.now().plusHours(1);
 
 Assertor.that(date1).isBeforeOrEqual(date2).orElseThrow(); // -> OK
 Assertor.that(date1).isBeforeOrEqual(date1).orElseThrow(); // -> OK
-Assertor.that(date2).isBeforeOrEqual(date1).orElseThrow(); // -> throw an exception
+Assertor.that(date2).isBeforeOrEqual(date1).orElseThrow(); // -> throws an exception
 Assertor.that(date2).not().isBeforeOrEqual(date1).orElseThrow(); // -> OK
 
 Assertor.that(date1).isBeforeOrEqual(date2, Duration.ofSeconds(5)).orElseThrow(); // -> OK
 Assertor.that(date1).isBeforeOrEqual(date2, Duration.ofMinutes(5)).orElseThrow(); // -> OK
-Assertor.that(date1).isBeforeOrEqual(date2, Duration.ofHours(5)).orElseThrow(); // -> throw an exception
+Assertor.that(date1).isBeforeOrEqual(date2, Duration.ofHours(5)).orElseThrow(); // -> throws an exception
 Assertor.that(date1).not().isBeforeOrEqual(date2, Duration.ofHours(5)).orElseThrow(); // -> OK
 
 // prerequisite errors
-Assertor.that(null).isBeforeOrEqual(date2, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(date1).isBeforeOrEqual(null, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(null).not().isBeforeOrEqual(date2, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
-Assertor.that(date1).not().isBeforeOrEqual(null, Duration.ofSeconds(5)).orElseThrow(); // -> throw an exception (date null)
+Assertor.that(null).isBeforeOrEqual(date2, Duration.ofSeconds(5)).orElseThrow(); // -> throws an exception (date null)
+Assertor.that(date1).isBeforeOrEqual(null, Duration.ofSeconds(5)).orElseThrow(); // -> throws an exception (date null)
+Assertor.that(null).not().isBeforeOrEqual(date2, Duration.ofSeconds(5)).orElseThrow(); // -> throws an exception (date null)
+Assertor.that(date1).not().isBeforeOrEqual(null, Duration.ofSeconds(5)).orElseThrow(); // -> throws an exception (date null)
 ```
 
 ### Enum
 #### hasName
+Assert that enumeration has the specified name.
+* Signatures:
+	- hasName(CharSequence name)
+	- hasName(CharSequence name, CharSequence message, Object[] arguments)
+	- hasName(CharSequence name, Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites:
+	- enumeration NOT null
+	- name NOT null and NOT empty
+
+* Examples:
+```java
+Assertor.that(Type.LONG).hasName("LONG").orElseThrow(); // -> OK
+Assertor.that(Type.LONG).hasName("Long").orElseThrow(); // -> throws an exception
+Assertor.that(Type.LONG).hasName("INTEGER").orElseThrow(); // -> throws an exception
+
+// prerequisite errors
+Assertor.that((Type) null).hasName("LONG").orElseThrow(); // -> throws an exception
+Assertor.that(Type.LONG).hasName(null).orElseThrow(); // -> throws an exception
+Assertor.that(Type.LONG).hasName("").orElseThrow(); // -> throws an exception
+```
+
 #### hasNameIgnoreCase
+Assert that enumeration has the specified name.
+* Signatures:
+	- hasNameIgnoreCase(CharSequence name)
+	- hasNameIgnoreCase(CharSequence name, CharSequence message, Object[] arguments)
+	- hasNameIgnoreCase(CharSequence name, Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites:
+	- enumeration NOT null
+	- name NOT null and NOT empty
+
+* Examples:
+```java
+Assertor.that(Type.LONG).hasNameIgnoreCase("LONG").orElseThrow(); // -> OK
+Assertor.that(Type.LONG).hasNameIgnoreCase("Long").orElseThrow(); // -> OK
+Assertor.that(Type.LONG).hasNameIgnoreCase("INTEGER").orElseThrow(); // -> throws an exception
+
+// prerequisite errors
+Assertor.that((Type) null).hasNameIgnoreCase("LONG").orElseThrow(); // -> throws an exception
+Assertor.that(Type.LONG).hasNameIgnoreCase(null).orElseThrow(); // -> throws an exception
+Assertor.that(Type.LONG).hasNameIgnoreCase("").orElseThrow(); // -> throws an exception
+```
+
 #### hasOrdinal
+Assert that enumeration has the specified ordinal.
+* Signatures:
+	- hasOrdinal(CharSequence name)
+	- hasOrdinal(CharSequence name, CharSequence message, Object[] arguments)
+	- hasOrdinal(CharSequence name, Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites:
+	- enumeration NOT null
+	- ordinal cannot be lower than 0
+
+* Examples:
+```java
+Assertor.that(Type.LONG).hasOrdinal(0).orElseThrow(); // -> OK
+Assertor.that(Type.LONG).hasOrdinal(-1).orElseThrow(); // -> throws an exception
+
+// prerequisite errors
+Assertor.that((Type) null).hasOrdinal(0).orElseThrow(); // -> throws an exception
+Assertor.that(Type.LONG).hasOrdinal(-1).orElseThrow(); // -> throws an exception
+```
 
 ### Iterable
 #### hasSize
+Assert that iterable has the specified size.
+
+* Signatures:
+	- hasSize(int size)
+	- hasSize(int size, CharSequence message, Object[] arguments)
+	- hasSize(int size, Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites:
+	- iterable NOT null
+	- length >= 0
+
+* Examples:
+```java
+Assertor.that(Arrays.asList("text")).hasSize(3).orElseThrow(); // -> throws an exception
+Assertor.that(Arrays.asList("text")).hasSize(1, "Bad status").orElseThrow(); // -> OK
+Assertor.that(Arrays.asList("text")).not().hasSize(3).orElseThrow(); // -> OK
+
+// prerequisite errors
+Assertor.that((List<String>) null).hasSize(4, "Bad status").orElseThrow(); // -> throws an exception
+Assertor.that(Arrays.asList("text")).hasSize(-1, "Bad status").orElseThrow(); // -> throws an exception
+Assertor.that((List<String>) null).not().hasSize(4, "Bad status").orElseThrow(); // -> throws an exception
+Assertor.that(Arrays.asList("text")).not().hasSize(-1, "Bad status").orElseThrow(); // -> throws an exception
+```
+
 #### isEmpty
+Assert that iterable is empty or null.
+
+* Signatures:
+	- isEmpty()
+	- isEmpty(CharSequence message, Object[] arguments)
+	- isEmpty(Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites: None
+
+* Examples:
+```java
+Assertor.that(Arrays.asList("text")).isEmpty().orElseThrow(); // -> throws an exception
+Assertor.that((List<String>) null).isEmpty("Param '%1$s*' not empty").orElseThrow(); // -> OK
+Assertor.that(Collections.emptySet()).isEmpty("Param '%1$s*' not empty").orElseThrow(); // -> OK
+Assertor.that(Arrays.asList("text")).not().isEmpty("Param '%1$s*' not empty").orElseThrow(); // -> OK
+```
+
 #### isNotEmpty
+Assert that iterable is NOT empty or null.
+
+* Signatures:
+	- isNotEmpty()
+	- isNotEmpty(CharSequence message, Object[] arguments)
+	- isNotEmpty(Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites: None
+
+* Examples:
+```java
+Assertor.that(Arrays.asList("text")).isNotEmpty().orElseThrow(); // -> OK
+Assertor.that((List<String>) null).isNotEmpty("Param '%1$s*' not empty").orElseThrow(); // -> throws an exception
+Assertor.that(Collections.emptySet()).isNotEmpty("Param '%1$s*' not empty").orElseThrow(); // -> throws an exception
+Assertor.that(Arrays.asList("text")).not().isNotEmpty("Param '%1$s*' not empty").orElseThrow(); // -> throws an exception
+```
+
 #### contains
+Assert that iterable contains the element.
+
+* Signatures:
+	- contains(T element)
+	- contains(T element, CharSequence message, Object[] arguments)
+	- contains(T element, Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites:
+	- iterable NOT null and NOT empty
+
+* Examples:
+```java
+Assertor.that(Arrays.asList("text")).contains("text").orElseThrow(); // -> OK
+Assertor.that(Arrays.asList(null, "")).contains(null, "Param '%1$s*' not contains '%2$s*'").orElseThrow(); // -> OK
+
+// prerequisite errors
+Assertor.that((List<String>) null).contains("t", "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+Assertor.that(Collections.emptySet()).contains(null, "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+Assertor.that((List<String>) null).not().contains("t", "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+Assertor.that(Collections.emptySet()).not().contains(null, "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+```
+
 #### containsAll
+Assert that iterable contains all elements.
+
+* Signatures:
+	- containsAll(Iterable<T> elements)
+	- containsAll(Iterable<T> elements, CharSequence message, Object[] arguments)
+	- containsAll(Iterable<T> elements, Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites:
+	- iterable NOT null and NOT empty
+	- elements NOT null and NOT empty
+
+* Examples:
+```java
+Assertor.that(Arrays.asList("text")).containsAll(Arrays.asList("text")).orElseThrow(); // -> OK
+Assertor.that(Arrays.asList(null, "")).containsAll(Arrays.asList(null), "Param '%1$s*' not contains '%2$s*'").orElseThrow(); // -> OK
+Assertor.that(Arrays.asList(null, "")).containsAll(Arrays.asList(null, "text"), "Param '%1$s*' not contains '%2$s*'").orElseThrow(); // -> throws an exception
+
+// prerequisite errors
+Assertor.that((List<String>) null).containsAll(Arrays.asList("t"), "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+Assertor.that(Collections.emptySet()).containsAll(Arrays.asList((String) null), "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+Assertor.that(Arrays.asList("text")).containsAll(null, "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+Assertor.that(Arrays.asList("text")).containsAll(Collections.emptySet(), "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+Assertor.that((List<String>) null).not().containsAll(Arrays.asList("t"), "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+Assertor.that(Collections.emptySet()).not().containsAll(Arrays.asList((String) null), "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+Assertor.that(Arrays.asList("text")).not().containsAll(null, "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+Assertor.that(Arrays.asList("text")).not().containsAll(Collections.emptySet(), "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+```
+
 #### containsAny
+Assert that iterable contains any elements.
+
+* Signatures:
+	- containsAny(Iterable<T> elements)
+	- containsAny(Iterable<T> elements, CharSequence message, Object[] arguments)
+	- containsAny(Iterable<T> elements, Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites:
+	- iterable NOT null and NOT empty
+	- elements NOT null and NOT empty
+
+* Examples:
+```java
+Assertor.that(Arrays.asList("text")).containsAny(Arrays.asList("text")).orElseThrow(); // -> OK
+Assertor.that(Arrays.asList(null, "")).containsAny(Arrays.asList(null), "Param '%1$s*' not contains '%2$s*'").orElseThrow(); // -> OK
+Assertor.that(Arrays.asList(null, "")).containsAny(Arrays.asList(null, "text"), "Param '%1$s*' not contains '%2$s*'").orElseThrow(); // -> OK
+
+// prerequisite errors
+Assertor.that((List<String>) null).containsAny(Arrays.asList("t"), "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+Assertor.that(Collections.emptySet()).containsAny(Arrays.asList(null), "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+Assertor.that(Arrays.asList("text")).containsAny(null, "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+Assertor.that(Arrays.asList("text")).containsAny(Collections.emptySet(), "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+Assertor.that((List<String>) null).not().containsAny(Arrays.asList("t"), "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+Assertor.that(Collections.emptySet()).not().containsAny(Arrays.asList((String) null), "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+Assertor.that(Arrays.asList("text")).not().containsAny(null, "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+Assertor.that(Arrays.asList("text")).not().containsAny(Collections.emptySet(), "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+```
 
 ### Map
 #### hasSize
+Assert that map has the specified size.
+
+* Signatures:
+	- hasSize(int size)
+	- hasSize(int size, CharSequence message, Object[] arguments)
+	- hasSize(int size, Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites:
+	- map NOT null
+	- length >= 0
+
+* Examples:
+```java
+Assertor.that(MapUtils2.newHashMap("key", "value")).hasSize(3).orElseThrow(); // -> throws an exception
+Assertor.that(MapUtils2.newHashMap("key", "value")).hasSize(1, "Bad status").orElseThrow(); // -> OK
+Assertor.that(MapUtils2.newHashMap("key", "value")).not().hasSize(3).orElseThrow(); // -> OK
+
+// prerequisite errors
+Assertor.that((Map<String, String>) null).hasSize(4, "Bad status").orElseThrow(); // -> throws an exception
+Assertor.that(MapUtils2.newHashMap("key", "value")).hasSize(-1, "Bad status").orElseThrow(); // -> throws an exception
+Assertor.that((Map<String, String>) null).not().hasSize(4, "Bad status").orElseThrow(); // -> throws an exception
+Assertor.that(MapUtils2.newHashMap("key", "value")).not().hasSize(-1, "Bad status").orElseThrow(); // -> throws an exception
+```
+
 #### isEmpty
+Assert that map is empty or null.
+
+* Signatures:
+	- isEmpty()
+	- isEmpty(CharSequence message, Object[] arguments)
+	- isEmpty(Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites: None
+
+* Examples:
+```java
+Assertor.that(MapUtils2.newHashMap("key", "value")).isEmpty().orElseThrow(); // -> throws an exception
+Assertor.that((Map<String, String>) null).isEmpty("Param '%1$s*' not empty").orElseThrow(); // -> OK
+Assertor.that(Collections.emptyMap()).isEmpty("Param '%1$s*' not empty").orElseThrow(); // -> OK
+Assertor.that(MapUtils2.newHashMap("key", "value")).not().isEmpty("Param '%1$s*' not empty").orElseThrow(); // -> OK
+```
+
 #### isNotEmpty
+Assert that map is NOT empty or null.
+
+* Signatures:
+	- isNotEmpty()
+	- isNotEmpty(CharSequence message, Object[] arguments)
+	- isNotEmpty(Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites: None
+
+* Examples:
+```java
+Assertor.that(MapUtils2.newHashMap("key", "value")).isNotEmpty().orElseThrow(); // -> OK
+Assertor.that((Map<String, String>) null).isNotEmpty("Param '%1$s*' not empty").orElseThrow(); // -> throws an exception
+Assertor.that(Collections.emptyMap()).isNotEmpty("Param '%1$s*' not empty").orElseThrow(); // -> throws an exception
+Assertor.that(MapUtils2.newHashMap("key", "value")).not().isNotEmpty("Param '%1$s*' not empty").orElseThrow(); // -> throws an exception
+```
+
 #### contains
+Assert that map contains the element.
+
+* Signatures:
+	- contains(K key)
+	- contains(K key, CharSequence message, Object[] arguments)
+	- contains(K key, Locale locale, CharSequence message, Object[] arguments)
+	- contains(K key, V value)
+	- contains(K key, V value, CharSequence message, Object[] arguments)
+	- contains(K key, V value, Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites:
+	- map NOT null and NOT empty
+
+* Examples:
+```java
+Assertor.that(MapUtils2.newHashMap("key", "value")).contains("text").orElseThrow(); // -> OK
+Assertor.that(MapUtils2.newHashMap("key1", "value1", null, "value2")).contains(null, "Param '%1$s*' not contains '%2$s*'").orElseThrow(); // -> OK
+
+Assertor.that(MapUtils2.newHashMap("key1", "value1", null, "value2")).contains(null, "value2",  "Param '%1$s*' not contains '%2$s*' / '%3$s*'").orElseThrow(); // -> OK
+Assertor.that(MapUtils2.newHashMap("key1", "value1", null, "value2")).contains(null, "value3", "Param '%1$s*' not contains '%2$s*' / '%3$s*'").orElseThrow(); // -> throws an exception
+
+// prerequisite errors
+Assertor.that((Map<String, String>) null).contains("t", "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+Assertor.that(Collections.emptyMap()).contains(null, "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+Assertor.that((Map<String, String>) null).not().contains("t", "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+Assertor.that(Collections.emptyMap()).not().contains(null, "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+```
+
 #### containsAll
+Assert that iterable contains all elements.
+
+* Signatures:
+	- containsAll(Iterable<K> keys)
+	- containsAll(Iterable<K> keys, CharSequence message, Object[] arguments)
+	- containsAll(Iterable<K> keys, Locale locale, CharSequence message, Object[] arguments)
+	- containsAll(Map<K, V> map)
+	- containsAll(Map<K, V> map, CharSequence message, Object[] arguments)
+	- containsAll(Map<K, V> map, Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites:
+	- map NOT null and NOT empty
+	- keys NOT null and NOT empty
+	- second map NOT null and NOT empty
+
+* Examples:
+```java
+Assertor.that(MapUtils2.newHashMap("key1", "value1", null, "value2")).containsAll(Arrays.asList("key1"), "Param '%1$s*' not contains '%2$s*'").orElseThrow(); // -> OK
+Assertor.that(MapUtils2.newHashMap("key1", "value1", null, "value2")).containsAll(Arrays.asList("key1", "key2"), "Param '%1$s*' not contains '%2$s*'").orElseThrow(); // -> throws an exception
+Assertor.that(MapUtils2.newHashMap("key1", "value1", null, "value2")).containsAll(MapUtils2.newHashMap(null, "value2"), "Param '%1$s*' not contains '%2$s*'").orElseThrow(); // -> OK
+Assertor.that(MapUtils2.newHashMap("key1", "value1", null, "value2")).containsAll(MapUtils2.newHashMap(null, "value2", "key3", "value3"), "Param '%1$s*' not contains '%2$s*'").orElseThrow(); // -> throws an exception
+
+// prerequisite errors
+Assertor.that(MapUtils2.newHashMap("key1", "value1")).containsAll((List<String>) null, "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+Assertor.that(MapUtils2.newHashMap("key1", "value1")).containsAll((Map<String, String>) null, "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+Assertor.that(MapUtils2.newHashMap("key1", "value1")).not().containsAll((List<String>) null, "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+Assertor.that(MapUtils2.newHashMap("key1", "value1")).not().containsAll((Map<String, String>) null, "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+```
+
 #### containsAny
+Assert that iterable contains any elements.
+
+* Signatures:
+	- containsAny(Iterable<K> keys)
+	- containsAny(Iterable<K> keys, CharSequence message, Object[] arguments)
+	- containsAny(Iterable<K> keys, Locale locale, CharSequence message, Object[] arguments)
+	- containsAny(Map<K, V> map)
+	- containsAny(Map<K, V> map, CharSequence message, Object[] arguments)
+	- containsAny(Map<K, V> map, Locale locale, CharSequence message, Object[] arguments)
+
+* Prerequisites:
+	- map NOT null and NOT empty
+	- keys NOT null and NOT empty
+	- second map NOT null and NOT empty
+
+* Examples:
+```java
+Assertor.that(MapUtils2.newHashMap("key1", "value1", null, "value2")).containsAny(Arrays.asList("key1"), "Param '%1$s*' not contains '%2$s*'").orElseThrow(); // -> OK
+Assertor.that(MapUtils2.newHashMap("key1", "value1", null, "value2")).containsAny(Arrays.asList("key1", "key2"), "Param '%1$s*' not contains '%2$s*'").orElseThrow(); // -> OK
+Assertor.that(MapUtils2.newHashMap("key1", "value1", null, "value2")).containsAny(MapUtils2.newHashMap(null, "value2"), "Param '%1$s*' not contains '%2$s*'").orElseThrow(); // -> OK
+Assertor.that(MapUtils2.newHashMap("key1", "value1", null, "value2")).containsAny(MapUtils2.newHashMap(null, "value2", "key3", "value3"), "Param '%1$s*' not contains '%2$s*'").orElseThrow(); // -> OK
+
+// prerequisite errors
+Assertor.that(MapUtils2.newHashMap("key1", "value1")).containsAny((List<String>) null, "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+Assertor.that(MapUtils2.newHashMap("key1", "value1")).containsAny((Map<String, String>) null, "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+Assertor.that(MapUtils2.newHashMap("key1", "value1")).not().containsAny((List<String>) null, "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+Assertor.that(MapUtils2.newHashMap("key1", "value1")).not().containsAny((Map<String, String>) null, "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
+```
+
 
 ### Number
 #### isEqual
@@ -2085,11 +2427,11 @@ Assert that numbers are equal.
 
 * Examples:
 ```java
-Assertor.that(-12).isEqual(11).orElseThrow(); // -> throw an exception
+Assertor.that(-12).isEqual(11).orElseThrow(); // -> throws an exception
 Assertor.that(1).isEqual(1).orElseThrow(); // -> OK
-Assertor.that((Long) null).isEqual(1).orElseThrow(); // -> throw an exception
-Assertor.that(1).isEqual(null).orElseThrow(); // -> throw an exception
-Assertor.that(12).isEqual(1, "Bad status").orElseThrow(); // -> throw an exception
+Assertor.that((Long) null).isEqual(1).orElseThrow(); // -> throws an exception
+Assertor.that(1).isEqual(null).orElseThrow(); // -> throws an exception
+Assertor.that(12).isEqual(1, "Bad status").orElseThrow(); // -> throws an exception
 Assertor.that(-12).not().isEqual(1).orElseThrow(); // -> OK
 ```
 
@@ -2105,12 +2447,12 @@ Assert that numbers are NOT equal.
 
 * Examples:
 ```java
-Assertor.that(-12).isNotEqual(-12).orElseThrow(); // -> throw an exception
+Assertor.that(-12).isNotEqual(-12).orElseThrow(); // -> throws an exception
 Assertor.that(1).isNotEqual(12).orElseThrow(); // -> OK
 Assertor.that((Long) null).isNotEqual(1).orElseThrow(); // -> OK
 Assertor.that(1).isNotEqual(null).orElseThrow(); // -> OK
-Assertor.that(12).isNotEqual(12, "Bad status").orElseThrow(); // -> throw an exception
-Assertor.that(-12).not().isNotEqual(1).orElseThrow(); // -> throw an exception
+Assertor.that(12).isNotEqual(12, "Bad status").orElseThrow(); // -> throws an exception
+Assertor.that(-12).not().isNotEqual(1).orElseThrow(); // -> throws an exception
 ```
 
 #### isZero
@@ -2125,11 +2467,11 @@ Assert that number equals zero.
 
 * Examples:
 ```java
-Assertor.that(-12).isZero().orElseThrow(); // -> throw an exception
+Assertor.that(-12).isZero().orElseThrow(); // -> throws an exception
 Assertor.that(0).isZero().orElseThrow(); // -> OK
-Assertor.that((Long) null).isZero().orElseThrow(); // -> throw an exception
-Assertor.that(12).isZero("Bad status").orElseThrow(); // -> throw an exception
-Assertor.that(-12).not().isZero().orElseThrow(); // -> throw an exception
+Assertor.that((Long) null).isZero().orElseThrow(); // -> throws an exception
+Assertor.that(12).isZero("Bad status").orElseThrow(); // -> throws an exception
+Assertor.that(-12).not().isZero().orElseThrow(); // -> throws an exception
 ```
 
 #### isPositive
@@ -2144,9 +2486,9 @@ Assert that number is positive.
 
 * Examples:
 ```java
-Assertor.that(-12).isPositive().orElseThrow(); // -> throw an exception
-Assertor.that((Integer) null).isPositive().orElseThrow(); // -> throw an exception
-Assertor.that(0).isPositive().orElseThrow(); // -> throw an exception
+Assertor.that(-12).isPositive().orElseThrow(); // -> throws an exception
+Assertor.that((Integer) null).isPositive().orElseThrow(); // -> throws an exception
+Assertor.that(0).isPositive().orElseThrow(); // -> throws an exception
 Assertor.that(12).isPositive("Bad status").orElseThrow(); // -> OK
 Assertor.that(-12).not().isPositive().orElseThrow(); // -> OK
 ```
@@ -2163,9 +2505,9 @@ Assert that number is negative.
 
 * Examples:
 ```java
-Assertor.that(12).isNegative().orElseThrow(); // -> throw an exception
-Assertor.that(0).isNegative().orElseThrow(); // -> throw an exception
-Assertor.that((Integer) null).isNegative().orElseThrow(); // -> throw an exception
+Assertor.that(12).isNegative().orElseThrow(); // -> throws an exception
+Assertor.that(0).isNegative().orElseThrow(); // -> throws an exception
+Assertor.that((Integer) null).isNegative().orElseThrow(); // -> throws an exception
 Assertor.that(-12).isNegative("Bad status").orElseThrow(); // -> OK
 Assertor.that(12).not().isNegative().orElseThrow(); // -> OK
 ```
@@ -2183,15 +2525,15 @@ Assert that number is greater than specified number.
 
 * Examples:
 ```java
-Assertor.that(12).isGT(12).orElseThrow(); // -> throw an exception
+Assertor.that(12).isGT(12).orElseThrow(); // -> throws an exception
 Assertor.that(12).isGT(10, "Bad status").orElseThrow(); // -> OK
 Assertor.that(12).not().isGT(12).orElseThrow(); // -> OK
 
 // prerequisite errors
-Assertor.that(null).isGT(12).orElseThrow(); // -> throw an exception
-Assertor.that(12).isGT(null).orElseThrow(); // -> throw an exception
-Assertor.that(null).not().isGT(12).orElseThrow(); // -> throw an exception
-Assertor.that(12).not().isGT(null).orElseThrow(); // -> throw an exception
+Assertor.that(null).isGT(12).orElseThrow(); // -> throws an exception
+Assertor.that(12).isGT(null).orElseThrow(); // -> throws an exception
+Assertor.that(null).not().isGT(12).orElseThrow(); // -> throws an exception
+Assertor.that(12).not().isGT(null).orElseThrow(); // -> throws an exception
 ```
 
 #### isGTE
@@ -2207,16 +2549,16 @@ Assert that number is greater than or equal to specified number.
 
 * Examples:
 ```java
-Assertor.that(12).isGTE(13).orElseThrow(); // -> throw an exception
+Assertor.that(12).isGTE(13).orElseThrow(); // -> throws an exception
 Assertor.that(12).isGTE(12).orElseThrow(); // -> OK
 Assertor.that(12).isGTE(10, "Bad status").orElseThrow(); // -> OK
 Assertor.that(12).not().isGTE(13).orElseThrow(); // -> OK
 
 // prerequisite errors
-Assertor.that(null).isGTE(12).orElseThrow(); // -> throw an exception
-Assertor.that(12).isGTE(null).orElseThrow(); // -> throw an exception
-Assertor.that(null).not().isGTE(12).orElseThrow(); // -> throw an exception
-Assertor.that(12).not().isGTE(null).orElseThrow(); // -> throw an exception
+Assertor.that(null).isGTE(12).orElseThrow(); // -> throws an exception
+Assertor.that(12).isGTE(null).orElseThrow(); // -> throws an exception
+Assertor.that(null).not().isGTE(12).orElseThrow(); // -> throws an exception
+Assertor.that(12).not().isGTE(null).orElseThrow(); // -> throws an exception
 ```
 
 #### isLT
@@ -2232,15 +2574,15 @@ Assert that number is lower than specified number.
 
 * Examples:
 ```java
-Assertor.that(12).isLT(12).orElseThrow(); // -> throw an exception
+Assertor.that(12).isLT(12).orElseThrow(); // -> throws an exception
 Assertor.that(12).isLT(13, "Bad status").orElseThrow(); // -> OK
 Assertor.that(12).not().isLT(12).orElseThrow(); // -> OK
 
 // prerequisite errors
-Assertor.that(null).isLT(12).orElseThrow(); // -> throw an exception
-Assertor.that(12).isLT(null).orElseThrow(); // -> throw an exception
-Assertor.that(null).not().isLT(12).orElseThrow(); // -> throw an exception
-Assertor.that(12).not().isLT(null).orElseThrow(); // -> throw an exception
+Assertor.that(null).isLT(12).orElseThrow(); // -> throws an exception
+Assertor.that(12).isLT(null).orElseThrow(); // -> throws an exception
+Assertor.that(null).not().isLT(12).orElseThrow(); // -> throws an exception
+Assertor.that(12).not().isLT(null).orElseThrow(); // -> throws an exception
 ```
 
 #### isLTE
@@ -2256,16 +2598,16 @@ Assert that number is lower than or equal to specified number.
 
 * Examples:
 ```java
-Assertor.that(12).isLTE(11).orElseThrow(); // -> throw an exception
+Assertor.that(12).isLTE(11).orElseThrow(); // -> throws an exception
 Assertor.that(12).isLTE(12).orElseThrow(); // -> OK
 Assertor.that(12).isLTE(13, "Bad status").orElseThrow(); // -> OK
 Assertor.that(12).not().isLTE(11).orElseThrow(); // -> OK
 
 // prerequisite errors
-Assertor.that(null).isLTE(12).orElseThrow(); // -> throw an exception
-Assertor.that(12).isLTE(null).orElseThrow(); // -> throw an exception
-Assertor.that(null).not().isLTE(12).orElseThrow(); // -> throw an exception
-Assertor.that(12).not().isLTE(null).orElseThrow(); // -> throw an exception
+Assertor.that(null).isLTE(12).orElseThrow(); // -> throws an exception
+Assertor.that(12).isLTE(null).orElseThrow(); // -> throws an exception
+Assertor.that(null).not().isLTE(12).orElseThrow(); // -> throws an exception
+Assertor.that(12).not().isLTE(null).orElseThrow(); // -> throws an exception
 ```
 
 ### Throwable
@@ -2289,21 +2631,21 @@ Assert that throwable is assignable from clazz and has the specified message or 
 Assertor.that(new IOException("test")).isAssignableFrom(Exception.class, "test").orElseThrow(); // -> OK
 Assertor.that(new Exception("error")).isAssignableFrom(Exception.class, "error").orElseThrow(); // -> OK
 Assertor.that(new IOException()).isAssignableFrom(Exception.class, (String) null).orElseThrow(); // -> OK
-Assertor.that(new Exception("error")).isAssignableFrom(IOException.class, "error").orElseThrow(); // -> throw an exception
-Assertor.that(new IOException("test")).isAssignableFrom(Exception.class, "tes").orElseThrow(); // -> throw an exception
+Assertor.that(new Exception("error")).isAssignableFrom(IOException.class, "error").orElseThrow(); // -> throws an exception
+Assertor.that(new IOException("test")).isAssignableFrom(Exception.class, "tes").orElseThrow(); // -> throws an exception
 
 Assertor.that(new IOException("test")).isAssignableFrom(Exception.class, Pattern.compile("^t.*t$")).orElseThrow(); // -> OK
 Assertor.that(new Exception("error")).isAssignableFrom(Exception.class, Pattern.compile("^e.*$")).orElseThrow(); // -> OK
-Assertor.that(new Exception("error")).isAssignableFrom(IOException.class, Pattern.compile("^x.*$")).orElseThrow(); // -> throw an exception
-Assertor.that(new IOException("test")).isAssignableFrom(Exception.class, Pattern.compile("^t")).orElseThrow(); // -> throw an exception
+Assertor.that(new Exception("error")).isAssignableFrom(IOException.class, Pattern.compile("^x.*$")).orElseThrow(); // -> throws an exception
+Assertor.that(new IOException("test")).isAssignableFrom(Exception.class, Pattern.compile("^t")).orElseThrow(); // -> throws an exception
 
 // prerequisite errors
-Assertor.that((Exception) null).isAssignableFrom(Exception.class, "error").orElseThrow(); // -> throw an exception
-Assertor.that(new Exception("error")).isAssignableFrom(null, "error").orElseThrow(); // -> throw an exception
+Assertor.that((Exception) null).isAssignableFrom(Exception.class, "error").orElseThrow(); // -> throws an exception
+Assertor.that(new Exception("error")).isAssignableFrom(null, "error").orElseThrow(); // -> throws an exception
 
-Assertor.that((Exception) null).isAssignableFrom(Exception.class, "error").orElseThrow(); // -> throw an exception
-Assertor.that(new Exception("error")).isAssignableFrom(null, Pattern.compile("^e.*$")).orElseThrow(); // -> throw an exception
-Assertor.that(new Exception("error")).isAssignableFrom(Exception.class, (Pattern) null).orElseThrow(); // -> throw an exception
+Assertor.that((Exception) null).isAssignableFrom(Exception.class, "error").orElseThrow(); // -> throws an exception
+Assertor.that(new Exception("error")).isAssignableFrom(null, Pattern.compile("^e.*$")).orElseThrow(); // -> throws an exception
+Assertor.that(new Exception("error")).isAssignableFrom(Exception.class, (Pattern) null).orElseThrow(); // -> throws an exception
 ```
 
 #### isInstanceOf
@@ -2323,24 +2665,24 @@ Assert that throwable is an instance of object and has the specified message or 
 
 * Examples:
 ```java
-Assertor.that(new IOException("test")).isInstanceOf(Exception.class, "test").orElseThrow(); // -> throw an exception
+Assertor.that(new IOException("test")).isInstanceOf(Exception.class, "test").orElseThrow(); // -> throws an exception
 Assertor.that(new Exception("error")).isInstanceOf(Exception.class, "error").orElseThrow(); // -> OK
-Assertor.that(new IOException()).isInstanceOf(Exception.class, null).orElseThrow(); // -> throw an exception
-Assertor.that(new Exception("error")).isInstanceOf(IOException.class, "error").orElseThrow(); // -> throw an exception
-Assertor.that(new IOException("test")).isInstanceOf(Exception.class, "tes").orElseThrow(); // -> throw an exception
+Assertor.that(new IOException()).isInstanceOf(Exception.class, null).orElseThrow(); // -> throws an exception
+Assertor.that(new Exception("error")).isInstanceOf(IOException.class, "error").orElseThrow(); // -> throws an exception
+Assertor.that(new IOException("test")).isInstanceOf(Exception.class, "tes").orElseThrow(); // -> throws an exception
 
-Assertor.that(new IOException("test")).isInstanceOf(Exception.class, Pattern.compile("^t.*t$")).orElseThrow(); // -> throw an exception
+Assertor.that(new IOException("test")).isInstanceOf(Exception.class, Pattern.compile("^t.*t$")).orElseThrow(); // -> throws an exception
 Assertor.that(new Exception("error")).isInstanceOf(Exception.class, Pattern.compile("^e.*$")).orElseThrow(); // -> OK
-Assertor.that(new Exception("error")).isInstanceOf(IOException.class, Pattern.compile("^x.*$")).orElseThrow(); // -> throw an exception
-Assertor.that(new IOException("test")).isInstanceOf(Exception.class, Pattern.compile("^t")).orElseThrow(); // -> throw an exception
+Assertor.that(new Exception("error")).isInstanceOf(IOException.class, Pattern.compile("^x.*$")).orElseThrow(); // -> throws an exception
+Assertor.that(new IOException("test")).isInstanceOf(Exception.class, Pattern.compile("^t")).orElseThrow(); // -> throws an exception
 
 // prerequisite errors
-Assertor.that((Exception) null).isInstanceOf(Exception.class, "error").orElseThrow(); // -> throw an exception
-Assertor.that(new Exception("error")).isInstanceOf(null, "error").orElseThrow(); // -> throw an exception
+Assertor.that((Exception) null).isInstanceOf(Exception.class, "error").orElseThrow(); // -> throws an exception
+Assertor.that(new Exception("error")).isInstanceOf(null, "error").orElseThrow(); // -> throws an exception
 
-Assertor.that((Exception) null).isInstanceOf(Exception.class, Pattern.compile("^e.*$")).orElseThrow(); // -> throw an exception
-Assertor.that(new Exception("error")).isInstanceOf(null, Pattern.compile("^e.*$")).orElseThrow(); // -> throw an exception
-Assertor.that(new Exception("error")).isInstanceOf(Exception.class, (Pattern) null).orElseThrow(); // -> throw an exception
+Assertor.that((Exception) null).isInstanceOf(Exception.class, Pattern.compile("^e.*$")).orElseThrow(); // -> throws an exception
+Assertor.that(new Exception("error")).isInstanceOf(null, Pattern.compile("^e.*$")).orElseThrow(); // -> throws an exception
+Assertor.that(new Exception("error")).isInstanceOf(Exception.class, (Pattern) null).orElseThrow(); // -> throws an exception
 ```
 
 #### hasCauseNull
@@ -2355,11 +2697,11 @@ Assert that throwable has a cause.
 
 * Examples:
 ```java
-Assertor.that(new IOException(new Exception("test"))).hasCauseNull().orElseThrow(); // -> throw an exception
+Assertor.that(new IOException(new Exception("test"))).hasCauseNull().orElseThrow(); // -> throws an exception
 Assertor.that(new IOException("test")).hasCauseNull().orElseThrow(); // -> OK
 
 // prerequisite errors
-Assertor.that((Exception) null).hasCauseNull().orElseThrow(); // -> throw an exception
+Assertor.that((Exception) null).hasCauseNull().orElseThrow(); // -> throws an exception
 ```
 
 #### hasCauseNotNull
@@ -2375,10 +2717,10 @@ Assert that throwable has no cause.
 * Examples:
 ```java
 Assertor.that(new IOException(new Exception("test"))).hasCauseNotNull().orElseThrow(); // -> OK
-Assertor.that(new IOException("test")).hasCauseNotNull().orElseThrow(); // -> throw an exception
+Assertor.that(new IOException("test")).hasCauseNotNull().orElseThrow(); // -> throws an exception
 
 // prerequisite errors
-Assertor.that((Exception) null).hasCauseNotNull().orElseThrow(); // -> throw an exception
+Assertor.that((Exception) null).hasCauseNotNull().orElseThrow(); // -> throws an exception
 ```
 
 #### hasCauseAssignableFrom
@@ -2402,23 +2744,23 @@ If recursively is set to true, the cause of exception are checked recursively un
 Assertor.that(new IOException("test")).hasCauseAssignableFrom(Exception.class, "test", false).orElseThrow(); // -> OK
 Assertor.that(new Exception("error")).hasCauseAssignableFrom(Exception.class, "error", false).orElseThrow(); // -> OK
 Assertor.that(new Exception(new IOException("error"))).hasCauseAssignableFrom(Exception.class, "error", true).orElseThrow(); // -> OK
-Assertor.that(new Exception(new IOException("error"))).hasCauseAssignableFrom(IOException.class, "error", false).orElseThrow(); // -> throw an exception
+Assertor.that(new Exception(new IOException("error"))).hasCauseAssignableFrom(IOException.class, "error", false).orElseThrow(); // -> throws an exception
 Assertor.that(new IOException()).hasCauseAssignableFrom(Exception.class, null, false).orElseThrow(); // -> OK
-Assertor.that(new Exception("error")).hasCauseAssignableFrom(IOException.class, "error", false).orElseThrow(); // -> throw an exception
-Assertor.that(new IOException("test")).hasCauseAssignableFrom(Exception.class, "tes, false").orElseThrow(); // -> throw an exception
+Assertor.that(new Exception("error")).hasCauseAssignableFrom(IOException.class, "error", false).orElseThrow(); // -> throws an exception
+Assertor.that(new IOException("test")).hasCauseAssignableFrom(Exception.class, "tes, false").orElseThrow(); // -> throws an exception
 
 Assertor.that(new IOException("test")).hasCauseAssignableFrom(Exception.class, Pattern.compile("^t.*t$"), false).orElseThrow(); // -> OK
 Assertor.that(new Exception("error")).hasCauseAssignableFrom(Exception.class, Pattern.compile("^e.*$"), false).orElseThrow(); // -> OK
-Assertor.that(new Exception("error")).hasCauseAssignableFrom(IOException.class, Pattern.compile("^e.*$"), false).orElseThrow(); // -> throw an exception
+Assertor.that(new Exception("error")).hasCauseAssignableFrom(IOException.class, Pattern.compile("^e.*$"), false).orElseThrow(); // -> throws an exception
 Assertor.that(new IOException("test")).hasCauseAssignableFrom(Exception.class, Pattern.compile("^t.*$"), false).orElseThrow(); // -> OK
 
 // prerequisite errors
-Assertor.that((Exception) null).hasCauseAssignableFrom(Exception.class, "error", false).orElseThrow(); // -> throw an exception
-Assertor.that(new Exception("error")).hasCauseAssignableFrom(null, "error", false).orElseThrow(); // -> throw an exception
+Assertor.that((Exception) null).hasCauseAssignableFrom(Exception.class, "error", false).orElseThrow(); // -> throws an exception
+Assertor.that(new Exception("error")).hasCauseAssignableFrom(null, "error", false).orElseThrow(); // -> throws an exception
 
-Assertor.that((Exception) null).hasCauseAssignableFrom(Exception.class, Pattern.compile("^e.*$"), false).orElseThrow(); // -> throw an exception
-Assertor.that(new Exception("error")).hasCauseAssignableFrom(null, Pattern.compile("^e.*$"), false).orElseThrow(); // -> throw an exception
-Assertor.that(new IOException()).hasCauseAssignableFrom(Exception.class, (Pattern) null, false).orElseThrow(); // -> throw an exception
+Assertor.that((Exception) null).hasCauseAssignableFrom(Exception.class, Pattern.compile("^e.*$"), false).orElseThrow(); // -> throws an exception
+Assertor.that(new Exception("error")).hasCauseAssignableFrom(null, Pattern.compile("^e.*$"), false).orElseThrow(); // -> throws an exception
+Assertor.that(new IOException()).hasCauseAssignableFrom(Exception.class, (Pattern) null, false).orElseThrow(); // -> throws an exception
 ```
 
 #### hasCauseInstanceOf
@@ -2439,26 +2781,26 @@ If recursively is set to true, the cause of exception are checked recursively un
 
 * Examples:
 ```java
-Assertor.that(new IOException("test")).hasCauseInstanceOf(Exception.class, "test", false).orElseThrow(); // -> throw an exception
+Assertor.that(new IOException("test")).hasCauseInstanceOf(Exception.class, "test", false).orElseThrow(); // -> throws an exception
 Assertor.that(new Exception("error")).hasCauseInstanceOf(Exception.class, "error", false).orElseThrow(); // -> OK
 Assertor.that(new Exception(new IOException("error"))).hasCauseInstanceOf(IOException.class, "error", true).orElseThrow(); // -> OK
-Assertor.that(new Exception(new IOException("error"))).hasCauseInstanceOf(IOException.class, "error", false).orElseThrow(); // -> throw an exception
-Assertor.that(new IOException()).hasCauseInstanceOf(Exception.class, null, false).orElseThrow(); // -> throw an exception
-Assertor.that(new Exception("error")).hasCauseInstanceOf(IOException.class, "error", false).orElseThrow(); // -> throw an exception
-Assertor.that(new IOException("test")).hasCauseInstanceOf(Exception.class, "tes, false").orElseThrow(); // -> throw an exception
+Assertor.that(new Exception(new IOException("error"))).hasCauseInstanceOf(IOException.class, "error", false).orElseThrow(); // -> throws an exception
+Assertor.that(new IOException()).hasCauseInstanceOf(Exception.class, null, false).orElseThrow(); // -> throws an exception
+Assertor.that(new Exception("error")).hasCauseInstanceOf(IOException.class, "error", false).orElseThrow(); // -> throws an exception
+Assertor.that(new IOException("test")).hasCauseInstanceOf(Exception.class, "tes, false").orElseThrow(); // -> throws an exception
 
-Assertor.that(new IOException("test")).hasCauseInstanceOf(Exception.class, Pattern.compile("^t.*t$"), false).orElseThrow(); // -> throw an exception
+Assertor.that(new IOException("test")).hasCauseInstanceOf(Exception.class, Pattern.compile("^t.*t$"), false).orElseThrow(); // -> throws an exception
 Assertor.that(new Exception("error")).hasCauseInstanceOf(Exception.class, Pattern.compile("^e.*$"), false).orElseThrow(); // -> OK
-Assertor.that(new Exception("error")).hasCauseInstanceOf(IOException.class, Pattern.compile("^e.*$"), false).orElseThrow(); // -> throw an exception
-Assertor.that(new IOException("test")).hasCauseInstanceOf(Exception.class, Pattern.compile("^t.*$"), false).orElseThrow(); // -> throw an exception
+Assertor.that(new Exception("error")).hasCauseInstanceOf(IOException.class, Pattern.compile("^e.*$"), false).orElseThrow(); // -> throws an exception
+Assertor.that(new IOException("test")).hasCauseInstanceOf(Exception.class, Pattern.compile("^t.*$"), false).orElseThrow(); // -> throws an exception
 
 // prerequisite errors
-Assertor.that((Exception) null).hasCauseInstanceOf(Exception.class, "error", false).orElseThrow(); // -> throw an exception
-Assertor.that(new Exception("error")).hasCauseInstanceOf(null, "error", false).orElseThrow(); // -> throw an exception
+Assertor.that((Exception) null).hasCauseInstanceOf(Exception.class, "error", false).orElseThrow(); // -> throws an exception
+Assertor.that(new Exception("error")).hasCauseInstanceOf(null, "error", false).orElseThrow(); // -> throws an exception
 
-Assertor.that((Exception) null).hasCauseInstanceOf(Exception.class, Pattern.compile("^e.*$"), false).orElseThrow(); // -> throw an exception
-Assertor.that(new Exception("error")).hasCauseInstanceOf(null, Pattern.compile("^e.*$"), false).orElseThrow(); // -> throw an exception
-Assertor.that(new IOException()).hasCauseInstanceOf(Exception.class, (Pattern) null, false).orElseThrow(); // -> throw an exception
+Assertor.that((Exception) null).hasCauseInstanceOf(Exception.class, Pattern.compile("^e.*$"), false).orElseThrow(); // -> throws an exception
+Assertor.that(new Exception("error")).hasCauseInstanceOf(null, Pattern.compile("^e.*$"), false).orElseThrow(); // -> throws an exception
+Assertor.that(new IOException()).hasCauseInstanceOf(Exception.class, (Pattern) null, false).orElseThrow(); // -> throws an exception
 ```
 
 ## TODO

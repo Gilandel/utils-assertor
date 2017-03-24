@@ -131,6 +131,11 @@ public class AssertorEnumTest extends AbstractTest {
         }
 
         assertException(() -> {
+            Assertor.that(EnumOperator.OR).hasOrdinal(100).orElseThrow("not correct");
+            fail();
+        }, IllegalArgumentException.class, "not correct");
+
+        assertException(() -> {
             Assertor.that(EnumOperator.OR).hasOrdinal(0).orElseThrow("not correct");
             fail();
         }, IllegalArgumentException.class, "not correct");
