@@ -550,6 +550,10 @@ public class AssertorObjectTest extends AbstractTest {
 
         assertEquals(EnumType.CLASS, EnumType.getType(new Date().getClass()));
 
+        assertEquals(EnumType.TEMPORAL, EnumType.getType(LocalDateTime.now()));
+
+        assertEquals(EnumType.THROWABLE, EnumType.getType(new IOException()));
+
         assertEquals(EnumType.UNKNOWN, EnumType.getType(Color.BLACK));
         assertEquals(EnumType.UNKNOWN, EnumType.getType(null));
 

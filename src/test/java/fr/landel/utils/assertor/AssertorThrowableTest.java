@@ -64,6 +64,11 @@ public class AssertorThrowableTest extends AbstractTest {
         assertTrue(Assertor.that(em).isInstanceOf(Exception.class, pattern, "error").isOK());
         assertTrue(Assertor.that(em).isInstanceOf(Exception.class, pattern, Locale.US, "error").isOK());
 
+        assertFalse(Assertor.that(em).isInstanceOf(IOException.class, pattern).isOK());
+        assertFalse(Assertor.that(em).isInstanceOf(IOException.class, pattern, "error").isOK());
+        assertFalse(Assertor.that(em).isInstanceOf(IOException.class, pattern, Locale.US, "error").isOK());
+
+        assertTrue(Assertor.that(e).not().isInstanceOf(Exception.class, patternError).isOK());
         assertTrue(Assertor.that(em).not().isInstanceOf(Exception.class, patternError).isOK());
 
         assertTrue(Assertor.that(e).not().isInstanceOf(Exception.class, "").isOK());

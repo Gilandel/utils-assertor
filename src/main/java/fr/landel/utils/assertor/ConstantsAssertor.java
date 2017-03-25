@@ -136,11 +136,6 @@ public class ConstantsAssertor {
         String PRE = ".pre";
 
         /**
-         * Invalid combination with message
-         */
-        String INVALID_WITH_MESSAGE = "invalid.with.message";
-
-        /**
          * Invalid combination without message
          */
         String INVALID_WITHOUT_MESSAGE = "invalid.without.message";

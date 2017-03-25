@@ -138,11 +138,6 @@ public class HelperAssertor extends ConstantsAssertor {
         Optional<Pair<Boolean, String>> dontNeedCheck = Optional.empty();
 
         for (StepAssertor<?> s : steps) {
-
-            if (dontNeedCheck.isPresent()) {
-                return new ResultAssertor(true, dontNeedCheck.get().getKey(), dontNeedCheck.get().getValue(), parameters);
-            }
-
             switch (s.getStepType()) {
             case CREATION:
                 object = s.getObject();
@@ -205,6 +200,10 @@ public class HelperAssertor extends ConstantsAssertor {
                 break;
             default:
             }
+
+            if (dontNeedCheck.isPresent()) {
+                return new ResultAssertor(true, dontNeedCheck.get().getKey(), dontNeedCheck.get().getValue(), parameters);
+            }
         }
 
         return new ResultAssertor(true, valid, message.toString(), parameters);
@@ -223,7 +222,7 @@ public class HelperAssertor extends ConstantsAssertor {
 
             final String formattedMessage;
             if (message.length() > 0) {
-                formattedMessage = StringUtils.inject(ConstantsAssertor.getProperty(MSG.INVALID_WITH_MESSAGE), valid, operator, message);
+                formattedMessage = message.toString();
             } else {
                 formattedMessage = StringUtils.inject(ConstantsAssertor.getProperty(MSG.INVALID_WITHOUT_MESSAGE), valid, operator);
             }

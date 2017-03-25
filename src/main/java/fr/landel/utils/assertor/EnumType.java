@@ -144,6 +144,8 @@ public enum EnumType {
                 type = CALENDAR;
             } else if (Temporal.class.isAssignableFrom(clazz)) {
                 type = TEMPORAL;
+            } else if (Throwable.class.isAssignableFrom(clazz)) {
+                type = THROWABLE;
             } else if (Class.class.isInstance(object)) {
                 type = CLASS;
             }

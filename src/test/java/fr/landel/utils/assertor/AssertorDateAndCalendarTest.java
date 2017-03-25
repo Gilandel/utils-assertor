@@ -371,6 +371,7 @@ public class AssertorDateAndCalendarTest extends AbstractTest {
             Assertor.that(date1).isAfter(date2).orElseThrow();
 
             Assertor.that(date1).isAfter(date2, -1, -1).orElseThrow();
+            Assertor.that(date1).isAfter(date2, -1, 0).orElseThrow();
             Assertor.that(cal1).isAfter(cal2, -1, -1).orElseThrow();
             Assertor.that(date1).isAfter(date2, Calendar.HOUR, 1).orElseThrow();
             Assertor.that(cal1).isAfter(cal2, Calendar.HOUR, 1).orElseThrow();
