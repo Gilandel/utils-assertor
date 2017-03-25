@@ -461,7 +461,7 @@ public interface PredicateStep<S extends PredicateStep<S, T>, T> {
      * // -&gt; do nothing
      * </pre>
      * 
-     * @param supplier
+     * @param exceptionSupplier
      *            the supplier to call if assertion is wrong (required, cannot
      *            be {@code null}, throw a {@link NullPointerException})
      * @return the last checked object
@@ -470,13 +470,13 @@ public interface PredicateStep<S extends PredicateStep<S, T>, T> {
      * @throws E
      *             The type of exception to throw
      */
-    default <E extends Throwable> T orElseThrow(final Supplier<E> supplier) throws E {
-        Objects.requireNonNull(supplier);
+    default <E extends Throwable> T orElseThrow(final Supplier<E> exceptionSupplier) throws E {
+        Objects.requireNonNull(exceptionSupplier);
 
         final ResultAssertor result = HelperAssertor.combine(this.getStep(), false);
 
         if (!result.isPrecondition() || !result.isValid()) {
-            throw supplier.get();
+            throw exceptionSupplier.get();
         }
 
         return HelperAssertor.getLastChecked(result.getParameters());

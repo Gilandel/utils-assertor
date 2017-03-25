@@ -52,6 +52,56 @@ public class PredicateStepEndPointsTest extends AbstractTest {
                     HelperMessage.getMessage(ConstantsAssertor.DEFAULT_ASSERTION, null, errors, parameters, null));
 
     /**
+     * Test method for {@link PredicateStep#isOK()} and
+     * {@link PredicateStep#orElseThrow()}.
+     */
+    @Test
+    public void testIntermediate() {
+        PredicateStepCharSequence<String> p1 = Assertor.that("test").contains("x");
+        PredicateStepCharSequence<String> p2 = p1.or().startsWith("t");
+
+        assertFalse(p1.isOK());
+        assertTrue(p2.isOK());
+        assertFalse(p1.isOK());
+        assertTrue(p2.isOK());
+
+        p1 = Assertor.that("test").contains("x", "'%s*' doesn't contains '%s*'");
+        p2 = p1.or().startsWith("t", "'%s*' doesn't start with '%s*'");
+
+        assertTrue(p1.getErrors().isPresent());
+        assertEquals("'test' doesn't contains 'x'", p1.getErrors().get());
+        assertTrue(p2.getErrors().isPresent());
+        assertEquals("'test' doesn't contains 'x'", p2.getErrors().get());
+
+        assertFalse(p1.isOK());
+        assertTrue(p2.isOK());
+
+        PredicateStepCharSequence<String> operator = Assertor.that("").isNotBlank();
+
+        assertException(() -> {
+            operator.orElseThrow();
+        }, IllegalArgumentException.class);
+
+        // check second time (reset has been correctly removed)
+        assertException(() -> {
+            operator.orElseThrow();
+        }, IllegalArgumentException.class);
+
+        // multiple locales
+
+        PredicateStepNumber<Double> p3 = Assertor.that(Math.PI).isLT(1d, Locale.US, "'%.3f*' isn't lower than '%f*'");
+        PredicateStepNumber<Double> p4 = p3.or().isLT(2d, Locale.FRANCE, "'%.3f*' isn't lower than '%f*'");
+
+        assertFalse(p3.isOK());
+        assertFalse(p4.isOK());
+
+        assertTrue(p4.getErrors().isPresent());
+        assertEquals("'3.142' isn't lower than '1.000000' OR '3,142' isn't lower than '2,000000'", p4.getErrors().get());
+        assertTrue(p3.getErrors().isPresent());
+        assertEquals("'3.142' isn't lower than '1.000000'", p3.getErrors().get());
+    }
+
+    /**
      * Test method for {@link PredicateStep#orElseThrow()}.
      */
     @Test

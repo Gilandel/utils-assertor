@@ -22,12 +22,12 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ObjectUtils;
 
+import fr.landel.utils.commons.AsciiUtils;
 import fr.landel.utils.commons.CollectionUtils2;
 import fr.landel.utils.commons.EnumChar;
 import fr.landel.utils.commons.StringUtils;
@@ -73,19 +73,6 @@ public final class HelperMessage extends ConstantsAssertor {
     private static final char INDEX_SUFFIX = '$';
     private static final char TIME_LOWERCASE = 't';
     private static final char TIME_UPPERCASE = 'T';
-
-    // from ascii table (bounds are excluded)
-    private static final int NUM_START = 47;
-    private static final int NUM_END = 58;
-    private static final int NUM_FIRST = 48;
-    private static final int ALPHA_UC_START = 64; // Upper case
-    private static final int ALPHA_UC_END = 91; // Upper case
-    private static final int ALPHA_LC_START = 96; // Lower case
-    private static final int ALPHA_LC_END = 123; // Lower case
-
-    private static final Predicate<Character> IS_NUM = c -> NUM_START < c && c < NUM_END;
-    private static final Predicate<Character> IS_ALPHA = c -> (ALPHA_UC_START < c && c < ALPHA_UC_END)
-            || (ALPHA_LC_START < c && c < ALPHA_LC_END);
 
     private static final int STATE_NOTHING = 0;
     private static final int STATE_NUMBER = 1;
@@ -190,7 +177,7 @@ public final class HelperMessage extends ConstantsAssertor {
                 start = i;
                 group = new Group(start);
             } else if (group != null) {
-                if (state < STATE_INDEX && IS_NUM.test(chars[i])) {
+                if (state < STATE_INDEX && AsciiUtils.IS_NUMERIC.test(chars[i])) {
                     // (\\d+\\$)? ; the number
                     if (state == STATE_NOTHING) {
                         state = STATE_NUMBER;
@@ -198,7 +185,7 @@ public final class HelperMessage extends ConstantsAssertor {
                     }
                     // shift left from 1 number and add the number (convert char
                     // into number)
-                    group.index = group.index * SHIFT_LEFT + chars[i] - NUM_FIRST;
+                    group.index = group.index * SHIFT_LEFT + chars[i] - AsciiUtils.NUM_FIRST;
                 } else if (state < STATE_INDEX && chars[i] == INDEX_SUFFIX) {
                     // (\\d+\\$)? ; the dollar
                     state |= STATE_INDEX;
@@ -210,7 +197,7 @@ public final class HelperMessage extends ConstantsAssertor {
                     // (\\d+)?(\\.\\d+)? ; the dot
                     state |= STATE_DOT;
                     group.number.append((char) chars[i]);
-                } else if (state < STATE_TIME && chars[i] > NUM_START && chars[i] < NUM_END) {
+                } else if (state < STATE_TIME && AsciiUtils.IS_NUMERIC.test(chars[i])) {
                     // (\\d+)?(\\.\\d+)? ; 8 (integer) for numbers before dot
                     // and 32 (decimal) for numbers after
                     if ((state & STATE_DOT) == STATE_DOT) {
@@ -223,7 +210,7 @@ public final class HelperMessage extends ConstantsAssertor {
                     // [tT]
                     state |= STATE_TIME;
                     group.time = (char) chars[i];
-                } else if (state < STATE_TYPE && (IS_ALPHA.test(chars[i]) || chars[i] == PERCENT)) {
+                } else if (state < STATE_TYPE && (AsciiUtils.IS_ALPHA.test(chars[i]) || chars[i] == PERCENT)) {
                     // [a-zA-Z%]
                     state |= STATE_TYPE;
                     group.type.append((char) chars[i]);

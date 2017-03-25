@@ -32,7 +32,6 @@ Work progress:
 1. [Summary](#summary)
 1. [Description](#description)
    1. [Structure](#structure)
-   1. [Reset explanations](#reset-explanations)
    1. [Message (locale, arguments and parameters)](#message-locale-arguments-and-parameters)
 1. [Output details](#output-details)
    1. [orElseThrow](#orelsethrow)
@@ -155,7 +154,7 @@ Work progress:
 
 ## Description
 
-This module allow to assert parameters.
+This module allows to assert parameters.
 
 For now it manages:
 - Object (all other objects)
@@ -164,11 +163,12 @@ For now it manages:
 - CharSequence (String, StringBuilder...)
 - Class
 - Date & Calendar
-- Temporal
+- Temporal (LocalDateTime...)
 - Enum
 - Iterable (Set, List...)
 - Map
 - Number (Byte, Short, Integer, Long, Float, Double, BigInteger, BigDecimal)
+- Throwable (Exception...)
 
 ### Structure
 
@@ -194,31 +194,16 @@ Multiple outputs are available:
 - asResult: the result (fr.landel.utils.commons.Result),
 - asDefault: the result (fr.landel.utils.commons.Default).
 
-These three output methods are considerate as final.
-So when these methods are called a clear of intermediate conditions is done.
-
-### Reset explanations
-
-Like explain in the previous chapter, to avoid the clearing of intermediate steps, the parameter 'reset' can be set to 'false' (default: true).
-A about the clearing, only the checked value is kept, any intermediate checks are cleared.
-```java
-AssertCharSequence<String> assertion = Assertor.that("text1");
-assertion.isBlank().and("text2").isNotEmpty().isOK(); // returns false
-assertion.isNotBlank().isOK(); // returns true (all assertions are cleared, for 'text1' and 'text2') 
-assertion.isBlank().and("text2").isNotEmpty().isOK(false); // returns false (reset set to false)
-assertion.isNotBlank().isOK(); // returns false (here the isNotBlank call is linked to the previous through the operator AND)
-// the last line is equivalent to:
-Assertor.that("text1").isBlank().and().isNotBlank().isOK(); // the second check "text2" is lost
-```
+These outputs methods are considerate as final.
 
 ### Message (locale, arguments and parameters)
 
-In each method, that manages intermediate errors (isBlank, contains...) or final errors (orElseThrow...) a locale can be specified.
+In each method, that manages intermediate errors (isBlank, contains...) or final errors (orElseThrow...), a locale can be specified.
 The locale can be used to manage number and date (see [String.format](http://docs.oracle.com/javase/8/docs/api/java/util/Formatter.html)).
 
-Also parameters and arguments can be injected.
-Parameters are all the variables and other parameters sent to be used during the check.
-Arguments are the message arguments.
+Parameters and arguments can also be injected.
+Parameters: All the variables and parameters used to check the variables. `Assertor.that(variable1).contains(parameter1).and(variable2).hasName(parameter2).orElseThrow()`
+Arguments: the message arguments. `Assertor.that(variable1).contains(parameter1, myErrorMessage, argument1, argument2).orElseThrow()`
 ```java
 String text = "text";
 ...
@@ -236,48 +221,50 @@ The syntax is exactly the same as default [String.format](http://docs.oracle.com
 
 ### orElseThrow
 Throw an exception if the assertion is false, otherwise returns the last checked value.
-Three ways to personalize the exception exist:
+Multiple ways to personalize the exception are provided:
 - a message:
 	The message can be personalized via arguments injection and locale.
 	Back-side the method String.format will be called with these arguments.
 	Parameters can also be injected.
 - an exception:
 	An exception can be also used (default: IllegalArgumentException).
+- a supplier:
+	An exception supplier
 - a function:
 	A bi-function (a function with two parameters) can be passed.
 	This function is only called if statement is false.
 	The two parameters received are the combined errors messages and all the parameters.
 
 * Signatures:
-	- orElseThrow()
-	- orElseThrow(CharSequence message, Object... arguments)
-	- orElseThrow(Locale locale, CharSequence message, Object... arguments)
-	- orElseThrow(E exception)
-	- orElseThrow(BiFunction<CharSequence, Object[], E> exceptionBuilder)
-	- orElseThrow(boolean reset)
-	- orElseThrow(boolean reset, CharSequence message, Object... arguments)
-	- orElseThrow(boolean reset, Locale locale, CharSequence message, Object... arguments)
-	- orElseThrow(boolean reset, E exception)
-	- orElseThrow(boolean reset, BiFunction<CharSequence, Object[], E> exceptionBuilder)
+	- `orElseThrow()`
+	- `orElseThrow(CharSequence message, Object... arguments)`
+	- `orElseThrow(Locale locale, CharSequence message, Object... arguments)`
+	- `orElseThrow(Supplier<E> exceptionSupplier)`
+	- `orElseThrow(E exception)` // not supported by JDK 1.8.0_121 [Issue JDK-8175535](http://bugs.java.com/bugdatabase/view_bug.do?bug_id=JDK-8175535)
+ 	- `orElseThrow(E exception, boolean injectSuppressed)`
+	- `orElseThrow(BiFunction<CharSequence, Object[], E> exceptionBuilder)`
 
 * Examples:
 ```java
 Assertor.that("text").isNotBlank().orElseThrow(); // -> returns "text" instance
 Assertor.that("text").isNotBlank().or(12).isGT(11).orElseThrow(); // -> returns 12
 
-Assertor.that("").isNotBlank().orElseThrow(); // -> throw the default message 'the char sequence should be NOT null, NOT empty and NOT blank'
-Assertor.that("").isNotBlank("The first name is invalid").orElseThrow(); // -> throw the personalized message 'The first name is invalid'
+Assertor.that("").isNotBlank().orElseThrow(); // -> throws the default message 'the char sequence should be NOT null, NOT empty and NOT blank'
+Assertor.that("").isNotBlank("The first name is invalid").orElseThrow(); // -> throws the personalized message 'The first name is invalid'
 
-Assertor.that("").isNotBlank().orElseThrow("Invalid field"); // -> throw the personalized message 'Invalid field'
-Assertor.that("").isNotBlank("The first name is invalid").orElseThrow("Invalid field"); // -> throw the personalized message 'Invalid field'
+Assertor.that("").isNotBlank().orElseThrow("Invalid field"); // -> throws the personalized message 'Invalid field'
+Assertor.that("").isNotBlank("The first name is invalid").orElseThrow("Invalid field"); // -> throws the personalized message 'Invalid field'
 
-Assertor.that("").isNotBlank().orElseThrow(Locale.FRANCE, "Invalid field (%.2fms)", 2.356); // -> throw the personalized message 'Invalid field (2,36ms)'
-Assertor.that("").isNotBlank("The first name is invalid").orElseThrow(Locale.FRANCE, "Invalid field (%.2fms)", 2.356); // -> throw the personalized message 'Invalid field (2,36ms)'
+Assertor.that("").isNotBlank().orElseThrow(Locale.FRANCE, "Invalid field (%.2fms)", 2.356); // -> throws the personalized message 'Invalid field (2,36ms)'
+Assertor.that("").isNotBlank("The first name is invalid").orElseThrow(Locale.FRANCE, "Invalid field (%.2fms)", 2.356); // -> throws the personalized message 'Invalid field (2,36ms)'
 
-Assertor.that("").isNotBlank().orElseThrow(new IOException("Invalid data")); // -> throw the personalized exception
-Assertor.that("").isNotBlank(The first name is invalid").orElseThrow(new IOException("Invalid data")); -> throw the personalized exception
+Assertor.that("").isNotBlank().orElseThrow(new IOException("Invalid data"), false); // -> throws the personalized exception
+Assertor.that("").isNotBlank(The first name is invalid").orElseThrow(new IOException("Invalid data"), true); -> throws the personalized exception
 
-Assertor.that("text").isBlank().orElseThrow((errors, parameters) -> new MyException("text should be blank")); // -> throw a MyException with message: text should be blank
+Assertor.that("").isNotBlank().orElseThrow(() -> new IOException("Invalid data")); // -> throws the personalized exception
+Assertor.that("").isNotBlank(The first name is invalid").orElseThrow(IOException::new); -> throws the personalized exception
+
+Assertor.that("text").isBlank().orElseThrow((errors, parameters) -> new MyException("text should be blank")); // -> throws a MyException with message: text should be blank
 // 'errors' contains: the char sequence 'text' should be null, empty or blank
 // 'parameters' contains: [{"text", EnumType.CHAR_SEQUENCE}]
 
@@ -288,28 +275,11 @@ Assertor.that("texte11").isBlank().or("texte12").not().startsWith("text").or().i
 
 ```
 
-As explain at the end of the description section, the reset parameter can be set to 'false' through these methods.
-```java
-Assertor.that("").isNotBlank().orElseThrow(false);
-```
-
-This mean:
-```java
-boolean reset = false;
-Operator<AssertCharSequence<String>, String> operator = Assertor.that("").isNotBlank();
-if (!operator.isOk(reset)) {
-	LOGGER.error(operator.getErrors(reset));
-	operator.orElseThrow(); // only here the assertion is cleared
-	// if we catch exception, and retry at this point 'operator.orElseThrow()', no exception will be thrown
-}
-```
-
 ### isOK
 This method returns 'true' if the assertion is valid, otherwise returns 'false'.
 
 * Signatures:
-	- isOk()
-	- isOK(boolean reset)
+	- `isOK()`
 
 * Examples:
 ```java
@@ -317,14 +287,11 @@ This method returns 'true' if the assertion is valid, otherwise returns 'false'.
 	Assertor.that("").isBlank("The first name is invalid").isOK(); // -> return true
 ```
 
-At the call of `isOK()`, the assertion is cleared, to avoid this, the parameter 'reset' can be set to 'false' (default: true).
-
 ### getErrors
 This method returns the assertion errors.
 
 * Signatures:
-	- getErrors()
-	- getErrors(boolean reset)
+	- `getErrors()`
 
 * Examples:
 ```java
@@ -332,13 +299,11 @@ Assertor.that("").isNotBlank().getErrors(); // -> return Optional.of("the char s
 Assertor.that("").isBlank("The first name is invalid").getErrors(); // -> return Optional.empty()
 ```
 
-At the call of 'getErrors()', the assertion is cleared, to avoid this, the parameter 'reset' can be set to 'false' (default: true).
-
 ### get
 To get the last checked object as an Optional (java.util.Optional).
 
 * Signatures:
-	- get()
+	- `get()`
 
 * Examples:
 ```java
@@ -350,7 +315,7 @@ Assertor.that(object1).isNotNull().and(object2).isInstanceOf(MyClass.class).get(
 To get the last checked object.
 
 * Signatures:
-	- getNullable()
+	- `getNullable()`
 
 * Examples:
 ```java
@@ -363,7 +328,7 @@ To get the last checked object as a Result (fr.landel.utils.commons.Result).
 The aim is to differentiate if assertor returns null, if it's valid or not.
 
 * Signatures:
-	- asResult()
+	- `asResult()`
 
 * Examples:
 ```java
@@ -389,7 +354,7 @@ The default value is prepared by the supplier as opposite of Optional that let t
 The default value cannot be null.
 
 * Signatures:
-	- asDefault(T defaultValue)
+	- `asDefault(T defaultValue)`
 
 * Examples:
 ```java
@@ -416,7 +381,7 @@ Assertor.that(object1).isNotNull().and(object2).isInstanceOf(MyClass.class).asRe
 The 'not' function is here to negate the next method (can be applied on any method, prerequisites are checked any way).
 
 * Signatures:
-	- not()
+	- `not()`
 
 * Prerequisites: None
 
@@ -432,8 +397,8 @@ The 'and' function is here to combine the previous and the next methods with the
 With a parameter, 'and' creates an sub assertor for the specified parameter.
 
 * Signatures:
-	- and()
-	- and(Object object)
+	- `and()`
+	- `and(Object object)`
 
 * Prerequisites: None
 
@@ -448,8 +413,8 @@ The 'or' function is here to combine the previous and the next methods with the 
 With a parameter, 'or' creates an sub assertor for the specified parameter.
 
 * Signatures:
-	- or()
-	- or(Object object)
+	- `or()`
+	- `or(Object object)`
 
 * Prerequisites: None
 
@@ -464,8 +429,8 @@ The 'xor' function is here to combine the previous and the next methods with the
 With a parameter, 'xor' creates an sub assertor for the specified parameter.
 
 * Signatures:
-	- xor()
-	- xor(Object object)
+	- `xor()`
+	- `xor(Object object)`
 
 * Prerequisites: None
 
@@ -480,8 +445,8 @@ The 'nand' function is here to combine the previous and the next methods with th
 With a parameter, 'nand' creates an sub assertor for the specified parameter.
 
 * Signatures:
-	- nand()
-	- nand(Object object)
+	- `nand()`
+	- `nand(Object object)`
 
 * Prerequisites: None
 
@@ -505,8 +470,8 @@ The 'nor' function is here to combine the previous and the next methods with the
 With a parameter, 'nor' creates an sub assertor for the specified parameter.
 
 * Signatures:
-	- nor()
-	- nor(Object object)
+	- `nor()`
+	- `nor(Object object)`
 
 * Prerequisites: None
 
@@ -533,9 +498,9 @@ Assertor.that(12).isLTE(12).or().not().contains("ex").orElseThrow();
 Assert that the object is null.
 
 * Signatures:
-	- isNull()
-	- isNull(CharSequence message, Object[] arguments)
-	- isNull(Locale locale, CharSequence message, Object[] arguments)
+	- `isNull()`
+	- `isNull(CharSequence message, Object[] arguments)`
+	- `isNull(Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites: None
 
@@ -550,9 +515,9 @@ Assertor.that(object).isNull(Locale.US, "The parameter '%s*' cannot be filled").
 Assert that the object is NOT null.
 
 * Signatures:
-	- isNotNull()
-	- isNotNull(CharSequence message, Object[] arguments)
-	- isNotNull(Locale locale, CharSequence message, Object[] arguments)
+	- `isNotNull()`
+	- `isNotNull(CharSequence message, Object[] arguments)`
+	- `isNotNull(Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites: None
 
@@ -566,9 +531,9 @@ Assertor.that(name).isNotNull("Name cannot be null").orElseThrow();
 Assert that the object is equal to another.
 
 * Signatures:
-	- isEqual(Object object)
-	- isEqual(Object object, CharSequence message, Object[] arguments)
-	- isEqual(Object object, Locale locale, CharSequence message, Object[] arguments)
+	- `isEqual(Object object)`
+	- `isEqual(Object object, CharSequence message, Object[] arguments)`
+	- `isEqual(Object object, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites: None
 
@@ -585,9 +550,9 @@ This method is override by each other object types if necessary (like Date, Numb
 Assert that the object is NOT equal to another.
 
 * Signatures:
-	- isNotEqual(Object object)
-	- isNotEqual(Object object, CharSequence message, Object[] arguments)
-	- isNotEqual(Object object, Locale locale, CharSequence message, Object[] arguments)
+	- `isNotEqual(Object object)`
+	- `isNotEqual(Object object, CharSequence message, Object[] arguments)`
+	- `isNotEqual(Object object, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites: None
 
@@ -604,9 +569,9 @@ This method is override by each other object types if necessary (like Date, Numb
 Assert that the object is an instance of the specified class.
 
 * Signatures:
-	- isInstance(Class class)
-	- isInstance(Class class, CharSequence message, Object[] arguments)
-	- isInstance(Class class, Locale locale, CharSequence message, Object[] arguments)
+	- `isInstance(Class class)`
+	- `isInstance(Class class, CharSequence message, Object[] arguments)`
+	- `isInstance(Class class, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- checked object NOT null
@@ -628,9 +593,9 @@ Assertor.that(object).not().isInstance(null).orElseThrow(); // -> throws an exce
 Assert that the object is assignable from the specified class.
 
 * Signatures:
-	- isAssignableFrom(Class class)
-	- isAssignableFrom(Class class, CharSequence message, Object[] arguments)
-	- isAssignableFrom(Class class, Locale locale, CharSequence message, Object[] arguments)
+	- `isAssignableFrom(Class class)`
+	- `isAssignableFrom(Class class, CharSequence message, Object[] arguments)`
+	- `isAssignableFrom(Class class, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- checked object NOT null
@@ -652,9 +617,9 @@ Assertor.that(object).not().isAssignableFrom(null).orElseThrow(); // -> throws a
 Assert that the object hash code equals the specified value.
 
 * Signatures:
-	- matches(int hashCode)
-	- matches(int hashCode, CharSequence message, Object[] arguments)
-	- matches(int hashCode, Locale locale, CharSequence message, Object[] arguments)
+	- `matches(int hashCode)`
+	- `matches(int hashCode, CharSequence message, Object[] arguments)`
+	- `matches(int hashCode, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites: none
 
@@ -668,9 +633,9 @@ Assertor.that(colors).hasHashCode(45, "The hash codes don't match (%d != %d*)", 
 Assert that the object validates the predicate.
 
 * Signatures:
-	- validates(PredicateThrowable<T, E> predicate)
-	- validates(PredicateThrowable<T, E> predicate, CharSequence message, Object[] arguments)
-	- validates(PredicateThrowable<T, E> predicate, Locale locale, CharSequence message, Object[] arguments)
+	- `validates(PredicateThrowable<T, E> predicate)`
+	- `validates(PredicateThrowable<T, E> predicate, CharSequence message, Object[] arguments)`
+	- `validates(PredicateThrowable<T, E> predicate, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- predicate NOT null
@@ -697,9 +662,9 @@ Assertor.that(object).not().validates(null).orElseThrow(); // -> throws an excep
 Assert that array has the specified length.
 
 * Signatures:
-	- hasLength(int length)
-	- hasLength(int length, CharSequence message, Object[] arguments)
-	- hasLength(int length, Locale locale, CharSequence message, Object[] arguments)
+	- `hasLength(int length)`
+	- `hasLength(int length, CharSequence message, Object[] arguments)`
+	- `hasLength(int length, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- array NOT null
@@ -722,9 +687,9 @@ Assertor.that(new String[] {"text"}).not().hasLength(-1, "Bad status").orElseThr
 Assert that array is empty or null.
 
 * Signatures:
-	- isEmpty()
-	- isEmpty(CharSequence message, Object[] arguments)
-	- isEmpty(Locale locale, CharSequence message, Object[] arguments)
+	- `isEmpty()`
+	- `isEmpty(CharSequence message, Object[] arguments)`
+	- `isEmpty(Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites: None
 
@@ -740,9 +705,9 @@ Assertor.that(new String[] {"text"}).not().isEmpty("Param '%1$s*' not empty").or
 Assert that array is NOT empty and NOT null.
 
 * Signatures:
-	- isNotEmpty()
-	- isNotEmpty(CharSequence message, Object[] arguments)
-	- isNotEmpty(Locale locale, CharSequence message, Object[] arguments)
+	- `isNotEmpty()`
+	- `isNotEmpty(CharSequence message, Object[] arguments)`
+	- `isNotEmpty(Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites: None
 
@@ -758,9 +723,9 @@ Assertor.that(new String[0]).not().isNotEmpty("Param '%1$s*' empty or null").orE
 Assert that array contains the element.
 
 * Signatures:
-	- contains(T element)
-	- contains(T element, CharSequence message, Object[] arguments)
-	- contains(T element, Locale locale, CharSequence message, Object[] arguments)
+	- `contains(T element)`
+	- `contains(T element, CharSequence message, Object[] arguments)`
+	- `contains(T element, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- array NOT null and NOT empty
@@ -781,9 +746,9 @@ Assertor.that(new String[0]).not().contains(null, "Param '%1$s*' not null or emp
 Assert that array contains all elements.
 
 * Signatures:
-	- containsAll(T[] elements)
-	- containsAll(T[] elements, CharSequence message, Object[] arguments)
-	- containsAll(T[] elements, Locale locale, CharSequence message, Object[] arguments)
+	- `containsAll(T[] elements)`
+	- `containsAll(T[] elements, CharSequence message, Object[] arguments)`
+	- `containsAll(T[] elements, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- array NOT null and NOT empty
@@ -810,9 +775,9 @@ Assertor.that(new String[] {"text"}).not().containsAll(new String[0], "Param '%1
 Assert that array contains any elements.
 
 * Signatures:
-	- containsAny(T[] elements)
-	- containsAny(T[] elements, CharSequence message, Object[] arguments)
-	- containsAny(T[] elements, Locale locale, CharSequence message, Object[] arguments)
+	- `containsAny(T[] elements)`
+	- `containsAny(T[] elements, CharSequence message, Object[] arguments)`
+	- `containsAny(T[] elements, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- array NOT null and NOT empty
@@ -840,9 +805,9 @@ Assertor.that(new String[] {"text"}).not().containsAny(new String[0], "Param '%1
 Assert that the boolean is true.
 
 * Signatures:
-	- isTrue()
-	- isTrue(CharSequence message, Object[] arguments)
-	- isTrue(Locale locale, CharSequence message, Object[] arguments)
+	- `isTrue()`
+	- `isTrue(CharSequence message, Object[] arguments)`
+	- `isTrue(Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites: None
 
@@ -857,9 +822,9 @@ Assertor.that(true).not().isTrue("Bad status").orElseThrow(); // -> OK
 Assert that the boolean is false.
 
 * Signatures:
-	- isFalse()
-	- isFalse(CharSequence message, Object[] arguments)
-	- isFalse(Locale locale, CharSequence message, Object[] arguments)
+	- `isFalse()`
+	- `isFalse(CharSequence message, Object[] arguments)`
+	- `isFalse(Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites: None
 
@@ -875,9 +840,9 @@ Assertor.that(true).not().isFalse("Bad status").orElseThrow(); // -> OK
 Assert that char sequence has the specified length.
 
 * Signatures:
-	- hasLength(int length)
-	- hasLength(int length, CharSequence message, Object[] arguments)
-	- hasLength(int length, Locale locale, CharSequence message, Object[] arguments)
+	- `hasLength(int length)`
+	- `hasLength(int length, CharSequence message, Object[] arguments)`
+	- `hasLength(int length, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- char sequence NOT null
@@ -900,9 +865,9 @@ Assertor.that("text").not().hasLength(-1, "Bad status").orElseThrow(); // -> thr
 Assert that char sequence is empty or null.
 
 * Signatures:
-	- isEmpty()
-	- isEmpty(CharSequence message, Object[] arguments)
-	- isEmpty(Locale locale, CharSequence message, Object[] arguments)
+	- `isEmpty()`
+	- `isEmpty(CharSequence message, Object[] arguments)`
+	- `isEmpty(Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites: None
 
@@ -918,9 +883,9 @@ Assertor.that("text").not().isEmpty("Param '%1$s*' not empty").orElseThrow(); //
 Assert that char sequence is NOT empty and NOT null.
 
 * Signatures:
-	- isNotEmpty()
-	- isNotEmpty(CharSequence message, Object[] arguments)
-	- isNotEmpty(Locale locale, CharSequence message, Object[] arguments)
+	- `isNotEmpty()`
+	- `isNotEmpty(CharSequence message, Object[] arguments)`
+	- `isNotEmpty(Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites: None
 
@@ -936,9 +901,9 @@ Assertor.that("").not().isNotEmpty("Param '%1$s*' empty or null").orElseThrow();
 Assert that char sequence is blank or empty or null.
 
 * Signatures:
-	- isBlank()
-	- isBlank(CharSequence message, Object[] arguments)
-	- isBlank(Locale locale, CharSequence message, Object[] arguments)
+	- `isBlank()`
+	- `isBlank(CharSequence message, Object[] arguments)`
+	- `isBlank(Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites: None
 
@@ -955,9 +920,9 @@ Assertor.that("text").not().isBlank("Param '%1$s*' not blank").orElseThrow(); //
 Assert that char sequence is NOT blank and NOT empty and NOT null.
 
 * Signatures:
-	- isNotBlank()
-	- isNotBlank(CharSequence message, Object[] arguments)
-	- isNotBlank(Locale locale, CharSequence message, Object[] arguments)
+	- `isNotBlank()`
+	- `isNotBlank(CharSequence message, Object[] arguments)`
+	- `isNotBlank(Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites: None
 
@@ -975,9 +940,9 @@ Assertor.that("   ").isNotBlank("Param '%1$s*' not blank").orElseThrow(); // -> 
 Assert that char sequence is equal to the string
 
 * Signatures:
-	- isEqual(CharSequence string)
-	- isEqual(CharSequence string, CharSequence message, Object[] arguments)
-	- isEqual(CharSequence string, Locale locale, CharSequence message, Object[] arguments)
+	- `isEqual(CharSequence string)`
+	- `isEqual(CharSequence string, CharSequence message, Object[] arguments)`
+	- `isEqual(CharSequence string, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites: none
 
@@ -994,9 +959,9 @@ Assertor.that("text").not().isEqual("text").orElseThrow(); // -> throws an excep
 Assert that char sequence is NOT equal to the string
 
 * Signatures:
-	- isNotEqual(CharSequence string)
-	- isNotEqual(CharSequence string, CharSequence message, Object[] arguments)
-	- isNotEqual(CharSequence string, Locale locale, CharSequence message, Object[] arguments)
+	- `isNotEqual(CharSequence string)`
+	- `isNotEqual(CharSequence string, CharSequence message, Object[] arguments)`
+	- `isNotEqual(CharSequence string, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites: none
 
@@ -1013,9 +978,9 @@ Assertor.that("text").not().isNotEqual("text").orElseThrow(); -> throws an excep
 Assert that char sequence is equal to the string, ignoring case considerations
 
 * Signatures:
-	- isEqualIgnoreCase(CharSequence string)
-	- isEqualIgnoreCase(CharSequence string, CharSequence message, Object[] arguments)
-	- isEqualIgnoreCase(CharSequence string, Locale locale, CharSequence message, Object[] arguments)
+	- `isEqualIgnoreCase(CharSequence string)`
+	- `isEqualIgnoreCase(CharSequence string, CharSequence message, Object[] arguments)`
+	- `isEqualIgnoreCase(CharSequence string, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites: none
 
@@ -1031,9 +996,9 @@ Assertor.that("text").not().isEqualIgnoreCase("text").orElseThrow(); -> throws a
 Assert that char sequence is NOT equal to the string, ignoring case considerations
 
 * Signatures:
-	- isNotEqualIgnoreCase(CharSequence string)
-	- isNotEqualIgnoreCase(CharSequence string, CharSequence message, Object[] arguments)
-	- isNotEqualIgnoreCase(CharSequence string, Locale locale, CharSequence message, Object[] arguments)
+	- `isNotEqualIgnoreCase(CharSequence string)`
+	- `isNotEqualIgnoreCase(CharSequence string, CharSequence message, Object[] arguments)`
+	- `isNotEqualIgnoreCase(CharSequence string, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites: none
 
@@ -1050,9 +1015,9 @@ Assertor.that("text").not().isNotEqualIgnoreCase("text").orElseThrow(); -> OK
 Assert that char sequence is equal to the string, ignoring line returns considerations
 
 * Signatures:
-	- isEqualIgnoreLineReturns(CharSequence string)
-	- isEqualIgnoreLineReturns(CharSequence string, CharSequence message, Object[] arguments)
-	- isEqualIgnoreLineReturns(CharSequence string, Locale locale, CharSequence message, Object[] arguments)
+	- `isEqualIgnoreLineReturns(CharSequence string)`
+	- `isEqualIgnoreLineReturns(CharSequence string, CharSequence message, Object[] arguments)`
+	- `isEqualIgnoreLineReturns(CharSequence string, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites: none
 
@@ -1070,9 +1035,9 @@ Assertor.that("text").not().isEqualIgnoreLineReturns("text").orElseThrow(); -> t
 Assert that char sequence is NOT equal to the string, ignoring line returns considerations
 
 * Signatures:
-	- isNotEqualIgnoreLineReturns(CharSequence string)
-	- isNotEqualIgnoreLineReturns(CharSequence string, CharSequence message, Object[] arguments)
-	- isNotEqualIgnoreLineReturns(CharSequence string, Locale locale, CharSequence message, Object[] arguments)
+	- `isNotEqualIgnoreLineReturns(CharSequence string)`
+	- `isNotEqualIgnoreLineReturns(CharSequence string, CharSequence message, Object[] arguments)`
+	- `isNotEqualIgnoreLineReturns(CharSequence string, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites: none
 
@@ -1090,9 +1055,9 @@ Assertor.that("text").not().isNotEqualIgnoreLineReturns("text").orElseThrow(); -
 Assert that char sequence is equal to the string, ignoring case and line returns considerations
 
 * Signatures:
-	- isEqualIgnoreCaseAndLineReturns(CharSequence string)
-	- isEqualIgnoreCaseAndLineReturns(CharSequence string, CharSequence message, Object[] arguments)
-	- isEqualIgnoreCaseAndLineReturns(CharSequence string, Locale locale, CharSequence message, Object[] arguments)
+	- `isEqualIgnoreCaseAndLineReturns(CharSequence string)`
+	- `isEqualIgnoreCaseAndLineReturns(CharSequence string, CharSequence message, Object[] arguments)`
+	- `isEqualIgnoreCaseAndLineReturns(CharSequence string, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites: none
 
@@ -1110,9 +1075,9 @@ Assertor.that("text").not().isEqualIgnoreCaseAndLineReturns("text").orElseThrow(
 Assert that char sequence is NOT equal to the string, ignoring case and line returns considerations
 
 * Signatures:
-	- isNotEqualIgnoreCaseAndLineReturns(CharSequence string)
-	- isNotEqualIgnoreCaseAndLineReturns(CharSequence string, CharSequence message, Object[] arguments)
-	- isNotEqualIgnoreCaseAndLineReturns(CharSequence string, Locale locale, CharSequence message, Object[] arguments)
+	- `isNotEqualIgnoreCaseAndLineReturns(CharSequence string)`
+	- `isNotEqualIgnoreCaseAndLineReturns(CharSequence string, CharSequence message, Object[] arguments)`
+	- `isNotEqualIgnoreCaseAndLineReturns(CharSequence string, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites: none
 
@@ -1130,9 +1095,9 @@ Assertor.that("text").not().isNotEqualIgnoreCaseAndLineReturns("text").orElseThr
 Assert that char sequence contains the substring.
 
 * Signatures:
-	- contains(CharSequence substring)
-	- contains(CharSequence substring, CharSequence message, Object[] arguments)
-	- contains(CharSequence substring, Locale locale, CharSequence message, Object[] arguments)
+	- `contains(CharSequence substring)`
+	- `contains(CharSequence substring, CharSequence message, Object[] arguments)`
+	- `contains(CharSequence substring, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- char sequence NOT null
@@ -1158,9 +1123,9 @@ Assertor.that("text").not().contains("", "Param '%1$s*' not blank").orElseThrow(
 #### startsWith
 Assert that char sequence starts with the substring.
 * Signatures:
-	- startsWith(CharSequence substring)
-	- startsWith(CharSequence substring, CharSequence message, Object[] arguments)
-	- startsWith(CharSequence substring, Locale locale, CharSequence message, Object[] arguments)
+	- `startsWith(CharSequence substring)`
+	- `startsWith(CharSequence substring, CharSequence message, Object[] arguments)`
+	- `startsWith(CharSequence substring, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- char sequence NOT null
@@ -1187,9 +1152,9 @@ Assertor.that("text").not().startsWith("", "Param '%1$s*' not blank").orElseThro
 #### startsWithIgnoreCase
 Assert that char sequence starts with the substring (case insensitive).
 * Signatures:
-	- startsWithIgnoreCase(CharSequence substring)
-	- startsWithIgnoreCase(CharSequence substring, CharSequence message, Object[] arguments)
-	- startsWithIgnoreCase(CharSequence substring, Locale locale, CharSequence message, Object[] arguments)
+	- `startsWithIgnoreCase(CharSequence substring)`
+	- `startsWithIgnoreCase(CharSequence substring, CharSequence message, Object[] arguments)`
+	- `startsWithIgnoreCase(CharSequence substring, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- char sequence NOT null
@@ -1216,9 +1181,9 @@ Assertor.that("text").not().startsWithIgnoreCase("", "Param '%1$s*' not blank").
 #### endsWith
 Assert that char sequence ends with the substring.
 * Signatures:
-	- endsWith(CharSequence substring)
-	- endsWith(CharSequence substring, CharSequence message, Object[] arguments)
-	- endsWith(CharSequence substring, Locale locale, CharSequence message, Object[] arguments)
+	- `endsWith(CharSequence substring)`
+	- `endsWith(CharSequence substring, CharSequence message, Object[] arguments)`
+	- `endsWith(CharSequence substring, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- char sequence NOT null
@@ -1245,9 +1210,9 @@ Assertor.that("text").not().endsWith("", "Param '%1$s*' not blank").orElseThrow(
 #### endsWithIgnoreCase
 Assert that char sequence ends with the substring (case insensitive).
 * Signatures:
-	- endsWithIgnoreCase(CharSequence substring)
-	- endsWithIgnoreCase(CharSequence substring, CharSequence message, Object[] arguments)
-	- endsWithIgnoreCase(CharSequence substring, Locale locale, CharSequence message, Object[] arguments)
+	- `endsWithIgnoreCase(CharSequence substring)`
+	- `endsWithIgnoreCase(CharSequence substring, CharSequence message, Object[] arguments)`
+	- `endsWithIgnoreCase(CharSequence substring, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- char sequence NOT null
@@ -1274,12 +1239,12 @@ Assertor.that("text").not().endsWithIgnoreCase("", "Param '%1$s*' not blank").or
 #### matches
 Assert that char sequence matches the specified pattern / regex.
 * Signatures:
-	- matches(CharSequence regex)
-	- matches(CharSequence regex, CharSequence message, Object[] arguments)
-	- matches(CharSequence regex, Locale locale, CharSequence message, Object[] arguments)
-	- matches(Pattern pattern)
-	- matches(Pattern pattern, CharSequence message, Object[] arguments)
-	- matches(Pattern pattern, Locale locale, CharSequence message, Object[] arguments)
+	- `matches(CharSequence regex)`
+	- `matches(CharSequence regex, CharSequence message, Object[] arguments)`
+	- `matches(CharSequence regex, Locale locale, CharSequence message, Object[] arguments)`
+	- `matches(Pattern pattern)`
+	- `matches(Pattern pattern, CharSequence message, Object[] arguments)`
+	- `matches(Pattern pattern, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- char sequence NOT null
@@ -1306,12 +1271,12 @@ Assertor.that("text").not().matches(null, "Param '%1$s*' not blank").orElseThrow
 #### find
 Assert that char sequence contains the specified pattern / regex.
 * Signatures:
-	- find(CharSequence regex)
-	- find(CharSequence regex, CharSequence message, Object[] arguments)
-	- find(CharSequence regex, Locale locale, CharSequence message, Object[] arguments)
-	- find(Pattern pattern)
-	- find(Pattern pattern, CharSequence message, Object[] arguments)
-	- find(Pattern pattern, Locale locale, CharSequence message, Object[] arguments)
+	- `find(CharSequence regex)`
+	- `find(CharSequence regex, CharSequence message, Object[] arguments)`
+	- `find(CharSequence regex, Locale locale, CharSequence message, Object[] arguments)`
+	- `find(Pattern pattern)`
+	- `find(Pattern pattern, CharSequence message, Object[] arguments)`
+	- `find(Pattern pattern, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- char sequence NOT null
@@ -1339,9 +1304,9 @@ Assertor.that("text").not().find(null, "Param '%1$s*' not blank").orElseThrow();
 #### isAssignableFrom
 Assert that class is assignable from clazz.
 * Signatures:
-	- isAssignableFrom(Class<?> clazz)
-	- isAssignableFrom(Class<?> clazz, CharSequence message, Object[] arguments)
-	- isAssignableFrom(Class<?> clazz, Locale locale, CharSequence message, Object[] arguments)
+	- `isAssignableFrom(Class<?> clazz)`
+	- `isAssignableFrom(Class<?> clazz, CharSequence message, Object[] arguments)`
+	- `isAssignableFrom(Class<?> clazz, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- classes NOT null
@@ -1360,9 +1325,9 @@ Assertor.that(Exception.class).isAssignableFrom(null).orElseThrow(); // -> throw
 #### hasName
 Assert that class has the specified name.
 * Signatures:
-	- hasName(CharSequence name)
-	- hasName(CharSequence name, CharSequence message, Object[] arguments)
-	- hasName(CharSequence name, Locale locale, CharSequence message, Object[] arguments)
+	- `hasName(CharSequence name)`
+	- `hasName(CharSequence name, CharSequence message, Object[] arguments)`
+	- `hasName(CharSequence name, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- class NOT null
@@ -1383,9 +1348,9 @@ Assertor.that(Exception.class).hasName("").orElseThrow(); // -> throws an except
 #### hasSimpleName
 Assert that class has the specified simple name.
 * Signatures:
-	- hasSimpleName(CharSequence name)
-	- hasSimpleName(CharSequence name, CharSequence message, Object[] arguments)
-	- hasSimpleName(CharSequence name, Locale locale, CharSequence message, Object[] arguments)
+	- `hasSimpleName(CharSequence name)`
+	- `hasSimpleName(CharSequence name, CharSequence message, Object[] arguments)`
+	- `hasSimpleName(CharSequence name, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- class NOT null
@@ -1406,9 +1371,9 @@ Assertor.that(Exception.class).hasSimpleName("").orElseThrow(); // -> throws an 
 #### hasCanonicalName
 Assert that class has the specified canonical name.
 * Signatures:
-	- hasCanonicalName(CharSequence name)
-	- hasCanonicalName(CharSequence name, CharSequence message, Object[] arguments)
-	- hasCanonicalName(CharSequence name, Locale locale, CharSequence message, Object[] arguments)
+	- `hasCanonicalName(CharSequence name)`
+	- `hasCanonicalName(CharSequence name, CharSequence message, Object[] arguments)`
+	- `hasCanonicalName(CharSequence name, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- class NOT null
@@ -1429,9 +1394,9 @@ Assertor.that(Exception.class).hasCanonicalName("").orElseThrow(); // -> throws 
 #### hasPackageName
 Assert that class has the specified package name.
 * Signatures:
-	- hasPackageName(CharSequence name)
-	- hasPackageName(CharSequence name, CharSequence message, Object[] arguments)
-	- hasPackageName(CharSequence name, Locale locale, CharSequence message, Object[] arguments)
+	- `hasPackageName(CharSequence name)`
+	- `hasPackageName(CharSequence name, CharSequence message, Object[] arguments)`
+	- `hasPackageName(CharSequence name, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- class NOT null
@@ -1452,9 +1417,9 @@ Assertor.that(Exception.class).hasPackageName("").orElseThrow(); // -> throws an
 #### hasTypeName
 Assert that class has the specified package name.
 * Signatures:
-	- hasTypeName(CharSequence name)
-	- hasTypeName(CharSequence name, CharSequence message, Object[] arguments)
-	- hasTypeName(CharSequence name, Locale locale, CharSequence message, Object[] arguments)
+	- `hasTypeName(CharSequence name)`
+	- `hasTypeName(CharSequence name, CharSequence message, Object[] arguments)`
+	- `hasTypeName(CharSequence name, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- class NOT null
@@ -1477,12 +1442,12 @@ Assertor.that(Exception.class).hasTypeName("").orElseThrow(); // -> throws an ex
 Assert that dates are equal.
 
 * Signatures:
-	- isEqual(Calendar date)
-	- isEqual(Calendar date, CharSequence message, Object[] arguments)
-	- isEqual(Calendar date, Locale locale, CharSequence message, Object[] arguments)
-	- isEqual(Date date)
-	- isEqual(Date date, CharSequence message, Object[] arguments)
-	- isEqual(Date date, Locale locale, CharSequence message, Object[] arguments)
+	- `isEqual(Calendar date)`
+	- `isEqual(Calendar date, CharSequence message, Object[] arguments)`
+	- `isEqual(Calendar date, Locale locale, CharSequence message, Object[] arguments)`
+	- `isEqual(Date date)`
+	- `isEqual(Date date, CharSequence message, Object[] arguments)`
+	- `isEqual(Date date, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites: none
 
@@ -1503,12 +1468,12 @@ Assertor.that(date1).not().isEqual(date2).orElseThrow(); // -> throws an excepti
 Assert that dates are NOT equal.
 
 * Signatures:
-	- isNotEqual(Calendar date)
-	- isNotEqual(Calendar date, CharSequence message, Object[] arguments)
-	- isNotEqual(Calendar date, Locale locale, CharSequence message, Object[] arguments)
-	- isNotEqual(Date date)
-	- isNotEqual(Date date, CharSequence message, Object[] arguments)
-	- isNotEqual(Date date, Locale locale, CharSequence message, Object[] arguments)
+	- `isNotEqual(Calendar date)`
+	- `isNotEqual(Calendar date, CharSequence message, Object[] arguments)`
+	- `isNotEqual(Calendar date, Locale locale, CharSequence message, Object[] arguments)`
+	- `isNotEqual(Date date)`
+	- `isNotEqual(Date date, CharSequence message, Object[] arguments)`
+	- `isNotEqual(Date date, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites: none
 
@@ -1528,12 +1493,12 @@ Assertor.that(date1).not().isNotEqual(date2).orElseThrow(); // -> throws an exce
 #### isAround
 Assert that date1 is around the date2.
 * Signatures:
-	- isAround(Calendar date, int calendarField, int calendarAmount)
-	- isAround(Calendar date, int calendarField, int calendarAmount, CharSequence message, Object[] arguments)
-	- isAround(Calendar date, int calendarField, int calendarAmount, Locale locale, CharSequence message, Object[] arguments)
-	- isAround(Date date, int calendarField, int calendarAmount)
-	- isAround(Date date, int calendarField, int calendarAmount, CharSequence message, Object[] arguments)
-	- isAround(Date date, int calendarField, int calendarAmount, Locale locale, CharSequence message, Object[] arguments)
+	- `isAround(Calendar date, int calendarField, int calendarAmount)`
+	- `isAround(Calendar date, int calendarField, int calendarAmount, CharSequence message, Object[] arguments)`
+	- `isAround(Calendar date, int calendarField, int calendarAmount, Locale locale, CharSequence message, Object[] arguments)`
+	- `isAround(Date date, int calendarField, int calendarAmount)`
+	- `isAround(Date date, int calendarField, int calendarAmount, CharSequence message, Object[] arguments)`
+	- `isAround(Date date, int calendarField, int calendarAmount, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- dates NOT null
@@ -1566,12 +1531,12 @@ Assertor.that(date1).not().isAround(date2, Calendar.HOUR, 0).orElseThrow(); // -
 #### isNotAround
 Assert that date1 is not around the date2.
 * Signatures:
-	- isNotAround(Calendar date, int calendarField, int calendarAmount)
-	- isNotAround(Calendar date, int calendarField, int calendarAmount, CharSequence message, Object[] arguments)
-	- isNotAround(Calendar date, int calendarField, int calendarAmount, Locale locale, CharSequence message, Object[] arguments)
-	- isNotAround(Date date, int calendarField, int calendarAmount)
-	- isNotAround(Date date, int calendarField, int calendarAmount, CharSequence message, Object[] arguments)
-	- isNotAround(Date date, int calendarField, int calendarAmount, Locale locale, CharSequence message, Object[] arguments)
+	- `isNotAround(Calendar date, int calendarField, int calendarAmount)`
+	- `isNotAround(Calendar date, int calendarField, int calendarAmount, CharSequence message, Object[] arguments)`
+	- `isNotAround(Calendar date, int calendarField, int calendarAmount, Locale locale, CharSequence message, Object[] arguments)`
+	- `isNotAround(Date date, int calendarField, int calendarAmount)`
+	- `isNotAround(Date date, int calendarField, int calendarAmount, CharSequence message, Object[] arguments)`
+	- `isNotAround(Date date, int calendarField, int calendarAmount, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- dates NOT null
@@ -1607,18 +1572,18 @@ Assertor.that(date1).not().isNotAround(date2, Calendar.HOUR, 0).orElseThrow(); /
 #### isAfter
 Assert that date1 is after the date2.
 * Signatures:
-	- isAfter(Calendar date)
-	- isAfter(Calendar date, CharSequence message, Object[] arguments)
-	- isAfter(Calendar date, Locale locale, CharSequence message, Object[] arguments)
-	- isAfter(Calendar date, int calendarField, int calendarAmount)
-	- isAfter(Calendar date, int calendarField, int calendarAmount, CharSequence message, Object[] arguments)
-	- isAfter(Calendar date, int calendarField, int calendarAmount, Locale locale, CharSequence message, Object[] arguments)
-	- isAfter(Date date)
-	- isAfter(Date date, CharSequence message, Object[] arguments)
-	- isAfter(Date date, Locale locale, CharSequence message, Object[] arguments)
-	- isAfter(Date date, int calendarField, int calendarAmount)
-	- isAfter(Date date, int calendarField, int calendarAmount, CharSequence message, Object[] arguments)
-	- isAfter(Date date, int calendarField, int calendarAmount, Locale locale, CharSequence message, Object[] arguments)
+	- `isAfter(Calendar date)`
+	- `isAfter(Calendar date, CharSequence message, Object[] arguments)`
+	- `isAfter(Calendar date, Locale locale, CharSequence message, Object[] arguments)`
+	- `isAfter(Calendar date, int calendarField, int calendarAmount)`
+	- `isAfter(Calendar date, int calendarField, int calendarAmount, CharSequence message, Object[] arguments)`
+	- `isAfter(Calendar date, int calendarField, int calendarAmount, Locale locale, CharSequence message, Object[] arguments)`
+	- `isAfter(Date date)`
+	- `isAfter(Date date, CharSequence message, Object[] arguments)`
+	- `isAfter(Date date, Locale locale, CharSequence message, Object[] arguments)`
+	- `isAfter(Date date, int calendarField, int calendarAmount)`
+	- `isAfter(Date date, int calendarField, int calendarAmount, CharSequence message, Object[] arguments)`
+	- `isAfter(Date date, int calendarField, int calendarAmount, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- dates NOT null
@@ -1658,18 +1623,18 @@ Assertor.that(date1).not().isAfter(date2, Calendar.HOUR, 0).orElseThrow(); // ->
 #### isAfterOrEqual
 Assert that date1 is after or equals the date2.
 * Signatures:
-	- isAfterOrEqual(Calendar date)
-	- isAfterOrEqual(Calendar date, CharSequence message, Object[] arguments)
-	- isAfterOrEqual(Calendar date, Locale locale, CharSequence message, Object[] arguments)
-	- isAfterOrEqual(Calendar date)
-	- isAfterOrEqual(Calendar date, int calendarField, int calendarAmount, CharSequence message, Object[] arguments)
-	- isAfterOrEqual(Calendar date, int calendarField, int calendarAmount, Locale locale, CharSequence message, Object[] arguments)
-	- isAfterOrEqual(Date date)
-	- isAfterOrEqual(Date date, CharSequence message, Object[] arguments)
-	- isAfterOrEqual(Date date, Locale locale, CharSequence message, Object[] arguments)
-	- isAfterOrEqual(Date date, int calendarField, int calendarAmount)
-	- isAfterOrEqual(Date date, int calendarField, int calendarAmount, CharSequence message, Object[] arguments)
-	- isAfterOrEqual(Date date, int calendarField, int calendarAmount, Locale locale, CharSequence message, Object[] arguments)
+	- `isAfterOrEqual(Calendar date)`
+	- `isAfterOrEqual(Calendar date, CharSequence message, Object[] arguments)`
+	- `isAfterOrEqual(Calendar date, Locale locale, CharSequence message, Object[] arguments)`
+	- `isAfterOrEqual(Calendar date)`
+	- `isAfterOrEqual(Calendar date, int calendarField, int calendarAmount, CharSequence message, Object[] arguments)`
+	- `isAfterOrEqual(Calendar date, int calendarField, int calendarAmount, Locale locale, CharSequence message, Object[] arguments)`
+	- `isAfterOrEqual(Date date)`
+	- `isAfterOrEqual(Date date, CharSequence message, Object[] arguments)`
+	- `isAfterOrEqual(Date date, Locale locale, CharSequence message, Object[] arguments)`
+	- `isAfterOrEqual(Date date, int calendarField, int calendarAmount)`
+	- `isAfterOrEqual(Date date, int calendarField, int calendarAmount, CharSequence message, Object[] arguments)`
+	- `isAfterOrEqual(Date date, int calendarField, int calendarAmount, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- dates NOT null
@@ -1710,18 +1675,18 @@ Assertor.that(date1).not().isAfterOrEqual(date2, Calendar.HOUR, 0).orElseThrow()
 #### isBefore
 Assert that date1 is before the date2.
 * Signatures:
-	- isBefore(Calendar date)
-	- isBefore(Calendar date, CharSequence message, Object[] arguments)
-	- isBefore(Calendar date, Locale locale, CharSequence message, Object[] arguments)
-	- isBefore(Calendar date, int calendarField, int calendarAmount)
-	- isBefore(Calendar date, int calendarField, int calendarAmount, CharSequence message, Object[] arguments)
-	- isBefore(Calendar date, int calendarField, int calendarAmount, Locale locale, CharSequence message, Object[] arguments)
-	- isBefore(Date date)
-	- isBefore(Date date, CharSequence message, Object[] arguments)
-	- isBefore(Date date, Locale locale, CharSequence message, Object[] arguments)
-	- isBefore(Date date, int calendarField, int calendarAmount)
-	- isBefore(Date date, int calendarField, int calendarAmount, CharSequence message, Object[] arguments)
-	- isBefore(Date date, int calendarField, int calendarAmount, Locale locale, CharSequence message, Object[] arguments)
+	- `isBefore(Calendar date)`
+	- `isBefore(Calendar date, CharSequence message, Object[] arguments)`
+	- `isBefore(Calendar date, Locale locale, CharSequence message, Object[] arguments)`
+	- `isBefore(Calendar date, int calendarField, int calendarAmount)`
+	- `isBefore(Calendar date, int calendarField, int calendarAmount, CharSequence message, Object[] arguments)`
+	- `isBefore(Calendar date, int calendarField, int calendarAmount, Locale locale, CharSequence message, Object[] arguments)`
+	- `isBefore(Date date)`
+	- `isBefore(Date date, CharSequence message, Object[] arguments)`
+	- `isBefore(Date date, Locale locale, CharSequence message, Object[] arguments)`
+	- `isBefore(Date date, int calendarField, int calendarAmount)`
+	- `isBefore(Date date, int calendarField, int calendarAmount, CharSequence message, Object[] arguments)`
+	- `isBefore(Date date, int calendarField, int calendarAmount, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- dates NOT null
@@ -1761,18 +1726,18 @@ Assertor.that(date1).not().isBefore(date2, Calendar.HOUR, 0).orElseThrow(); // -
 #### isBeforeOrEqual
 Assert that date1 is before or equals the date2.
 * Signatures:
-	- isBeforeOrEqual(Calendar date)
-	- isBeforeOrEqual(Calendar date, CharSequence message, Object[] arguments)
-	- isBeforeOrEqual(Calendar date, Locale locale, CharSequence message, Object[] arguments)
-	- isBeforeOrEqual(Calendar date)
-	- isBeforeOrEqual(Calendar date, int calendarField, int calendarAmount, CharSequence message, Object[] arguments)
-	- isBeforeOrEqual(Calendar date, int calendarField, int calendarAmount, Locale locale, CharSequence message, Object[] arguments)
-	- isBeforeOrEqual(Date date)
-	- isBeforeOrEqual(Date date, CharSequence message, Object[] arguments)
-	- isBeforeOrEqual(Date date, Locale locale, CharSequence message, Object[] arguments)
-	- isBeforeOrEqual(Date date, int calendarField, int calendarAmount)
-	- isBeforeOrEqual(Date date, int calendarField, int calendarAmount, CharSequence message, Object[] arguments)
-	- isBeforeOrEqual(Date date, int calendarField, int calendarAmount, Locale locale, CharSequence message, Object[] arguments)
+	- `isBeforeOrEqual(Calendar date)`
+	- `isBeforeOrEqual(Calendar date, CharSequence message, Object[] arguments)`
+	- `isBeforeOrEqual(Calendar date, Locale locale, CharSequence message, Object[] arguments)`
+	- `isBeforeOrEqual(Calendar date)`
+	- `isBeforeOrEqual(Calendar date, int calendarField, int calendarAmount, CharSequence message, Object[] arguments)`
+	- `isBeforeOrEqual(Calendar date, int calendarField, int calendarAmount, Locale locale, CharSequence message, Object[] arguments)`
+	- `isBeforeOrEqual(Date date)`
+	- `isBeforeOrEqual(Date date, CharSequence message, Object[] arguments)`
+	- `isBeforeOrEqual(Date date, Locale locale, CharSequence message, Object[] arguments)`
+	- `isBeforeOrEqual(Date date, int calendarField, int calendarAmount)`
+	- `isBeforeOrEqual(Date date, int calendarField, int calendarAmount, CharSequence message, Object[] arguments)`
+	- `isBeforeOrEqual(Date date, int calendarField, int calendarAmount, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- dates NOT null
@@ -1815,9 +1780,9 @@ Assertor.that(date1).not().isBeforeOrEqual(date2, Calendar.HOUR, 0).orElseThrow(
 Assert that dates are equal.
 
 * Signatures:
-	- isEqual(T temporal)
-	- isEqual(T temporal, CharSequence message, Object[] arguments)
-	- isEqual(T temporal, Locale locale, CharSequence message, Object[] arguments)
+	- `isEqual(T temporal)`
+	- `isEqual(T temporal, CharSequence message, Object[] arguments)`
+	- `isEqual(T temporal, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites: none
 
@@ -1838,9 +1803,9 @@ Assertor.that(date1).not().isEqual(date2).orElseThrow(); // -> throws an excepti
 Assert that dates are NOT equal.
 
 * Signatures:
-	- isNotEqual(T temporal)
-	- isNotEqual(T temporal, CharSequence message, Object[] arguments)
-	- isNotEqual(T temporal, Locale locale, CharSequence message, Object[] arguments)
+	- `isNotEqual(T temporal)`
+	- `isNotEqual(T temporal, CharSequence message, Object[] arguments)`
+	- `isNotEqual(T temporal, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites: none
 
@@ -1860,9 +1825,9 @@ Assertor.that(date1).not().isNotEqual(date2).orElseThrow(); // -> throws an exce
 #### isAround
 Assert that date1 is around the date2.
 * Signatures:
-	- isAround(T temporal, TemporalAmount temporalAmount)
-	- isAround(T temporal, TemporalAmount temporalAmount, CharSequence message, Object[] arguments)
-	- isAround(T temporal, TemporalAmount temporalAmount, Locale locale, CharSequence message, Object[] arguments)
+	- `isAround(T temporal, TemporalAmount temporalAmount)`
+	- `isAround(T temporal, TemporalAmount temporalAmount, CharSequence message, Object[] arguments)`
+	- `isAround(T temporal, TemporalAmount temporalAmount, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- temporals NOT null, only if temporalAmount NOT null
@@ -1887,9 +1852,9 @@ Assertor.that(date1).not().isAround(null, Duration.ofSeconds(5)).orElseThrow(); 
 #### isNotAround
 Assert that date1 is NOT around the date2.
 * Signatures:
-	- isNotAround(T temporal, TemporalAmount temporalAmount)
-	- isNotAround(T temporal, TemporalAmount temporalAmount, CharSequence message, Object[] arguments)
-	- isNotAround(T temporal, TemporalAmount temporalAmount, Locale locale, CharSequence message, Object[] arguments)
+	- `isNotAround(T temporal, TemporalAmount temporalAmount)`
+	- `isNotAround(T temporal, TemporalAmount temporalAmount, CharSequence message, Object[] arguments)`
+	- `isNotAround(T temporal, TemporalAmount temporalAmount, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- temporals NOT null, only if temporalAmount NOT null
@@ -1914,12 +1879,12 @@ Assertor.that(date1).not().isAround(null, Duration.ofSeconds(5)).orElseThrow(); 
 #### isAfter
 Assert that date1 is after the date2.
 * Signatures:
-	- isAfter(T temporal)
-	- isAfter(T temporal, CharSequence message, Object[] arguments)
-	- isAfter(T temporal, Locale locale, CharSequence message, Object[] arguments)
-	- isAfter(T temporal, TemporalAmount temporalAmount)
-	- isAfter(T temporal, TemporalAmount temporalAmount, CharSequence message, Object[] arguments)
-	- isAfter(T temporal, TemporalAmount temporalAmount, Locale locale, CharSequence message, Object[] arguments)
+	- `isAfter(T temporal)`
+	- `isAfter(T temporal, CharSequence message, Object[] arguments)`
+	- `isAfter(T temporal, Locale locale, CharSequence message, Object[] arguments)`
+	- `isAfter(T temporal, TemporalAmount temporalAmount)`
+	- `isAfter(T temporal, TemporalAmount temporalAmount, CharSequence message, Object[] arguments)`
+	- `isAfter(T temporal, TemporalAmount temporalAmount, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- temporals NOT null, only if temporalAmount NOT null
@@ -1949,12 +1914,12 @@ Assertor.that(date1).not().isAfter(null, Duration.ofSeconds(5)).orElseThrow(); /
 #### isAfterOrEqual
 Assert that date1 is after or equals the date2.
 * Signatures:
-	- isAfterOrEqual(T temporal)
-	- isAfterOrEqual(T temporal, CharSequence message, Object[] arguments)
-	- isAfterOrEqual(T temporal, Locale locale, CharSequence message, Object[] arguments)
-	- isAfterOrEqual(T temporal, TemporalAmount temporalAmount)
-	- isAfterOrEqual(T temporal, TemporalAmount temporalAmount, CharSequence message, Object[] arguments)
-	- isAfterOrEqual(T temporal, TemporalAmount temporalAmount, Locale locale, CharSequence message, Object[] arguments)
+	- `isAfterOrEqual(T temporal)`
+	- `isAfterOrEqual(T temporal, CharSequence message, Object[] arguments)`
+	- `isAfterOrEqual(T temporal, Locale locale, CharSequence message, Object[] arguments)`
+	- `isAfterOrEqual(T temporal, TemporalAmount temporalAmount)`
+	- `isAfterOrEqual(T temporal, TemporalAmount temporalAmount, CharSequence message, Object[] arguments)`
+	- `isAfterOrEqual(T temporal, TemporalAmount temporalAmount, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- temporals NOT null, only if temporalAmount NOT null
@@ -1984,12 +1949,12 @@ Assertor.that(date1).not().isAfterOrEqual(null, Duration.ofSeconds(5)).orElseThr
 #### isBefore
 Assert that date1 is before the date2.
 * Signatures:
-	- isBefore(T temporal)
-	- isBefore(T temporal, CharSequence message, Object[] arguments)
-	- isBefore(T temporal, Locale locale, CharSequence message, Object[] arguments)
-	- isBefore(T temporal, TemporalAmount temporalAmount)
-	- isBefore(T temporal, TemporalAmount temporalAmount, CharSequence message, Object[] arguments)
-	- isBefore(T temporal, TemporalAmount temporalAmount, Locale locale, CharSequence message, Object[] arguments)
+	- `isBefore(T temporal)`
+	- `isBefore(T temporal, CharSequence message, Object[] arguments)`
+	- `isBefore(T temporal, Locale locale, CharSequence message, Object[] arguments)`
+	- `isBefore(T temporal, TemporalAmount temporalAmount)`
+	- `isBefore(T temporal, TemporalAmount temporalAmount, CharSequence message, Object[] arguments)`
+	- `isBefore(T temporal, TemporalAmount temporalAmount, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- temporals NOT null, only if temporalAmount NOT null
@@ -2019,12 +1984,12 @@ Assertor.that(date1).not().isBefore(null, Duration.ofSeconds(5)).orElseThrow(); 
 #### isBeforeOrEqual
 Assert that date1 is before or equals the date2.
 * Signatures:
-	- isBeforeOrEqual(T temporal)
-	- isBeforeOrEqual(T temporal, CharSequence message, Object[] arguments)
-	- isBeforeOrEqual(T temporal, Locale locale, CharSequence message, Object[] arguments)
-	- isBeforeOrEqual(T temporal, TemporalAmount temporalAmount)
-	- isBeforeOrEqual(T temporal, TemporalAmount temporalAmount, CharSequence message, Object[] arguments)
-	- isBeforeOrEqual(T temporal, TemporalAmount temporalAmount, Locale locale, CharSequence message, Object[] arguments)
+	- `isBeforeOrEqual(T temporal)`
+	- `isBeforeOrEqual(T temporal, CharSequence message, Object[] arguments)`
+	- `isBeforeOrEqual(T temporal, Locale locale, CharSequence message, Object[] arguments)`
+	- `isBeforeOrEqual(T temporal, TemporalAmount temporalAmount)`
+	- `isBeforeOrEqual(T temporal, TemporalAmount temporalAmount, CharSequence message, Object[] arguments)`
+	- `isBeforeOrEqual(T temporal, TemporalAmount temporalAmount, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- temporals NOT null, only if temporalAmount NOT null
@@ -2055,9 +2020,9 @@ Assertor.that(date1).not().isBeforeOrEqual(null, Duration.ofSeconds(5)).orElseTh
 #### hasName
 Assert that enumeration has the specified name.
 * Signatures:
-	- hasName(CharSequence name)
-	- hasName(CharSequence name, CharSequence message, Object[] arguments)
-	- hasName(CharSequence name, Locale locale, CharSequence message, Object[] arguments)
+	- `hasName(CharSequence name)`
+	- `hasName(CharSequence name, CharSequence message, Object[] arguments)`
+	- `hasName(CharSequence name, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- enumeration NOT null
@@ -2078,9 +2043,9 @@ Assertor.that(Type.LONG).hasName("").orElseThrow(); // -> throws an exception
 #### hasNameIgnoreCase
 Assert that enumeration has the specified name.
 * Signatures:
-	- hasNameIgnoreCase(CharSequence name)
-	- hasNameIgnoreCase(CharSequence name, CharSequence message, Object[] arguments)
-	- hasNameIgnoreCase(CharSequence name, Locale locale, CharSequence message, Object[] arguments)
+	- `hasNameIgnoreCase(CharSequence name)`
+	- `hasNameIgnoreCase(CharSequence name, CharSequence message, Object[] arguments)`
+	- `hasNameIgnoreCase(CharSequence name, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- enumeration NOT null
@@ -2101,9 +2066,9 @@ Assertor.that(Type.LONG).hasNameIgnoreCase("").orElseThrow(); // -> throws an ex
 #### hasOrdinal
 Assert that enumeration has the specified ordinal.
 * Signatures:
-	- hasOrdinal(CharSequence name)
-	- hasOrdinal(CharSequence name, CharSequence message, Object[] arguments)
-	- hasOrdinal(CharSequence name, Locale locale, CharSequence message, Object[] arguments)
+	- `hasOrdinal(CharSequence name)`
+	- `hasOrdinal(CharSequence name, CharSequence message, Object[] arguments)`
+	- `hasOrdinal(CharSequence name, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- enumeration NOT null
@@ -2124,9 +2089,9 @@ Assertor.that(Type.LONG).hasOrdinal(-1).orElseThrow(); // -> throws an exception
 Assert that iterable has the specified size.
 
 * Signatures:
-	- hasSize(int size)
-	- hasSize(int size, CharSequence message, Object[] arguments)
-	- hasSize(int size, Locale locale, CharSequence message, Object[] arguments)
+	- `hasSize(int size)`
+	- `hasSize(int size, CharSequence message, Object[] arguments)`
+	- `hasSize(int size, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- iterable NOT null
@@ -2149,9 +2114,9 @@ Assertor.that(Arrays.asList("text")).not().hasSize(-1, "Bad status").orElseThrow
 Assert that iterable is empty or null.
 
 * Signatures:
-	- isEmpty()
-	- isEmpty(CharSequence message, Object[] arguments)
-	- isEmpty(Locale locale, CharSequence message, Object[] arguments)
+	- `isEmpty()`
+	- `isEmpty(CharSequence message, Object[] arguments)`
+	- `isEmpty(Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites: None
 
@@ -2167,9 +2132,9 @@ Assertor.that(Arrays.asList("text")).not().isEmpty("Param '%1$s*' not empty").or
 Assert that iterable is NOT empty or null.
 
 * Signatures:
-	- isNotEmpty()
-	- isNotEmpty(CharSequence message, Object[] arguments)
-	- isNotEmpty(Locale locale, CharSequence message, Object[] arguments)
+	- `isNotEmpty()`
+	- `isNotEmpty(CharSequence message, Object[] arguments)`
+	- `isNotEmpty(Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites: None
 
@@ -2185,9 +2150,9 @@ Assertor.that(Arrays.asList("text")).not().isNotEmpty("Param '%1$s*' not empty")
 Assert that iterable contains the element.
 
 * Signatures:
-	- contains(T element)
-	- contains(T element, CharSequence message, Object[] arguments)
-	- contains(T element, Locale locale, CharSequence message, Object[] arguments)
+	- `contains(T element)`
+	- `contains(T element, CharSequence message, Object[] arguments)`
+	- `contains(T element, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- iterable NOT null and NOT empty
@@ -2208,9 +2173,9 @@ Assertor.that(Collections.emptySet()).not().contains(null, "Param '%1$s*' not nu
 Assert that iterable contains all elements.
 
 * Signatures:
-	- containsAll(Iterable<T> elements)
-	- containsAll(Iterable<T> elements, CharSequence message, Object[] arguments)
-	- containsAll(Iterable<T> elements, Locale locale, CharSequence message, Object[] arguments)
+	- `containsAll(Iterable<T> elements)`
+	- `containsAll(Iterable<T> elements, CharSequence message, Object[] arguments)`
+	- `containsAll(Iterable<T> elements, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- iterable NOT null and NOT empty
@@ -2237,9 +2202,9 @@ Assertor.that(Arrays.asList("text")).not().containsAll(Collections.emptySet(), "
 Assert that iterable contains any elements.
 
 * Signatures:
-	- containsAny(Iterable<T> elements)
-	- containsAny(Iterable<T> elements, CharSequence message, Object[] arguments)
-	- containsAny(Iterable<T> elements, Locale locale, CharSequence message, Object[] arguments)
+	- `containsAny(Iterable<T> elements)`
+	- `containsAny(Iterable<T> elements, CharSequence message, Object[] arguments)`
+	- `containsAny(Iterable<T> elements, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- iterable NOT null and NOT empty
@@ -2267,9 +2232,9 @@ Assertor.that(Arrays.asList("text")).not().containsAny(Collections.emptySet(), "
 Assert that map has the specified size.
 
 * Signatures:
-	- hasSize(int size)
-	- hasSize(int size, CharSequence message, Object[] arguments)
-	- hasSize(int size, Locale locale, CharSequence message, Object[] arguments)
+	- `hasSize(int size)`
+	- `hasSize(int size, CharSequence message, Object[] arguments)`
+	- `hasSize(int size, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- map NOT null
@@ -2292,9 +2257,9 @@ Assertor.that(MapUtils2.newHashMap("key", "value")).not().hasSize(-1, "Bad statu
 Assert that map is empty or null.
 
 * Signatures:
-	- isEmpty()
-	- isEmpty(CharSequence message, Object[] arguments)
-	- isEmpty(Locale locale, CharSequence message, Object[] arguments)
+	- `isEmpty()`
+	- `isEmpty(CharSequence message, Object[] arguments)`
+	- `isEmpty(Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites: None
 
@@ -2310,9 +2275,9 @@ Assertor.that(MapUtils2.newHashMap("key", "value")).not().isEmpty("Param '%1$s*'
 Assert that map is NOT empty or null.
 
 * Signatures:
-	- isNotEmpty()
-	- isNotEmpty(CharSequence message, Object[] arguments)
-	- isNotEmpty(Locale locale, CharSequence message, Object[] arguments)
+	- `isNotEmpty()`
+	- `isNotEmpty(CharSequence message, Object[] arguments)`
+	- `isNotEmpty(Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites: None
 
@@ -2328,12 +2293,12 @@ Assertor.that(MapUtils2.newHashMap("key", "value")).not().isNotEmpty("Param '%1$
 Assert that map contains the element.
 
 * Signatures:
-	- contains(K key)
-	- contains(K key, CharSequence message, Object[] arguments)
-	- contains(K key, Locale locale, CharSequence message, Object[] arguments)
-	- contains(K key, V value)
-	- contains(K key, V value, CharSequence message, Object[] arguments)
-	- contains(K key, V value, Locale locale, CharSequence message, Object[] arguments)
+	- `contains(K key)`
+	- `contains(K key, CharSequence message, Object[] arguments)`
+	- `contains(K key, Locale locale, CharSequence message, Object[] arguments)`
+	- `contains(K key, V value)`
+	- `contains(K key, V value, CharSequence message, Object[] arguments)`
+	- `contains(K key, V value, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- map NOT null and NOT empty
@@ -2357,12 +2322,12 @@ Assertor.that(Collections.emptyMap()).not().contains(null, "Param '%1$s*' not nu
 Assert that iterable contains all elements.
 
 * Signatures:
-	- containsAll(Iterable<K> keys)
-	- containsAll(Iterable<K> keys, CharSequence message, Object[] arguments)
-	- containsAll(Iterable<K> keys, Locale locale, CharSequence message, Object[] arguments)
-	- containsAll(Map<K, V> map)
-	- containsAll(Map<K, V> map, CharSequence message, Object[] arguments)
-	- containsAll(Map<K, V> map, Locale locale, CharSequence message, Object[] arguments)
+	- `containsAll(Iterable<K> keys)`
+	- `containsAll(Iterable<K> keys, CharSequence message, Object[] arguments)`
+	- `containsAll(Iterable<K> keys, Locale locale, CharSequence message, Object[] arguments)`
+	- `containsAll(Map<K, V> map)`
+	- `containsAll(Map<K, V> map, CharSequence message, Object[] arguments)`
+	- `containsAll(Map<K, V> map, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- map NOT null and NOT empty
@@ -2387,12 +2352,12 @@ Assertor.that(MapUtils2.newHashMap("key1", "value1")).not().containsAll((Map<Str
 Assert that iterable contains any elements.
 
 * Signatures:
-	- containsAny(Iterable<K> keys)
-	- containsAny(Iterable<K> keys, CharSequence message, Object[] arguments)
-	- containsAny(Iterable<K> keys, Locale locale, CharSequence message, Object[] arguments)
-	- containsAny(Map<K, V> map)
-	- containsAny(Map<K, V> map, CharSequence message, Object[] arguments)
-	- containsAny(Map<K, V> map, Locale locale, CharSequence message, Object[] arguments)
+	- `containsAny(Iterable<K> keys)`
+	- `containsAny(Iterable<K> keys, CharSequence message, Object[] arguments)`
+	- `containsAny(Iterable<K> keys, Locale locale, CharSequence message, Object[] arguments)`
+	- `containsAny(Map<K, V> map)`
+	- `containsAny(Map<K, V> map, CharSequence message, Object[] arguments)`
+	- `containsAny(Map<K, V> map, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- map NOT null and NOT empty
@@ -2419,9 +2384,9 @@ Assertor.that(MapUtils2.newHashMap("key1", "value1")).not().containsAny((Map<Str
 Assert that numbers are equal.
 
 * Signatures:
-	- isEqual(N number)
-	- isEqual(N number, CharSequence message, Object[] arguments)
-	- isEqual(N number, Locale locale, CharSequence message, Object[] arguments)
+	- `isEqual(N number)`
+	- `isEqual(N number, CharSequence message, Object[] arguments)`
+	- `isEqual(N number, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites: none
 
@@ -2439,9 +2404,9 @@ Assertor.that(-12).not().isEqual(1).orElseThrow(); // -> OK
 Assert that numbers are NOT equal.
 
 * Signatures:
-	- isNotEqual(N number)
-	- isNotEqual(N number, CharSequence message, Object[] arguments)
-	- isNotEqual(N number, Locale locale, CharSequence message, Object[] arguments)
+	- `isNotEqual(N number)`
+	- `isNotEqual(N number, CharSequence message, Object[] arguments)`
+	- `isNotEqual(N number, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites: none
 
@@ -2459,9 +2424,9 @@ Assertor.that(-12).not().isNotEqual(1).orElseThrow(); // -> throws an exception
 Assert that number equals zero.
 
 * Signatures:
-	- isZero()
-	- isZero(CharSequence message, Object[] arguments)
-	- isZero(Locale locale, CharSequence message, Object[] arguments)
+	- `isZero()`
+	- `isZero(CharSequence message, Object[] arguments)`
+	- `isZero(Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites: none
 
@@ -2478,9 +2443,9 @@ Assertor.that(-12).not().isZero().orElseThrow(); // -> throws an exception
 Assert that number is positive.
 
 * Signatures:
-	- isPositive()
-	- isPositive(CharSequence message, Object[] arguments)
-	- isPositive(Locale locale, CharSequence message, Object[] arguments)
+	- `isPositive()`
+	- `isPositive(CharSequence message, Object[] arguments)`
+	- `isPositive(Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites: none
 
@@ -2497,9 +2462,9 @@ Assertor.that(-12).not().isPositive().orElseThrow(); // -> OK
 Assert that number is negative.
 
 * Signatures:
-	- isNegative()
-	- isNegative(CharSequence message, Object[] arguments)
-	- isNegative(Locale locale, CharSequence message, Object[] arguments)
+	- `isNegative()`
+	- `isNegative(CharSequence message, Object[] arguments)`
+	- `isNegative(Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites: none
 
@@ -2516,9 +2481,9 @@ Assertor.that(12).not().isNegative().orElseThrow(); // -> OK
 Assert that number is greater than specified number.
 
 * Signatures:
-	- isGT(Number number)
-	- isGT(Number number, CharSequence message, Object[] arguments)
-	- isGT(Number number, Locale locale, CharSequence message, Object[] arguments)
+	- `isGT(Number number)`
+	- `isGT(Number number, CharSequence message, Object[] arguments)`
+	- `isGT(Number number, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- both number NOT null
@@ -2540,9 +2505,9 @@ Assertor.that(12).not().isGT(null).orElseThrow(); // -> throws an exception
 Assert that number is greater than or equal to specified number.
 
 * Signatures:
-	- isGTE(Number number)
-	- isGTE(Number number, CharSequence message, Object[] arguments)
-	- isGTE(Number number, Locale locale, CharSequence message, Object[] arguments)
+	- `isGTE(Number number)`
+	- `isGTE(Number number, CharSequence message, Object[] arguments)`
+	- `isGTE(Number number, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- both number NOT null
@@ -2565,9 +2530,9 @@ Assertor.that(12).not().isGTE(null).orElseThrow(); // -> throws an exception
 Assert that number is lower than specified number.
 
 * Signatures:
-	- isLT(Number number)
-	- isLT(Number number, CharSequence message, Object[] arguments)
-	- isLT(Number number, Locale locale, CharSequence message, Object[] arguments)
+	- `isLT(Number number)`
+	- `isLT(Number number, CharSequence message, Object[] arguments)`
+	- `isLT(Number number, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- both number NOT null
@@ -2589,9 +2554,9 @@ Assertor.that(12).not().isLT(null).orElseThrow(); // -> throws an exception
 Assert that number is lower than or equal to specified number.
 
 * Signatures:
-	- isLTE(Number number)
-	- isLTE(Number number, CharSequence message, Object[] arguments)
-	- isLTE(Number number, Locale locale, CharSequence message, Object[] arguments)
+	- `isLTE(Number number)`
+	- `isLTE(Number number, CharSequence message, Object[] arguments)`
+	- `isLTE(Number number, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- both number NOT null
@@ -2614,12 +2579,12 @@ Assertor.that(12).not().isLTE(null).orElseThrow(); // -> throws an exception
 #### isAssignableFrom
 Assert that throwable is assignable from clazz and has the specified message or matches the pattern.
 * Signatures:
-	- isAssignableFrom(Class<?> clazz, CharSequence throwableMessage)
-	- isAssignableFrom(Class<?> clazz, CharSequence throwableMessage, CharSequence message, Object[] arguments)
-	- isAssignableFrom(Class<?> clazz, CharSequence throwableMessage, Locale locale, CharSequence message, Object[] arguments)
-	- isAssignableFrom(Class<?> clazz, Pattern pattern)
-	- isAssignableFrom(Class<?> clazz, Pattern pattern, CharSequence message, Object[] arguments)
-	- isAssignableFrom(Class<?> clazz, Pattern pattern, Locale locale, CharSequence message, Object[] arguments)
+	- `isAssignableFrom(Class<?> clazz, CharSequence throwableMessage)`
+	- `isAssignableFrom(Class<?> clazz, CharSequence throwableMessage, CharSequence message, Object[] arguments)`
+	- `isAssignableFrom(Class<?> clazz, CharSequence throwableMessage, Locale locale, CharSequence message, Object[] arguments)`
+	- `isAssignableFrom(Class<?> clazz, Pattern pattern)`
+	- `isAssignableFrom(Class<?> clazz, Pattern pattern, CharSequence message, Object[] arguments)`
+	- `isAssignableFrom(Class<?> clazz, Pattern pattern, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- throwable NOT null
@@ -2651,12 +2616,12 @@ Assertor.that(new Exception("error")).isAssignableFrom(Exception.class, (Pattern
 #### isInstanceOf
 Assert that throwable is an instance of object and has the specified message or matches the pattern.
 * Signatures:
-	- isInstanceOf(Class<?> clazz, CharSequence throwableMessage)
-	- isInstanceOf(Class<?> clazz, CharSequence throwableMessage, CharSequence message, Object[] arguments)
-	- isInstanceOf(Class<?> clazz, CharSequence throwableMessage, Locale locale, CharSequence message, Object[] arguments)
-	- isInstanceOf(Class<?> clazz, Pattern pattern)
-	- isInstanceOf(Class<?> clazz, Pattern pattern, CharSequence message, Object[] arguments)
-	- isInstanceOf(Class<?> clazz, Pattern pattern, Locale locale, CharSequence message, Object[] arguments)
+	- `isInstanceOf(Class<?> clazz, CharSequence throwableMessage)`
+	- `isInstanceOf(Class<?> clazz, CharSequence throwableMessage, CharSequence message, Object[] arguments)`
+	- `isInstanceOf(Class<?> clazz, CharSequence throwableMessage, Locale locale, CharSequence message, Object[] arguments)`
+	- `isInstanceOf(Class<?> clazz, Pattern pattern)`
+	- `isInstanceOf(Class<?> clazz, Pattern pattern, CharSequence message, Object[] arguments)`
+	- `isInstanceOf(Class<?> clazz, Pattern pattern, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- throwable NOT null
@@ -2688,9 +2653,9 @@ Assertor.that(new Exception("error")).isInstanceOf(Exception.class, (Pattern) nu
 #### hasCauseNull
 Assert that throwable has a cause.
 * Signatures:
-	- hasCauseNull()
-	- hasCauseNull(CharSequence message, Object[] arguments)
-	- hasCauseNull(Locale locale, CharSequence message, Object[] arguments)
+	- `hasCauseNull()`
+	- `hasCauseNull(CharSequence message, Object[] arguments)`
+	- `hasCauseNull(Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- throwable NOT null
@@ -2707,9 +2672,9 @@ Assertor.that((Exception) null).hasCauseNull().orElseThrow(); // -> throws an ex
 #### hasCauseNotNull
 Assert that throwable has no cause.
 * Signatures:
-	- hasCauseNotNull()
-	- hasCauseNotNull(CharSequence message, Object[] arguments)
-	- hasCauseNotNull(Locale locale, CharSequence message, Object[] arguments)
+	- `hasCauseNotNull()`
+	- `hasCauseNotNull(CharSequence message, Object[] arguments)`
+	- `hasCauseNotNull(Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- throwable NOT null
@@ -2727,12 +2692,12 @@ Assertor.that((Exception) null).hasCauseNotNull().orElseThrow(); // -> throws an
 Assert that throwable is assignable from clazz and has the specified message.
 If recursively is set to true, the cause of exception are checked recursively until cause matches.
 * Signatures:
-	- hasCauseAssignableFrom(Class<?> clazz, CharSequence throwableMessage, boolean recursively)
-	- hasCauseAssignableFrom(Class<?> clazz, CharSequence throwableMessage, boolean recursively, CharSequence message, Object[] arguments)
-	- hasCauseAssignableFrom(Class<?> clazz, CharSequence throwableMessage, boolean recursively, Locale locale, CharSequence message, Object[] arguments)
-	- hasCauseAssignableFrom(Class<?> clazz, Pattern pattern, boolean recursively)
-	- hasCauseAssignableFrom(Class<?> clazz, Pattern pattern, boolean recursively, CharSequence message, Object[] arguments)
-	- hasCauseAssignableFrom(Class<?> clazz, Pattern pattern, boolean recursively, Locale locale, CharSequence message, Object[] arguments)
+	- `hasCauseAssignableFrom(Class<?> clazz, CharSequence throwableMessage, boolean recursively)`
+	- `hasCauseAssignableFrom(Class<?> clazz, CharSequence throwableMessage, boolean recursively, CharSequence message, Object[] arguments)`
+	- `hasCauseAssignableFrom(Class<?> clazz, CharSequence throwableMessage, boolean recursively, Locale locale, CharSequence message, Object[] arguments)`
+	- `hasCauseAssignableFrom(Class<?> clazz, Pattern pattern, boolean recursively)`
+	- `hasCauseAssignableFrom(Class<?> clazz, Pattern pattern, boolean recursively, CharSequence message, Object[] arguments)`
+	- `hasCauseAssignableFrom(Class<?> clazz, Pattern pattern, boolean recursively, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- throwable NOT null
@@ -2767,12 +2732,12 @@ Assertor.that(new IOException()).hasCauseAssignableFrom(Exception.class, (Patter
 Assert that throwable is an instance of object and has the specified message.
 If recursively is set to true, the cause of exception are checked recursively until cause matches.
 * Signatures:
-	- hasCauseInstanceOf(Class<?> clazz, CharSequence throwableMessage, boolean recursively)
-	- hasCauseInstanceOf(Class<?> clazz, CharSequence throwableMessage, boolean recursively, CharSequence message, Object[] arguments)
-	- hasCauseInstanceOf(Class<?> clazz, CharSequence throwableMessage, boolean recursively, Locale locale, CharSequence message, Object[] arguments)
-	- hasCauseInstanceOf(Class<?> clazz, Pattern pattern, boolean recursively)
-	- hasCauseInstanceOf(Class<?> clazz, Pattern pattern, boolean recursively, CharSequence message, Object[] arguments)
-	- hasCauseInstanceOf(Class<?> clazz, Pattern pattern, boolean recursively, Locale locale, CharSequence message, Object[] arguments)
+	- `hasCauseInstanceOf(Class<?> clazz, CharSequence throwableMessage, boolean recursively)`
+	- `hasCauseInstanceOf(Class<?> clazz, CharSequence throwableMessage, boolean recursively, CharSequence message, Object[] arguments)`
+	- `hasCauseInstanceOf(Class<?> clazz, CharSequence throwableMessage, boolean recursively, Locale locale, CharSequence message, Object[] arguments)`
+	- `hasCauseInstanceOf(Class<?> clazz, Pattern pattern, boolean recursively)`
+	- `hasCauseInstanceOf(Class<?> clazz, Pattern pattern, boolean recursively, CharSequence message, Object[] arguments)`
+	- `hasCauseInstanceOf(Class<?> clazz, Pattern pattern, boolean recursively, Locale locale, CharSequence message, Object[] arguments)`
 
 * Prerequisites:
 	- throwable NOT null

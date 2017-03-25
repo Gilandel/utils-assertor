@@ -18,6 +18,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.awt.Color;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -29,6 +32,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import fr.landel.utils.commons.AsciiUtils;
 import fr.landel.utils.commons.DateUtils;
 
 /**
@@ -199,10 +203,10 @@ public class HelperMessageTest extends AbstractTest {
 
         byte[] authorized = new byte[] {32, 35};
 
-        for (int i = 0; i < 256; i++) {
+        for (int i = AsciiUtils.MIN; i <= AsciiUtils.MAX; i++) {
             String ch = String.valueOf((char) i);
             String format = HelperMessage.prepare("%" + ch, 0, 1).toString();
-            if ((i > 64 && i < 91) || (i > 96 && i < 123) || i == '%') {
+            if (AsciiUtils.IS_ALPHA.test(i) || i == '%') {
                 assertEquals("%1$" + ch, format);
             } else if (Arrays.binarySearch(authorized, (byte) i) == -1) {
                 assertNotEquals("%1$" + ch, format);
@@ -219,6 +223,8 @@ public class HelperMessageTest extends AbstractTest {
 
         final Date date1 = new Date(1464475553640L);
         final Calendar calendar1 = DateUtils.getCalendar(date1);
+        final LocalDateTime time = LocalDateTime.ofInstant(date1.toInstant(), ZoneId.systemDefault());
+        final IOException exception = new IOException("error");
         Integer[] integers = new Integer[] {12, 10};
         final List<String> texts = Arrays.asList("text1", "text2");
         final Map<String, String> map = new HashMap<>();
@@ -238,6 +244,8 @@ public class HelperMessageTest extends AbstractTest {
         parameters.add(new ParameterAssertor<>(map, EnumType.MAP));
         parameters.add(new ParameterAssertor<>(3.25f, EnumType.NUMBER_DECIMAL));
         parameters.add(new ParameterAssertor<>(12, EnumType.NUMBER_INTEGER));
+        parameters.add(new ParameterAssertor<>(exception, EnumType.THROWABLE));
+        parameters.add(new ParameterAssertor<>(time, EnumType.TEMPORAL));
         parameters.add(new ParameterAssertor<>(Color.BLACK, EnumType.UNKNOWN));
 
         Object[] convertedParams = HelperMessage.convertParams(parameters);
@@ -270,6 +278,10 @@ public class HelperMessageTest extends AbstractTest {
         assertEquals(3.25f, convertedParams[i]);
         i++;
         assertEquals(12, convertedParams[i]);
+        i++;
+        assertEquals(exception, convertedParams[i]);
+        i++;
+        assertEquals(time, convertedParams[i]);
         i++;
         assertEquals(Color.BLACK, convertedParams[i]);
     }
