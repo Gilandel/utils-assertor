@@ -14,6 +14,7 @@ package fr.landel.utils.assertor;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.awt.Color;
 import java.time.LocalDateTime;
@@ -289,6 +290,10 @@ public class PredicateStepOperatorTest extends AbstractTest {
     public void test() {
         // "true" and "OR" => true (collections preconditions are invalid, but
         // aren't checked because of previous check)
-        Assertor.that(true).isTrue().or(Collections.emptyList()).contains("test").orElseThrow(JUNIT_THROWABLE);
+        try {
+            Assertor.that(true).isTrue().or(Collections.emptyList()).contains("test").orElseThrow(JUNIT_THROWABLE);
+        } catch (AssertionError e) {
+            fail(e.getMessage());
+        }
     }
 }
