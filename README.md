@@ -5,6 +5,7 @@
 [![Dependency Status](https://www.versioneye.com/user/projects/58b29b6f7b9e15003a17e544/badge.svg?style=flat)](https://www.versioneye.com/user/projects/58b29b6f7b9e15003a17e544)
 [![codecov.io](https://codecov.io/github/Gilandel/utils-assertor/coverage.svg?branch=master)](https://codecov.io/github/Gilandel/utils-assertor?branch=master)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/fr.landel.utils/utils-assertor/badge.svg)](https://maven-badges.herokuapp.com/maven-central/fr.landel.utils/utils-assertor)
+[![Javadocs](http://www.javadoc.io/badge/fr.landel.utils/utils-assertor.svg)](http://www.javadoc.io/doc/fr.landel.utils/utils-assertor)
 
 [![Tokei LoC](https://tokei.rs/b1/github/Gilandel/utils-assertor)](https://github.com/Aaronepower/tokei)
 [![Tokei NoFiles](https://tokei.rs/b1/github/Gilandel/utils-assertor?category=files)](https://github.com/Aaronepower/tokei)
@@ -2774,4 +2775,4 @@ Assertor.that(new IOException()).hasCauseInstanceOf(Exception.class, (Pattern) n
 - Build all messages in one step at the end only if all message locales are same
 
 ## License
-See [main project license](https://github.com/Gilandel/utils/LICENSE): Apache License, version 2.0
+Apache License, version 2.0
