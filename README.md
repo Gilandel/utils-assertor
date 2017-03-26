@@ -264,13 +264,13 @@ The Assertor has two types of steps:
 Each step generates a lambda expression, that is sent to the next one (steps are saved in StepAssertor object).
 
 This chain can be represented like this:  
-`(init) -> (check) -> (intermediate) -> (check) -> (intermediate) -> (check) -> (end)`
+`(init) -> (check) -> (intermediate) -> ... -> (check) -> (intermediate) -> (check) -> (end)`
 
-The 'init' step always start with `Assertor.that()`. The 'end' step as multiple outputs (see [Output details](#output-details)).
+The 'init' step always start with `Assertor.that()`. The 'end' step has multiple outputs (see [Output details](#output-details)).
 
 As always, there is an exception, two intermediate steps can be side by side if a `not()` is applied.
 
-At the end each steps (StepAssertor) are checked and combined (before this step nothing is done, except the appending).
+At the end each steps (StepAssertor) are checked and combined (before this final step, nothing is done, except the appending).
  
 If the step has preconditions, they are validated, if they are OK, checks are done, otherwise the chain combining is stopped.  
 `Assertor.that("text").contains("t").orElseThrow();`  
