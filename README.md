@@ -204,7 +204,7 @@ In each method, that manages intermediate errors (isBlank, contains...) or final
 The locale can be used to manage number and date (see [String.format](http://docs.oracle.com/javase/8/docs/api/java/util/Formatter.html)).
 
 Disambiguation:
-- Parameters means: all the variables and parameters used to check the variables.  
+- Parameters means: all objects used to check the variables.  
 `Assertor.that(variable1).contains(parameter1).and(variable2).hasName(parameter2).orElseThrow()`
 - Arguments means: the message arguments.  
 `Assertor.that(variable1).contains(parameter1, myErrorMessage, argument1, argument2).orElseThrow()`
