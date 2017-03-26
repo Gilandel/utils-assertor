@@ -34,6 +34,7 @@ Work progress:
 1. [Description](#description)
    1. [Structure](#structure)
    1. [Message (locale, arguments and parameters)](#message-locale-arguments-and-parameters)
+   1. [Behind the scene (how it works?)](#behind-the-scene-how-it-works)
 1. [Output details](#output-details)
    1. [orElseThrow](#orelsethrow)
    1. [isOK](#isok)
@@ -208,8 +209,6 @@ Disambiguation:
 - Arguments means: the message arguments.  
 `Assertor.that(variable1).contains(parameter1, myErrorMessage, argument1, argument2).orElseThrow()`
 
-Parameters and arguments can also be injected.
-
 ```java
 String text = "text";
 // ...
@@ -220,7 +219,7 @@ Assertor.that(text).hasLength(5, "Bad length: '%1$d', expected: '%2$d*', text: '
 // Message thrown -> "Bad length '4', expected: '5', text: 'text'"
 ```
 
-As the previous example demonstrates it, the syntax is exactly the same as default [String.format](http://docs.oracle.com/javase/8/docs/api/java/util/Formatter.html) arguments, just suffix it by the character asterisk/star '*' to inject a parameter/variable.
+As the previous example demonstrates it, in message, variables, parameters and arguments can be injected. The syntax is exactly the same as default [String.format](http://docs.oracle.com/javase/8/docs/api/java/util/Formatter.html) arguments, just suffix it by the character asterisk/star '*' to inject a parameter/variable.
 
 The message builder works in two different ways, following the context:
 - in intermediate methods (ex: `.isBlank()`), only current checked parameter and the method variables can be injected,
@@ -239,8 +238,8 @@ Assertor.that(Math.PI).isLT(1d, Locale.US, "'%1$.3f*' isn't lower than '%2$f*'")
 
 // -> throws "'3.142' isn't lower than '1.000000' OR '2,718' isn't lower than '2,000000'"
 // first error use Locale.US and second one Locale.FRANCE
-// the second error can see current parameter (Math.E) as first injectable and the method variable (2d) as second injectable 
-// but can't see the first parameter and first method variables (1d)
+// the second error can see current variale (Math.E) as first injectable and the method parameter (2d) as second injectable 
+// but can't see the first variable (Math.PI) and first method parameter (1d)
 
 Assertor.that(Math.PI).isLT(1d)
 	.or(Math.E).isLT(2d)
@@ -253,8 +252,59 @@ Assertor.that(Math.PI).isLT(1d)
 	.orElseThrow(Locale.FRANCE, "'%1$.3f*' isn't lower than '%2$f*' OR '%3$.3f*' isn't lower than '%4$f*'");
 
 // -> throws "'3,142' isn't lower than '1,000000' OR '2,718' isn't lower than '2,000000'"
-// final methods can see all parameters (Math.PI, Math.E) and variables (1d, 2d)
+// final methods can see all variables (Math.PI, Math.E) and parameters (1d, 2d)
 ```
+
+### Behind the scene (how it works?)
+
+The Assertor has two types of steps:
+- Check step: where variables are checked,
+- Intermediate step: where operator or final method can be called.
+
+Each step generates a lambda expression, that is sent to the next one (steps are saved in StepAssertor object).
+
+This chain can be represented like this:  
+`(init) -> (check) -> (intermediate) -> (check) -> (intermediate) -> (check) -> (end)`
+
+The 'init' step always start with `Assertor.that()`.
+The 'end' step as multiple outputs (see [Output details](#output-details)).
+
+As always, there is an exception, two intermediate steps can be side by side if a `not()` is applied.
+
+At the end each steps (StepAssertor) are checked and combined (before this step nothing is done, except the appending).
+ 
+If the step has preconditions, they are validated, if they are OK, checks are done, otherwise the chain combining is stopped.  
+`Assertor.that("text").contains("t").orElseThrow();`  
+For example, `contains("t")` requires that "text" is not null and "t" is not null and not empty.  
+If preconditions are valid, it searches if "text" contains "t".
+
+If a precondition doesn't match, all the chain is considered in error.  
+This can be avoided; here 'contains' preconditions never failed:  
+`Assertor.that(text).isEmpty().or().contains(word).orElseThrow();`  
+`Assertor.that(text).isNotEmpty().and().contains(word).orElseThrow();`  
+
+The combining tries to avoid unnecessary checks, analysis is prematurely stopped in this cases:
+- if first check is 'true' followed by the operator 'OR' -> OK
+- if first check is 'false' followed by the operator 'NOR' -> OK
+- if first check is 'false' followed by the operator 'AND' -> KO
+- if first check is 'true' followed by the operator 'NAND' -> KO
+
+Messages are only generated when it's required, if assertion is in error:
+- `orElseThrow()` -> generates the error message and throws it
+- `orElseThrow(CharSequence message, Object... arguments)` -> doesn't generate the error message, throws the provided one
+- `orElseThrow(Locale locale, CharSequence message, Object... arguments)` -> doesn't generate the error message, throws the provided one
+- `orElseThrow(Supplier<E> exceptionSupplier)` -> doesn't generate the error message, throws the provided one
+- `orElseThrow(E exception)` -> doesn't generate the error message, throws the provided one
+- `orElseThrow(E exception, boolean injectSuppressed)` -> generates the error message if 'injectSuppressed' is set to 'true'
+- `orElseThrow(BiFunction<CharSequence, Object[], E> exceptionBuilder)` -> generates the error message and inject it in the provided lambda
+- `isOK()` -> doesn't generate the error message, returns 'false'
+- `getErrors()` -> generates the error message
+- `get()` -> doesn't generate the error message, returns the checked variable as an 'Optional'
+- `getNullable()` -> doesn't generate the error message, returns the checked variable
+- `asResult()` -> doesn't generate the error message, returns the checked variable as a 'Result'
+- `asDefault(T defaultValue)` -> doesn't generate the error message, returns the checked variable as a 'Default'
+
+For now, each message is formatted independently to respect 'Locale'.
 
 ## Output details
 
