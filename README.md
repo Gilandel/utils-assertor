@@ -349,7 +349,7 @@ Assertor.that("").isNotBlank().orElseThrow(Locale.FRANCE, "Invalid field (%.2fms
 Assertor.that("").isNotBlank("The first name is invalid").orElseThrow(Locale.FRANCE, "Invalid field (%.2fms)", 2.356); // -> throws the personalized message 'Invalid field (2,36ms)'
 
 Assertor.that("").isNotBlank().orElseThrow(new IOException("Invalid data"), false); // -> throws the personalized exception
-Assertor.that("").isNotBlank(The first name is invalid").orElseThrow(new IOException("Invalid data"), true); // -> throws the personalized exception
+Assertor.that("").isNotBlank("The first name is invalid").orElseThrow(new IOException("Invalid data"), true); // -> throws the personalized exception
 
 Assertor.that("").isNotBlank().orElseThrow(() -> new IOException("Invalid data")); // -> throws the personalized exception
 Assertor.that("").isNotBlank("The first name is invalid").orElseThrow(IOException::new); // -> throws the personalized exception
