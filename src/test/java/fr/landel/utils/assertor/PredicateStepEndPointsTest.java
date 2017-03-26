@@ -90,15 +90,19 @@ public class PredicateStepEndPointsTest extends AbstractTest {
         // multiple locales
 
         PredicateStepNumber<Double> p3 = Assertor.that(Math.PI).isLT(1d, Locale.US, "'%.3f*' isn't lower than '%f*'");
-        PredicateStepNumber<Double> p4 = p3.or().isLT(2d, Locale.FRANCE, "'%.3f*' isn't lower than '%f*'");
+        PredicateStepNumber<Double> p4 = p3.or(Math.E).isLT(2d, Locale.FRANCE, "'%.3f*' isn't lower than '%f*'");
 
         assertFalse(p3.isOK());
         assertFalse(p4.isOK());
 
         assertTrue(p4.getErrors().isPresent());
-        assertEquals("'3.142' isn't lower than '1.000000' OR '3,142' isn't lower than '2,000000'", p4.getErrors().get());
+        assertEquals("'3.142' isn't lower than '1.000000' OR '2,718' isn't lower than '2,000000'", p4.getErrors().get());
         assertTrue(p3.getErrors().isPresent());
         assertEquals("'3.142' isn't lower than '1.000000'", p3.getErrors().get());
+
+        assertException(() -> {
+            p4.orElseThrow(Locale.FRANCE, "'%.3f*' isn't lower than '%f*' OR '%.3f*' isn't lower than '%f*'");
+        }, IllegalArgumentException.class, "'3,142' isn't lower than '1,000000' OR '2,718' isn't lower than '2,000000'");
     }
 
     /**

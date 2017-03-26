@@ -188,7 +188,7 @@ Assertor.that(object1).isNull().or().not().isInstance(Color.class).or(object2).i
 
 Multiple outputs are available:
 - orElseThrow: throws an exception if assertion is false, otherwise returns the last checked parameter,
-- isOk: get the boolean result of the assertion,
+- isOK: get the boolean result of the assertion,
 - getErrors: get the error message (java.util.Optional),
 - get: the result (java.util.Optional),
 - getNullable: the result,
@@ -203,8 +203,8 @@ In each method, that manages intermediate errors (isBlank, contains...) or final
 The locale can be used to manage number and date (see [String.format](http://docs.oracle.com/javase/8/docs/api/java/util/Formatter.html)).
 
 Parameters and arguments can also be injected.
-Parameters: All the variables and parameters used to check the variables. `Assertor.that(variable1).contains(parameter1).and(variable2).hasName(parameter2).orElseThrow()`
-Arguments: the message arguments. `Assertor.that(variable1).contains(parameter1, myErrorMessage, argument1, argument2).orElseThrow()`
+- Parameters means: All the variables and parameters used to check the variables. `Assertor.that(variable1).contains(parameter1).and(variable2).hasName(parameter2).orElseThrow()`
+- Arguments means: the message arguments. `Assertor.that(variable1).contains(parameter1, myErrorMessage, argument1, argument2).orElseThrow()`
 ```java
 String text = "text";
 ...
@@ -212,16 +212,49 @@ Assertor.that(text).hasLength(5, "Bad length: '%1$d', expected: '%2$d*', text: '
 // "text" is the first parameter
 // 5 is the second parameter
 // 4 is the first argument
-// Message thrown -> "Bad length '4' expected '5' for word 'text'"
+// Message thrown -> "Bad length '4', expected: '5', text: 'text'"
 ```
 
-As the previous example demonstrates it, parameters can be injected.
-The syntax is exactly the same as default [String.format](http://docs.oracle.com/javase/8/docs/api/java/util/Formatter.html) arguments, just suffix it by the character asterisk/star '*'.
+As the previous example demonstrates it, the syntax is exactly the same as default [String.format](http://docs.oracle.com/javase/8/docs/api/java/util/Formatter.html) arguments, just suffix it by the character asterisk/star '*' to inject a parameter/variable.
+
+The message builder works in two different ways, following the context:
+- in intermediate methods (ex: `.isBlank()`), only current checked parameter and the method variables can be injected,
+- in final methods (ex: `.orElseThrow()`), all parameters and variables can be injected.
+
+```
+Assertor.that(Math.PI).isLT(1d, Locale.US, "'%.3f*' isn't lower than '%f*'")
+	.or(Math.E).isLT(2d, Locale.FRANCE, "'%.3f*' isn't lower than '%f*'")
+	.orElseThrow();
+	
+// same with indexes
+
+Assertor.that(Math.PI).isLT(1d, Locale.US, "'%1$.3f*' isn't lower than '%2$f*'")
+	.or(Math.E).isLT(2d, Locale.FRANCE, "'%1$.3f*' isn't lower than '%2$f*'")
+	.orElseThrow();
+
+// -> throws "'3.142' isn't lower than '1.000000' OR '2,718' isn't lower than '2,000000'"
+// first error use Locale.US and second one Locale.FRANCE
+// the second error can see current parameter (Math.E) as first injectable and the method variable (2d) as second injectable 
+// but can't see the first parameter and first method variables (1d)
+
+Assertor.that(Math.PI).isLT(1d)
+	.or(Math.E).isLT(2d)
+	.orElseThrow(Locale.FRANCE, "'%.3f*' isn't lower than '%f*' OR '%.3f*' isn't lower than '%f*'");
+	
+// same with indexes
+
+Assertor.that(Math.PI).isLT(1d)
+	.or(Math.E).isLT(2d)
+	.orElseThrow(Locale.FRANCE, "'%1$.3f*' isn't lower than '%2$f*' OR '%3$.3f*' isn't lower than '%4$f*'");
+
+// -> throws "'3,142' isn't lower than '1,000000' OR '2,718' isn't lower than '2,000000'"
+// final methods can see all parameters (Math.PI, Math.E) and variables (1d, 2d)
+```
 
 ## Output details
 
 ### orElseThrow
-Throw an exception if the assertion is false, otherwise returns the last checked value.
+Throws an exception if the assertion is false, otherwise returns the last checked value.
 Multiple ways to personalize the exception are provided:
 - a message:
 	The message can be personalized via arguments injection and locale.
@@ -242,8 +275,10 @@ Multiple ways to personalize the exception are provided:
 	- `orElseThrow(Locale locale, CharSequence message, Object... arguments)`
 	- `orElseThrow(Supplier<E> exceptionSupplier)`
 	- `orElseThrow(E exception)` // not supported by JDK 1.8.0_121 [Issue JDK-8175535](http://bugs.java.com/bugdatabase/view_bug.do?bug_id=JDK-8175535)
- 	- `orElseThrow(E exception, boolean injectSuppressed)`
+ 	- `orElseThrow(E exception, boolean injectSuppressed)` // if true the internal error is generated and added as suppressed to the given exception
 	- `orElseThrow(BiFunction<CharSequence, Object[], E> exceptionBuilder)`
+		- 1st bi-function argument: the default error message,
+		- 2nd bi-function argument: the list of parameters and variables used (for each, returns: the object, its type (if recognized) and if it's checked (true = parameter, false = variable))
 
 * Examples:
 ```java
@@ -263,7 +298,7 @@ Assertor.that("").isNotBlank().orElseThrow(new IOException("Invalid data"), fals
 Assertor.that("").isNotBlank(The first name is invalid").orElseThrow(new IOException("Invalid data"), true); -> throws the personalized exception
 
 Assertor.that("").isNotBlank().orElseThrow(() -> new IOException("Invalid data")); // -> throws the personalized exception
-Assertor.that("").isNotBlank(The first name is invalid").orElseThrow(IOException::new); -> throws the personalized exception
+Assertor.that("").isNotBlank("The first name is invalid").orElseThrow(IOException::new); -> throws the personalized exception
 
 Assertor.that("text").isBlank().orElseThrow((errors, parameters) -> new MyException("text should be blank")); // -> throws a MyException with message: text should be blank
 // 'errors' contains: the char sequence 'text' should be null, empty or blank
