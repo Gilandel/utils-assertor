@@ -373,8 +373,8 @@ This method returns 'true' if the assertion is valid, otherwise returns 'false'.
 
 * Examples:
 ```java
-	Assertor.that("").isNotBlank().isOK(); // -> return false
-	Assertor.that("").isBlank("The first name is invalid").isOK(); // -> return true
+Assertor.that("").isNotBlank().isOK(); // -> return false
+Assertor.that("").isBlank("The first name is invalid").isOK(); // -> return true
 ```
 
 ### getErrors
