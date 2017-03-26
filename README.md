@@ -225,7 +225,7 @@ The message builder works in two different ways, following the context:
 - in intermediate methods (ex: `.isBlank()`), only current checked parameter and the method variables can be injected,
 - in final methods (ex: `.orElseThrow()`), all parameters and variables can be injected.
 
-```
+```java
 Assertor.that(Math.PI).isLT(1d, Locale.US, "'%.3f*' isn't lower than '%f*'")
 	.or(Math.E).isLT(2d, Locale.FRANCE, "'%.3f*' isn't lower than '%f*'")
 	.orElseThrow();
