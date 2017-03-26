@@ -349,16 +349,16 @@ Assertor.that("").isNotBlank().orElseThrow(Locale.FRANCE, "Invalid field (%.2fms
 Assertor.that("").isNotBlank("The first name is invalid").orElseThrow(Locale.FRANCE, "Invalid field (%.2fms)", 2.356); // -> throws the personalized message 'Invalid field (2,36ms)'
 
 Assertor.that("").isNotBlank().orElseThrow(new IOException("Invalid data"), false); // -> throws the personalized exception
-Assertor.that("").isNotBlank(The first name is invalid").orElseThrow(new IOException("Invalid data"), true); -> throws the personalized exception
+Assertor.that("").isNotBlank(The first name is invalid").orElseThrow(new IOException("Invalid data"), true); // -> throws the personalized exception
 
 Assertor.that("").isNotBlank().orElseThrow(() -> new IOException("Invalid data")); // -> throws the personalized exception
-Assertor.that("").isNotBlank("The first name is invalid").orElseThrow(IOException::new); -> throws the personalized exception
+Assertor.that("").isNotBlank("The first name is invalid").orElseThrow(IOException::new); // -> throws the personalized exception
 
 Assertor.that("text").isBlank().orElseThrow((errors, parameters) -> new MyException("text should be blank")); // -> throws a MyException with message: text should be blank
 // 'errors' contains: the char sequence 'text' should be null, empty or blank
 // 'parameters' contains: [{"text", EnumType.CHAR_SEQUENCE}]
 
-Assertor.that("texte11").isBlank().or("texte12").not().startsWith("text").or().isBlank().orElseThrow((errors, parameters) -> new MyException(errors)); // -> throw a MyException
+Assertor.that("texte11").isBlank().or("texte12").not().startsWith("text").or().isBlank().orElseThrow((errors, parameters) -> new MyException(errors)); // -> throws a MyException
 // 'errors' contains: the char sequence 'texte11' should be null, empty or blank OR the char sequence 'texte12' should NOT start with 'text'" OR the char sequence 'texte12' should be null, empty or blank
 // 'parameters' contains: [{"texte11", EnumType.CHAR_SEQUENCE}, {"texte12", EnumType.CHAR_SEQUENCE}, {"text", EnumType.CHAR_SEQUENCE}]
 // to display the first parameter in MyException call: parameters.get(0).getKey()
