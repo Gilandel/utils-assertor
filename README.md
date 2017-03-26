@@ -202,12 +202,17 @@ These outputs methods are considerate as final.
 In each method, that manages intermediate errors (isBlank, contains...) or final errors (orElseThrow...), a locale can be specified.
 The locale can be used to manage number and date (see [String.format](http://docs.oracle.com/javase/8/docs/api/java/util/Formatter.html)).
 
+Disambiguation:
+- Parameters means: all the variables and parameters used to check the variables.  
+`Assertor.that(variable1).contains(parameter1).and(variable2).hasName(parameter2).orElseThrow()`
+- Arguments means: the message arguments.  
+`Assertor.that(variable1).contains(parameter1, myErrorMessage, argument1, argument2).orElseThrow()`
+
 Parameters and arguments can also be injected.
-- Parameters means: All the variables and parameters used to check the variables. `Assertor.that(variable1).contains(parameter1).and(variable2).hasName(parameter2).orElseThrow()`
-- Arguments means: the message arguments. `Assertor.that(variable1).contains(parameter1, myErrorMessage, argument1, argument2).orElseThrow()`
+
 ```java
 String text = "text";
-...
+// ...
 Assertor.that(text).hasLength(5, "Bad length: '%1$d', expected: '%2$d*', text: '%1$s*'", text.length()).getErrors();
 // "text" is the first parameter
 // 5 is the second parameter
