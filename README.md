@@ -266,8 +266,7 @@ Each step generates a lambda expression, that is sent to the next one (steps are
 This chain can be represented like this:  
 `(init) -> (check) -> (intermediate) -> (check) -> (intermediate) -> (check) -> (end)`
 
-The 'init' step always start with `Assertor.that()`.
-The 'end' step as multiple outputs (see [Output details](#output-details)).
+The 'init' step always start with `Assertor.that()`. The 'end' step as multiple outputs (see [Output details](#output-details)).
 
 As always, there is an exception, two intermediate steps can be side by side if a `not()` is applied.
 
@@ -283,7 +282,7 @@ This can be avoided; here 'contains' preconditions never failed:
 `Assertor.that(text).isEmpty().or().contains(word).orElseThrow();`  
 `Assertor.that(text).isNotEmpty().and().contains(word).orElseThrow();`  
 
-The combining tries to avoid unnecessary checks, analysis is prematurely stopped in this cases:
+The combining function tries to avoid unnecessary checks, analysis is prematurely stopped in these cases:
 - if first check is 'true' followed by the operator 'OR' -> OK
 - if first check is 'false' followed by the operator 'NOR' -> OK
 - if first check is 'false' followed by the operator 'AND' -> KO
