@@ -54,7 +54,7 @@ public class AssertorBooleanTest extends AbstractTest {
      */
     @Test
     public void testIsFalse() {
-        StepAssertor<Boolean> assertorResult = new StepAssertor<>(true, EnumType.BOOLEAN);
+        StepAssertor<Boolean> assertorResult = new StepAssertor<>(true, EnumType.BOOLEAN, null);
         assertFalse(AssertorBoolean.isFalse(assertorResult, null).getChecker().test(true, false));
 
         assertTrue(Assertor.that(true).isFalse().or(Assertor.that("").isEmpty()).isOK());

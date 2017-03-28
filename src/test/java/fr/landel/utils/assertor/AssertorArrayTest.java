@@ -185,6 +185,9 @@ public class AssertorArrayTest extends AbstractTest {
         assertFalse(Assertor.that(new String[] {null, "2", "3"}).containsAny(new String[] {"4"}).isOK());
         assertFalse(Assertor.that(new String[] {}).containsAny((String[]) null).isOK());
         assertFalse(Assertor.that((String[]) null).containsAny(new String[] {null, "3"}).isOK());
+
+        assertTrue(Assertor.that(new String[] {null, "2", "3"}, EnumAnalysisMode.STREAM).containsAll(new String[] {null, "3"}).isOK());
+        assertTrue(Assertor.that(new String[] {null, "2", "3"}, EnumAnalysisMode.PARALLEL).containsAll(new String[] {null, "3"}).isOK());
     }
 
     /**
@@ -207,5 +210,10 @@ public class AssertorArrayTest extends AbstractTest {
         assertFalse(Assertor.that(new String[] {null, "2", "3"}).not().containsAny(new String[] {null, "3"}).isOK());
         assertFalse(Assertor.that(new String[] {}).not().containsAny((String[]) null).isOK());
         assertFalse(Assertor.that((String[]) null).not().containsAny(new String[] {null, "3"}).isOK());
+
+        assertTrue(
+                Assertor.that(new String[] {null, "2", "3"}, EnumAnalysisMode.STREAM).not().containsAll(new String[] {null, "4"}).isOK());
+        assertTrue(
+                Assertor.that(new String[] {null, "2", "3"}, EnumAnalysisMode.PARALLEL).not().containsAll(new String[] {null, "4"}).isOK());
     }
 }

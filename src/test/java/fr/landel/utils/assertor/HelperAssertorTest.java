@@ -60,8 +60,8 @@ public class HelperAssertorTest extends AbstractTest {
         final BiPredicate<Boolean, Boolean> bTrue = (obj, not) -> true;
         final BiPredicate<Boolean, Boolean> bFalse = (obj, not) -> false;
 
-        final StepAssertor<String> a = new StepAssertor<>("test", EnumType.CHAR_SEQUENCE);
-        final StepAssertor<Boolean> b = new StepAssertor<>(true, EnumType.BOOLEAN);
+        final StepAssertor<String> a = new StepAssertor<>("test", EnumType.CHAR_SEQUENCE, null);
+        final StepAssertor<Boolean> b = new StepAssertor<>(true, EnumType.BOOLEAN, null);
 
         // precondition: true & true, valid: true & true
         StepAssertor<String> step1 = new StepAssertor<>(a, apTrue, aTrue, false, null, MSG.CSQ.CONTAINS, false);

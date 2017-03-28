@@ -25,7 +25,6 @@ import fr.landel.utils.commons.EnumChar;
 import fr.landel.utils.commons.StringUtils;
 
 /**
- * 
  * Assertor helper class, to build exceptions and messages.
  *
  * @since Aug 3, 2016
@@ -39,6 +38,9 @@ public class HelperAssertor extends ConstantsAssertor {
      */
     protected static final CharSequence EMPTY_STRING = "";
 
+    /**
+     * Transformer used to extract objects from parameters
+     */
     protected static final Transformer<ParameterAssertor<?>, Object> PARAM_TRANSFORMER = new Transformer<ParameterAssertor<?>, Object>() {
         @Override
         public Object transform(final ParameterAssertor<?> input) {
@@ -46,28 +48,42 @@ public class HelperAssertor extends ConstantsAssertor {
         }
     };
 
+    /**
+     * Apply a 'NOT' on the current step
+     * 
+     * @param result
+     *            the current intermediate step data
+     * @param <T>
+     *            the type of checked object
+     * @return the new intermediate step data
+     */
     protected static <T> StepAssertor<T> not(final StepAssertor<T> result) {
         return new StepAssertor<>(result);
     }
 
-    protected static <X, T> StepAssertor<T> and(final StepAssertor<X> result, final T object, final EnumType type) {
-        return new StepAssertor<>(result, object, type, EnumOperator.AND);
+    protected static <X, T> StepAssertor<T> and(final StepAssertor<X> result, final T object, final EnumType type,
+            final EnumAnalysisMode analysisMode) {
+        return new StepAssertor<>(result, object, type, EnumOperator.AND, analysisMode);
     }
 
-    protected static <X, T> StepAssertor<T> or(final StepAssertor<X> result, final T object, final EnumType type) {
-        return new StepAssertor<>(result, object, type, EnumOperator.OR);
+    protected static <X, T> StepAssertor<T> or(final StepAssertor<X> result, final T object, final EnumType type,
+            final EnumAnalysisMode analysisMode) {
+        return new StepAssertor<>(result, object, type, EnumOperator.OR, analysisMode);
     }
 
-    protected static <X, T> StepAssertor<T> xor(final StepAssertor<X> result, final T object, final EnumType type) {
-        return new StepAssertor<>(result, object, type, EnumOperator.XOR);
+    protected static <X, T> StepAssertor<T> xor(final StepAssertor<X> result, final T object, final EnumType type,
+            final EnumAnalysisMode analysisMode) {
+        return new StepAssertor<>(result, object, type, EnumOperator.XOR, analysisMode);
     }
 
-    protected static <X, T> StepAssertor<T> nand(final StepAssertor<X> result, final T object, final EnumType type) {
-        return new StepAssertor<>(result, object, type, EnumOperator.NAND);
+    protected static <X, T> StepAssertor<T> nand(final StepAssertor<X> result, final T object, final EnumType type,
+            final EnumAnalysisMode analysisMode) {
+        return new StepAssertor<>(result, object, type, EnumOperator.NAND, analysisMode);
     }
 
-    protected static <X, T> StepAssertor<T> nor(final StepAssertor<X> result, final T object, final EnumType type) {
-        return new StepAssertor<>(result, object, type, EnumOperator.NOR);
+    protected static <X, T> StepAssertor<T> nor(final StepAssertor<X> result, final T object, final EnumType type,
+            final EnumAnalysisMode analysisMode) {
+        return new StepAssertor<>(result, object, type, EnumOperator.NOR, analysisMode);
     }
 
     protected static <T> StepAssertor<T> and(final StepAssertor<T> result) {
@@ -110,6 +126,18 @@ public class HelperAssertor extends ConstantsAssertor {
         return new StepAssertor<>(result, other, EnumOperator.NOR);
     }
 
+    /**
+     * The combine function (the main method). This method is called by each end
+     * steps.
+     * 
+     * @param step
+     *            the last step
+     * @param loadMessage
+     *            if the message has to loaded and formated
+     * @param <T>
+     *            the type of checked object
+     * @return the result
+     */
     protected static <T> ResultAssertor combine(final StepAssertor<T> step, final boolean loadMessage) {
 
         // load all steps and reverse the order
@@ -350,6 +378,7 @@ public class HelperAssertor extends ConstantsAssertor {
                 ok = !previousOK & !currentOK;
                 break;
             case NOR:
+                System.out.println(previousOK + " " + currentOK);
                 ok = !previousOK | !currentOK;
                 break;
             case AND: // intentional fall-through
@@ -360,7 +389,7 @@ public class HelperAssertor extends ConstantsAssertor {
         return ok;
     }
 
-    protected static boolean isValid(final boolean all, final boolean not, final int found, final int size) {
+    protected static boolean isValid(final boolean all, final boolean not, final long found, final int size) {
         if (all) {
             if (not) { // NOT ALL
                 return found > 0 && found < size;
@@ -374,6 +403,15 @@ public class HelperAssertor extends ConstantsAssertor {
         }
     }
 
+    /**
+     * Extract the last object (checked variable) from parameters
+     * 
+     * @param parameters
+     *            the parameters list
+     * @param <T>
+     *            the type of the last object
+     * @return a typed object
+     */
     @SuppressWarnings("unchecked")
     protected static <T> T getLastChecked(final List<ParameterAssertor<?>> parameters) {
         final int size = parameters.size();

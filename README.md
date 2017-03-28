@@ -176,6 +176,14 @@ For now it manages:
 
 All assertions start with  `Assertor.that(object)` and following the type of the object, some methods are available.
 
+Assertions can also start with `Assertor.that(object, analysisMode)` to specify the analysis mode.  
+Three mode are available, for example 'contains' method on map, will prefer, in:
+- STANDARD: to iterate/loop over the iterable to find an occurrence,
+- STREAM: to create a stream to find an occurrence,
+- PARALLEL: to create a parallel stream to find an occurrence.
+
+By default, 'STANDARD' mode is applied. These modes are also available on operator methods (and, or, xor, nand and nor).
+
 About structure, an assertion can be cut in three parts:
 - The definition of what we check: `Assertor.that(myObject))...`
 - The check: `...isNull().or().isInstance(Color.class)...`
@@ -222,8 +230,8 @@ Assertor.that(text).hasLength(5, "Bad length: '%1$d', expected: '%2$d*', text: '
 As the previous example demonstrates it, in message, variables, parameters and arguments can be injected. The syntax is exactly the same as default [String.format](http://docs.oracle.com/javase/8/docs/api/java/util/Formatter.html) arguments, just suffix it by the character asterisk/star '*' to inject a parameter/variable.
 
 The message builder works in two different ways, following the context:
-- in intermediate methods (ex: `.isBlank()`), only current checked parameter and the method variables can be injected,
-- in final methods (ex: `.orElseThrow()`), all parameters and variables can be injected.
+- in intermediate methods (ex: `.isBlank()`), only current checked variable and the method parameters can be injected,
+- in final methods (ex: `.orElseThrow()`), all variables and parameters can be injected.
 
 ```java
 Assertor.that(Math.PI).isLT(1d, Locale.US, "'%.3f*' isn't lower than '%f*'")
@@ -488,7 +496,9 @@ With a parameter, 'and' creates an sub assertor for the specified parameter.
 
 * Signatures:
 	- `and()`
-	- `and(Object object)`
+	- `and(T object)`
+	- `and(T object, EnumAnalysisMode analysisMode)` // to specify the mode, see [Structure](#structure)
+	- `and(PredicateStep<R, X> subAssertor)` // to inject a sub assertor; to simulate the parenthesis
 
 * Prerequisites: None
 
@@ -496,6 +506,8 @@ With a parameter, 'and' creates an sub assertor for the specified parameter.
 ```java
 Assertor.that(object).isNull().and().isInstance(MyClass.class).orElseThrow(); // is null or is and instance of MyClass
 Assertor.that(12).isGT(12).and("text").contains("ex").orElseThrow(); // 12 > 12 and 'text' contains 'ex'
+
+Assertor.that(true).isTrue().and(Assertor.that("text").isEmpty().or().contains("e")).orElseThrow();
 ```
 
 ### OR
@@ -504,7 +516,9 @@ With a parameter, 'or' creates an sub assertor for the specified parameter.
 
 * Signatures:
 	- `or()`
-	- `or(Object object)`
+	- `or(T object)`
+	- `or(T object, EnumAnalysisMode analysisMode)` // to specify the mode, see [Structure](#structure)
+	- `or(PredicateStep<R, X> subAssertor)` // to inject a sub assertor; to simulate the parenthesis
 
 * Prerequisites: None
 
@@ -512,6 +526,8 @@ With a parameter, 'or' creates an sub assertor for the specified parameter.
 ```java
 Assertor.that(object).isNull().or().isInstance(MyClass.class).orElseThrow(); // is null or is an instance of MyClass
 Assertor.that(12).isGT(12).or("text").contains("ex").orElseThrow(); // 12 > 12 or 'text' contains 'ex'
+
+Assertor.that(true).isFalse().or(Assertor.that("text").startsWith("t").and().contains("e")).orElseThrow();
 ```
 
 ### XOR
@@ -520,14 +536,17 @@ With a parameter, 'xor' creates an sub assertor for the specified parameter.
 
 * Signatures:
 	- `xor()`
-	- `xor(Object object)`
-
+	- `xor(T object)`
+	- `xor(T object, EnumAnalysisMode analysisMode)` // to specify the mode, see [Structure](#structure)
+	- `xor(PredicateStep<R, X> subAssertor)` // to inject a sub assertor; to simulate the parenthesis
 * Prerequisites: None
 
 * Examples:
 ```java
 Assertor.that(object).isNull().xor().isInstance(MyClass.class).orElseThrow(); // is null xor is an instance of MyClass
 Assertor.that(12).iGT(12).xor("text").contains("ex").orElseThrow(); // 12 > 12 xor 'text' contains 'ex'
+
+Assertor.that(true).isFalse().xor(Assertor.that("text").startsWith("t").and().contains("e")).orElseThrow();
 ```
 
 ### NAND
@@ -536,7 +555,9 @@ With a parameter, 'nand' creates an sub assertor for the specified parameter.
 
 * Signatures:
 	- `nand()`
-	- `nand(Object object)`
+	- `nand(T object)`
+	- `nand(T object, EnumAnalysisMode analysisMode)` // to specify the mode, see [Structure](#structure)
+	- `nand(PredicateStep<R, X> subAssertor)` // to inject a sub assertor; to simulate the parenthesis
 
 * Prerequisites: None
 
@@ -561,7 +582,9 @@ With a parameter, 'nor' creates an sub assertor for the specified parameter.
 
 * Signatures:
 	- `nor()`
-	- `nor(Object object)`
+	- `nor(T object)`
+	- `nor(T object, EnumAnalysisMode analysisMode)` // to specify the mode, see [Structure](#structure)
+	- `nor(PredicateStep<R, X> subAssertor)` // to inject a sub assertor; to simulate the parenthesis
 
 * Prerequisites: None
 

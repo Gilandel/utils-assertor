@@ -14,6 +14,7 @@ package fr.landel.utils.assertor;
 
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import fr.landel.utils.commons.ArrayUtils;
 
@@ -120,7 +121,7 @@ public class AssertorArray extends ConstantsAssertor {
 
         final Predicate<T[]> preChecker = (object) -> ArrayUtils.isNotEmpty(object);
 
-        final BiPredicate<T[], Boolean> checker = (object, not) -> AssertorArray.has(object, element);
+        final BiPredicate<T[], Boolean> checker = (object, not) -> AssertorArray.has(object, element, step.getAnalysisMode());
 
         return new StepAssertor<>(step, preChecker, checker, false, message, MSG.ARRAY.CONTAINS_OBJECT, false,
                 new ParameterAssertor<>(element, EnumType.UNKNOWN));
@@ -131,7 +132,7 @@ public class AssertorArray extends ConstantsAssertor {
 
         final Predicate<T[]> preChecker = (object) -> ArrayUtils.isNotEmpty(array) && ArrayUtils.isNotEmpty(object);
 
-        final BiPredicate<T[], Boolean> checker = (object, not) -> AssertorArray.has(object, array, all, not);
+        final BiPredicate<T[], Boolean> checker = (object, not) -> AssertorArray.has(object, array, all, not, step.getAnalysisMode());
 
         return new StepAssertor<>(step, preChecker, checker, true, message, key, false, new ParameterAssertor<>(array, EnumType.ARRAY));
     }
@@ -182,29 +183,47 @@ public class AssertorArray extends ConstantsAssertor {
         return AssertorArray.contains(step, array, false, MSG.ARRAY.CONTAINS_ANY, message);
     }
 
-    private static <T> boolean has(final T[] array, final T object) {
+    private static <T> boolean has(final T[] array, final T object, final EnumAnalysisMode analysisMode) {
+        final Predicate<T> predicate;
         if (object != null) {
+            predicate = o -> object.equals(o);
+        } else {
+            predicate = o -> o == null;
+        }
+
+        if (EnumAnalysisMode.STANDARD.equals(analysisMode)) {
             for (T objectArray : array) {
-                if (object.equals(objectArray)) {
+                if (predicate.test(objectArray)) {
                     return true;
                 }
             }
         } else {
-            for (T objectArray : array) {
-                if (objectArray == null) {
-                    return true;
-                }
+            Stream<T> stream = Stream.of(array);
+            if (EnumAnalysisMode.PARALLEL.equals(analysisMode)) {
+                stream = stream.parallel();
             }
+            return stream.anyMatch(predicate);
         }
+
         return false;
     }
 
-    private static <T> boolean has(final T[] array1, final T[] array2, final boolean all, final boolean not) {
-        int found = 0;
-        for (T objectArray : array2) {
-            if (AssertorArray.has(array1, objectArray)) {
-                ++found;
+    private static <T> boolean has(final T[] array1, final T[] array2, final boolean all, final boolean not,
+            final EnumAnalysisMode analysisMode) {
+        long found = 0;
+
+        if (EnumAnalysisMode.STANDARD.equals(analysisMode)) {
+            for (T objectArray : array2) {
+                if (AssertorArray.has(array1, objectArray, analysisMode)) {
+                    ++found;
+                }
             }
+        } else {
+            Stream<T> stream = Stream.of(array2);
+            if (EnumAnalysisMode.PARALLEL.equals(analysisMode)) {
+                stream = stream.parallel();
+            }
+            found = stream.filter(o -> AssertorArray.has(array1, o, analysisMode)).count();
         }
 
         return HelperAssertor.isValid(all, not, found, array2.length);

@@ -201,6 +201,8 @@ public class AssertorIterableTest extends AbstractTest {
         set.add(el1);
 
         Assertor.that(set).contains(el1).orElseThrow("iterable doesn't contain the element %s*");
+        Assertor.that(set, EnumAnalysisMode.STREAM).contains(el1).orElseThrow("iterable doesn't contain the element %s*");
+        Assertor.that(set, EnumAnalysisMode.PARALLEL).contains(el1).orElseThrow("iterable doesn't contain the element %s*");
 
         assertException(() -> {
             Assertor.that(set).contains(el2).orElseThrow("iterable doesn't contain the element %2$s*");
@@ -258,6 +260,10 @@ public class AssertorIterableTest extends AbstractTest {
 
         Assertor.that(set).containsAll(set2).orElseThrow("iterable doesn't contain the list %s*");
         Assertor.that(set).containsAny(set2).orElseThrow("iterable doesn't contain the list %s*");
+        Assertor.that(set, EnumAnalysisMode.STREAM).containsAll(set2).orElseThrow("iterable doesn't contain the list %s*");
+        Assertor.that(set, EnumAnalysisMode.STREAM).containsAny(set2).orElseThrow("iterable doesn't contain the list %s*");
+        Assertor.that(set, EnumAnalysisMode.PARALLEL).containsAll(set2).orElseThrow("iterable doesn't contain the list %s*");
+        Assertor.that(set, EnumAnalysisMode.PARALLEL).containsAny(set2).orElseThrow("iterable doesn't contain the list %s*");
 
         set2.add(el2);
         Assertor.that(set).containsAny(set2).orElseThrow("iterable doesn't contain the list %s*");
@@ -329,6 +335,10 @@ public class AssertorIterableTest extends AbstractTest {
 
         Assertor.that(set).not().contains(el2).orElseThrow("iterable contains the element %s*");
         Assertor.that(set).not().contains((String) null).orElseThrow();
+        Assertor.that(set, EnumAnalysisMode.STREAM).not().contains(el2).orElseThrow("iterable contains the element %s*");
+        Assertor.that(set, EnumAnalysisMode.STREAM).not().contains((String) null).orElseThrow();
+        Assertor.that(set, EnumAnalysisMode.PARALLEL).not().contains(el2).orElseThrow("iterable contains the element %s*");
+        Assertor.that(set, EnumAnalysisMode.PARALLEL).not().contains((String) null).orElseThrow();
 
         assertException(() -> {
             Assertor.that(set).not().contains(el1).orElseThrow();
@@ -371,6 +381,8 @@ public class AssertorIterableTest extends AbstractTest {
         set2.add(el2);
 
         Assertor.that(set).not().containsAll(set2).orElseThrow("iterable contains the list %s*");
+        Assertor.that(set, EnumAnalysisMode.STREAM).not().containsAll(set2).orElseThrow("iterable contains the list %s*");
+        Assertor.that(set, EnumAnalysisMode.PARALLEL).not().containsAll(set2).orElseThrow("iterable contains the list %s*");
 
         set2.remove(el1);
 

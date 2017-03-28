@@ -58,7 +58,7 @@ public class AssertorEnumTest extends AbstractTest {
      */
     @Test
     public void testHasName() {
-        StepAssertor<EnumChar> assertorResult = new StepAssertor<>(EnumChar.ASTERISK, EnumType.ENUMERATION);
+        StepAssertor<EnumChar> assertorResult = new StepAssertor<>(EnumChar.ASTERISK, EnumType.ENUMERATION, null);
         assertTrue(AssertorEnum.hasName(assertorResult, "ASTERISK", null).getChecker().test(EnumChar.ASTERISK, false));
 
         try {
