@@ -383,6 +383,9 @@ public class AssertorTemporalTest extends AbstractTest {
 
         assertFalse(Assertor.that(localDateTime1).isAfter(localDateTime2).isOK());
 
+        assertFalse(Assertor.that(localDateTime1).isAfter(localDateTime2, (TemporalAmount) null).isOK());
+        assertTrue(Assertor.that(localDateTime2).isAfter(localDateTime1, (TemporalAmount) null).isOK());
+
         date2 = new Date(1464475553640L);
         localDateTime2 = DateUtils.getLocalDateTime(date2);
 

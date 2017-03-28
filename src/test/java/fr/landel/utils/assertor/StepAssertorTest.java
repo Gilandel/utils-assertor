@@ -35,7 +35,7 @@ public class StepAssertorTest extends AbstractTest {
      */
     @Test
     public void testAssertorResultTEnumType() {
-        StepAssertor<Boolean> assertorResult = new StepAssertor<>(true, EnumType.BOOLEAN);
+        StepAssertor<Boolean> assertorResult = new StepAssertor<>(true, EnumType.BOOLEAN, null);
 
         assertNotNull(assertorResult);
 
@@ -56,7 +56,7 @@ public class StepAssertorTest extends AbstractTest {
      */
     @Test
     public void testAssertorResultAssertorResultOfT() {
-        StepAssertor<Boolean> assertorResult = new StepAssertor<>(new StepAssertor<>(true, EnumType.BOOLEAN));
+        StepAssertor<Boolean> assertorResult = new StepAssertor<>(new StepAssertor<>(true, EnumType.BOOLEAN, null));
 
         assertNotNull(assertorResult);
         assertNotNull(assertorResult.getPreviousStep());
@@ -82,7 +82,7 @@ public class StepAssertorTest extends AbstractTest {
      */
     @Test
     public void testToString() {
-        StepAssertor<String> step = new StepAssertor<>("text", EnumType.CHAR_SEQUENCE);
+        StepAssertor<String> step = new StepAssertor<>("text", EnumType.CHAR_SEQUENCE, null);
         assertEquals("{CREATION, object: text, type: CHAR_SEQUENCE}", step.toString());
 
         step = new StepAssertor<>(step);
@@ -91,7 +91,7 @@ public class StepAssertorTest extends AbstractTest {
         step = new StepAssertor<>(step, EnumOperator.AND);
         assertEquals("{OPERATOR, operator:  AND }", step.toString());
 
-        StepAssertor<Integer> step2 = new StepAssertor<>(step, 1, EnumType.NUMBER_INTEGER, EnumOperator.AND);
+        StepAssertor<Integer> step2 = new StepAssertor<>(step, 1, EnumType.NUMBER_INTEGER, EnumOperator.AND, null);
         assertEquals("{OBJECT, object: 1, type: NUMBER_INTEGER, operator:  AND }", step2.toString());
 
         step = new StepAssertor<>(step, (string) -> true, (string, not) -> true, false, MessageAssertor.of(null, "msg", null), "key",

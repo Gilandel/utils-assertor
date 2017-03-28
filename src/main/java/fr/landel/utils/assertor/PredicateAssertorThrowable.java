@@ -52,165 +52,6 @@ public interface PredicateAssertorThrowable<T extends Throwable> extends Predica
     }
 
     /**
-     * Asserts that the given {@link Throwable} is assignable from {@code clazz}
-     * and has the specified message.
-     * 
-     * <p>
-     * precondition: throwable and clazz cannot be null
-     * </p>
-     * 
-     * <pre>
-     * Assertor.that(throwable).isAssignableFrom(type, "Internal error").orElseThrow();
-     * </pre>
-     * 
-     * @param clazz
-     *            The super {@link Class} (super class or interface)
-     * @param throwableMessage
-     *            the expected throwable message
-     * @return The operator
-     */
-    default PredicateStepThrowable<T> isAssignableFrom(final Class<?> clazz, final CharSequence throwableMessage) {
-        return this.isAssignableFrom(clazz, throwableMessage, (CharSequence) null);
-    }
-
-    /**
-     * Asserts that the given {@link Throwable} is assignable from {@code clazz}
-     * and has the specified message.
-     * 
-     * <p>
-     * precondition: throwable and clazz cannot be null
-     * </p>
-     * 
-     * <pre>
-     * Assertor.that(throwable).isAssignableFrom(type, "Internal error", "not an instance of").orElseThrow();
-     * </pre>
-     * 
-     * @param clazz
-     *            The super {@link Class} (super class or interface)
-     * @param throwableMessage
-     *            the expected throwable message
-     * @param message
-     *            The message on mismatch
-     * @param arguments
-     *            The arguments of the message, use {@link String#format}
-     * @return The operator
-     */
-    default PredicateStepThrowable<T> isAssignableFrom(final Class<?> clazz, final CharSequence throwableMessage,
-            final CharSequence message, final Object... arguments) {
-        return this.isAssignableFrom(clazz, throwableMessage, null, message, arguments);
-    }
-
-    /**
-     * Asserts that the given {@link Throwable} is assignable from {@code clazz}
-     * and has the specified message.
-     * 
-     * <p>
-     * precondition: throwable and clazz cannot be null
-     * </p>
-     * 
-     * <pre>
-     * Assertor.that(throwable).isAssignableFrom(type, "Internal error", Locale.US, "not an instance of").orElseThrow();
-     * </pre>
-     * 
-     * @param clazz
-     *            The super {@link Class} (super class or interface)
-     * @param throwableMessage
-     *            the expected throwable message
-     * @param locale
-     *            The locale of the message (only used to format this message,
-     *            otherwise use {@link Assertor#setLocale})
-     * @param message
-     *            The message on mismatch
-     * @param arguments
-     *            The arguments of the message, use {@link String#format}
-     * @return The operator
-     */
-    default PredicateStepThrowable<T> isAssignableFrom(final Class<?> clazz, final CharSequence throwableMessage, final Locale locale,
-            final CharSequence message, final Object... arguments) {
-        return () -> AssertorThrowable.isAssignableFrom(this.getStep(), clazz, throwableMessage,
-                MessageAssertor.of(locale, message, arguments));
-    }
-
-    /**
-     * Asserts that the given {@link Throwable} is assignable from {@code clazz}
-     * and matches the pattern.
-     * 
-     * <p>
-     * precondition: throwable, clazz and pattern cannot be null
-     * </p>
-     * 
-     * <pre>
-     * Assertor.that(throwable).isAssignableFrom(type, pattern).orElseThrow();
-     * </pre>
-     * 
-     * @param clazz
-     *            The super {@link Class} (super class or interface)
-     * @param pattern
-     *            the message pattern
-     * @return The operator
-     */
-    default PredicateStepThrowable<T> isAssignableFrom(final Class<?> clazz, final Pattern pattern) {
-        return this.isAssignableFrom(clazz, pattern, null);
-    }
-
-    /**
-     * Asserts that the given {@link Throwable} is assignable from {@code clazz}
-     * and matches the pattern.
-     * 
-     * <p>
-     * precondition: throwable, clazz and pattern cannot be null
-     * </p>
-     * 
-     * <pre>
-     * Assertor.that(throwable).isAssignableFrom(type, pattern, "not assignable from").orElseThrow();
-     * </pre>
-     * 
-     * @param clazz
-     *            The super {@link Class} (super class or interface)
-     * @param pattern
-     *            the message pattern
-     * @param message
-     *            The message on mismatch
-     * @param arguments
-     *            The arguments of the message, use {@link String#format}
-     * @return The operator
-     */
-    default PredicateStepThrowable<T> isAssignableFrom(final Class<?> clazz, final Pattern pattern, final CharSequence message,
-            final Object... arguments) {
-        return this.isAssignableFrom(clazz, pattern, null, message, arguments);
-    }
-
-    /**
-     * Asserts that the given {@link Throwable} is assignable from {@code clazz}
-     * and matches the pattern.
-     * 
-     * <p>
-     * precondition: throwable, clazz and pattern cannot be null
-     * </p>
-     * 
-     * <pre>
-     * Assertor.that(throwable).isAssignableFrom(type, pattern, Locale.US, "not assignable from").orElseThrow();
-     * </pre>
-     * 
-     * @param clazz
-     *            The super {@link Class} (super class or interface)
-     * @param pattern
-     *            the message pattern
-     * @param locale
-     *            The locale of the message (only used to format this message,
-     *            otherwise use {@link Assertor#setLocale})
-     * @param message
-     *            The message on mismatch
-     * @param arguments
-     *            The arguments of the message, use {@link String#format}
-     * @return The operator
-     */
-    default PredicateStepThrowable<T> isAssignableFrom(final Class<?> clazz, final Pattern pattern, final Locale locale,
-            final CharSequence message, final Object... arguments) {
-        return () -> AssertorThrowable.isAssignableFrom(this.getStep(), clazz, pattern, MessageAssertor.of(locale, message, arguments));
-    }
-
-    /**
      * Asserts that the given {@link Throwable} is an instance of {@code clazz}
      * and has the specified message.
      * 
@@ -367,6 +208,165 @@ public interface PredicateAssertorThrowable<T extends Throwable> extends Predica
     default PredicateStepThrowable<T> isInstanceOf(final Class<?> clazz, final Pattern pattern, final Locale locale,
             final CharSequence message, final Object... arguments) {
         return () -> AssertorThrowable.isInstanceOf(this.getStep(), clazz, pattern, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
+     * Asserts that the given {@link Throwable} is assignable from {@code clazz}
+     * and has the specified message.
+     * 
+     * <p>
+     * precondition: throwable and clazz cannot be null
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(throwable).isAssignableFrom(type, "Internal error").orElseThrow();
+     * </pre>
+     * 
+     * @param clazz
+     *            The super {@link Class} (super class or interface)
+     * @param throwableMessage
+     *            the expected throwable message
+     * @return The operator
+     */
+    default PredicateStepThrowable<T> isAssignableFrom(final Class<?> clazz, final CharSequence throwableMessage) {
+        return this.isAssignableFrom(clazz, throwableMessage, (CharSequence) null);
+    }
+
+    /**
+     * Asserts that the given {@link Throwable} is assignable from {@code clazz}
+     * and has the specified message.
+     * 
+     * <p>
+     * precondition: throwable and clazz cannot be null
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(throwable).isAssignableFrom(type, "Internal error", "not an instance of").orElseThrow();
+     * </pre>
+     * 
+     * @param clazz
+     *            The super {@link Class} (super class or interface)
+     * @param throwableMessage
+     *            the expected throwable message
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     */
+    default PredicateStepThrowable<T> isAssignableFrom(final Class<?> clazz, final CharSequence throwableMessage,
+            final CharSequence message, final Object... arguments) {
+        return this.isAssignableFrom(clazz, throwableMessage, null, message, arguments);
+    }
+
+    /**
+     * Asserts that the given {@link Throwable} is assignable from {@code clazz}
+     * and has the specified message.
+     * 
+     * <p>
+     * precondition: throwable and clazz cannot be null
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(throwable).isAssignableFrom(type, "Internal error", Locale.US, "not an instance of").orElseThrow();
+     * </pre>
+     * 
+     * @param clazz
+     *            The super {@link Class} (super class or interface)
+     * @param throwableMessage
+     *            the expected throwable message
+     * @param locale
+     *            The locale of the message (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     */
+    default PredicateStepThrowable<T> isAssignableFrom(final Class<?> clazz, final CharSequence throwableMessage, final Locale locale,
+            final CharSequence message, final Object... arguments) {
+        return () -> AssertorThrowable.isAssignableFrom(this.getStep(), clazz, throwableMessage,
+                MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
+     * Asserts that the given {@link Throwable} is assignable from {@code clazz}
+     * and matches the pattern.
+     * 
+     * <p>
+     * precondition: throwable, clazz and pattern cannot be null
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(throwable).isAssignableFrom(type, pattern).orElseThrow();
+     * </pre>
+     * 
+     * @param clazz
+     *            The super {@link Class} (super class or interface)
+     * @param pattern
+     *            the message pattern
+     * @return The operator
+     */
+    default PredicateStepThrowable<T> isAssignableFrom(final Class<?> clazz, final Pattern pattern) {
+        return this.isAssignableFrom(clazz, pattern, null);
+    }
+
+    /**
+     * Asserts that the given {@link Throwable} is assignable from {@code clazz}
+     * and matches the pattern.
+     * 
+     * <p>
+     * precondition: throwable, clazz and pattern cannot be null
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(throwable).isAssignableFrom(type, pattern, "not assignable from").orElseThrow();
+     * </pre>
+     * 
+     * @param clazz
+     *            The super {@link Class} (super class or interface)
+     * @param pattern
+     *            the message pattern
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     */
+    default PredicateStepThrowable<T> isAssignableFrom(final Class<?> clazz, final Pattern pattern, final CharSequence message,
+            final Object... arguments) {
+        return this.isAssignableFrom(clazz, pattern, null, message, arguments);
+    }
+
+    /**
+     * Asserts that the given {@link Throwable} is assignable from {@code clazz}
+     * and matches the pattern.
+     * 
+     * <p>
+     * precondition: throwable, clazz and pattern cannot be null
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(throwable).isAssignableFrom(type, pattern, Locale.US, "not assignable from").orElseThrow();
+     * </pre>
+     * 
+     * @param clazz
+     *            The super {@link Class} (super class or interface)
+     * @param pattern
+     *            the message pattern
+     * @param locale
+     *            The locale of the message (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     */
+    default PredicateStepThrowable<T> isAssignableFrom(final Class<?> clazz, final Pattern pattern, final Locale locale,
+            final CharSequence message, final Object... arguments) {
+        return () -> AssertorThrowable.isAssignableFrom(this.getStep(), clazz, pattern, MessageAssertor.of(locale, message, arguments));
     }
 
     /**

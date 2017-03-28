@@ -35,7 +35,7 @@
 		<gpg.home>${env.HOME}/build/Gilandel/${project.artifactId}/distribution</gpg.home>
 		
 		<!-- Dependencies version -->
-		<utils-commons.version>1.0.2</utils-commons.version>
+		<utils-commons.version>1.0.4</utils-commons.version>
 		<utils-microbenchmark.version>1.0.3</utils-microbenchmark.version>
 	</properties>
 	
@@ -97,7 +97,7 @@
 					<execution>
 						<id>attach-sources</id>
 						<goals>
-							<goal>jar</goal>
+							<goal>jar-no-fork</goal>
 						</goals>
 					</execution>
 				</executions>

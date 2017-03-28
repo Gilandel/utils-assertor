@@ -12,8 +12,10 @@
  */
 package fr.landel.utils.assertor;
 
+import java.util.Spliterator;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
+import java.util.stream.StreamSupport;
 
 import org.apache.commons.collections4.IterableUtils;
 
@@ -46,7 +48,8 @@ public class AssertorIterable extends ConstantsAssertor {
      *            the {@link Iterable} elements type
      * @return the next step
      */
-    protected static <I extends Iterable<T>, T> StepAssertor<I> hasSize(final StepAssertor<I> step, final int size, final MessageAssertor message) {
+    protected static <I extends Iterable<T>, T> StepAssertor<I> hasSize(final StepAssertor<I> step, final int size,
+            final MessageAssertor message) {
 
         final Predicate<I> preChecker = (iterable) -> size >= 0 && iterable != null;
 
@@ -178,13 +181,15 @@ public class AssertorIterable extends ConstantsAssertor {
      *            the {@link Iterable} elements type
      * @return the next step
      */
-    protected static <I extends Iterable<T>, T> StepAssertor<I> contains(final StepAssertor<I> step, final T value, final MessageAssertor message) {
+    protected static <I extends Iterable<T>, T> StepAssertor<I> contains(final StepAssertor<I> step, final T value,
+            final MessageAssertor message) {
 
         final Predicate<I> preChecker = (iterable) -> !IterableUtils.isEmpty(iterable);
 
-        final BiPredicate<I, Boolean> checker = (iterable, not) -> AssertorIterable.has(iterable, value);
+        final BiPredicate<I, Boolean> checker = (iterable, not) -> AssertorIterable.has(iterable, value, step.getAnalysisMode());
 
-        return new StepAssertor<>(step, preChecker, checker, false, message, MSG.ITERABLE.CONTAINS_OBJECT, false, new ParameterAssertor<>(value));
+        return new StepAssertor<>(step, preChecker, checker, false, message, MSG.ITERABLE.CONTAINS_OBJECT, false,
+                new ParameterAssertor<>(value));
     }
 
     private static <I extends Iterable<T>, T> StepAssertor<I> contains(final StepAssertor<I> step, final Iterable<T> iterable,
@@ -192,37 +197,49 @@ public class AssertorIterable extends ConstantsAssertor {
 
         final Predicate<I> preChecker = (iterable1) -> !IterableUtils.isEmpty(iterable1) && !IterableUtils.isEmpty(iterable);
 
-        final BiPredicate<I, Boolean> checker = (iterable1, not) -> AssertorIterable.has(iterable1, iterable, all, not);
+        final BiPredicate<I, Boolean> checker = (iterable1, not) -> AssertorIterable.has(iterable1, iterable, all, not,
+                step.getAnalysisMode());
 
-        return new StepAssertor<>(step, preChecker, checker, true, message, key, false, new ParameterAssertor<>(iterable, EnumType.ITERABLE));
+        return new StepAssertor<>(step, preChecker, checker, true, message, key, false,
+                new ParameterAssertor<>(iterable, EnumType.ITERABLE));
     }
 
-    private static <I extends Iterable<T>, T> boolean has(final I iterable, final T object) {
-        boolean found = false;
+    private static <I extends Iterable<T>, T> boolean has(final I iterable, final T object, final EnumAnalysisMode analysisMode) {
+        final Predicate<T> predicate;
         if (object != null) {
+            predicate = o -> object.equals(o);
+        } else {
+            predicate = o -> o == null;
+        }
+
+        final Spliterator<T> spliterator = iterable.spliterator();
+        if (EnumAnalysisMode.STANDARD.equals(analysisMode)) {
             for (T objectRef : iterable) {
-                if (object.equals(objectRef)) {
-                    found = true;
-                    break;
+                if (predicate.test(objectRef)) {
+                    return true;
                 }
             }
         } else {
-            for (T objectRef : iterable) {
-                if (objectRef == null) {
-                    found = true;
-                    break;
-                }
-            }
+            return StreamSupport.stream(spliterator, EnumAnalysisMode.PARALLEL.equals(analysisMode)).anyMatch(predicate);
         }
-        return found;
+
+        return false;
     }
 
-    private static <I extends Iterable<T>, T> boolean has(final I iterable1, final Iterable<T> iterable2, final boolean all, final boolean not) {
-        int found = 0;
-        for (T objectRef : iterable2) {
-            if (AssertorIterable.has(iterable1, objectRef)) {
-                found++;
+    private static <I extends Iterable<T>, T> boolean has(final I iterable1, final Iterable<T> iterable2, final boolean all,
+            final boolean not, final EnumAnalysisMode analysisMode) {
+        long found = 0;
+
+        final Spliterator<T> spliterator = iterable2.spliterator();
+        if (EnumAnalysisMode.STANDARD.equals(analysisMode)) {
+            for (T objectRef : iterable2) {
+                if (AssertorIterable.has(iterable1, objectRef, analysisMode)) {
+                    ++found;
+                }
             }
+        } else {
+            found = StreamSupport.stream(spliterator, EnumAnalysisMode.PARALLEL.equals(analysisMode))
+                    .filter(o -> AssertorIterable.has(iterable1, o, analysisMode)).count();
         }
 
         return HelperAssertor.isValid(all, not, found, IterableUtils.size(iterable2));

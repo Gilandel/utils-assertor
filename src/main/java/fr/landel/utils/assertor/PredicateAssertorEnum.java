@@ -200,7 +200,8 @@ public interface PredicateAssertorEnum<T extends Enum<T>> extends PredicateAsser
      * Asserts that the given {@link Class} has the specified {@code ordinal}.
      * 
      * <p>
-     * precondition: the {@code ordinal} cannot be lower than 0
+     * precondition: the enum cannot be {@code null} and the {@code ordinal}
+     * cannot be lower than 0
      * </p>
      * 
      * <pre>
@@ -219,7 +220,8 @@ public interface PredicateAssertorEnum<T extends Enum<T>> extends PredicateAsser
      * Asserts that the given {@link Class} has the specified {@code ordinal}.
      * 
      * <p>
-     * precondition: the {@code ordinal} cannot be lower than 0
+     * precondition: the enum cannot be {@code null} and the {@code ordinal}
+     * cannot be lower than 0
      * </p>
      * 
      * <pre>
@@ -242,7 +244,8 @@ public interface PredicateAssertorEnum<T extends Enum<T>> extends PredicateAsser
      * Asserts that the given {@link Class} has the specified {@code ordinal}.
      * 
      * <p>
-     * precondition: the {@code ordinal} cannot be lower than 0
+     * precondition: the enum cannot be {@code null} and the {@code ordinal}
+     * cannot be lower than 0
      * </p>
      * 
      * <pre>

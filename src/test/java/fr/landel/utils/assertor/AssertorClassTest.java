@@ -242,6 +242,8 @@ public class AssertorClassTest extends AbstractTest {
         String name = IOException.class.getTypeName();
 
         assertTrue(Assertor.that(IOException.class).hasTypeName(name).isOK());
+        assertTrue(Assertor.that(Long.class).hasTypeName("java.lang.Long").isOK());
+        assertTrue(Assertor.that(long.class).hasTypeName("long").isOK());
         assertFalse(Assertor.that(IOException.class).hasTypeName("rr").isOK());
 
         assertTrue(Assertor.that(IOException.class).isNotNull().and().hasTypeName(name).isOK());

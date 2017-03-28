@@ -14,6 +14,7 @@ package fr.landel.utils.assertor;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.awt.Color;
 import java.time.LocalDateTime;
@@ -32,7 +33,7 @@ import fr.landel.utils.commons.DateUtils;
  * @author Gilles
  *
  */
-public class PredicateStepOperatorTest extends AbstractTest {
+public class PredicateOperatorTest extends AbstractTest {
 
     /**
      * Test method for {@link Operator#and()}.
@@ -65,12 +66,24 @@ public class PredicateStepOperatorTest extends AbstractTest {
 
         assertTrue(Assertor.that(text).isNotEmpty().and(new String[] {}).isEmpty().isOK());
         assertFalse(Assertor.that(text).isNotEmpty().and(new String[] {}).isNotEmpty().isOK());
+        assertTrue(Assertor.that(text).isNotEmpty().and(new String[] {}, EnumAnalysisMode.STREAM).isEmpty().isOK());
+        assertFalse(Assertor.that(text).isNotEmpty().and(new String[] {}, EnumAnalysisMode.STREAM).isNotEmpty().isOK());
+        assertTrue(Assertor.that(text).isNotEmpty().and(new String[] {}, EnumAnalysisMode.PARALLEL).isEmpty().isOK());
+        assertFalse(Assertor.that(text).isNotEmpty().and(new String[] {}, EnumAnalysisMode.PARALLEL).isNotEmpty().isOK());
 
         assertTrue(Assertor.that(text).isNotEmpty().and(Collections.emptyList()).isEmpty().isOK());
         assertFalse(Assertor.that(text).isNotEmpty().and(Collections.emptyList()).isNotEmpty().isOK());
+        assertTrue(Assertor.that(text).isNotEmpty().and(Collections.emptyList(), EnumAnalysisMode.STREAM).isEmpty().isOK());
+        assertFalse(Assertor.that(text).isNotEmpty().and(Collections.emptyList(), EnumAnalysisMode.STREAM).isNotEmpty().isOK());
+        assertTrue(Assertor.that(text).isNotEmpty().and(Collections.emptyList(), EnumAnalysisMode.PARALLEL).isEmpty().isOK());
+        assertFalse(Assertor.that(text).isNotEmpty().and(Collections.emptyList(), EnumAnalysisMode.PARALLEL).isNotEmpty().isOK());
 
         assertTrue(Assertor.that(text).isNotEmpty().and(Collections.emptyMap()).isEmpty().isOK());
         assertFalse(Assertor.that(text).isNotEmpty().and(Collections.emptyMap()).isNotEmpty().isOK());
+        assertTrue(Assertor.that(text).isNotEmpty().and(Collections.emptyMap(), EnumAnalysisMode.STREAM).isEmpty().isOK());
+        assertFalse(Assertor.that(text).isNotEmpty().and(Collections.emptyMap(), EnumAnalysisMode.STREAM).isNotEmpty().isOK());
+        assertTrue(Assertor.that(text).isNotEmpty().and(Collections.emptyMap(), EnumAnalysisMode.PARALLEL).isEmpty().isOK());
+        assertFalse(Assertor.that(text).isNotEmpty().and(Collections.emptyMap(), EnumAnalysisMode.PARALLEL).isNotEmpty().isOK());
 
         assertTrue(Assertor.that(text).isNotEmpty().and((Object) 0).isNotNull().isOK());
         assertFalse(Assertor.that(text).isNotEmpty().and((Object) 0).isNull().isOK());
@@ -80,6 +93,8 @@ public class PredicateStepOperatorTest extends AbstractTest {
 
         assertFalse(Assertor.that(Color.BLACK).isNull().and().isEqual(Color.black).isOK());
         assertFalse(Assertor.that(Color.BLACK).isNull().and((Object) 0).isNotNull().isOK());
+
+        assertTrue(Assertor.that(true).isTrue().and(Assertor.that("text").isEmpty().or().contains("e")).isOK());
     }
 
     /**
@@ -113,12 +128,24 @@ public class PredicateStepOperatorTest extends AbstractTest {
 
         assertTrue(Assertor.that(text).isEmpty().or(new String[] {}).isEmpty().isOK());
         assertFalse(Assertor.that(text).isEmpty().or(new String[] {}).isNotEmpty().isOK());
+        assertTrue(Assertor.that(text).isEmpty().or(new String[] {}, EnumAnalysisMode.STREAM).isEmpty().isOK());
+        assertFalse(Assertor.that(text).isEmpty().or(new String[] {}, EnumAnalysisMode.STREAM).isNotEmpty().isOK());
+        assertTrue(Assertor.that(text).isEmpty().or(new String[] {}, EnumAnalysisMode.PARALLEL).isEmpty().isOK());
+        assertFalse(Assertor.that(text).isEmpty().or(new String[] {}, EnumAnalysisMode.PARALLEL).isNotEmpty().isOK());
 
         assertTrue(Assertor.that(text).isEmpty().or(Collections.emptyList()).isEmpty().isOK());
         assertFalse(Assertor.that(text).isEmpty().or(Collections.emptyList()).isNotEmpty().isOK());
+        assertTrue(Assertor.that(text).isEmpty().or(Collections.emptyList(), EnumAnalysisMode.STREAM).isEmpty().isOK());
+        assertFalse(Assertor.that(text).isEmpty().or(Collections.emptyList(), EnumAnalysisMode.STREAM).isNotEmpty().isOK());
+        assertTrue(Assertor.that(text).isEmpty().or(Collections.emptyList(), EnumAnalysisMode.PARALLEL).isEmpty().isOK());
+        assertFalse(Assertor.that(text).isEmpty().or(Collections.emptyList(), EnumAnalysisMode.PARALLEL).isNotEmpty().isOK());
 
         assertTrue(Assertor.that(text).isEmpty().or(Collections.emptyMap()).isEmpty().isOK());
         assertFalse(Assertor.that(text).isEmpty().or(Collections.emptyMap()).isNotEmpty().isOK());
+        assertTrue(Assertor.that(text).isEmpty().or(Collections.emptyMap(), EnumAnalysisMode.STREAM).isEmpty().isOK());
+        assertFalse(Assertor.that(text).isEmpty().or(Collections.emptyMap(), EnumAnalysisMode.STREAM).isNotEmpty().isOK());
+        assertTrue(Assertor.that(text).isEmpty().or(Collections.emptyMap(), EnumAnalysisMode.PARALLEL).isEmpty().isOK());
+        assertFalse(Assertor.that(text).isEmpty().or(Collections.emptyMap(), EnumAnalysisMode.PARALLEL).isNotEmpty().isOK());
 
         assertTrue(Assertor.that(text).isEmpty().or((Object) 0).isNotNull().isOK());
         assertFalse(Assertor.that(text).isEmpty().or((Object) 0).isNull().isOK());
@@ -130,6 +157,8 @@ public class PredicateStepOperatorTest extends AbstractTest {
         assertTrue(Assertor.that(Color.BLACK).isNull().or((Object) 0).isNotNull().isOK());
 
         assertTrue(Assertor.that(Color.BLACK).isNotNull().or(Assertor.that(text).isEmpty()).isOK());
+
+        assertTrue(Assertor.that(true).isFalse().or(Assertor.that("text").startsWith("t").and().contains("e")).isOK());
     }
 
     /**
@@ -163,12 +192,24 @@ public class PredicateStepOperatorTest extends AbstractTest {
 
         assertTrue(Assertor.that(text).isEmpty().xor(new String[] {}).isEmpty().isOK());
         assertFalse(Assertor.that(text).isEmpty().xor(new String[] {}).isNotEmpty().isOK());
+        assertTrue(Assertor.that(text).isEmpty().xor(new String[] {}, EnumAnalysisMode.STREAM).isEmpty().isOK());
+        assertFalse(Assertor.that(text).isEmpty().xor(new String[] {}, EnumAnalysisMode.STREAM).isNotEmpty().isOK());
+        assertTrue(Assertor.that(text).isEmpty().xor(new String[] {}, EnumAnalysisMode.PARALLEL).isEmpty().isOK());
+        assertFalse(Assertor.that(text).isEmpty().xor(new String[] {}, EnumAnalysisMode.PARALLEL).isNotEmpty().isOK());
 
         assertTrue(Assertor.that(text).isEmpty().xor(Collections.emptyList()).isEmpty().isOK());
         assertFalse(Assertor.that(text).isEmpty().xor(Collections.emptyList()).isNotEmpty().isOK());
+        assertTrue(Assertor.that(text).isEmpty().xor(Collections.emptyList(), EnumAnalysisMode.STREAM).isEmpty().isOK());
+        assertFalse(Assertor.that(text).isEmpty().xor(Collections.emptyList(), EnumAnalysisMode.STREAM).isNotEmpty().isOK());
+        assertTrue(Assertor.that(text).isEmpty().xor(Collections.emptyList(), EnumAnalysisMode.PARALLEL).isEmpty().isOK());
+        assertFalse(Assertor.that(text).isEmpty().xor(Collections.emptyList(), EnumAnalysisMode.PARALLEL).isNotEmpty().isOK());
 
         assertTrue(Assertor.that(text).isEmpty().xor(Collections.emptyMap()).isEmpty().isOK());
         assertFalse(Assertor.that(text).isEmpty().xor(Collections.emptyMap()).isNotEmpty().isOK());
+        assertTrue(Assertor.that(text).isEmpty().xor(Collections.emptyMap(), EnumAnalysisMode.STREAM).isEmpty().isOK());
+        assertFalse(Assertor.that(text).isEmpty().xor(Collections.emptyMap(), EnumAnalysisMode.STREAM).isNotEmpty().isOK());
+        assertTrue(Assertor.that(text).isEmpty().xor(Collections.emptyMap(), EnumAnalysisMode.PARALLEL).isEmpty().isOK());
+        assertFalse(Assertor.that(text).isEmpty().xor(Collections.emptyMap(), EnumAnalysisMode.PARALLEL).isNotEmpty().isOK());
 
         assertTrue(Assertor.that(text).isEmpty().xor((Object) 0).isNotNull().isOK());
         assertFalse(Assertor.that(text).isEmpty().xor((Object) 0).isNull().isOK());
@@ -213,12 +254,24 @@ public class PredicateStepOperatorTest extends AbstractTest {
 
         assertFalse(Assertor.that(text).isEmpty().nand(new String[] {}).isEmpty().isOK());
         assertTrue(Assertor.that(text).isEmpty().nand(new String[] {}).isNotEmpty().isOK());
+        assertFalse(Assertor.that(text).isEmpty().nand(new String[] {}, EnumAnalysisMode.STREAM).isEmpty().isOK());
+        assertTrue(Assertor.that(text).isEmpty().nand(new String[] {}, EnumAnalysisMode.STREAM).isNotEmpty().isOK());
+        assertFalse(Assertor.that(text).isEmpty().nand(new String[] {}, EnumAnalysisMode.PARALLEL).isEmpty().isOK());
+        assertTrue(Assertor.that(text).isEmpty().nand(new String[] {}, EnumAnalysisMode.PARALLEL).isNotEmpty().isOK());
 
         assertFalse(Assertor.that(text).isEmpty().nand(Collections.emptyList()).isEmpty().isOK());
         assertTrue(Assertor.that(text).isEmpty().nand(Collections.emptyList()).isNotEmpty().isOK());
+        assertFalse(Assertor.that(text).isEmpty().nand(Collections.emptyList(), EnumAnalysisMode.STREAM).isEmpty().isOK());
+        assertTrue(Assertor.that(text).isEmpty().nand(Collections.emptyList(), EnumAnalysisMode.STREAM).isNotEmpty().isOK());
+        assertFalse(Assertor.that(text).isEmpty().nand(Collections.emptyList(), EnumAnalysisMode.PARALLEL).isEmpty().isOK());
+        assertTrue(Assertor.that(text).isEmpty().nand(Collections.emptyList(), EnumAnalysisMode.PARALLEL).isNotEmpty().isOK());
 
         assertFalse(Assertor.that(text).isEmpty().nand(Collections.emptyMap()).isEmpty().isOK());
         assertTrue(Assertor.that(text).isEmpty().nand(Collections.emptyMap()).isNotEmpty().isOK());
+        assertFalse(Assertor.that(text).isEmpty().nand(Collections.emptyMap(), EnumAnalysisMode.STREAM).isEmpty().isOK());
+        assertTrue(Assertor.that(text).isEmpty().nand(Collections.emptyMap(), EnumAnalysisMode.STREAM).isNotEmpty().isOK());
+        assertFalse(Assertor.that(text).isEmpty().nand(Collections.emptyMap(), EnumAnalysisMode.PARALLEL).isEmpty().isOK());
+        assertTrue(Assertor.that(text).isEmpty().nand(Collections.emptyMap(), EnumAnalysisMode.PARALLEL).isNotEmpty().isOK());
 
         assertFalse(Assertor.that(text).isEmpty().nand((Object) 0).isNotNull().isOK());
         assertTrue(Assertor.that(text).isEmpty().nand((Object) 0).isNull().isOK());
@@ -239,6 +292,8 @@ public class PredicateStepOperatorTest extends AbstractTest {
     public void testNor() {
         final String text = "text";
         assertTrue(Assertor.that(text).isEmpty().nor().isNotBlank().isOK());
+        assertTrue(Assertor.that(text).isNotEmpty().nor().isBlank().isOK());
+        assertTrue(Assertor.that(text).isEmpty().nor().isBlank().isOK());
 
         assertTrue(Assertor.that(text).isEmpty().nor(true).isTrue().isOK());
         assertTrue(Assertor.that(text).isEmpty().nor(true).isFalse().isOK());
@@ -263,12 +318,24 @@ public class PredicateStepOperatorTest extends AbstractTest {
 
         assertTrue(Assertor.that(text).isEmpty().nor(new String[] {}).isEmpty().isOK());
         assertTrue(Assertor.that(text).isEmpty().nor(new String[] {}).isNotEmpty().isOK());
+        assertTrue(Assertor.that(text).isEmpty().nor(new String[] {}, EnumAnalysisMode.STREAM).isEmpty().isOK());
+        assertTrue(Assertor.that(text).isEmpty().nor(new String[] {}, EnumAnalysisMode.STREAM).isNotEmpty().isOK());
+        assertTrue(Assertor.that(text).isEmpty().nor(new String[] {}, EnumAnalysisMode.PARALLEL).isEmpty().isOK());
+        assertTrue(Assertor.that(text).isEmpty().nor(new String[] {}, EnumAnalysisMode.PARALLEL).isNotEmpty().isOK());
 
         assertTrue(Assertor.that(text).isEmpty().nor(Collections.emptyList()).isEmpty().isOK());
         assertTrue(Assertor.that(text).isEmpty().nor(Collections.emptyList()).isNotEmpty().isOK());
+        assertTrue(Assertor.that(text).isEmpty().nor(Collections.emptyList(), EnumAnalysisMode.STREAM).isEmpty().isOK());
+        assertTrue(Assertor.that(text).isEmpty().nor(Collections.emptyList(), EnumAnalysisMode.STREAM).isNotEmpty().isOK());
+        assertTrue(Assertor.that(text).isEmpty().nor(Collections.emptyList(), EnumAnalysisMode.PARALLEL).isEmpty().isOK());
+        assertTrue(Assertor.that(text).isEmpty().nor(Collections.emptyList(), EnumAnalysisMode.PARALLEL).isNotEmpty().isOK());
 
         assertTrue(Assertor.that(text).isEmpty().nor(Collections.emptyMap()).isEmpty().isOK());
         assertTrue(Assertor.that(text).isEmpty().nor(Collections.emptyMap()).isNotEmpty().isOK());
+        assertTrue(Assertor.that(text).isEmpty().nor(Collections.emptyMap(), EnumAnalysisMode.STREAM).isEmpty().isOK());
+        assertTrue(Assertor.that(text).isEmpty().nor(Collections.emptyMap(), EnumAnalysisMode.STREAM).isNotEmpty().isOK());
+        assertTrue(Assertor.that(text).isEmpty().nor(Collections.emptyMap(), EnumAnalysisMode.PARALLEL).isEmpty().isOK());
+        assertTrue(Assertor.that(text).isEmpty().nor(Collections.emptyMap(), EnumAnalysisMode.PARALLEL).isNotEmpty().isOK());
 
         assertTrue(Assertor.that(text).isEmpty().nor((Object) 0).isNotNull().isOK());
         assertTrue(Assertor.that(text).isEmpty().nor((Object) 0).isNull().isOK());
@@ -289,6 +356,10 @@ public class PredicateStepOperatorTest extends AbstractTest {
     public void test() {
         // "true" and "OR" => true (collections preconditions are invalid, but
         // aren't checked because of previous check)
-        Assertor.that(true).isTrue().or(Collections.emptyList()).contains("test").orElseThrow(JUNIT_THROWABLE);
+        try {
+            Assertor.that(true).isTrue().or(Collections.emptyList()).contains("test").orElseThrow(JUNIT_THROWABLE);
+        } catch (AssertionError e) {
+            fail(e.getMessage());
+        }
     }
 }

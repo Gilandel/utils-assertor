@@ -58,7 +58,7 @@ public class AssertorEnumTest extends AbstractTest {
      */
     @Test
     public void testHasName() {
-        StepAssertor<EnumChar> assertorResult = new StepAssertor<>(EnumChar.ASTERISK, EnumType.ENUMERATION);
+        StepAssertor<EnumChar> assertorResult = new StepAssertor<>(EnumChar.ASTERISK, EnumType.ENUMERATION, null);
         assertTrue(AssertorEnum.hasName(assertorResult, "ASTERISK", null).getChecker().test(EnumChar.ASTERISK, false));
 
         try {
@@ -129,6 +129,11 @@ public class AssertorEnumTest extends AbstractTest {
         } catch (IllegalArgumentException e) {
             fail("The test isn't correct");
         }
+
+        assertException(() -> {
+            Assertor.that(EnumOperator.OR).hasOrdinal(100).orElseThrow("not correct");
+            fail();
+        }, IllegalArgumentException.class, "not correct");
 
         assertException(() -> {
             Assertor.that(EnumOperator.OR).hasOrdinal(0).orElseThrow("not correct");

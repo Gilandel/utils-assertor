@@ -47,7 +47,7 @@ public class AssertorCharSequenceOKPerf extends AbstractMicrobenchmark {
      * Test method for {@link AssertorCharSequence}.
      */
     @Benchmark
-    public void assertorCharSequenceOKPerf() {
+    public void assertorCharSequenceOKAssertorPerf() {
         Assertor.that("text").contains("ex").isOK();
         Assertor.that("text").contains("ex").getErrors();
         Assertor.that("text").contains("ex").orElseThrow();
@@ -63,6 +63,28 @@ public class AssertorCharSequenceOKPerf extends AbstractMicrobenchmark {
 
         Assertor.that("text").matches("t[a-f]x[tT]").isOK();
         Assertor.that("text").matches(P2).isOK();
+    }
+
+    /**
+     * Test method for {@link AssertorCharSequence}.
+     */
+    @Benchmark
+    public void assertorCharSequenceOKBasicPerf() {
+        "text".contains("ex");
+        "text".contains("ex");
+        "text".contains("ex");
+
+        "text".startsWith("ex");
+        "text".toUpperCase().startsWith("ex".toUpperCase());
+
+        "text".endsWith("ex");
+        "text".toUpperCase().endsWith("ex".toUpperCase());
+
+        Pattern.compile("[ft]").matcher("text").find();
+        P1.matcher("text").find();
+
+        Pattern.compile("t[a-f]x[tT]").matcher("text").matches();
+        P2.matcher("text").matches();
     }
 
     @Test

@@ -14,8 +14,12 @@ package fr.landel.utils.assertor;
 
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.Spliterator;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.collections4.MapUtils;
@@ -49,7 +53,8 @@ public class AssertorMap extends ConstantsAssertor {
      *            the {@link Map} value elements type
      * @return the next step
      */
-    protected static <K, V> StepAssertor<Map<K, V>> hasSize(final StepAssertor<Map<K, V>> step, final int size, final MessageAssertor message) {
+    protected static <K, V> StepAssertor<Map<K, V>> hasSize(final StepAssertor<Map<K, V>> step, final int size,
+            final MessageAssertor message) {
 
         final Predicate<Map<K, V>> preChecker = (map) -> size >= 0 && map != null;
 
@@ -140,8 +145,8 @@ public class AssertorMap extends ConstantsAssertor {
      * {@code keys} entries
      * 
      * <p>
-     * precondition: neither {@link Map} and {@code keys} can be {@code null}
-     * or empty
+     * precondition: neither {@link Map} and {@code keys} can be {@code null} or
+     * empty
      * </p>
      * 
      * @param step
@@ -193,8 +198,8 @@ public class AssertorMap extends ConstantsAssertor {
      * {@code keys} entries
      * 
      * <p>
-     * precondition: neither {@link Map} and {@code keys} can be {@code null}
-     * or empty
+     * precondition: neither {@link Map} and {@code keys} can be {@code null} or
+     * empty
      * </p>
      * 
      * @param step
@@ -235,7 +240,8 @@ public class AssertorMap extends ConstantsAssertor {
      *            the {@link Map} value elements type
      * @return the next step
      */
-    protected static <K, V> StepAssertor<Map<K, V>> contains(final StepAssertor<Map<K, V>> step, final K key, final MessageAssertor message) {
+    protected static <K, V> StepAssertor<Map<K, V>> contains(final StepAssertor<Map<K, V>> step, final K key,
+            final MessageAssertor message) {
 
         final Predicate<Map<K, V>> preChecker = (map) -> MapUtils.isNotEmpty(map);
 
@@ -282,7 +288,7 @@ public class AssertorMap extends ConstantsAssertor {
 
         final Predicate<Map<K, V>> preChecker = (map) -> MapUtils.isNotEmpty(map) && !IterableUtils.isEmpty(keys);
 
-        final BiPredicate<Map<K, V>, Boolean> checker = (map, not) -> AssertorMap.contains(map, keys, all, not);
+        final BiPredicate<Map<K, V>, Boolean> checker = (map, not) -> AssertorMap.contains(map, keys, all, not, step.getAnalysisMode());
 
         return new StepAssertor<>(step, preChecker, checker, true, message, key, false, new ParameterAssertor<>(keys, EnumType.ITERABLE));
     }
@@ -292,28 +298,49 @@ public class AssertorMap extends ConstantsAssertor {
 
         final Predicate<Map<K, V>> preChecker = (map1) -> MapUtils.isNotEmpty(map1) && MapUtils.isNotEmpty(map);
 
-        final BiPredicate<Map<K, V>, Boolean> checker = (map1, not) -> AssertorMap.contains(map1, map, all, not);
+        final BiPredicate<Map<K, V>, Boolean> checker = (map1, not) -> AssertorMap.contains(map1, map, all, not, step.getAnalysisMode());
 
         return new StepAssertor<>(step, preChecker, checker, true, message, key, false, new ParameterAssertor<>(map, EnumType.MAP));
     }
 
-    private static <K, V> boolean contains(final Map<K, V> map, final Iterable<K> keys, final boolean all, final boolean not) {
-        int found = 0;
-        for (K key : keys) {
-            if (map.containsKey(key)) {
-                found++;
+    private static <K, V> boolean contains(final Map<K, V> map, final Iterable<K> keys, final boolean all, final boolean not,
+            final EnumAnalysisMode analysisMode) {
+        long found = 0;
+
+        final Spliterator<K> spliterator = keys.spliterator();
+        if (EnumAnalysisMode.STANDARD.equals(analysisMode)) {
+            for (K key : keys) {
+                if (map.containsKey(key)) {
+                    ++found;
+                }
             }
+        } else {
+            found = StreamSupport.stream(spliterator, EnumAnalysisMode.PARALLEL.equals(analysisMode)).filter(o -> map.containsKey(o))
+                    .count();
         }
 
         return HelperAssertor.isValid(all, not, found, IterableUtils.size(keys));
     }
 
-    private static <K, V> boolean contains(final Map<K, V> map, final Map<K, V> objects, final boolean all, final boolean not) {
-        int found = 0;
-        for (Entry<K, V> entry : objects.entrySet()) {
-            if (AssertorMap.contains(map, entry.getKey(), entry.getValue())) {
-                found++;
+    private static <K, V> boolean contains(final Map<K, V> map, final Map<K, V> objects, final boolean all, final boolean not,
+            final EnumAnalysisMode analysisMode) {
+        long found = 0;
+
+        final Set<Entry<K, V>> entries = objects.entrySet();
+        if (EnumAnalysisMode.STANDARD.equals(analysisMode)) {
+            for (Entry<K, V> entry : entries) {
+                if (AssertorMap.contains(map, entry.getKey(), entry.getValue())) {
+                    ++found;
+                }
             }
+        } else {
+            final Stream<Entry<K, V>> stream;
+            if (EnumAnalysisMode.PARALLEL.equals(analysisMode)) {
+                stream = entries.parallelStream();
+            } else {
+                stream = entries.stream();
+            }
+            found = stream.filter(e -> AssertorMap.contains(map, e.getKey(), e.getValue())).count();
         }
 
         return HelperAssertor.isValid(all, not, found, objects.size());
@@ -322,10 +349,10 @@ public class AssertorMap extends ConstantsAssertor {
     private static <K, V> boolean contains(final Map<K, V> map, final K key, final V value) {
         if (map.containsKey(key)) {
             V val = map.get(key);
-            if (val != null && val.equals(value)) {
-                return true;
-            } else if (val == null && value == null) {
-                return true;
+            if (val != null) {
+                return val.equals(value);
+            } else {
+                return value == null;
             }
         }
         return false;
