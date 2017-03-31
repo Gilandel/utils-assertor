@@ -586,7 +586,7 @@ public class Assertor {
      * 
      * @return the predicate assertor for {@link Calendar}
      */
-    public static PredicateAssertorDate matcherCalendar() {
+    public static PredicateAssertorCalendar matcherCalendar() {
         return matcherCalendar(null);
     }
 
@@ -597,7 +597,7 @@ public class Assertor {
      *            the preferred analysis mode
      * @return the predicate assertor for {@link Calendar}
      */
-    public static PredicateAssertorDate matcherCalendar(final EnumAnalysisMode analysisMode) {
+    public static PredicateAssertorCalendar matcherCalendar(final EnumAnalysisMode analysisMode) {
         return () -> new StepAssertor<>(EnumType.CALENDAR, analysisMode);
     }
 
@@ -742,7 +742,7 @@ public class Assertor {
      *            the type of array elements
      * @return the predicate assertor for array
      */
-    public static <T> PredicateAssertorArray<T[]> matcherArray(final Class<T> type) {
+    public static <T> PredicateAssertorArray<T> matcherArray(final Class<T> type) {
         return matcherArray(type, null);
     }
 
@@ -757,7 +757,7 @@ public class Assertor {
      *            the type of array elements
      * @return the predicate assertor for array
      */
-    public static <T> PredicateAssertorArray<T[]> matcherArray(final Class<T> type, final EnumAnalysisMode analysisMode) {
+    public static <T> PredicateAssertorArray<T> matcherArray(final Class<T> type, final EnumAnalysisMode analysisMode) {
         Objects.requireNonNull(type);
         return () -> new StepAssertor<>(EnumType.ARRAY, analysisMode);
     }
