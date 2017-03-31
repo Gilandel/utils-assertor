@@ -17,10 +17,25 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 /**
- * The base class to start an assertor chain. The 'that' method is defined here
- * for all managed types.
+ * The base class to start an assertor chain. The 'that' and 'matcher...'
+ * methods are defined here for all managed types.
+ * 
+ * <p>
+ * "Assertor.that" creates a validator for the specified value.
+ * "Assertor.matcher..." creates a validator that can be used later with "on"
+ * method.
+ * </p>
+ * 
+ * <pre>
+ * Assertor.that(12).isGT(10).orElseThrow();
+ * 
+ * PredicateStepNumber&lt;Integer&gt; predicate = Assertor.matcherNumber(Integer.class).isGT(10);
+ * // ...
+ * predicate.that(12).orElseThrow();
+ * </pre>
  * 
  * <p>
  * Global locale can also be defined here. The locale will be used for decimal
@@ -403,6 +418,378 @@ public class Assertor {
      */
     public static <T extends Throwable> PredicateAssertorThrowable<T> that(final T throwable, final EnumAnalysisMode analysisMode) {
         return () -> new StepAssertor<>(throwable, EnumType.THROWABLE, analysisMode);
+    }
+
+    /**
+     * Create a predicate Assertor for {@link Object} Matcher
+     * 
+     * @param type
+     *            the object type
+     * @param <S>
+     *            the type of predicate step
+     * @param <T>
+     *            the type of object
+     * @return the predicate assertor for {@link Object}
+     */
+    public static <S extends PredicateStep<S, T>, T> PredicateAssertor<S, T> matcherObject(final Class<T> type) {
+        return matcherObject(type, null);
+    }
+
+    /**
+     * Create a predicate Assertor for {@link Object} Matcher
+     * 
+     * @param type
+     *            the object type
+     * @param <S>
+     *            the type of predicate step
+     * @param <T>
+     *            the type of object
+     * @param analysisMode
+     *            the preferred analysis mode
+     * @return the predicate assertor for {@link Object}
+     */
+    public static <S extends PredicateStep<S, T>, T> PredicateAssertor<S, T> matcherObject(final Class<T> type,
+            final EnumAnalysisMode analysisMode) {
+        return () -> new StepAssertor<>(EnumType.getTypeFromClass(Objects.requireNonNull(type), null), analysisMode);
+    }
+
+    /**
+     * Create a predicate Assertor for {@link Number} Matcher
+     * 
+     * @param type
+     *            the checked object type
+     * @param <N>
+     *            the number type
+     * @return the predicate assertor for {@link Number}
+     */
+    public static <N extends Number & Comparable<N>> PredicateAssertorNumber<N> matcherNumber(final Class<N> type) {
+        return matcherNumber(type, null);
+    }
+
+    /**
+     * Create a predicate Assertor for {@link Number} Matcher
+     * 
+     * @param type
+     *            the checked object type
+     * @param analysisMode
+     *            the preferred analysis mode
+     * @param <N>
+     *            the number type
+     * @return the predicate assertor for {@link Number}
+     */
+    public static <N extends Number & Comparable<N>> PredicateAssertorNumber<N> matcherNumber(final Class<N> type,
+            final EnumAnalysisMode analysisMode) {
+        return () -> new StepAssertor<>(EnumType.getTypeFromClass(Objects.requireNonNull(type), null), analysisMode);
+    }
+
+    /**
+     * Create a predicate Assertor for {@link Class} Matcher
+     * 
+     * @param type
+     *            the type of class
+     * @param <T>
+     *            the type of class
+     * @return the predicate assertor for {@link Class}
+     */
+    public static <T> PredicateAssertorClass<T> matcherClass(final Class<T> type) {
+        return matcherClass(type, null);
+    }
+
+    /**
+     * Create a predicate Assertor for {@link Class} Matcher
+     * 
+     * @param type
+     *            the type of class
+     * @param analysisMode
+     *            the preferred analysis mode
+     * @param <T>
+     *            the type of class
+     * @return the predicate assertor for {@link Class}
+     */
+    public static <T> PredicateAssertorClass<T> matcherClass(final Class<T> type, final EnumAnalysisMode analysisMode) {
+        Objects.requireNonNull(type);
+        return () -> new StepAssertor<>(EnumType.CLASS, analysisMode);
+    }
+
+    /**
+     * Create a predicate Assertor for {@link CharSequence} Matcher
+     * 
+     * @param type
+     *            the type of char sequence
+     * @param <T>
+     *            the type of char sequence
+     * @return the predicate assertor for {@link CharSequence}
+     */
+    public static <T extends CharSequence> PredicateAssertorCharSequence<T> matcherCharSequence(final Class<T> type) {
+        return matcherCharSequence(type, null);
+    }
+
+    /**
+     * Create a predicate Assertor for {@link CharSequence} Matcher
+     * 
+     * @param type
+     *            the type of char sequence
+     * @param analysisMode
+     *            the preferred analysis mode
+     * @param <T>
+     *            the type of char sequence
+     * @return the predicate assertor for {@link CharSequence}
+     */
+    public static <T extends CharSequence> PredicateAssertorCharSequence<T> matcherCharSequence(final Class<T> type,
+            final EnumAnalysisMode analysisMode) {
+        Objects.requireNonNull(type);
+        return () -> new StepAssertor<>(EnumType.CHAR_SEQUENCE, analysisMode);
+    }
+
+    /**
+     * Create a predicate Assertor for {@link Boolean} Matcher
+     * 
+     * @return the predicate assertor for {@link Boolean}
+     */
+    public static PredicateAssertorBoolean matcherBoolean() {
+        return matcherBoolean(null);
+    }
+
+    /**
+     * Create a predicate Assertor for {@link Boolean} Matcher
+     * 
+     * @param analysisMode
+     *            the preferred analysis mode
+     * @return the predicate assertor for {@link Boolean}
+     */
+    public static PredicateAssertorBoolean matcherBoolean(final EnumAnalysisMode analysisMode) {
+        return () -> new StepAssertor<>(EnumType.BOOLEAN, analysisMode);
+    }
+
+    /**
+     * Create a predicate Assertor for {@link Date} Matcher
+     * 
+     * @return the predicate assertor for {@link Date}
+     */
+    public static PredicateAssertorDate matcherDate() {
+        return matcherDate(null);
+    }
+
+    /**
+     * Create a predicate Assertor for {@link Date} Matcher
+     * 
+     * @param analysisMode
+     *            the preferred analysis mode
+     * @return the predicate assertor for {@link Date}
+     */
+    public static PredicateAssertorDate matcherDate(final EnumAnalysisMode analysisMode) {
+        return () -> new StepAssertor<>(EnumType.DATE, analysisMode);
+    }
+
+    /**
+     * Create a predicate Assertor for {@link Calendar} Matcher
+     * 
+     * @return the predicate assertor for {@link Calendar}
+     */
+    public static PredicateAssertorDate matcherCalendar() {
+        return matcherCalendar(null);
+    }
+
+    /**
+     * Create a predicate Assertor for {@link Calendar} Matcher
+     * 
+     * @param analysisMode
+     *            the preferred analysis mode
+     * @return the predicate assertor for {@link Calendar}
+     */
+    public static PredicateAssertorDate matcherCalendar(final EnumAnalysisMode analysisMode) {
+        return () -> new StepAssertor<>(EnumType.CALENDAR, analysisMode);
+    }
+
+    /**
+     * Create a predicate Assertor for {@link Enum} Matcher
+     * 
+     * @param type
+     *            the type of enumeration
+     * @param <E>
+     *            the type of enumeration
+     * @return the predicate assertor for {@link Enum}
+     */
+    public static <E extends Enum<E>> PredicateAssertorEnum<E> matcherEnum(final Class<E> type) {
+        return matcherEnum(type, null);
+    }
+
+    /**
+     * Create a predicate Assertor for {@link Enum} Matcher
+     * 
+     * @param type
+     *            the type of enumeration
+     * @param analysisMode
+     *            the preferred analysis mode
+     * @param <E>
+     *            the type of enumeration
+     * @return the predicate assertor for {@link Enum}
+     */
+    public static <E extends Enum<E>> PredicateAssertorEnum<E> matcherEnum(final Class<E> type, final EnumAnalysisMode analysisMode) {
+        Objects.requireNonNull(type);
+        return () -> new StepAssertor<>(EnumType.ENUMERATION, analysisMode);
+    }
+
+    /**
+     * Create a predicate Assertor for {@link Iterable} Matcher
+     * 
+     * @param type
+     *            the type of iterable
+     * @param <I>
+     *            the type of iterable
+     * @param <T>
+     *            the type of iterable elements
+     * @return the predicate assertor for {@link Iterable}
+     */
+    public static <I extends Iterable<T>, T> PredicateAssertorIterable<I, T> matcherIterable(final Class<I> type) {
+        return matcherIterable(type, null);
+    }
+
+    /**
+     * Create a predicate Assertor for {@link Iterable} Matcher
+     * 
+     * @param type
+     *            the type of iterable
+     * @param analysisMode
+     *            the preferred analysis mode
+     * @param <I>
+     *            the type of iterable
+     * @param <T>
+     *            the type of iterable elements
+     * @return the predicate assertor for {@link Iterable}
+     */
+    public static <I extends Iterable<T>, T> PredicateAssertorIterable<I, T> matcherIterable(final Class<I> type,
+            final EnumAnalysisMode analysisMode) {
+        Objects.requireNonNull(type);
+        return () -> new StepAssertor<>(EnumType.ITERABLE, analysisMode);
+    }
+
+    /**
+     * Create a predicate Assertor for {@link Map} Matcher
+     * 
+     * @param keyType
+     *            the type of keys
+     * @param valueType
+     *            the type of values
+     * @param <K>
+     *            the type of keys in map
+     * @param <V>
+     *            the type of values in map
+     * @return the predicate assertor for {@link Map}
+     */
+    public static <K, V> PredicateAssertorMap<K, V> matcherMap(final Class<K> keyType, final Class<V> valueType) {
+        return matcherMap(keyType, valueType, null);
+    }
+
+    /**
+     * Create a predicate Assertor for {@link Map} Matcher
+     * 
+     * @param keyType
+     *            the type of keys
+     * @param valueType
+     *            the type of values
+     * @param analysisMode
+     *            the preferred analysis mode
+     * @param <K>
+     *            the type of keys in map
+     * @param <V>
+     *            the type of values in map
+     * @return the predicate assertor for {@link Map}
+     */
+    public static <K, V> PredicateAssertorMap<K, V> matcherMap(final Class<K> keyType, final Class<V> valueType,
+            final EnumAnalysisMode analysisMode) {
+        Objects.requireNonNull(keyType);
+        Objects.requireNonNull(valueType);
+        return () -> new StepAssertor<>(EnumType.MAP, analysisMode);
+    }
+
+    /**
+     * Create a predicate Assertor for {@link Temporal} Matcher
+     * 
+     * @param type
+     *            the type of temporal
+     * @param <T>
+     *            the type of temporal
+     * @return the predicate assertor for {@link Temporal}
+     */
+    public static <T extends Temporal & Comparable<T>> PredicateAssertorTemporal<T> matcherTemporal(final Class<T> type) {
+        return matcherTemporal(type, null);
+    }
+
+    /**
+     * Create a predicate Assertor for {@link Temporal} Matcher
+     * 
+     * @param type
+     *            the type of temporal
+     * @param analysisMode
+     *            the preferred analysis mode
+     * @param <T>
+     *            the type of temporal
+     * @return the predicate assertor for {@link Temporal}
+     */
+    public static <T extends Temporal & Comparable<T>> PredicateAssertorTemporal<T> matcherTemporal(final Class<T> type,
+            final EnumAnalysisMode analysisMode) {
+        Objects.requireNonNull(type);
+        return () -> new StepAssertor<>(EnumType.TEMPORAL, analysisMode);
+    }
+
+    /**
+     * Create a predicate Assertor for array Matcher
+     * 
+     * @param type
+     *            the type of array elements
+     * @param <T>
+     *            the type of array elements
+     * @return the predicate assertor for array
+     */
+    public static <T> PredicateAssertorArray<T[]> matcherArray(final Class<T> type) {
+        return matcherArray(type, null);
+    }
+
+    /**
+     * Create a predicate Assertor for array Matcher
+     * 
+     * @param type
+     *            the type of array elements
+     * @param analysisMode
+     *            the preferred analysis mode
+     * @param <T>
+     *            the type of array elements
+     * @return the predicate assertor for array
+     */
+    public static <T> PredicateAssertorArray<T[]> matcherArray(final Class<T> type, final EnumAnalysisMode analysisMode) {
+        Objects.requireNonNull(type);
+        return () -> new StepAssertor<>(EnumType.ARRAY, analysisMode);
+    }
+
+    /**
+     * Create a predicate Assertor for {@link Throwable} Matcher
+     * 
+     * @param type
+     *            the type of throwable
+     * @param <T>
+     *            the type of throwable
+     * @return the predicate assertor for {@link Throwable}
+     */
+    public static <T extends Throwable> PredicateAssertorThrowable<T> matcherThrowable(final Class<T> type) {
+        return matcherThrowable(type, null);
+    }
+
+    /**
+     * Create a predicate Assertor for {@link Throwable} Matcher
+     * 
+     * @param type
+     *            the type of throwable
+     * @param analysisMode
+     *            the preferred analysis mode
+     * @param <T>
+     *            the type of throwable
+     * @return the predicate assertor for {@link Throwable}
+     */
+    public static <T extends Throwable> PredicateAssertorThrowable<T> matcherThrowable(final Class<T> type,
+            final EnumAnalysisMode analysisMode) {
+        Objects.requireNonNull(type);
+        return () -> new StepAssertor<>(EnumType.THROWABLE, analysisMode);
     }
 
     /**

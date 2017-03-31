@@ -12,10 +12,13 @@
  */
 package fr.landel.utils.assertor;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.awt.Color;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -24,6 +27,7 @@ import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
+import fr.landel.utils.commons.CastUtils;
 import fr.landel.utils.commons.expect.Expect;
 
 /**
@@ -100,5 +104,39 @@ public class AssertMatcherTest extends AbstractTest {
         colors.add(Color.CYAN);
 
         Assertor.that(colors).validates((object) -> Matchers.hasSize(colors.size() - 1).matches(object)).orElseThrow();
+    }
+
+    /**
+     * Test for method {@link PredicateStep#that(Object)}
+     */
+    @Test
+    public void testMatches() {
+        final PredicateStepNumber<Integer> predicate = Assertor.matcherNumber(Integer.class).isGT(13);
+
+        assertTrue(predicate.that(158).isOK());
+        assertFalse(predicate.that(12).isOK());
+        assertTrue(predicate.that(158).isOK());
+
+        Assertor.matcherNumber(Integer.class).isGT(13).and(Assertor.matcherNumber(Integer.class).isGT(10)).and().isEqual(11).that(15).isOK();
+        Assertor.matcherNumber(Integer.class).isGT(13).and(Assertor.matcherNumber(Long.class).isGT(18L)).and().isEqual(11).that(15).isOK();
+
+        Assertor.matcherThrowable(IOException.class).hasCauseAssignableFrom(Void.class, false);
+
+        Assertor.matcherIterable(CastUtils.getTypedListClass(String.class)).contains("");
+
+        assertException(() -> {
+            Assertor.that(15).isGT(13).that(15).isOK();
+        }, UnsupportedOperationException.class);
+
+        assertException(() -> {
+            Assertor.matcherNumber(Integer.class).isGT(13).and(11).isEqual(11).that(15).isOK();
+        }, UnsupportedOperationException.class);
+
+        assertException(() -> {
+            Assertor.matcherNumber(Integer.class).isGT(13).and(Assertor.that(12).isGT(10)).and().isEqual(11).that(15).isOK();
+        }, UnsupportedOperationException.class);
+
+        final Matcher<Integer> matcher = new AssertorMatcher<>(predicate);
+        assertThat(158, matcher);
     }
 }

@@ -304,7 +304,7 @@ Messages are only generated when it's required, if assertion is in error:
 - `orElseThrow(Supplier<E> exceptionSupplier)` -> doesn't generate the error message, throws the provided one
 - `orElseThrow(E exception)` -> doesn't generate the error message, throws the provided one
 - `orElseThrow(E exception, boolean injectSuppressed)` -> generates the error message if 'injectSuppressed' is set to 'true'
-- `orElseThrow(BiFunction<CharSequence, Object[], E> exceptionBuilder)` -> generates the error message and inject it in the provided lambda
+- `orElseThrow(BiFunction<CharSequence, Object[], E> exceptionBuilder)` -> generates the error message and injects it in the provided lambda
 - `isOK()` -> doesn't generate the error message, returns 'false'
 - `getErrors()` -> generates the error message
 - `get()` -> doesn't generate the error message, returns the checked variable as an 'Optional'

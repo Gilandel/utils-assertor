@@ -49,5 +49,15 @@ public enum EnumStep {
     /**
      * Include a sub assertion
      */
-    SUB;
+    SUB,
+
+    /**
+     * To create an Assertor chain for Matcher
+     */
+    MATCHER,
+
+    /**
+     * The matcher object
+     */
+    MATCHER_OBJECT;
 }
