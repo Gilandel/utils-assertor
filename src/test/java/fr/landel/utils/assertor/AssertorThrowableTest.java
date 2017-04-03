@@ -308,6 +308,9 @@ public class AssertorThrowableTest extends AbstractTest {
         assertTrue(Assertor.that(ecmm).not().hasCauseInstanceOf(IllegalArgumentException.class, pattern, true).isOK());
         assertTrue(Assertor.that(ecmm).not().hasCauseInstanceOf(Exception.class, patternError, true).isOK());
 
+        assertTrue(Assertor.that(ecmm).not().hasCauseInstanceOf(IllegalArgumentException.class, "msg", true).isOK());
+        assertTrue(Assertor.that(ecmm).not().hasCauseInstanceOf(Exception.class, "message", true).isOK());
+
         assertFalse(Assertor.that(ecm).hasCauseInstanceOf(Exception.class, "msg", true).isOK());
         assertTrue(Assertor.that(ecmm).hasCauseInstanceOf(Exception.class, "msg", true, "error").isOK());
         assertTrue(Assertor.that(ecmm).hasCauseInstanceOf(Exception.class, "msg", true, Locale.US, "error").isOK());
@@ -408,6 +411,10 @@ public class AssertorThrowableTest extends AbstractTest {
 
         assertTrue(Assertor.that(ec).not().hasCauseAssignableFrom(IOException.class, patternError, true).isOK());
         assertTrue(Assertor.that(ec).not().hasCauseAssignableFrom(IOException.class, pattern, true).isOK());
+
+        assertTrue(Assertor.that(emem).not().hasCauseAssignableFrom(IllegalArgumentException.class, "msg", true).isOK());
+        assertTrue(Assertor.that(emem).not().hasCauseAssignableFrom(Exception.class, "message", true).isOK());
+
         assertTrue(Assertor.that(emem).not().hasCauseAssignableFrom(IOException.class, patternError, true).isOK());
         assertTrue(Assertor.that(emem).hasCauseAssignableFrom(IOException.class, pattern, true).isOK());
         assertTrue(Assertor.that(emem).not().hasCauseAssignableFrom(IllegalArgumentException.class, pattern, true).isOK());

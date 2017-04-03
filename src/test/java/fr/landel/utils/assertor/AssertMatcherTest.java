@@ -129,7 +129,8 @@ public class AssertMatcherTest extends AbstractTest {
 
         Assertor.matcherBoolean().isFalse().that(false).orElseThrow(JUNIT_THROWABLE);
         Assertor.matcherCharSequence(String.class).startsWith("t").that("test").orElseThrow(JUNIT_THROWABLE);
-        Assertor.matcherThrowable(IOException.class).hasCauseAssignableFrom(Void.class, false);
+        Assertor.matcherThrowable(IOException.class).hasCauseAssignableFrom(IllegalArgumentException.class, false)
+                .that(new IOException(new IllegalArgumentException())).orElseThrow(JUNIT_THROWABLE);
         Assertor.matcherArray(String.class).hasLength(1).that(new String[] {""}).orElseThrow(JUNIT_THROWABLE);
         Assertor.matcherIterable(CastUtils.getTypedListClass(String.class)).contains("").that(Arrays.asList(""))
                 .orElseThrow(JUNIT_THROWABLE);

@@ -157,7 +157,9 @@ Work progress:
 
 ## Description
 
-This module allows to assert parameters.
+This library allows to assert parameters, and by the way, facilitates 'fail fast' development.
+Original idea is based on the version of Assert provided by the Spring Team.
+This version supports more types and is based on Java 8 lambda to improve performance in validation (avoid unnecessary validation) and in generating error message (`String.format()` is very cool but has not great performance, so this code avoids message generation if not requested).
 
 For now it manages:
 - Object (all other objects)
@@ -176,6 +178,17 @@ For now it manages:
 ### Structure
 
 All assertions start with  `Assertor.that(object)` and following the type of the object, some methods are available.
+```java
+Assertor.that(strParam).isEmpty().or().startsWith("prefix").orElseThrow();
+```
+
+A second versions, to start, exists through `Assertor.matcher*`, this version allows to create a predicate without the object to check.
+The aim is to create a predicate and returns it from a function or to improve performance by preparing a global predicate. 
+```java
+PredicateStepNumber<Integer> predicate = Assertor.matcherNumber(Integer.class).isGT(1);
+// ...
+predicate.that(num).orElseThrow();`
+```
 
 Assertions can also start with `Assertor.that(object, analysisMode)` to specify the analysis mode.  
 Three mode are available, for example 'contains' method on map, will prefer, in:
@@ -2881,11 +2894,6 @@ Assertor.that((Exception) null).hasCauseInstanceOf(Exception.class, Pattern.comp
 Assertor.that(new Exception("error")).hasCauseInstanceOf(null, Pattern.compile("^e.*$"), false).orElseThrow(); // -> throws an exception
 Assertor.that(new IOException()).hasCauseInstanceOf(Exception.class, (Pattern) null, false).orElseThrow(); // -> throws an exception
 ```
-
-## TODO
-
-- Allow new extension (change PredicateStep design)
-- Build all messages in one step at the end only if all message locales are same
 
 ## License
 Apache License, version 2.0

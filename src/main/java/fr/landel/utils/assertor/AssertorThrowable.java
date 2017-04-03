@@ -332,7 +332,9 @@ public class AssertorThrowable extends ConstantsAssertor {
 
         final Predicate<T> preChecker = (throwable) -> throwable != null && causeType != null;
 
-        final BiPredicate<T, Boolean> checker = check(resursively, throwable -> causeType.isAssignableFrom(throwable.getClass()));
+        final BiPredicate<T, Boolean> checker = check(resursively, throwable -> {
+            return causeType.isAssignableFrom(throwable.getClass());
+        });
 
         return new StepAssertor<>(step, preChecker, checker, false, message, MSG.THROWABLE.CAUSE_ASSIGNABLE, false,
                 new ParameterAssertor<>(causeType, EnumType.CLASS), new ParameterAssertor<>(resursively, EnumType.BOOLEAN));
@@ -424,7 +426,7 @@ public class AssertorThrowable extends ConstantsAssertor {
                 return false;
             };
         } else {
-            checker = (throwable, not) -> predicate.test(throwable);
+            checker = (throwable, not) -> predicate.test(throwable.getCause());
         }
         return checker;
     }
