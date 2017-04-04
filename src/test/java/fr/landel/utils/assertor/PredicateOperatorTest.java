@@ -12,6 +12,7 @@
  */
 package fr.landel.utils.assertor;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -283,6 +284,8 @@ public class PredicateOperatorTest extends AbstractTest {
         assertFalse(Assertor.that(Color.BLACK).isNull().nand((Object) 0).isNotNull().isOK());
 
         assertFalse(Assertor.that(Color.BLACK).isNotNull().nand(Assertor.that(text).isEmpty()).isOK());
+        assertEquals("the combination 'true' and ' NAND ' is invalid",
+                Assertor.that(Color.BLACK).isNotNull().nand(Assertor.that(text).isEmpty()).getErrors().get());
     }
 
     /**

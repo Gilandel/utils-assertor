@@ -125,6 +125,12 @@ public class HelperAssertorTest extends AbstractTest {
 
         PredicateStepCharSequence<CharSequence> step5 = () -> (StepAssertor<CharSequence>) null;
         assertTrue(Assertor.that("test").isNotBlank().and(step5).isOK());
+
+        // MATCHER (with creation)
+
+        assertException(() -> {
+            HelperAssertor.combine(a, "test", true, false);
+        }, IllegalArgumentException.class);
     }
 
     /**

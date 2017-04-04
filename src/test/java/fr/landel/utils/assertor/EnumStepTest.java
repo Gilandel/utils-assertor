@@ -32,7 +32,7 @@ public class EnumStepTest {
     @Test
     public void test() {
         assertNotNull(EnumStep.values());
-        assertEquals(6, EnumStep.values().length);
+        assertEquals(8, EnumStep.values().length);
 
         assertEquals(EnumStep.CREATION, EnumStep.valueOf("CREATION"));
         assertEquals(EnumStep.CREATION, EnumStep.valueOf(EnumStep.class, "CREATION"));
@@ -49,5 +49,9 @@ public class EnumStepTest {
         assertEquals("ASSERTION", EnumStep.ASSERTION.name());
         assertEquals(5, EnumStep.SUB.ordinal());
         assertEquals("SUB", EnumStep.SUB.name());
+        assertEquals(6, EnumStep.MATCHER.ordinal());
+        assertEquals("MATCHER", EnumStep.MATCHER.name());
+        assertEquals(7, EnumStep.MATCHER_OBJECT.ordinal());
+        assertEquals("MATCHER_OBJECT", EnumStep.MATCHER_OBJECT.name());
     }
 }

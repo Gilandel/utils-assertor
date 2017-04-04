@@ -285,7 +285,7 @@ public class AssertorThrowableTest extends AbstractTest {
      * {@link AssertorThrowable#hasCauseInstanceOf(StepAssertor, java.lang.Class, boolean, MessageAssertor)}.
      */
     @Test
-    public void testHasCauseInstanceOf() {
+    public void testHasCauseInstanceOfOK() {
         final IOException e = new IOException();
         final Exception ec = new Exception(e);
         final Pattern pattern = Pattern.compile("^m.*g$");
@@ -308,6 +308,9 @@ public class AssertorThrowableTest extends AbstractTest {
         assertTrue(Assertor.that(ecmm).not().hasCauseInstanceOf(IllegalArgumentException.class, pattern, true).isOK());
         assertTrue(Assertor.that(ecmm).not().hasCauseInstanceOf(Exception.class, patternError, true).isOK());
 
+        assertTrue(Assertor.that(ecmm).not().hasCauseInstanceOf(IllegalArgumentException.class, "msg", true).isOK());
+        assertTrue(Assertor.that(ecmm).not().hasCauseInstanceOf(Exception.class, "message", true).isOK());
+
         assertFalse(Assertor.that(ecm).hasCauseInstanceOf(Exception.class, "msg", true).isOK());
         assertTrue(Assertor.that(ecmm).hasCauseInstanceOf(Exception.class, "msg", true, "error").isOK());
         assertTrue(Assertor.that(ecmm).hasCauseInstanceOf(Exception.class, "msg", true, Locale.US, "error").isOK());
@@ -327,6 +330,15 @@ public class AssertorThrowableTest extends AbstractTest {
 
         assertTrue(Assertor.that(e).isNotNull().and(Assertor.that(true).isTrue()).and().not()
                 .hasCauseInstanceOf(Color.class, (String) null, true).isOK());
+    }
+
+    /**
+     * Test method for
+     * {@link AssertorThrowable#hasCauseInstanceOf(StepAssertor, java.lang.Class, boolean, MessageAssertor)}.
+     */
+    @Test
+    public void testHasCauseInstanceOfKO() {
+        final Pattern pattern = Pattern.compile("^m.*g$");
 
         assertException(() -> {
             Assertor.that(new Exception()).hasCauseInstanceOf(null, true).orElseThrow();
@@ -390,7 +402,7 @@ public class AssertorThrowableTest extends AbstractTest {
      * {@link AssertorThrowable#hasCauseAssignableFrom(StepAssertor, java.lang.Class, boolean, MessageAssertor)}.
      */
     @Test
-    public void testHasCauseAssignableFrom() {
+    public void testHasCauseAssignableFromOK() {
         final IOException e = new IOException();
         final Exception ec = new Exception(e);
         final Exception emem = new Exception("msg", new IOException("msg"));
@@ -408,6 +420,10 @@ public class AssertorThrowableTest extends AbstractTest {
 
         assertTrue(Assertor.that(ec).not().hasCauseAssignableFrom(IOException.class, patternError, true).isOK());
         assertTrue(Assertor.that(ec).not().hasCauseAssignableFrom(IOException.class, pattern, true).isOK());
+
+        assertTrue(Assertor.that(emem).not().hasCauseAssignableFrom(IllegalArgumentException.class, "msg", true).isOK());
+        assertTrue(Assertor.that(emem).not().hasCauseAssignableFrom(Exception.class, "message", true).isOK());
+
         assertTrue(Assertor.that(emem).not().hasCauseAssignableFrom(IOException.class, patternError, true).isOK());
         assertTrue(Assertor.that(emem).hasCauseAssignableFrom(IOException.class, pattern, true).isOK());
         assertTrue(Assertor.that(emem).not().hasCauseAssignableFrom(IllegalArgumentException.class, pattern, true).isOK());
@@ -434,6 +450,16 @@ public class AssertorThrowableTest extends AbstractTest {
 
         assertTrue(Assertor.that(e).isNotNull().and(Assertor.that(true).isTrue()).and().not()
                 .hasCauseAssignableFrom(Color.class, (String) null, true).isOK());
+
+    }
+
+    /**
+     * Test method for
+     * {@link AssertorThrowable#hasCauseAssignableFrom(StepAssertor, java.lang.Class, boolean, MessageAssertor)}.
+     */
+    @Test
+    public void testHasCauseAssignableFromKO() {
+        final Pattern pattern = Pattern.compile("^m.*g$");
 
         assertException(() -> {
             Assertor.that(new Exception()).hasCauseAssignableFrom(null, true).orElseThrow();

@@ -12,8 +12,10 @@
  */
 package fr.landel.utils.assertor.memory;
 
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.number.OrderingComparison.lessThan;
+import static org.junit.Assert.assertThat;
 
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,6 +65,7 @@ public class MemoryTest extends AbstractTest {
         memory = memory - runtime.freeMemory();
 
         LOGGER.info(String.format("Memory used: %,d bytes", memory));
-        assertTrue(memory < 30_000_000);
+
+        assertThat(memory, Matchers.is(lessThan(30_000_000L)));
     }
 }

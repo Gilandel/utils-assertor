@@ -16,8 +16,11 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.regex.Pattern;
 
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
 import org.junit.ComparisonFailure;
 
+import fr.landel.utils.commons.CastUtils;
 import fr.landel.utils.commons.expect.Expect;
 import fr.landel.utils.commons.function.ThrowableSupplier;
 import fr.landel.utils.commons.function.TriFunction;
@@ -35,7 +38,7 @@ public abstract class AbstractTest extends ConstantsAssertor {
      * Map an {@link IllegalArgumentException} into and {@link AssertionError}
      */
     public static final BiFunction<String, List<ParameterAssertor<?>>, AssertionError> JUNIT_THROWABLE = (message,
-            parameters) -> new AssertionError(message);;
+            parameters) -> new AssertionError(message);
 
     /**
      * Function to manage the creation of Junit exception
@@ -121,5 +124,27 @@ public abstract class AbstractTest extends ConstantsAssertor {
             final Pattern messagePattern) {
 
         Expect.exception(consumer, expectedException, messagePattern, JUNIT_ERROR);
+    }
+
+    public static class AssertorMatcher<T> extends BaseMatcher<T> {
+
+        private final StepAssertor<T> step;
+        private ResultAssertor result;
+
+        public <S extends PredicateStep<S, T>> AssertorMatcher(final PredicateStep<S, T> predicate) {
+            super();
+            this.step = predicate.getStep();
+        }
+
+        @Override
+        public boolean matches(final Object item) {
+            this.result = HelperAssertor.combine(this.step, CastUtils.cast(item), true, true);
+            return this.result.isPrecondition() && this.result.isValid();
+        }
+
+        @Override
+        public void describeTo(final Description description) {
+            description.appendText(this.result.getMessage());
+        }
     }
 }

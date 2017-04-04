@@ -17,6 +17,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
+import fr.landel.utils.commons.CastUtils;
 import fr.landel.utils.commons.NumberUtils;
 
 /**
@@ -117,7 +118,25 @@ public enum EnumType {
     protected static EnumType getType(final Object object) {
         EnumType type = UNKNOWN;
         if (object != null) {
-            final Class<?> clazz = object.getClass();
+            type = getTypeFromClass(CastUtils.getClass(object), object);
+        }
+        return type;
+    }
+
+    /**
+     * Get the type of a class
+     * 
+     * @param clazz
+     *            the class
+     * @param object
+     *            the object (may be {@code null})
+     * @param <T>
+     *            the object type
+     * @return The type or {@link EnumType#UNKNOWN}
+     */
+    protected static <T> EnumType getTypeFromClass(final Class<T> clazz, final T object) {
+        EnumType type = UNKNOWN;
+        if (clazz != null) {
             if (Number.class.isAssignableFrom(clazz)) {
                 if (NumberUtils.isNumberInteger(clazz)) {
                     type = NUMBER_INTEGER;

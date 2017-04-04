@@ -62,13 +62,12 @@ public class StepAssertor<T> implements Serializable {
      */
     private static final long serialVersionUID = -8316517833558101416L;
 
-    private final EnumStep stepType;
-
     private final StepAssertor<?> previousStep;
     private final Optional<StepAssertor<?>> subStep;
 
     private final EnumAnalysisMode analysisMode;
 
+    private final EnumStep stepType;
     private final T object;
     private final EnumType type;
     private final boolean checked;
@@ -148,6 +147,18 @@ public class StepAssertor<T> implements Serializable {
     }
 
     /**
+     * Constructor for matcher {@code Assertor.matcher...}
+     * 
+     * @param type
+     *            the type of object
+     * @param analysisMode
+     *            the analysis preferred mode
+     */
+    public StepAssertor(final EnumType type, final EnumAnalysisMode analysisMode) {
+        this(EnumStep.MATCHER, null, null, null, type, false, null, false, analysisMode);
+    }
+
+    /**
      * Combining constructor, for (NOT operator) (not is set to true)
      *
      * @param previousStep
@@ -155,6 +166,18 @@ public class StepAssertor<T> implements Serializable {
      */
     public StepAssertor(final StepAssertor<T> previousStep) {
         this(EnumStep.NOT, previousStep, null, null, null, false, null, true, previousStep.getAnalysisMode());
+    }
+
+    /**
+     * Combining constructor, for (NOT operator) (not is set to true)
+     *
+     * @param previousStep
+     *            the previous step
+     * @param object
+     *            the object under check
+     */
+    public StepAssertor(final StepAssertor<T> previousStep, final T object) {
+        this(EnumStep.MATCHER_OBJECT, previousStep, null, object, null, false, null, false, previousStep.getAnalysisMode());
     }
 
     /**
@@ -192,7 +215,7 @@ public class StepAssertor<T> implements Serializable {
     }
 
     /**
-     * Standard combining constructor (not is set to false)
+     * Standard combining constructor for sub Assertor (not is set to false)
      *
      * @param previousStep
      *            the previous step

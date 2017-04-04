@@ -11,7 +11,7 @@
 [![Tokei NoFiles](https://tokei.rs/b1/github/Gilandel/utils-assertor?category=files)](https://github.com/Aaronepower/tokei)
 [![Tokei LoComments](https://tokei.rs/b1/github/Gilandel/utils-assertor?category=comments)](https://github.com/Aaronepower/tokei)
 
-Codecov tree & sunburst:
+Codecov tree & sunburst:  
 [![codecov.io tree](https://codecov.io/gh/Gilandel/utils-assertor/branch/master/graphs/tree.svg)](https://codecov.io/gh/Gilandel/utils-assertor/branch/master)
 [![codecov.io sunburst](https://codecov.io/gh/Gilandel/utils-assertor/branch/master/graphs/sunburst.svg)](https://codecov.io/gh/Gilandel/utils-assertor/branch/master)
 
@@ -25,7 +25,7 @@ Work progress:
 <dependency>
 	<groupId>fr.landel.utils</groupId>
 	<artifactId>utils-assertor</artifactId>
-	<version>1.0.3</version>
+	<version>1.0.4</version>
 </dependency>
 ```
 
@@ -157,7 +157,9 @@ Work progress:
 
 ## Description
 
-This module allows to assert parameters.
+This library allows to assert parameters fluently, and by the way, facilitates 'fail fast' development.
+Original idea is based on the version of Assert provided by the Spring Team.
+This version supports more types and is based on Java 8 lambda to improve performance in validation (avoid unnecessary validation) and in generating error message (`String.format()` is very cool but has not great performance, so this code avoids message generation if not requested).
 
 For now it manages:
 - Object (all other objects)
@@ -176,6 +178,17 @@ For now it manages:
 ### Structure
 
 All assertions start with  `Assertor.that(object)` and following the type of the object, some methods are available.
+```java
+Assertor.that(strParam).isEmpty().or().startsWith("prefix").orElseThrow();
+```
+
+A second versions, to start, exists through `Assertor.matcher*`, this version allows to create a predicate without the object to check.
+The aim is to create a predicate and returns it from a function or to improve performance by preparing a global predicate. 
+```java
+PredicateStepNumber<Integer> predicate = Assertor.matcherNumber(Integer.class).isGT(1);
+// ...
+predicate.that(num).orElseThrow();`
+```
 
 Assertions can also start with `Assertor.that(object, analysisMode)` to specify the analysis mode.  
 Three mode are available, for example 'contains' method on map, will prefer, in:
@@ -304,7 +317,7 @@ Messages are only generated when it's required, if assertion is in error:
 - `orElseThrow(Supplier<E> exceptionSupplier)` -> doesn't generate the error message, throws the provided one
 - `orElseThrow(E exception)` -> doesn't generate the error message, throws the provided one
 - `orElseThrow(E exception, boolean injectSuppressed)` -> generates the error message if 'injectSuppressed' is set to 'true'
-- `orElseThrow(BiFunction<CharSequence, Object[], E> exceptionBuilder)` -> generates the error message and inject it in the provided lambda
+- `orElseThrow(BiFunction<CharSequence, Object[], E> exceptionBuilder)` -> generates the error message and injects it in the provided lambda
 - `isOK()` -> doesn't generate the error message, returns 'false'
 - `getErrors()` -> generates the error message
 - `get()` -> doesn't generate the error message, returns the checked variable as an 'Optional'
@@ -2881,11 +2894,6 @@ Assertor.that((Exception) null).hasCauseInstanceOf(Exception.class, Pattern.comp
 Assertor.that(new Exception("error")).hasCauseInstanceOf(null, Pattern.compile("^e.*$"), false).orElseThrow(); // -> throws an exception
 Assertor.that(new IOException()).hasCauseInstanceOf(Exception.class, (Pattern) null, false).orElseThrow(); // -> throws an exception
 ```
-
-## TODO
-
-- Allow new extension (change PredicateStep design)
-- Build all messages in one step at the end only if all message locales are same
 
 ## License
 Apache License, version 2.0

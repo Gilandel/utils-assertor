@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiPredicate;
 
 import org.apache.commons.collections4.Transformer;
 import org.apache.commons.lang3.tuple.Pair;
@@ -49,6 +50,24 @@ public class HelperAssertor extends ConstantsAssertor {
     };
 
     /**
+     * When the previous check is valid followed by operator OR, we don't need
+     * to check the next steps, it's OK. Or, when the previous check is invalid
+     * followed by operator NOR, we don't need to check the next steps, it's
+     * also OK.
+     */
+    private static final BiPredicate<Boolean, EnumOperator> VALID = (valid, operator) -> (!valid && EnumOperator.NOR.equals(operator))
+            || (valid && EnumOperator.OR.equals(operator));
+
+    /**
+     * When the previous check is valid followed by operator NAND, we don't need
+     * to check the next steps, it's KO. Or, when the previous check is invalid
+     * followed by operator AND, we don't need to check the next steps, it's
+     * also KO.
+     */
+    private static final BiPredicate<Boolean, EnumOperator> INVALID = (valid, operator) -> (!valid && EnumOperator.AND.equals(operator))
+            || (valid && EnumOperator.NAND.equals(operator));
+
+    /**
      * Apply a 'NOT' on the current step
      * 
      * @param result
@@ -61,69 +80,332 @@ public class HelperAssertor extends ConstantsAssertor {
         return new StepAssertor<>(result);
     }
 
+    /**
+     * Append an 'AND' operator with a new object to the current step
+     * 
+     * @param result
+     *            the previous step
+     * @param object
+     *            the new object
+     * @param type
+     *            the type of the new object
+     * @param analysisMode
+     *            the analysis mode to check the new object
+     * @param <X>
+     *            the type of the previous checked object
+     * @param <T>
+     *            the type of the new object
+     * @return the new step
+     */
     protected static <X, T> StepAssertor<T> and(final StepAssertor<X> result, final T object, final EnumType type,
             final EnumAnalysisMode analysisMode) {
         return new StepAssertor<>(result, object, type, EnumOperator.AND, analysisMode);
     }
 
+    /**
+     * Append an 'OR' operator with a new object to the current step
+     * 
+     * @param result
+     *            the previous step
+     * @param object
+     *            the new object
+     * @param type
+     *            the type of the new object
+     * @param analysisMode
+     *            the analysis mode to check the new object
+     * @param <X>
+     *            the type of the previous checked object
+     * @param <T>
+     *            the type of the new object
+     * @return the new step
+     */
     protected static <X, T> StepAssertor<T> or(final StepAssertor<X> result, final T object, final EnumType type,
             final EnumAnalysisMode analysisMode) {
         return new StepAssertor<>(result, object, type, EnumOperator.OR, analysisMode);
     }
 
+    /**
+     * Append an 'XOR' operator with a new object to the current step
+     * 
+     * @param result
+     *            the previous step
+     * @param object
+     *            the new object
+     * @param type
+     *            the type of the new object
+     * @param analysisMode
+     *            the analysis mode to check the new object
+     * @param <X>
+     *            the type of the previous checked object
+     * @param <T>
+     *            the type of the new object
+     * @return the new step
+     */
     protected static <X, T> StepAssertor<T> xor(final StepAssertor<X> result, final T object, final EnumType type,
             final EnumAnalysisMode analysisMode) {
         return new StepAssertor<>(result, object, type, EnumOperator.XOR, analysisMode);
     }
 
+    /**
+     * Append an 'NAND' operator with a new object to the current step
+     * 
+     * @param result
+     *            the previous step
+     * @param object
+     *            the new object
+     * @param type
+     *            the type of the new object
+     * @param analysisMode
+     *            the analysis mode to check the new object
+     * @param <X>
+     *            the type of the previous checked object
+     * @param <T>
+     *            the type of the new object
+     * @return the new step
+     */
     protected static <X, T> StepAssertor<T> nand(final StepAssertor<X> result, final T object, final EnumType type,
             final EnumAnalysisMode analysisMode) {
         return new StepAssertor<>(result, object, type, EnumOperator.NAND, analysisMode);
     }
 
+    /**
+     * Append an 'NOR' operator with a new object to the current step
+     * 
+     * @param result
+     *            the previous step
+     * @param object
+     *            the new object
+     * @param type
+     *            the type of the new object
+     * @param analysisMode
+     *            the analysis mode to check the new object
+     * @param <X>
+     *            the type of the previous checked object
+     * @param <T>
+     *            the type of the new object
+     * @return the new step
+     */
     protected static <X, T> StepAssertor<T> nor(final StepAssertor<X> result, final T object, final EnumType type,
             final EnumAnalysisMode analysisMode) {
         return new StepAssertor<>(result, object, type, EnumOperator.NOR, analysisMode);
     }
 
+    /**
+     * Append an 'AND' operator to the current step
+     * 
+     * @param result
+     *            the previous step
+     * @param <T>
+     *            the type of the new object
+     * @return the new step
+     */
     protected static <T> StepAssertor<T> and(final StepAssertor<T> result) {
         return new StepAssertor<>(result, EnumOperator.AND);
     }
 
+    /**
+     * Append an 'OR' operator to the current step
+     * 
+     * @param result
+     *            the previous step
+     * @param <T>
+     *            the type of the new object
+     * @return the new step
+     */
     protected static <T> StepAssertor<T> or(final StepAssertor<T> result) {
         return new StepAssertor<>(result, EnumOperator.OR);
     }
 
+    /**
+     * Append an 'XOR' operator to the current step
+     * 
+     * @param result
+     *            the previous step
+     * @param <T>
+     *            the type of the new object
+     * @return the new step
+     */
     protected static <T> StepAssertor<T> xor(final StepAssertor<T> result) {
         return new StepAssertor<>(result, EnumOperator.XOR);
     }
 
+    /**
+     * Append an 'NAND' operator to the current step
+     * 
+     * @param result
+     *            the previous step
+     * @param <T>
+     *            the type of the new object
+     * @return the new step
+     */
     protected static <T> StepAssertor<T> nand(final StepAssertor<T> result) {
         return new StepAssertor<>(result, EnumOperator.NAND);
     }
 
+    /**
+     * Append an 'NOR' operator to the current step
+     * 
+     * @param result
+     *            the previous step
+     * @param <T>
+     *            the type of the new object
+     * @return the new step
+     */
     protected static <T> StepAssertor<T> nor(final StepAssertor<T> result) {
         return new StepAssertor<>(result, EnumOperator.NOR);
     }
 
+    /**
+     * Append an 'AND' operator with a sub step to the current step
+     * 
+     * @param result
+     *            the previous step
+     * @param other
+     *            the sub step
+     * @param <T>
+     *            the type of the current checked object
+     * @param <X>
+     *            the type of the checked object of the sub step
+     * @return the new step
+     */
     protected static <T, X> StepAssertor<T> and(final StepAssertor<T> result, final StepAssertor<X> other) {
         return new StepAssertor<>(result, other, EnumOperator.AND);
     }
 
+    /**
+     * Append an 'OR' operator with a sub step to the current step
+     * 
+     * @param result
+     *            the previous step
+     * @param other
+     *            the sub step
+     * @param <T>
+     *            the type of the current checked object
+     * @param <X>
+     *            the type of the checked object of the sub step
+     * @return the new step
+     */
     protected static <T, X> StepAssertor<T> or(final StepAssertor<T> result, final StepAssertor<X> other) {
         return new StepAssertor<>(result, other, EnumOperator.OR);
     }
 
+    /**
+     * Append an 'XOR' operator with a sub step to the current step
+     * 
+     * @param result
+     *            the previous step
+     * @param other
+     *            the sub step
+     * @param <T>
+     *            the type of the current checked object
+     * @param <X>
+     *            the type of the checked object of the sub step
+     * @return the new step
+     */
     protected static <T, X> StepAssertor<T> xor(final StepAssertor<T> result, final StepAssertor<X> other) {
         return new StepAssertor<>(result, other, EnumOperator.XOR);
     }
 
+    /**
+     * Append an 'NAND' operator with a sub step to the current step
+     * 
+     * @param result
+     *            the previous step
+     * @param other
+     *            the sub step
+     * @param <T>
+     *            the type of the current checked object
+     * @param <X>
+     *            the type of the checked object of the sub step
+     * @return the new step
+     */
     protected static <T, X> StepAssertor<T> nand(final StepAssertor<T> result, final StepAssertor<X> other) {
         return new StepAssertor<>(result, other, EnumOperator.NAND);
     }
 
+    /**
+     * Append an 'NOR' operator with a sub step to the current step
+     * 
+     * @param result
+     *            the previous step
+     * @param other
+     *            the sub step
+     * @param <T>
+     *            the type of the current checked object
+     * @param <X>
+     *            the type of the checked object of the sub step
+     * @return the new step
+     */
     protected static <T, X> StepAssertor<T> nor(final StepAssertor<T> result, final StepAssertor<X> other) {
         return new StepAssertor<>(result, other, EnumOperator.NOR);
+    }
+
+    /**
+     * Append a matcher object step to the current step
+     * 
+     * @param result
+     *            the previous step
+     * @param object
+     *            the matcher object
+     * @param <T>
+     *            the type of the new object
+     * @return the new step
+     */
+    protected static <T> StepAssertor<T> object(final StepAssertor<T> result, final T object) {
+        return new StepAssertor<>(result, object);
+    }
+
+    /**
+     * Validates matcher mode and return the steps list reversed
+     * 
+     * @param step
+     *            the end step
+     * @param matcherMode
+     *            if in matcher mode
+     * @param <T>
+     *            the type of current chcecked object
+     * @return the steps list reversed
+     * @throws UnsupportedOperationException
+     *             if in matcher mode and if steps of type
+     *             {@link EnumStep#CREATION}, {@link EnumStep#OBJECT} are found
+     *             in the chain
+     */
+    private static <T> List<StepAssertor<?>> validatesAndReverse(final StepAssertor<T> step, final boolean matcherMode) {
+
+        final List<StepAssertor<?>> steps = new ArrayList<>();
+        steps.add(step);
+
+        final boolean inMatcherMode = matcherMode || EnumStep.MATCHER_OBJECT.equals(step.getStepType());
+
+        StepAssertor<?> first = null;
+        StepAssertor<?> currentStep = step;
+        StepAssertor<?> previousStep;
+
+        while ((previousStep = currentStep.getPreviousStep()) != null) {
+
+            if (inMatcherMode) {
+                final EnumStep s = previousStep.getStepType();
+
+                if (EnumStep.MATCHER.equals(s)) {
+                    first = previousStep;
+
+                } else if (EnumStep.CREATION.equals(s) || EnumStep.OBJECT.equals(s)) {
+                    throw new UnsupportedOperationException("Creation step cannot be used in Matcher mode");
+                }
+            }
+
+            steps.add(previousStep);
+
+            currentStep = previousStep;
+        }
+
+        if (inMatcherMode && first == null) {
+            throw new IllegalArgumentException("StepAssertor chain must contain a matcher step");
+        }
+
+        Collections.reverse(steps);
+
+        return steps;
     }
 
     /**
@@ -137,26 +419,50 @@ public class HelperAssertor extends ConstantsAssertor {
      * @param <T>
      *            the type of checked object
      * @return the result
+     * @throws IllegalArgumentException
+     *             if in matcher mode and object is not set
      */
     protected static <T> ResultAssertor combine(final StepAssertor<T> step, final boolean loadMessage) {
+        return combine(step, null, false, loadMessage);
+    }
 
-        // load all steps and reverse the order
-        final List<StepAssertor<?>> steps = new ArrayList<>();
-        steps.add(step);
-        StepAssertor<?> currentStep = step;
-        StepAssertor<?> previousStep;
-        while ((previousStep = currentStep.getPreviousStep()) != null) {
-            steps.add(previousStep);
-            currentStep = previousStep;
+    /**
+     * The combine function (the main method). This method is called by each end
+     * steps.
+     * 
+     * <p>
+     * What is matcher mode: it's an Assertor starting with
+     * "{@code Assertor.matcher}...". In this mode, only one variable can be
+     * checked through "{@code on(object)}" method. The aim of this is to create
+     * the validation steps before in another method or in a static way to
+     * improve performance.
+     * </p>
+     * 
+     * @param step
+     *            the last step
+     * @param object
+     *            the object to test (only in matcher mode)
+     * @param marcherMode
+     *            if it's in matcher mode (set with "on" method)
+     * @param loadMessage
+     *            if the message has to loaded and formated
+     * @param <T>
+     *            the type of checked object
+     * @return the result
+     * @throws IllegalArgumentException
+     *             if in matcher mode and object is not set
+     */
+    protected static <T> ResultAssertor combine(final StepAssertor<T> step, final Object object, final boolean marcherMode,
+            final boolean loadMessage) {
 
-        }
-        Collections.reverse(steps);
+        final List<StepAssertor<?>> steps = validatesAndReverse(step, marcherMode);
 
         boolean not = false;
         boolean valid = true;
         EnumOperator operator = null;
         final StringBuilder message = new StringBuilder();
-        Object object = null;
+        Object obj;
+        final Object matcherObject;
         boolean checked = false;
         EnumType type = null;
         ParameterAssertor<?> param = null;
@@ -165,56 +471,91 @@ public class HelperAssertor extends ConstantsAssertor {
 
         Optional<Pair<Boolean, String>> dontNeedCheck = Optional.empty();
 
+        // get the object to check
+        // in matcher mode, two ways are available to inject the object:
+        // - first: directly through the combine function
+        boolean inMatcherMode = marcherMode;
+        if (inMatcherMode) {
+            obj = object;
+            // - second: through the PredicateStep#matches function
+        } else if (EnumStep.MATCHER_OBJECT.equals(step.getStepType())) {
+            obj = step.getObject();
+            inMatcherMode = true;
+        } else {
+            obj = null;
+        }
+
+        // create a temporary variable for sub steps (in matcher mode)
+        matcherObject = obj;
+
         for (StepAssertor<?> s : steps) {
             switch (s.getStepType()) {
-            case CREATION:
-                object = s.getObject();
+
+            // the first step of an Assertor in matcher mode (ex:
+            // Assertor.matcherNumber...)
+            case MATCHER:
                 type = s.getType();
                 checked = s.isChecked();
-                param = new ParameterAssertor<>(object, type, checked);
+                param = new ParameterAssertor<>(obj, type, checked);
 
                 parameters.add(param);
 
                 break;
+            // the first step of an Assertor (ex: Assertor.that(object)...)
+            case CREATION:
+                obj = s.getObject();
+                type = s.getType();
+                checked = s.isChecked();
+                param = new ParameterAssertor<>(obj, type, checked);
+
+                parameters.add(param);
+
+                break;
+            // the validation step
             case ASSERTION:
                 parameters.addAll(s.getParameters());
 
                 // if precondition returns false, we end all treatments
-                if (!HelperAssertor.preCheck(s, object)) {
+                if (!HelperAssertor.preCheck(s, obj)) {
                     return HelperAssertor.getPreconditionMessage(s, param, parameters, loadMessage);
 
                 } else {
-                    valid = HelperAssertor.validatesAndGetMessage(s, param, object, valid, not, operator, message, loadMessage);
+                    valid = HelperAssertor.validatesAndGetMessage(s, param, obj, valid, not, operator, message, loadMessage);
                 }
 
                 not = false;
 
                 break;
+            // the combining step between two validation steps
             case OPERATOR:
                 operator = s.getOperator();
 
-                dontNeedCheck = checkValidityAndOperator(valid, operator, message);
+                dontNeedCheck = checkValidityAndOperator(valid, operator, message, loadMessage);
 
                 break;
+            // the not step to reverse the next validation step
             case NOT:
                 not = not ^ s.isNot();
 
                 break;
+            // the object allows to validates another object
             case OBJECT:
                 operator = s.getOperator();
-                object = s.getObject();
+                obj = s.getObject();
                 checked = s.isChecked();
-                param = new ParameterAssertor<>(object, type, checked);
+                param = new ParameterAssertor<>(obj, type, checked);
 
                 parameters.add(param);
 
-                dontNeedCheck = checkValidityAndOperator(valid, operator, message);
+                dontNeedCheck = checkValidityAndOperator(valid, operator, message, loadMessage);
 
                 break;
+            // the sub step to emulate parenthesis in a check (ex:
+            // Assertor.that(2).isZero().or(Assertor.that(2).isGTE(1).and().isLTE(10)))
             case SUB:
                 if (s.getSubStep().isPresent()) {
-                    final Triple<Boolean, EnumOperator, ResultAssertor> output = HelperAssertor.managesSub(s, parameters, valid, operator,
-                            message, loadMessage);
+                    final Triple<Boolean, EnumOperator, ResultAssertor> output = HelperAssertor.managesSub(s, matcherObject, inMatcherMode,
+                            parameters, valid, operator, message, loadMessage);
 
                     if (output.getRight() != null) {
                         return output.getRight();
@@ -222,11 +563,11 @@ public class HelperAssertor extends ConstantsAssertor {
                         valid = output.getLeft();
                         operator = output.getMiddle();
 
-                        dontNeedCheck = checkValidityAndOperator(valid, operator, message);
+                        dontNeedCheck = checkValidityAndOperator(valid, operator, message, loadMessage);
                     }
                 }
                 break;
-            default:
+            default: // MATCHER_OBJECT (don't need treatment)
             }
 
             if (dontNeedCheck.isPresent()) {
@@ -238,21 +579,25 @@ public class HelperAssertor extends ConstantsAssertor {
     }
 
     private static Optional<Pair<Boolean, String>> checkValidityAndOperator(final boolean valid, final EnumOperator operator,
-            final StringBuilder message) {
+            final StringBuilder message, final boolean loadMessage) {
 
         Pair<Boolean, String> result = null;
 
-        if ((!valid && EnumOperator.NOR.equals(operator)) || (valid && EnumOperator.OR.equals(operator))) {
+        if (VALID.test(valid, operator)) {
 
             result = Pair.of(true, message.toString());
 
-        } else if ((valid && EnumOperator.NAND.equals(operator)) || (!valid && EnumOperator.AND.equals(operator))) {
+        } else if (INVALID.test(valid, operator)) {
 
             final String formattedMessage;
-            if (message.length() > 0) {
-                formattedMessage = message.toString();
+            if (loadMessage) {
+                if (message.length() > 0) {
+                    formattedMessage = message.toString();
+                } else {
+                    formattedMessage = StringUtils.inject(ConstantsAssertor.getProperty(MSG.INVALID_WITHOUT_MESSAGE), valid, operator);
+                }
             } else {
-                formattedMessage = StringUtils.inject(ConstantsAssertor.getProperty(MSG.INVALID_WITHOUT_MESSAGE), valid, operator);
+                formattedMessage = null;
             }
 
             result = Pair.of(false, formattedMessage);
@@ -301,24 +646,33 @@ public class HelperAssertor extends ConstantsAssertor {
         return nextValid;
     }
 
-    private static <T> Triple<Boolean, EnumOperator, ResultAssertor> managesSub(final StepAssertor<T> step,
-            final List<ParameterAssertor<?>> parameters, final boolean valid, final EnumOperator operator, final StringBuilder message,
-            final boolean loadMessage) {
+    private static Triple<Boolean, EnumOperator, ResultAssertor> managesSub(final StepAssertor<?> step, final Object matcherObject,
+            final boolean marcherMode, final List<ParameterAssertor<?>> parameters, final boolean valid, final EnumOperator operator,
+            final StringBuilder message, final boolean loadMessage) {
 
         final StepAssertor<?> subStep = step.getSubStep().get();
+        final EnumOperator stepOperator = step.getOperator();
         EnumOperator nextOperator = operator;
         boolean nextValid = valid;
 
-        if (!EnumOperator.AND.equals(step.getOperator()) || nextValid) {
+        final boolean dontNeedCheck = VALID.test(nextValid, stepOperator) || INVALID.test(nextValid, stepOperator);
 
-            final ResultAssertor subResult = HelperAssertor.combine(subStep, loadMessage);
+        if (!dontNeedCheck) {
 
-            parameters.addAll(subResult.getParameters());
+            final ResultAssertor subResult = HelperAssertor.combine(subStep, matcherObject, marcherMode, loadMessage);
+
+            // in matcher mode, the matcher is not required, so we remove it
+            final int size = subResult.getParameters().size();
+            if (matcherObject != null && size > 1) {
+                parameters.addAll(subResult.getParameters().subList(1, size));
+            } else {
+                parameters.addAll(subResult.getParameters());
+            }
 
             if (!subResult.isPrecondition()) {
                 return Triple.of(false, null, subResult);
             } else {
-                nextOperator = step.getOperator();
+                nextOperator = stepOperator;
 
                 nextValid = HelperAssertor.isValid(nextValid, subResult.isValid(), nextOperator);
 
@@ -333,6 +687,8 @@ public class HelperAssertor extends ConstantsAssertor {
                     message.append(EnumChar.PARENTHESIS_CLOSE);
                 }
             }
+        } else {
+            nextOperator = stepOperator;
         }
 
         return Triple.of(nextValid, nextOperator, null);
@@ -378,7 +734,6 @@ public class HelperAssertor extends ConstantsAssertor {
                 ok = !previousOK & !currentOK;
                 break;
             case NOR:
-                System.out.println(previousOK + " " + currentOK);
                 ok = !previousOK | !currentOK;
                 break;
             case AND: // intentional fall-through
