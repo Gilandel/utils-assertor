@@ -98,9 +98,13 @@ public interface PredicateStep<S extends PredicateStep<S, T>, T> extends Predica
     }
 
     /**
-     * Inject the object to check into an end step. This method is only
-     * compatible with an Assertor starting like this:
-     * {@code Assertor.matcher...}
+     * Inject the checked object into an 'end' step.
+     * 
+     * <p>
+     * This method is only compatible with an Assertor starting like this:
+     * {@code Assertor.matcher...}. If not this method at end predicate throws
+     * an {@link UnsupportedOperationException}.
+     * </p>
      *
      * <pre>
      * // Example:

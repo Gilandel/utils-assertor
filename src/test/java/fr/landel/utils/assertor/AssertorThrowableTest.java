@@ -285,7 +285,7 @@ public class AssertorThrowableTest extends AbstractTest {
      * {@link AssertorThrowable#hasCauseInstanceOf(StepAssertor, java.lang.Class, boolean, MessageAssertor)}.
      */
     @Test
-    public void testHasCauseInstanceOf() {
+    public void testHasCauseInstanceOfOK() {
         final IOException e = new IOException();
         final Exception ec = new Exception(e);
         final Pattern pattern = Pattern.compile("^m.*g$");
@@ -330,6 +330,15 @@ public class AssertorThrowableTest extends AbstractTest {
 
         assertTrue(Assertor.that(e).isNotNull().and(Assertor.that(true).isTrue()).and().not()
                 .hasCauseInstanceOf(Color.class, (String) null, true).isOK());
+    }
+
+    /**
+     * Test method for
+     * {@link AssertorThrowable#hasCauseInstanceOf(StepAssertor, java.lang.Class, boolean, MessageAssertor)}.
+     */
+    @Test
+    public void testHasCauseInstanceOfKO() {
+        final Pattern pattern = Pattern.compile("^m.*g$");
 
         assertException(() -> {
             Assertor.that(new Exception()).hasCauseInstanceOf(null, true).orElseThrow();
@@ -393,7 +402,7 @@ public class AssertorThrowableTest extends AbstractTest {
      * {@link AssertorThrowable#hasCauseAssignableFrom(StepAssertor, java.lang.Class, boolean, MessageAssertor)}.
      */
     @Test
-    public void testHasCauseAssignableFrom() {
+    public void testHasCauseAssignableFromOK() {
         final IOException e = new IOException();
         final Exception ec = new Exception(e);
         final Exception emem = new Exception("msg", new IOException("msg"));
@@ -441,6 +450,16 @@ public class AssertorThrowableTest extends AbstractTest {
 
         assertTrue(Assertor.that(e).isNotNull().and(Assertor.that(true).isTrue()).and().not()
                 .hasCauseAssignableFrom(Color.class, (String) null, true).isOK());
+
+    }
+
+    /**
+     * Test method for
+     * {@link AssertorThrowable#hasCauseAssignableFrom(StepAssertor, java.lang.Class, boolean, MessageAssertor)}.
+     */
+    @Test
+    public void testHasCauseAssignableFromKO() {
+        final Pattern pattern = Pattern.compile("^m.*g$");
 
         assertException(() -> {
             Assertor.that(new Exception()).hasCauseAssignableFrom(null, true).orElseThrow();

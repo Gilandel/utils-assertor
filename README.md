@@ -25,7 +25,7 @@ Work progress:
 <dependency>
 	<groupId>fr.landel.utils</groupId>
 	<artifactId>utils-assertor</artifactId>
-	<version>1.0.3</version>
+	<version>1.0.4</version>
 </dependency>
 ```
 
@@ -157,7 +157,7 @@ Work progress:
 
 ## Description
 
-This library allows to assert parameters, and by the way, facilitates 'fail fast' development.
+This library allows to assert parameters fluently, and by the way, facilitates 'fail fast' development.
 Original idea is based on the version of Assert provided by the Spring Team.
 This version supports more types and is based on Java 8 lambda to improve performance in validation (avoid unnecessary validation) and in generating error message (`String.format()` is very cool but has not great performance, so this code avoids message generation if not requested).
 
