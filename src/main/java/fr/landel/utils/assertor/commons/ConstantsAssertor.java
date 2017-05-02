@@ -10,7 +10,7 @@
  * This file is under Apache License, version 2.0 (2004).
  * #L%
  */
-package fr.landel.utils.assertor;
+package fr.landel.utils.assertor.commons;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,6 +24,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.landel.utils.assertor.Assertor;
 import fr.landel.utils.commons.EnumChar;
 
 /**
@@ -38,35 +39,35 @@ public class ConstantsAssertor {
     /**
      * The logger
      */
-    protected static final Logger LOGGER = LoggerFactory.getLogger(Assertor.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(Assertor.class);
 
     // ---------- DEFAULT
 
     /**
      * Default assertion
      */
-    protected static final String DEFAULT_ASSERTION = "Assertion failed";
+    public static final String DEFAULT_ASSERTION = "Assertion failed";
 
     // ---------- PROPERTIES / MESSAGES
 
     /**
      * Messages properties (for now doesn't support locale, maybe later)
      */
-    protected static final Properties PROPS;
+    public static final Properties PROPS;
     static {
         PROPS = new Properties();
-        try (InputStream is = Assertor.class.getClassLoader().getResourceAsStream("assertor_messages.properties")) {
+        try (final InputStream is = Assertor.class.getClassLoader().getResourceAsStream("assertor_messages.properties")) {
             PROPS.load(is);
-        } catch (IOException e) {
-            LOGGER.error("Cannot load the assertor configuration file");
+        } catch (final IOException e) {
+            LOGGER.error("Cannot load the assertor configuration file", e);
         }
     }
 
     // ---------- OTHERS
 
-    protected static final Map<Integer, String> CALENDAR_FIELDS;
+    public static final Map<Integer, String> CALENDAR_FIELDS;
     static {
-        Map<Integer, String> map = new HashMap<>();
+        final Map<Integer, String> map = new HashMap<>();
         map.put(Calendar.ERA, "ERA");
         map.put(Calendar.YEAR, "YEAR");
         map.put(Calendar.MONTH, "MONTH");
@@ -98,7 +99,7 @@ public class ConstantsAssertor {
      *            The arguments to replace
      * @return The property
      */
-    protected static String getProperty(final CharSequence key, final CharSequence... arguments) {
+    public static String getProperty(final CharSequence key, final CharSequence... arguments) {
         String property = PROPS.getProperty(String.valueOf(key));
         if (property != null) {
             if (ArrayUtils.isNotEmpty(arguments)) {
@@ -123,7 +124,7 @@ public class ConstantsAssertor {
      * @author Gilles
      *
      */
-    protected static interface MSG {
+    public static interface MSG {
 
         /**
          * Suffix for properties of type NOT
@@ -288,6 +289,12 @@ public class ConstantsAssertor {
              * Message key for number lower than or equal to
              */
             String LTE = "number.lte";
+
+            /**
+             * Message key for number between left hand number and right hand
+             * number
+             */
+            String BETWEEN = "number.between";
         }
 
         /**

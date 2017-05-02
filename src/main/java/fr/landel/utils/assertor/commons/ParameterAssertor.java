@@ -10,10 +10,11 @@
  * This file is under Apache License, version 2.0 (2004).
  * #L%
  */
-package fr.landel.utils.assertor;
+package fr.landel.utils.assertor.commons;
 
 import java.io.Serializable;
 
+import fr.landel.utils.assertor.enums.EnumType;
 import fr.landel.utils.commons.builder.ToStringBuilder;
 import fr.landel.utils.commons.builder.ToStringStyles;
 
@@ -47,7 +48,7 @@ public class ParameterAssertor<T> implements Serializable {
      * @param checked
      *            if the object is checked
      */
-    protected ParameterAssertor(final T object, final EnumType type, final boolean checked) {
+    public ParameterAssertor(final T object, final EnumType type, final boolean checked) {
         this.object = object;
         this.type = type;
         this.checked = checked;
@@ -61,7 +62,7 @@ public class ParameterAssertor<T> implements Serializable {
      * @param type
      *            The type of object
      */
-    protected ParameterAssertor(final T object, final EnumType type) {
+    public ParameterAssertor(final T object, final EnumType type) {
         this(object, type, false);
     }
 
@@ -71,28 +72,28 @@ public class ParameterAssertor<T> implements Serializable {
      * @param object
      *            The object
      */
-    protected ParameterAssertor(final T object) {
+    public ParameterAssertor(final T object) {
         this(object, EnumType.getType(object), false);
     }
 
     /**
      * @return the object
      */
-    protected T getObject() {
+    public T getObject() {
         return this.object;
     }
 
     /**
      * @return the type
      */
-    protected EnumType getType() {
+    public EnumType getType() {
         return this.type;
     }
 
     /**
      * @return the checked
      */
-    protected boolean isChecked() {
+    public boolean isChecked() {
         return this.checked;
     }
 

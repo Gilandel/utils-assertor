@@ -12,6 +12,9 @@
  */
 package fr.landel.utils.assertor.helper;
 
+import java.util.function.Function;
+
+import fr.landel.utils.assertor.Step;
 import fr.landel.utils.assertor.StepAssertor;
 import fr.landel.utils.assertor.commons.ConstantsAssertor;
 import fr.landel.utils.assertor.enums.EnumAnalysisMode;
@@ -38,6 +41,15 @@ public class HelperStep extends ConstantsAssertor {
      */
     public static <T> StepAssertor<T> not(final StepAssertor<T> result) {
         return new StepAssertor<>(result);
+    }
+
+    public static <X, T> StepAssertor<T> and(final StepAssertor<X> result, final Function<X, T> mapper, final EnumType type,
+            final EnumAnalysisMode analysisMode) {
+        return new StepAssertor<>(result, mapper, type, EnumOperator.AND, analysisMode);
+    }
+
+    public static <X, T, S extends Step<S, X>> StepAssertor<T> and(final StepAssertor<T> result, final Function<T, S> subAssertor) {
+        return new StepAssertor<>(result, subAssertor, EnumOperator.AND);
     }
 
     /**

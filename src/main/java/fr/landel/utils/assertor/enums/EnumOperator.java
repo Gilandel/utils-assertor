@@ -10,7 +10,9 @@
  * This file is under Apache License, version 2.0 (2004).
  * #L%
  */
-package fr.landel.utils.assertor;
+package fr.landel.utils.assertor.enums;
+
+import fr.landel.utils.assertor.commons.ConstantsAssertor;
 
 /**
  * 
@@ -26,6 +28,8 @@ public enum EnumOperator {
      * And operator
      * 
      * <pre>
+     * AND = bool1 && bool2
+     * 
      * true AND true = true
      * true AND false = false
      * false AND true = false
@@ -38,10 +42,12 @@ public enum EnumOperator {
      * Or operator
      * 
      * <pre>
-     * true AND true = true
-     * true AND false = true
-     * false AND true = true
-     * false AND false = false
+     * OR = bool1 || bool2
+     * 
+     * true OR true = true
+     * true OR false = true
+     * false OR true = true
+     * false OR false = false
      * </pre>
      */
     OR("operator.or"),
@@ -50,10 +56,12 @@ public enum EnumOperator {
      * Xor operator
      * 
      * <pre>
-     * true AND true = false
-     * true AND false = true
-     * false AND true = true
-     * false AND false = false
+     * XOR = bool1 ^ bool2
+     * 
+     * true XOR true = false
+     * true XOR false = true
+     * false XOR true = true
+     * false XOR false = false
      * </pre>
      */
     XOR("operator.xor"),
@@ -62,10 +70,12 @@ public enum EnumOperator {
      * Nand operator (negative and)
      * 
      * <pre>
-     * true AND true = false
-     * true AND false = false
-     * false AND true = false
-     * false AND false = true
+     * NAND = !bool1 && !bool2
+     * 
+     * true NAND true = false
+     * true NAND false = false
+     * false NAND true = false
+     * false NAND false = true
      * </pre>
      */
     NAND("operator.nand"),
@@ -74,10 +84,12 @@ public enum EnumOperator {
      * Nor operator (negative or)
      * 
      * <pre>
-     * true AND true = false
-     * true AND false = true
-     * false AND true = true
-     * false AND false = true
+     * NOR = !bool1 || !bool2
+     * 
+     * true NOR true = false
+     * true NOR false = true
+     * false NOR true = true
+     * false NOR false = true
      * </pre>
      */
     NOR("operator.nor");

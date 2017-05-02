@@ -10,7 +10,9 @@
  * This file is under Apache License, version 2.0 (2004).
  * #L%
  */
-package fr.landel.utils.assertor;
+package fr.landel.utils.assertor.enums;
+
+import fr.landel.utils.assertor.utils.AssertorIterable;
 
 /**
  * Analysis mode.

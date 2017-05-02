@@ -10,7 +10,7 @@
  * This file is under Apache License, version 2.0 (2004).
  * #L%
  */
-package fr.landel.utils.assertor;
+package fr.landel.utils.assertor.enums;
 
 import java.time.temporal.Temporal;
 import java.util.Calendar;
@@ -115,7 +115,7 @@ public enum EnumType {
      *            the object
      * @return The type or {@link EnumType#UNKNOWN}
      */
-    protected static EnumType getType(final Object object) {
+    public static EnumType getType(final Object object) {
         EnumType type = UNKNOWN;
         if (object != null) {
             type = getTypeFromClass(CastUtils.getClass(object), object);

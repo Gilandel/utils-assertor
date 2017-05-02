@@ -10,7 +10,9 @@
  * This file is under Apache License, version 2.0 (2004).
  * #L%
  */
-package fr.landel.utils.assertor;
+package fr.landel.utils.assertor.enums;
+
+import fr.landel.utils.assertor.Assertor;
 
 /**
  * List of steps
@@ -22,7 +24,7 @@ package fr.landel.utils.assertor;
 public enum EnumStep {
 
     /**
-     * first step, generate by {@link Assertor#that}
+     * First step, generate by {@link Assertor#that}
      */
     CREATION,
 
@@ -52,12 +54,16 @@ public enum EnumStep {
     SUB,
 
     /**
-     * To create an Assertor chain for Matcher
+     * To create an Assertor chain for predicate
      */
-    MATCHER,
+    PREDICATE,
 
     /**
-     * The matcher object
+     * The predicate object
      */
-    MATCHER_OBJECT;
+    PREDICATE_OBJECT,
+
+    SUB_ASSERTOR,
+
+    PROPERTY;
 }

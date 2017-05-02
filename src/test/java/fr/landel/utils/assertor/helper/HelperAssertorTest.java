@@ -11,7 +11,7 @@
  * This file is under Apache License, version 2.0 (2004).
  * #L%
  */
-package fr.landel.utils.assertor;
+package fr.landel.utils.assertor.helper;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -25,6 +25,16 @@ import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
 import org.junit.Test;
+
+import fr.landel.utils.assertor.AbstractTest;
+import fr.landel.utils.assertor.Assertor;
+import fr.landel.utils.assertor.StepAssertor;
+import fr.landel.utils.assertor.StepCharSequence;
+import fr.landel.utils.assertor.commons.MessageAssertor;
+import fr.landel.utils.assertor.commons.ParameterAssertor;
+import fr.landel.utils.assertor.commons.ResultAssertor;
+import fr.landel.utils.assertor.enums.EnumOperator;
+import fr.landel.utils.assertor.enums.EnumType;
 
 /**
  * Check {@link HelperAssertor}
@@ -41,6 +51,8 @@ public class HelperAssertorTest extends AbstractTest {
     @Test
     public void testConstructor() {
         assertNotNull(new HelperAssertor());
+        assertNotNull(new HelperStep());
+        assertNotNull(new HelperEnd());
     }
 
     /**
@@ -114,7 +126,7 @@ public class HelperAssertorTest extends AbstractTest {
 
         // SUB NULL
 
-        step = new StepAssertor<>(step1, null, EnumOperator.AND);
+        step = new StepAssertor<>(step1, (StepAssertor<Integer>) null, EnumOperator.AND);
 
         result = HelperAssertor.combine(step, true);
 
@@ -123,7 +135,7 @@ public class HelperAssertorTest extends AbstractTest {
 
         // STEP PREDICATE NULL
 
-        PredicateStepCharSequence<CharSequence> step5 = () -> (StepAssertor<CharSequence>) null;
+        StepCharSequence<CharSequence> step5 = () -> (StepAssertor<CharSequence>) null;
         assertTrue(Assertor.that("test").isNotBlank().and(step5).isOK());
 
         // MATCHER (with creation)

@@ -10,10 +10,9 @@
  * This file is under Apache License, version 2.0 (2004).
  * #L%
  */
-package fr.landel.utils.assertor;
+package fr.landel.utils.assertor.helper;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
@@ -32,7 +31,11 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import fr.landel.utils.commons.AsciiUtils;
+import fr.landel.utils.assertor.AbstractTest;
+import fr.landel.utils.assertor.Assertor;
+import fr.landel.utils.assertor.commons.ParameterAssertor;
+import fr.landel.utils.assertor.enums.EnumOperator;
+import fr.landel.utils.assertor.enums.EnumType;
 import fr.landel.utils.commons.DateUtils;
 
 /**
@@ -61,6 +64,7 @@ public class HelperMessageTest extends AbstractTest {
 
         assertEquals("default", HelperMessage.getMessage("default", null, null, null, null));
         assertEquals("message", HelperMessage.getMessage("default", null, "message", null, null));
+        assertEquals("message ", HelperMessage.getMessage("default", null, "message %s", null, null));
         assertEquals("message test", HelperMessage.getMessage("default", null, "message %s", null, new Object[] {"test"}));
         assertEquals("message 23.26", HelperMessage.getMessage("default", Locale.US, "message %.2f", null, new Object[] {23.256f}));
         assertEquals("message 23,26", HelperMessage.getMessage("default", Locale.FRANCE, "message %.2f", null, new Object[] {23.256f}));
@@ -179,42 +183,6 @@ public class HelperMessageTest extends AbstractTest {
     }
 
     /**
-     * Test method for
-     * {@link HelperMessage#prepare(java.lang.CharSequence, java.lang.Object[], java.lang.Object[])}.
-     */
-    @Test
-    public void testPrepare() {
-        assertEquals("e = %2$+10.4f %3$11d %1$2d", HelperMessage.prepare("e = %+10.4f %11d %2d*", 1, 2).toString());
-
-        assertEquals("e = %2$+10.4f %3$11d%1$2d %4$d", HelperMessage.prepare("e = %+10.4f %11d%2d* %$d", 1, 3).toString());
-
-        assertEquals("e = %1$+10.4f   1$s", HelperMessage.prepare("e = %+10.4f %s %s* %s1$s", 0, 1).toString());
-
-        assertEquals("e = %2$+10.4f %2$s %1$s %3$s1$s", HelperMessage.prepare("e = %1$+10.4f %s %s* %s1$s", 1, 2).toString());
-
-        assertEquals("e = %1$+10.4f  ", HelperMessage.prepare("e = %+10.4f %11222d %2d*", 0, 1).toString());
-
-        assertEquals("e = %1$+10.4f  ", HelperMessage.prepare("e = %+10.4f %2$11d %1$2d*", 0, 1).toString());
-
-        assertEquals("e = %1$+10.4f  %1$* ", HelperMessage.prepare("e = %+10.4f %2$11d %1$* ", 0, 1).toString());
-
-        assertEquals("Duke's Birthday: %2$tb %2$te, %2$tY", HelperMessage.prepare("Duke's Birthday: %1$tb %1$te, %1$tY", 1, 3).toString());
-        assertEquals("Duke's Birthday: %2$tm %2$<te,%3$<TY", HelperMessage.prepare("Duke's Birthday: %1$tm %<te,%<TY", 1, 3).toString());
-
-        byte[] authorized = new byte[] {32, 35};
-
-        for (int i = AsciiUtils.MIN; i <= AsciiUtils.MAX; i++) {
-            String ch = String.valueOf((char) i);
-            String format = HelperMessage.prepare("%" + ch, 0, 1).toString();
-            if (AsciiUtils.IS_ALPHA.test(i) || i == '%') {
-                assertEquals("%1$" + ch, format);
-            } else if (Arrays.binarySearch(authorized, (byte) i) == -1) {
-                assertNotEquals("%1$" + ch, format);
-            }
-        }
-    }
-
-    /**
      * Test method for {@link HelperMessage#convertParams(java.util.List)}.
      */
     @Test
@@ -253,36 +221,21 @@ public class HelperMessageTest extends AbstractTest {
         assertEquals(parameters.size(), convertedParams.length);
 
         int i = 0;
-        assertEquals(true, convertedParams[i]);
-        i++;
-        assertEquals("[12, 10]", convertedParams[i].toString());
-        i++;
-        assertEquals("YEAR", convertedParams[i]);
-        i++;
-        assertEquals(Calendar.ZONE_OFFSET, convertedParams[i]);
-        i++;
-        assertEquals("text", convertedParams[i]);
-        i++;
-        assertEquals(HelperMessage.class.getSimpleName(), convertedParams[i]);
-        i++;
-        assertEquals(date1, convertedParams[i]);
-        i++;
-        assertEquals(calendar1.getTime(), convertedParams[i]);
-        i++;
-        assertEquals(EnumOperator.AND, convertedParams[i]);
-        i++;
-        assertEquals("[text1, text2]", convertedParams[i].toString());
-        i++;
-        assertEquals("[key1=value1, key2=value2]", convertedParams[i].toString());
-        i++;
-        assertEquals(3.25f, convertedParams[i]);
-        i++;
-        assertEquals(12, convertedParams[i]);
-        i++;
-        assertEquals(exception, convertedParams[i]);
-        i++;
-        assertEquals(time, convertedParams[i]);
-        i++;
+        assertEquals(true, convertedParams[i++]);
+        assertEquals("[12, 10]", convertedParams[i++].toString());
+        assertEquals("YEAR", convertedParams[i++]);
+        assertEquals(Calendar.ZONE_OFFSET, convertedParams[i++]);
+        assertEquals("text", convertedParams[i++]);
+        assertEquals(HelperMessage.class.getSimpleName(), convertedParams[i++]);
+        assertEquals(date1, convertedParams[i++]);
+        assertEquals(calendar1.getTime(), convertedParams[i++]);
+        assertEquals(EnumOperator.AND, convertedParams[i++]);
+        assertEquals("[text1, text2]", convertedParams[i++].toString());
+        assertEquals("[key1=value1, key2=value2]", convertedParams[i++].toString());
+        assertEquals(3.25f, convertedParams[i++]);
+        assertEquals(12, convertedParams[i++]);
+        assertEquals(exception, convertedParams[i++]);
+        assertEquals(time, convertedParams[i++]);
         assertEquals(Color.BLACK, convertedParams[i]);
     }
 
@@ -291,7 +244,7 @@ public class HelperMessageTest extends AbstractTest {
      */
     @Test
     public void testParameterToString() {
-        assertEquals("{fr.landel.utils.assertor.ParameterAssertor: {object: true, type: BOOLEAN, checked: false}}",
+        assertEquals("{" + ParameterAssertor.class.getCanonicalName() + ": {object: true, type: BOOLEAN, checked: false}}",
                 new ParameterAssertor<>(true, EnumType.BOOLEAN).toString());
     }
 }

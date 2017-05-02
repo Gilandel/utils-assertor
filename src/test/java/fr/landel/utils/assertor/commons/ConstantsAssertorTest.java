@@ -11,11 +11,14 @@
  * This file is under Apache License, version 2.0 (2004).
  * #L%
  */
-package fr.landel.utils.assertor;
+package fr.landel.utils.assertor.commons;
 
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
+
+import fr.landel.utils.assertor.AbstractTest;
+import fr.landel.utils.assertor.commons.ConstantsAssertor;
 
 /**
  * Check {@link ConstantsAssertor}

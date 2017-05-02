@@ -79,7 +79,7 @@ import fr.landel.utils.commons.Result;
  */
 @FunctionalInterface
 public interface PredicateStep<S extends PredicateStep<S, T>, T>
-        extends AssertorEnd<T>, OperatorAnd<S, T>, OperatorNand<S, T>, OperatorNor<S, T>, OperatorOr<S, T>, OperatorXor<S, T> {
+        extends OperatorAnd<S, T>, OperatorNand<S, T>, OperatorNor<S, T>, OperatorOr<S, T>, OperatorXor<S, T> {
 
     /**
      * @return the step result

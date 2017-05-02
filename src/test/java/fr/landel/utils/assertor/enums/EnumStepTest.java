@@ -10,7 +10,7 @@
  * This file is under Apache License, version 2.0 (2004).
  * #L%
  */
-package fr.landel.utils.assertor;
+package fr.landel.utils.assertor.enums;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -32,7 +32,7 @@ public class EnumStepTest {
     @Test
     public void test() {
         assertNotNull(EnumStep.values());
-        assertEquals(8, EnumStep.values().length);
+        assertEquals(10, EnumStep.values().length);
 
         assertEquals(EnumStep.CREATION, EnumStep.valueOf("CREATION"));
         assertEquals(EnumStep.CREATION, EnumStep.valueOf(EnumStep.class, "CREATION"));
@@ -49,9 +49,13 @@ public class EnumStepTest {
         assertEquals("ASSERTION", EnumStep.ASSERTION.name());
         assertEquals(5, EnumStep.SUB.ordinal());
         assertEquals("SUB", EnumStep.SUB.name());
-        assertEquals(6, EnumStep.MATCHER.ordinal());
-        assertEquals("MATCHER", EnumStep.MATCHER.name());
-        assertEquals(7, EnumStep.MATCHER_OBJECT.ordinal());
-        assertEquals("MATCHER_OBJECT", EnumStep.MATCHER_OBJECT.name());
+        assertEquals(6, EnumStep.PREDICATE.ordinal());
+        assertEquals("PREDICATE", EnumStep.PREDICATE.name());
+        assertEquals(7, EnumStep.PREDICATE_OBJECT.ordinal());
+        assertEquals("PREDICATE_OBJECT", EnumStep.PREDICATE_OBJECT.name());
+        assertEquals(8, EnumStep.SUB_ASSERTOR.ordinal());
+        assertEquals("SUB_ASSERTOR", EnumStep.SUB_ASSERTOR.name());
+        assertEquals(9, EnumStep.PROPERTY.ordinal());
+        assertEquals("PROPERTY", EnumStep.PROPERTY.name());
     }
 }

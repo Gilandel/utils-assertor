@@ -13,6 +13,7 @@
 package fr.landel.utils.assertor.predicate;
 
 import fr.landel.utils.assertor.StepAssertor;
+import fr.landel.utils.assertor.enums.EnumOperator;
 import fr.landel.utils.assertor.helper.HelperStep;
 
 /**
@@ -37,8 +38,8 @@ public interface OperatorAnd<S extends PredicateStep<S, T>, T> {
     /**
      * The only purpose is to avoid the copy of basic methods into children
      * interfaces. This is an indirect way to create specific
-     * {@link PredicateStep} by overriding this interface. All children
-     * class has to override this method
+     * {@link PredicateStep} by overriding this interface. All children class
+     * has to override this method
      * 
      * @param result
      *            the result
@@ -47,37 +48,28 @@ public interface OperatorAnd<S extends PredicateStep<S, T>, T> {
     S get(StepAssertor<T> result);
 
     /**
-     * Applies a predicate step in the current one with the operator AND. The
-     * aim of this is to provide the equivalence of parenthesis in condition
-     * expressions.
+     * Applies a predicate step in the current one with the operator
+     * {@link EnumOperator#AND}. The aim of this is to provide the equivalence
+     * of parenthesis in condition expressions.
      * 
      * <pre>
-     * // '' null or not empty and 'text' null or not empty
-     * Assertor.that("").isNull().or().isNotEmpty().and("text").isNull().or().isNotEmpty().isOK();
-     * // -&gt; true (because: false or false and false or true, false or false =
-     * // false =&gt; false and false = false =&gt; false or true = true)
-     * 
-     * // ('' null or not empty) and ('text' null or not empty)
-     * Assertor.that("").isNull().or().isNotEmpty().and(Assertor.that("text").isNull().or().isNotEmpty()).isOK();
-     * // -&gt; false (because: (false or false) and (false or true) =&gt; false and
-     * // true = false)
-     * 
+     * // not null and (length = 1 or contains 'ex')
+     * PredicateStepCharSequence&lt;String&gt; predicateOr = Assertor.&lt;String&gt; ofCharSequence().hasLength(1).or().contains("ex");
+     * PredicateStepCharSequence&lt;String&gt; predicateAnd = Assertor.&lt;String&gt; ofCharSequence().isNotNull().and(predicateOr);
+     * predicateAnd.that("text").isOK();
+     * // -&gt; true (because: true and (false or true) = true)
      * </pre>
      * 
      * @param other
      *            the other predicate step
-     * @param <X>
-     *            The type of other checked object
-     * @param <R>
-     *            The {@linkplain PredicateStep} type
      * @return this predicate step with the other injected
      */
-    default <X, R extends PredicateStep<R, X>> S and(final PredicateStep<R, X> other) {
+    default S and(final PredicateStep<S, T> other) {
         return this.get(HelperStep.and(this.getStep(), other.getStep()));
     }
 
     /**
-     * Append an operator 'AND' on the current step.
+     * Append an operator '{@link EnumOperator#AND}' on the current step.
      * 
      * @return the predicate assertor
      */

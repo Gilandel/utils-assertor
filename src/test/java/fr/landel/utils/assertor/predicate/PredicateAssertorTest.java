@@ -53,7 +53,7 @@ public class PredicateAssertorTest extends AbstractTest {
         assertTrue(predicate.that(158).isOK());
 
         Assertor.<Integer> ofNumber().isGT(13).and(Assertor.<Integer> ofNumber().isGT(10)).and().isEqual(11).that(15).isOK();
-        Assertor.<Integer> ofNumber().isGT(13).and(Assertor.<Long> ofNumber().isGT(18L)).and().isEqual(11).that(15).isOK();
+        Assertor.<Integer> ofNumber().isGT(13).and(Assertor.<Integer> ofNumber().isGT(18)).and().isEqual(11).that(15).isOK();
 
         Assertor.ofBoolean().isFalse().that(false).orElseThrow(JUNIT_THROWABLE);
         Assertor.<String> ofCharSequence().startsWith("t").that("test").orElseThrow(JUNIT_THROWABLE);

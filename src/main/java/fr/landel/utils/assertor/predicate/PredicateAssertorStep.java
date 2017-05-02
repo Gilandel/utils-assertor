@@ -13,6 +13,7 @@
 package fr.landel.utils.assertor.predicate;
 
 import java.util.Locale;
+import java.util.function.Predicate;
 
 import fr.landel.utils.assertor.Assertor;
 import fr.landel.utils.assertor.StepAssertor;
@@ -31,8 +32,8 @@ import fr.landel.utils.commons.function.PredicateThrowable;
  * </pre>
  * 
  * This chain always starts with a {@link PredicateAssertorStep} and ends with
- * {@link PredicateStep}. If multiple values are checked, following to
- * their types, the chain can be (checked values: "text", 3):
+ * {@link PredicateStep}. If multiple values are checked, following to their
+ * types, the chain can be (checked values: "text", 3):
  *
  * <pre>
  * {@link PredicateAssertorStepCharSequence} &gt; {@link PredicateAssertorStepCharSequence} &gt; {@link PredicateAssertorStepNumber} &gt; {@link PredicateStepNumber}...
@@ -59,8 +60,8 @@ public interface PredicateAssertorStep<S extends PredicateStep<S, T>, T> {
     /**
      * The only purpose of this is to avoid the copy of basic methods into
      * children interfaces. This is an indirect way to create specific
-     * {@link PredicateStep} by overriding this interface. All children
-     * class has to override this method.
+     * {@link PredicateStep} by overriding this interface. All children class
+     * has to override this method.
      * 
      * @param result
      *            The result
@@ -597,6 +598,65 @@ public interface PredicateAssertorStep<S extends PredicateStep<S, T>, T> {
      */
     default <E extends Throwable> S validates(final PredicateThrowable<T, E> predicate, final Locale locale, final CharSequence message,
             final Object... arguments) {
+        return this.get(AssertorObject.validates(this.getStep(), predicate, MessageAssertor.of(locale, message, arguments)));
+    }
+
+    /**
+     * Validates that the checked object matches the {@code predicate}.
+     * 
+     * <p>
+     * precondition: {@code predicate} cannot be {@code null}
+     * </p>
+     * 
+     * @param predicate
+     *            the predicate that validates the object
+     * @return the assertor step
+     * @category no_message
+     */
+    default S validates(final Predicate<T> predicate) {
+        return this.validates(predicate, null);
+    }
+
+    /**
+     * Validates that the checked object matches the {@code predicate}.
+     * 
+     * <p>
+     * precondition: {@code predicate} cannot be {@code null}
+     * </p>
+     * 
+     * @param predicate
+     *            the predicate that validates the object
+     * @param message
+     *            the message on hash code not equal
+     * @param arguments
+     *            the message arguments
+     * @return the assertor step
+     * @category message
+     */
+    default S validates(final Predicate<T> predicate, final CharSequence message, final Object... arguments) {
+        return this.validates(predicate, null, message, arguments);
+    }
+
+    /**
+     * Validates that the checked object matches the {@code predicate}.
+     * 
+     * <p>
+     * precondition: {@code predicate} cannot be {@code null}
+     * </p>
+     * 
+     * @param predicate
+     *            the predicate that validates the object
+     * @param locale
+     *            the message locale (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            the message on hash code not equal
+     * @param arguments
+     *            the message arguments
+     * @return the assertor step
+     * @category localized_message
+     */
+    default S validates(final Predicate<T> predicate, final Locale locale, final CharSequence message, final Object... arguments) {
         return this.get(AssertorObject.validates(this.getStep(), predicate, MessageAssertor.of(locale, message, arguments)));
     }
 }
