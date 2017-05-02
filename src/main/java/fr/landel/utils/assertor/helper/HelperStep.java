@@ -43,11 +43,43 @@ public class HelperStep extends ConstantsAssertor {
         return new StepAssertor<>(result);
     }
 
+    /**
+     * Append an 'AND' operator with a property to the current step
+     * 
+     * @param result
+     *            the previous step
+     * @param mapper
+     *            the mapper function
+     * @param type
+     *            the type of the new object
+     * @param analysisMode
+     *            the analysis mode to check the new object
+     * @param <X>
+     *            the type of the previous checked object
+     * @param <T>
+     *            the type of the property
+     * @return the next step
+     */
     public static <X, T> StepAssertor<T> and(final StepAssertor<X> result, final Function<X, T> mapper, final EnumType type,
             final EnumAnalysisMode analysisMode) {
         return new StepAssertor<>(result, mapper, type, EnumOperator.AND, analysisMode);
     }
 
+    /**
+     * Append an 'AND' operator with a new object to the current step
+     * 
+     * @param result
+     *            the previous step
+     * @param subAssertor
+     *            the sub-assertor
+     * @param <X>
+     *            the type of the previous checked object
+     * @param <T>
+     *            the type of the new object
+     * @param <S>
+     *            the type of step
+     * @return the next step
+     */
     public static <X, T, S extends Step<S, X>> StepAssertor<T> and(final StepAssertor<T> result, final Function<T, S> subAssertor) {
         return new StepAssertor<>(result, subAssertor, EnumOperator.AND);
     }
@@ -67,11 +99,52 @@ public class HelperStep extends ConstantsAssertor {
      *            the type of the previous checked object
      * @param <T>
      *            the type of the new object
-     * @return the new step
+     * @return the next step
      */
     public static <X, T> StepAssertor<T> and(final StepAssertor<X> result, final T object, final EnumType type,
             final EnumAnalysisMode analysisMode) {
         return new StepAssertor<>(result, object, type, EnumOperator.AND, analysisMode);
+    }
+
+    /**
+     * Append an 'OR' operator with a property to the current step
+     * 
+     * @param result
+     *            the previous step
+     * @param mapper
+     *            the mapper function
+     * @param type
+     *            the type of the new object
+     * @param analysisMode
+     *            the analysis mode to check the new object
+     * @param <X>
+     *            the type of the previous checked object
+     * @param <T>
+     *            the type of the property
+     * @return the next step
+     */
+    public static <X, T> StepAssertor<T> or(final StepAssertor<X> result, final Function<X, T> mapper, final EnumType type,
+            final EnumAnalysisMode analysisMode) {
+        return new StepAssertor<>(result, mapper, type, EnumOperator.OR, analysisMode);
+    }
+
+    /**
+     * Append an 'OR' operator with a new object to the current step
+     * 
+     * @param result
+     *            the previous step
+     * @param subAssertor
+     *            the sub-assertor
+     * @param <X>
+     *            the type of the previous checked object
+     * @param <T>
+     *            the type of the new object
+     * @param <S>
+     *            the type of step
+     * @return the next step
+     */
+    public static <X, T, S extends Step<S, X>> StepAssertor<T> or(final StepAssertor<T> result, final Function<T, S> subAssertor) {
+        return new StepAssertor<>(result, subAssertor, EnumOperator.OR);
     }
 
     /**
@@ -89,11 +162,52 @@ public class HelperStep extends ConstantsAssertor {
      *            the type of the previous checked object
      * @param <T>
      *            the type of the new object
-     * @return the new step
+     * @return the next step
      */
     public static <X, T> StepAssertor<T> or(final StepAssertor<X> result, final T object, final EnumType type,
             final EnumAnalysisMode analysisMode) {
         return new StepAssertor<>(result, object, type, EnumOperator.OR, analysisMode);
+    }
+
+    /**
+     * Append an 'XOR' operator with a property to the current step
+     * 
+     * @param result
+     *            the previous step
+     * @param mapper
+     *            the mapper function
+     * @param type
+     *            the type of the new object
+     * @param analysisMode
+     *            the analysis mode to check the new object
+     * @param <X>
+     *            the type of the previous checked object
+     * @param <T>
+     *            the type of the property
+     * @return the next step
+     */
+    public static <X, T> StepAssertor<T> xor(final StepAssertor<X> result, final Function<X, T> mapper, final EnumType type,
+            final EnumAnalysisMode analysisMode) {
+        return new StepAssertor<>(result, mapper, type, EnumOperator.XOR, analysisMode);
+    }
+
+    /**
+     * Append an 'XOR' operator with a new object to the current step
+     * 
+     * @param result
+     *            the previous step
+     * @param subAssertor
+     *            the sub-assertor
+     * @param <X>
+     *            the type of the previous checked object
+     * @param <T>
+     *            the type of the new object
+     * @param <S>
+     *            the type of step
+     * @return the next step
+     */
+    public static <X, T, S extends Step<S, X>> StepAssertor<T> xor(final StepAssertor<T> result, final Function<T, S> subAssertor) {
+        return new StepAssertor<>(result, subAssertor, EnumOperator.XOR);
     }
 
     /**
@@ -111,11 +225,52 @@ public class HelperStep extends ConstantsAssertor {
      *            the type of the previous checked object
      * @param <T>
      *            the type of the new object
-     * @return the new step
+     * @return the next step
      */
     public static <X, T> StepAssertor<T> xor(final StepAssertor<X> result, final T object, final EnumType type,
             final EnumAnalysisMode analysisMode) {
         return new StepAssertor<>(result, object, type, EnumOperator.XOR, analysisMode);
+    }
+
+    /**
+     * Append an 'NAND' operator with a property to the current step
+     * 
+     * @param result
+     *            the previous step
+     * @param mapper
+     *            the mapper function
+     * @param type
+     *            the type of the new object
+     * @param analysisMode
+     *            the analysis mode to check the new object
+     * @param <X>
+     *            the type of the previous checked object
+     * @param <T>
+     *            the type of the property
+     * @return the next step
+     */
+    public static <X, T> StepAssertor<T> nand(final StepAssertor<X> result, final Function<X, T> mapper, final EnumType type,
+            final EnumAnalysisMode analysisMode) {
+        return new StepAssertor<>(result, mapper, type, EnumOperator.NAND, analysisMode);
+    }
+
+    /**
+     * Append an 'NAND' operator with a new object to the current step
+     * 
+     * @param result
+     *            the previous step
+     * @param subAssertor
+     *            the sub-assertor
+     * @param <X>
+     *            the type of the previous checked object
+     * @param <T>
+     *            the type of the new object
+     * @param <S>
+     *            the type of step
+     * @return the next step
+     */
+    public static <X, T, S extends Step<S, X>> StepAssertor<T> nand(final StepAssertor<T> result, final Function<T, S> subAssertor) {
+        return new StepAssertor<>(result, subAssertor, EnumOperator.NAND);
     }
 
     /**
@@ -133,11 +288,52 @@ public class HelperStep extends ConstantsAssertor {
      *            the type of the previous checked object
      * @param <T>
      *            the type of the new object
-     * @return the new step
+     * @return the next step
      */
     public static <X, T> StepAssertor<T> nand(final StepAssertor<X> result, final T object, final EnumType type,
             final EnumAnalysisMode analysisMode) {
         return new StepAssertor<>(result, object, type, EnumOperator.NAND, analysisMode);
+    }
+
+    /**
+     * Append an 'NOR' operator with a property to the current step
+     * 
+     * @param result
+     *            the previous step
+     * @param mapper
+     *            the mapper function
+     * @param type
+     *            the type of the new object
+     * @param analysisMode
+     *            the analysis mode to check the new object
+     * @param <X>
+     *            the type of the previous checked object
+     * @param <T>
+     *            the type of the property
+     * @return the next step
+     */
+    public static <X, T> StepAssertor<T> nor(final StepAssertor<X> result, final Function<X, T> mapper, final EnumType type,
+            final EnumAnalysisMode analysisMode) {
+        return new StepAssertor<>(result, mapper, type, EnumOperator.NOR, analysisMode);
+    }
+
+    /**
+     * Append an 'NOR' operator with a new object to the current step
+     * 
+     * @param result
+     *            the previous step
+     * @param subAssertor
+     *            the sub-assertor
+     * @param <X>
+     *            the type of the previous checked object
+     * @param <T>
+     *            the type of the new object
+     * @param <S>
+     *            the type of step
+     * @return the next step
+     */
+    public static <X, T, S extends Step<S, X>> StepAssertor<T> nor(final StepAssertor<T> result, final Function<T, S> subAssertor) {
+        return new StepAssertor<>(result, subAssertor, EnumOperator.NOR);
     }
 
     /**
@@ -155,7 +351,7 @@ public class HelperStep extends ConstantsAssertor {
      *            the type of the previous checked object
      * @param <T>
      *            the type of the new object
-     * @return the new step
+     * @return the next step
      */
     public static <X, T> StepAssertor<T> nor(final StepAssertor<X> result, final T object, final EnumType type,
             final EnumAnalysisMode analysisMode) {
@@ -169,7 +365,7 @@ public class HelperStep extends ConstantsAssertor {
      *            the previous step
      * @param <T>
      *            the type of the new object
-     * @return the new step
+     * @return the next step
      */
     public static <T> StepAssertor<T> and(final StepAssertor<T> result) {
         return new StepAssertor<>(result, EnumOperator.AND);
@@ -182,7 +378,7 @@ public class HelperStep extends ConstantsAssertor {
      *            the previous step
      * @param <T>
      *            the type of the new object
-     * @return the new step
+     * @return the next step
      */
     public static <T> StepAssertor<T> or(final StepAssertor<T> result) {
         return new StepAssertor<>(result, EnumOperator.OR);
@@ -195,7 +391,7 @@ public class HelperStep extends ConstantsAssertor {
      *            the previous step
      * @param <T>
      *            the type of the new object
-     * @return the new step
+     * @return the next step
      */
     public static <T> StepAssertor<T> xor(final StepAssertor<T> result) {
         return new StepAssertor<>(result, EnumOperator.XOR);
@@ -208,7 +404,7 @@ public class HelperStep extends ConstantsAssertor {
      *            the previous step
      * @param <T>
      *            the type of the new object
-     * @return the new step
+     * @return the next step
      */
     public static <T> StepAssertor<T> nand(final StepAssertor<T> result) {
         return new StepAssertor<>(result, EnumOperator.NAND);
@@ -221,7 +417,7 @@ public class HelperStep extends ConstantsAssertor {
      *            the previous step
      * @param <T>
      *            the type of the new object
-     * @return the new step
+     * @return the next step
      */
     public static <T> StepAssertor<T> nor(final StepAssertor<T> result) {
         return new StepAssertor<>(result, EnumOperator.NOR);
@@ -238,7 +434,7 @@ public class HelperStep extends ConstantsAssertor {
      *            the type of the current checked object
      * @param <X>
      *            the type of the checked object of the sub step
-     * @return the new step
+     * @return the next step
      */
     public static <T, X> StepAssertor<T> and(final StepAssertor<T> result, final StepAssertor<X> other) {
         return new StepAssertor<>(result, other, EnumOperator.AND);
@@ -255,7 +451,7 @@ public class HelperStep extends ConstantsAssertor {
      *            the type of the current checked object
      * @param <X>
      *            the type of the checked object of the sub step
-     * @return the new step
+     * @return the next step
      */
     public static <T, X> StepAssertor<T> or(final StepAssertor<T> result, final StepAssertor<X> other) {
         return new StepAssertor<>(result, other, EnumOperator.OR);
@@ -272,7 +468,7 @@ public class HelperStep extends ConstantsAssertor {
      *            the type of the current checked object
      * @param <X>
      *            the type of the checked object of the sub step
-     * @return the new step
+     * @return the next step
      */
     public static <T, X> StepAssertor<T> xor(final StepAssertor<T> result, final StepAssertor<X> other) {
         return new StepAssertor<>(result, other, EnumOperator.XOR);
@@ -289,7 +485,7 @@ public class HelperStep extends ConstantsAssertor {
      *            the type of the current checked object
      * @param <X>
      *            the type of the checked object of the sub step
-     * @return the new step
+     * @return the next step
      */
     public static <T, X> StepAssertor<T> nand(final StepAssertor<T> result, final StepAssertor<X> other) {
         return new StepAssertor<>(result, other, EnumOperator.NAND);
@@ -306,7 +502,7 @@ public class HelperStep extends ConstantsAssertor {
      *            the type of the current checked object
      * @param <X>
      *            the type of the checked object of the sub step
-     * @return the new step
+     * @return the next step
      */
     public static <T, X> StepAssertor<T> nor(final StepAssertor<T> result, final StepAssertor<X> other) {
         return new StepAssertor<>(result, other, EnumOperator.NOR);
@@ -321,7 +517,7 @@ public class HelperStep extends ConstantsAssertor {
      *            the matcher object
      * @param <T>
      *            the type of the new object
-     * @return the new step
+     * @return the next step
      */
     public static <T> StepAssertor<T> object(final StepAssertor<T> result, final T object) {
         return new StepAssertor<>(result, object);

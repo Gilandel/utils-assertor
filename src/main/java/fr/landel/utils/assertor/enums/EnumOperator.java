@@ -28,7 +28,7 @@ public enum EnumOperator {
      * And operator
      * 
      * <pre>
-     * AND = bool1 && bool2
+     * AND = bool1 &amp;&amp; bool2
      * 
      * true AND true = true
      * true AND false = false
@@ -70,7 +70,7 @@ public enum EnumOperator {
      * Nand operator (negative and)
      * 
      * <pre>
-     * NAND = !bool1 && !bool2
+     * NAND = !bool1 &amp;&amp; !bool2
      * 
      * true NAND true = false
      * true NAND false = false

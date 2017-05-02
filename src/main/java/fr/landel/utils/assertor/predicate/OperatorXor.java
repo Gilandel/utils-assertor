@@ -49,7 +49,7 @@ public interface OperatorXor<S extends PredicateStep<S, T>, T> {
 
     /**
      * Applies a predicate step in the current one with the operator
-     * {@link EnumOperatorXNOR}. The aim of this is to provide the equivalence
+     * {@link EnumOperator#XOR}. The aim of this is to provide the equivalence
      * of parenthesis in condition expressions.
      * 
      * <pre>

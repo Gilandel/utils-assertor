@@ -48,25 +48,24 @@ import fr.landel.utils.commons.Result;
  * Final by using methods:
  * </p>
  * <ul>
- * <li>{@link PredicateAssertorEnd#isOK}: to get the boolean result of the
- * assertion {@code true} or {@code false}.</li>
- * <li>{@link PredicateAssertorEnd#getErrors}: to get the error message
- * (precondition message or message depending of error type).</li>
- * <li>{@link PredicateAssertorEnd#get}: to get the result as an
- * {@link Optional} object. The result is set to empty if the assertion failed
- * or if the checked value is {@code null}.</li>
- * <li>{@link PredicateAssertorEnd#getNullable}: to get the result even if value
- * is {@code null}.</li>
- * <li>{@link PredicateAssertorEnd#orElse}: to get the value if not
- * {@code null}, otherwise returns the default value.</li>
- * <li>{@link PredicateAssertorEnd#orElseThrow}: to throw an exception if
- * assertion is false, or to get the checked value otherwise.</li>
- * <li>{@link PredicateAssertorEnd#asResult}: to get the result as a
- * {@link Result} object. The result is set to empty only if the assertion
- * failed.</li>
- * <li>{@link PredicateAssertorEnd#asDefault}: to get the result as a
- * {@link Default} object. It's the as {@link Optional} but the default value is
- * already included.</li>
+ * <li>{@link AssertorEnd#isOK}: to get the boolean result of the assertion
+ * {@code true} or {@code false}.</li>
+ * <li>{@link AssertorEnd#getErrors}: to get the error message (precondition
+ * message or message depending of error type).</li>
+ * <li>{@link AssertorEnd#get}: to get the result as an {@link Optional} object.
+ * The result is set to empty if the assertion failed or if the checked value is
+ * {@code null}.</li>
+ * <li>{@link AssertorEnd#getNullable}: to get the result even if value is
+ * {@code null}.</li>
+ * <li>{@link AssertorEnd#orElse}: to get the value if not {@code null},
+ * otherwise returns the default value.</li>
+ * <li>{@link AssertorEnd#orElseThrow}: to throw an exception if assertion is
+ * false, or to get the checked value otherwise.</li>
+ * <li>{@link AssertorEnd#asResult}: to get the result as a {@link Result}
+ * object. The result is set to empty only if the assertion failed.</li>
+ * <li>{@link AssertorEnd#asDefault}: to get the result as a {@link Default}
+ * object. It's the as {@link Optional} but the default value is already
+ * included.</li>
  * </ul>
  *
  * @since Aug 7, 2016

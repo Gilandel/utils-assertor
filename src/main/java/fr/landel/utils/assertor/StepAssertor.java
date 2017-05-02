@@ -276,6 +276,8 @@ public class StepAssertor<T> implements Serializable {
      *            The operator for the next combination
      * @param <Y>
      *            the sub step type
+     * @param <S>
+     *            the output step type
      */
     public <Y, S extends Step<S, Y>> StepAssertor(final StepAssertor<T> previousStep, final Function<T, S> subAssertor,
             final EnumOperator operator) {

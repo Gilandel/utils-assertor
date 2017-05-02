@@ -16,6 +16,7 @@ import java.time.temporal.Temporal;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
+import java.util.function.Function;
 
 import fr.landel.utils.assertor.enums.EnumAnalysisMode;
 import fr.landel.utils.assertor.enums.EnumOperator;
@@ -484,5 +485,445 @@ public interface OperatorOr<S extends Step<S, T>, T> {
      */
     default AssertorStep<S, T> or() {
         return () -> HelperStep.or(this.getStep());
+    }
+
+    /**
+     * Append a sub-assertor with the operator {@link EnumOperator#OR} on the
+     * current step.
+     * 
+     * @param subAssertor
+     *            the sub-assertor
+     * @param <X>
+     *            the predicate step type expected
+     * @param <Y>
+     *            the type of the checked sub-object
+     * @return the predicate step
+     */
+    default <X extends Step<X, Y>, Y> S orAssertor(final Function<T, X> subAssertor) {
+        return this.get(HelperStep.or(this.getStep(), subAssertor));
+    }
+
+    /**
+     * Append an object through a mapper with the operator
+     * {@link EnumOperator#OR} on the current step.
+     * 
+     * @param mapper
+     *            the mapper function
+     * @param <R>
+     *            the predicate step type expected
+     * @param <X>
+     *            the type of the checked sub-object
+     * @return the assertor step
+     */
+    default <X, R extends Step<R, X>> AssertorStep<R, X> orObject(final Function<T, X> mapper) {
+        return this.orObject(mapper, null);
+    }
+
+    /**
+     * Append an object through a mapper with the operator
+     * {@link EnumOperator#OR} on the current step.
+     * 
+     * @param mapper
+     *            the mapper function
+     * @param analysisMode
+     *            the analysis mode ({@link EnumAnalysisMode#STANDARD},
+     *            {@link EnumAnalysisMode#STREAM} or
+     *            {@link EnumAnalysisMode#PARALLEL})
+     * @param <R>
+     *            the predicate step type expected
+     * @param <X>
+     *            the type of the checked sub-object
+     * @return the assertor step
+     */
+    default <X, R extends Step<R, X>> AssertorStep<R, X> orObject(final Function<T, X> mapper, final EnumAnalysisMode analysisMode) {
+        return () -> HelperStep.or(this.getStep(), mapper, EnumType.UNKNOWN, analysisMode);
+    }
+
+    /**
+     * Append a {@link Boolean} through a mapper with the operator
+     * {@link EnumOperator#OR} on the current step.
+     * 
+     * @param mapper
+     *            the mapper function
+     * @return the assertor step
+     */
+    default AssertorStepBoolean orBoolean(final Function<T, Boolean> mapper) {
+        return this.orBoolean(mapper, null);
+    }
+
+    /**
+     * Append a {@link Boolean} through a mapper with the operator
+     * {@link EnumOperator#OR} on the current step.
+     * 
+     * @param mapper
+     *            the mapper function
+     * @param analysisMode
+     *            the analysis mode ({@link EnumAnalysisMode#STANDARD},
+     *            {@link EnumAnalysisMode#STREAM} or
+     *            {@link EnumAnalysisMode#PARALLEL})
+     * @return the assertor step
+     */
+    default AssertorStepBoolean orBoolean(final Function<T, Boolean> mapper, final EnumAnalysisMode analysisMode) {
+        return () -> HelperStep.or(this.getStep(), mapper, EnumType.BOOLEAN, analysisMode);
+    }
+
+    /**
+     * Append a {@link CharSequence} through a mapper with the operator
+     * {@link EnumOperator#OR} on the current step.
+     * 
+     * @param mapper
+     *            the mapper function
+     * @param <X>
+     *            the type of the {@link CharSequence}
+     * @return the assertor step
+     */
+    default <X extends CharSequence> AssertorStepCharSequence<X> orCharSequence(final Function<T, X> mapper) {
+        return this.orCharSequence(mapper, null);
+    }
+
+    /**
+     * Append a {@link CharSequence} through a mapper with the operator
+     * {@link EnumOperator#OR} on the current step.
+     * 
+     * @param mapper
+     *            the mapper function
+     * @param analysisMode
+     *            the analysis mode ({@link EnumAnalysisMode#STANDARD},
+     *            {@link EnumAnalysisMode#STREAM} or
+     *            {@link EnumAnalysisMode#PARALLEL})
+     * @param <X>
+     *            the type of the {@link CharSequence}
+     * @return the assertor step
+     */
+    default <X extends CharSequence> AssertorStepCharSequence<X> orCharSequence(final Function<T, X> mapper,
+            final EnumAnalysisMode analysisMode) {
+        return () -> HelperStep.or(this.getStep(), mapper, EnumType.CHAR_SEQUENCE, analysisMode);
+    }
+
+    /**
+     * Append an array through a mapper with the operator
+     * {@link EnumOperator#OR} on the current step.
+     * 
+     * @param mapper
+     *            the mapper function
+     * @param <X>
+     *            the type of the array elements
+     * @return the assertor step
+     */
+    default <X> AssertorStepArray<X> orArray(final Function<T, X[]> mapper) {
+        return this.orArray(mapper, null);
+    }
+
+    /**
+     * Append an array through a mapper with the operator
+     * {@link EnumOperator#OR} on the current step.
+     * 
+     * @param mapper
+     *            the mapper function
+     * @param analysisMode
+     *            the analysis mode ({@link EnumAnalysisMode#STANDARD},
+     *            {@link EnumAnalysisMode#STREAM} or
+     *            {@link EnumAnalysisMode#PARALLEL})
+     * @param <X>
+     *            the type of the array elements
+     * @return the assertor step
+     */
+    default <X> AssertorStepArray<X> orArray(final Function<T, X[]> mapper, final EnumAnalysisMode analysisMode) {
+        return () -> HelperStep.or(this.getStep(), mapper, EnumType.ARRAY, analysisMode);
+    }
+
+    /**
+     * Append a {@link Date} through a mapper with the operator
+     * {@link EnumOperator#OR} on the current step.
+     * 
+     * @param mapper
+     *            the mapper function
+     * @return the assertor step
+     */
+    default AssertorStepDate orDate(final Function<T, Date> mapper) {
+        return this.orDate(mapper, null);
+    }
+
+    /**
+     * Append a {@link Date} through a mapper with the operator
+     * {@link EnumOperator#OR} on the current step.
+     * 
+     * @param mapper
+     *            the mapper function
+     * @param analysisMode
+     *            the analysis mode ({@link EnumAnalysisMode#STANDARD},
+     *            {@link EnumAnalysisMode#STREAM} or
+     *            {@link EnumAnalysisMode#PARALLEL})
+     * @return the assertor step
+     */
+    default AssertorStepDate orDate(final Function<T, Date> mapper, final EnumAnalysisMode analysisMode) {
+        return () -> HelperStep.or(this.getStep(), mapper, EnumType.DATE, analysisMode);
+    }
+
+    /**
+     * Append a {@link Calendar} through a mapper with the operator
+     * {@link EnumOperator#OR} on the current step.
+     * 
+     * @param mapper
+     *            the mapper function
+     * @return the assertor step
+     */
+    default AssertorStepCalendar orCalendar(final Function<T, Calendar> mapper) {
+        return this.orCalendar(mapper, null);
+    }
+
+    /**
+     * Append a {@link Calendar} through a mapper with the operator
+     * {@link EnumOperator#OR} on the current step.
+     * 
+     * @param mapper
+     *            the mapper function
+     * @param analysisMode
+     *            the analysis mode ({@link EnumAnalysisMode#STANDARD},
+     *            {@link EnumAnalysisMode#STREAM} or
+     *            {@link EnumAnalysisMode#PARALLEL})
+     * @return the assertor step
+     */
+    default AssertorStepCalendar orCalendar(final Function<T, Calendar> mapper, final EnumAnalysisMode analysisMode) {
+        return () -> HelperStep.or(this.getStep(), mapper, EnumType.CALENDAR, analysisMode);
+    }
+
+    /**
+     * Append a {@link Temporal} through a mapper with the operator
+     * {@link EnumOperator#OR} on the current step.
+     * 
+     * @param mapper
+     *            the mapper function
+     * @param <X>
+     *            the type of the {@link Temporal}
+     * @return the assertor step
+     */
+    default <X extends Temporal & Comparable<X>> AssertorStepTemporal<X> orTemporal(final Function<T, X> mapper) {
+        return this.orTemporal(mapper, null);
+    }
+
+    /**
+     * Append a {@link Temporal} through a mapper with the operator
+     * {@link EnumOperator#OR} on the current step.
+     * 
+     * @param mapper
+     *            the mapper function
+     * @param analysisMode
+     *            the analysis mode ({@link EnumAnalysisMode#STANDARD},
+     *            {@link EnumAnalysisMode#STREAM} or
+     *            {@link EnumAnalysisMode#PARALLEL})
+     * @param <X>
+     *            the type of the {@link Temporal}
+     * @return the assertor step
+     */
+    default <X extends Temporal & Comparable<X>> AssertorStepTemporal<X> orTemporal(final Function<T, X> mapper,
+            final EnumAnalysisMode analysisMode) {
+        return () -> HelperStep.or(this.getStep(), mapper, EnumType.TEMPORAL, analysisMode);
+    }
+
+    /**
+     * Append a {@link Class} through a mapper with the operator
+     * {@link EnumOperator#OR} on the current step.
+     * 
+     * @param mapper
+     *            the mapper function
+     * @param <X>
+     *            the type of the {@link Class}
+     * @return the assertor step
+     */
+    default <X> AssertorStepClass<X> orClass(final Function<T, Class<X>> mapper) {
+        return this.orClass(mapper, null);
+    }
+
+    /**
+     * Append a {@link Class} through a mapper with the operator
+     * {@link EnumOperator#OR} on the current step.
+     * 
+     * @param mapper
+     *            the mapper function
+     * @param analysisMode
+     *            the analysis mode ({@link EnumAnalysisMode#STANDARD},
+     *            {@link EnumAnalysisMode#STREAM} or
+     *            {@link EnumAnalysisMode#PARALLEL})
+     * @param <X>
+     *            the type of the {@link Class}
+     * @return the assertor step
+     */
+    default <X> AssertorStepClass<X> orClass(final Function<T, Class<X>> mapper, final EnumAnalysisMode analysisMode) {
+        return () -> HelperStep.or(this.getStep(), mapper, EnumType.CLASS, analysisMode);
+    }
+
+    /**
+     * Append a {@link Enum} through a mapper with the operator
+     * {@link EnumOperator#OR} on the current step.
+     * 
+     * @param mapper
+     *            the mapper function
+     * @param <X>
+     *            the type of the {@link Enum}
+     * @return the assertor step
+     */
+    default <X extends Enum<X>> AssertorStepEnum<X> orEnum(final Function<T, X> mapper) {
+        return this.orEnum(mapper, null);
+    }
+
+    /**
+     * Append a {@link Enum} through a mapper with the operator
+     * {@link EnumOperator#OR} on the current step.
+     * 
+     * @param mapper
+     *            the mapper function
+     * @param analysisMode
+     *            the analysis mode ({@link EnumAnalysisMode#STANDARD},
+     *            {@link EnumAnalysisMode#STREAM} or
+     *            {@link EnumAnalysisMode#PARALLEL})
+     * @param <X>
+     *            the type of the {@link Enum}
+     * @return the assertor step
+     */
+    default <X extends Enum<X>> AssertorStepEnum<X> orEnum(final Function<T, X> mapper, final EnumAnalysisMode analysisMode) {
+        return () -> HelperStep.or(this.getStep(), mapper, EnumType.ENUMERATION, analysisMode);
+    }
+
+    /**
+     * Append a {@link Throwable} through a mapper with the operator
+     * {@link EnumOperator#OR} on the current step.
+     * 
+     * @param mapper
+     *            the mapper function
+     * @param <X>
+     *            the type of the {@link Throwable}
+     * @return the assertor step
+     */
+    default <X extends Throwable> AssertorStepThrowable<X> orThrowable(final Function<T, X> mapper) {
+        return this.orThrowable(mapper, null);
+    }
+
+    /**
+     * Append a {@link Throwable} through a mapper with the operator
+     * {@link EnumOperator#OR} on the current step.
+     * 
+     * @param mapper
+     *            the mapper function
+     * @param analysisMode
+     *            the analysis mode ({@link EnumAnalysisMode#STANDARD},
+     *            {@link EnumAnalysisMode#STREAM} or
+     *            {@link EnumAnalysisMode#PARALLEL})
+     * @param <X>
+     *            the type of the {@link Throwable}
+     * @return the assertor step
+     */
+    default <X extends Throwable> AssertorStepThrowable<X> orThrowable(final Function<T, X> mapper, final EnumAnalysisMode analysisMode) {
+        return () -> HelperStep.or(this.getStep(), mapper, EnumType.THROWABLE, analysisMode);
+    }
+
+    /**
+     * Append a {@link Number} through a mapper with the operator
+     * {@link EnumOperator#OR} on the current step.
+     * 
+     * @param mapper
+     *            the mapper function
+     * @param <N>
+     *            the type of the {@link Number}
+     * @return the assertor step
+     */
+    default <N extends Number & Comparable<N>> AssertorStepNumber<N> orNumber(final Function<T, N> mapper) {
+        return this.orNumber(mapper, null);
+    }
+
+    /**
+     * Append a {@link Number} through a mapper with the operator
+     * {@link EnumOperator#OR} on the current step.
+     * 
+     * @param mapper
+     *            the mapper function
+     * @param analysisMode
+     *            the analysis mode ({@link EnumAnalysisMode#STANDARD},
+     *            {@link EnumAnalysisMode#STREAM} or
+     *            {@link EnumAnalysisMode#PARALLEL})
+     * @param <N>
+     *            the type of the {@link Number}
+     * @return the assertor step
+     */
+    default <N extends Number & Comparable<N>> AssertorStepNumber<N> orNumber(final Function<T, N> mapper,
+            final EnumAnalysisMode analysisMode) {
+        return () -> HelperStep.or(this.getStep(), mapper, EnumType.NUMBER_DECIMAL, analysisMode);
+    }
+
+    /**
+     * Append a {@link Iterable} through a mapper with the operator
+     * {@link EnumOperator#OR} on the current step.
+     * 
+     * @param mapper
+     *            the mapper function
+     * @param <I>
+     *            the type of the {@link Iterable}
+     * @param <X>
+     *            the type of the {@link Iterable} elements
+     * @return the assertor step
+     */
+    default <I extends Iterable<X>, X> AssertorStepIterable<I, X> orIterable(final Function<T, I> mapper) {
+        return this.orIterable(mapper, null);
+    }
+
+    /**
+     * Append a {@link Iterable} through a mapper with the operator
+     * {@link EnumOperator#OR} on the current step.
+     * 
+     * @param mapper
+     *            the mapper function
+     * @param analysisMode
+     *            the analysis mode ({@link EnumAnalysisMode#STANDARD},
+     *            {@link EnumAnalysisMode#STREAM} or
+     *            {@link EnumAnalysisMode#PARALLEL})
+     * @param <I>
+     *            the type of the {@link Iterable}
+     * @param <X>
+     *            the type of the {@link Iterable} elements
+     * @return the assertor step
+     */
+    default <I extends Iterable<X>, X> AssertorStepIterable<I, X> orIterable(final Function<T, I> mapper,
+            final EnumAnalysisMode analysisMode) {
+        return () -> HelperStep.or(this.getStep(), mapper, EnumType.ITERABLE, analysisMode);
+    }
+
+    /**
+     * Append a {@link Map} through a mapper with the operator
+     * {@link EnumOperator#OR} on the current step.
+     * 
+     * @param mapper
+     *            the mapper function
+     * @param <M>
+     *            the type of the {@link Map}
+     * @param <K>
+     *            the type of the {@link Map} keys
+     * @param <V>
+     *            the type of the {@link Map} values
+     * @return the assertor step
+     */
+    default <M extends Map<K, V>, K, V> AssertorStepMap<M, K, V> orMap(final Function<T, M> mapper) {
+        return this.orMap(mapper, null);
+    }
+
+    /**
+     * Append a {@link Map} through a mapper with the operator
+     * {@link EnumOperator#OR} on the current step.
+     * 
+     * @param mapper
+     *            the mapper function
+     * @param analysisMode
+     *            the analysis mode ({@link EnumAnalysisMode#STANDARD},
+     *            {@link EnumAnalysisMode#STREAM} or
+     *            {@link EnumAnalysisMode#PARALLEL})
+     * @param <M>
+     *            the type of the {@link Map}
+     * @param <K>
+     *            the type of the {@link Map} keys
+     * @param <V>
+     *            the type of the {@link Map} values
+     * @return the assertor step
+     */
+    default <M extends Map<K, V>, K, V> AssertorStepMap<M, K, V> orMap(final Function<T, M> mapper, final EnumAnalysisMode analysisMode) {
+        return () -> HelperStep.or(this.getStep(), mapper, EnumType.MAP, analysisMode);
     }
 }

@@ -18,6 +18,7 @@ import java.util.function.Predicate;
 import fr.landel.utils.assertor.commons.MessageAssertor;
 import fr.landel.utils.assertor.helper.HelperStep;
 import fr.landel.utils.assertor.utils.AssertorObject;
+import fr.landel.utils.commons.CastUtils;
 import fr.landel.utils.commons.function.PredicateThrowable;
 
 /**
@@ -65,9 +66,8 @@ public interface AssertorStep<S extends Step<S, T>, T> {
      *            The result
      * @return The predicate step
      */
-    @SuppressWarnings("unchecked")
     default S get(final StepAssertor<T> result) {
-        return (S) (Step<S, T>) () -> result;
+        return CastUtils.cast((Step<S, T>) () -> result);
     }
 
     /**
