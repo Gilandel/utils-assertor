@@ -45,16 +45,16 @@ public class AssertorTest extends AbstractTest {
      */
     @Test
     public void testThatN() {
-        assertTrue(PredicateAssertorBoolean.class.isAssignableFrom(Assertor.that(true).getClass()));
-        assertTrue(PredicateAssertorIterable.class.isAssignableFrom(Assertor.that(new ArrayList<Color>()).getClass()));
-        assertTrue(PredicateAssertor.class.isAssignableFrom(Assertor.that(Color.BLACK).getClass()));
-        assertTrue(PredicateAssertorMap.class.isAssignableFrom(Assertor.that(new HashMap<String, Integer>()).getClass()));
-        assertTrue(PredicateAssertorNumber.class.isAssignableFrom(Assertor.that(12).getClass()));
-        assertTrue(PredicateAssertorCharSequence.class.isAssignableFrom(Assertor.that("test").getClass()));
-        assertTrue(PredicateAssertorArray.class.isAssignableFrom(Assertor.that(new String[0]).getClass()));
-        assertTrue(PredicateAssertorDate.class.isAssignableFrom(Assertor.that(new Date()).getClass()));
-        assertTrue(PredicateAssertorCalendar.class.isAssignableFrom(Assertor.that(Calendar.getInstance()).getClass()));
-        assertTrue(PredicateAssertorClass.class.isAssignableFrom(Assertor.that(String.class).getClass()));
-        assertTrue(PredicateAssertorThrowable.class.isAssignableFrom(Assertor.that(new IllegalArgumentException()).getClass()));
+        assertTrue(AssertorStepBoolean.class.isAssignableFrom(Assertor.that(true).getClass()));
+        assertTrue(AssertorStepIterable.class.isAssignableFrom(Assertor.that(new ArrayList<Color>()).getClass()));
+        assertTrue(AssertorStep.class.isAssignableFrom(Assertor.that(Color.BLACK).getClass()));
+        assertTrue(AssertorStepMap.class.isAssignableFrom(Assertor.that(new HashMap<String, Integer>()).getClass()));
+        assertTrue(AssertorStepNumber.class.isAssignableFrom(Assertor.that(12).getClass()));
+        assertTrue(AssertorStepCharSequence.class.isAssignableFrom(Assertor.that("test").getClass()));
+        assertTrue(AssertorStepArray.class.isAssignableFrom(Assertor.that(new String[0]).getClass()));
+        assertTrue(AssertorStepDate.class.isAssignableFrom(Assertor.that(new Date()).getClass()));
+        assertTrue(AssertorStepCalendar.class.isAssignableFrom(Assertor.that(Calendar.getInstance()).getClass()));
+        assertTrue(AssertorStepClass.class.isAssignableFrom(Assertor.that(String.class).getClass()));
+        assertTrue(AssertorStepThrowable.class.isAssignableFrom(Assertor.that(new IllegalArgumentException()).getClass()));
     }
 }

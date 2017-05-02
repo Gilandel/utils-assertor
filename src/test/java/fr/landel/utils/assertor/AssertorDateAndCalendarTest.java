@@ -24,6 +24,7 @@ import java.util.GregorianCalendar;
 
 import org.junit.Test;
 
+import fr.landel.utils.assertor.utils.AssertorDate;
 import fr.landel.utils.commons.DateUtils;
 
 /**

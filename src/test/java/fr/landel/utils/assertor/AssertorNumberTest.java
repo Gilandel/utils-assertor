@@ -17,7 +17,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Locale;
+
 import org.junit.Test;
+
+import fr.landel.utils.assertor.utils.AssertorNumber;
 
 /**
  * Check {@link AssertorNumber}
@@ -303,5 +307,25 @@ public class AssertorNumberTest extends AbstractTest {
         assertException(() -> {
             Assertor.that(2).isLTE(1, "error1").orElseThrow("error2");
         }, IllegalArgumentException.class, "error2");
+    }
+
+    /**
+     * Test method for {@link AssertorNumber#isBetween}.
+     */
+    @Test
+    public void testIsBetween() {
+        Assertor.that(2).isBetween(1, 3).orElseThrow(JUNIT_THROWABLE);
+
+        // precondition
+        assertFalse(Assertor.that(2).isBetween(3, 3).isOK());
+        assertFalse(Assertor.that(2).isBetween(null, 3).isOK());
+
+        // check
+        assertFalse(Assertor.that(0).isBetween(1, 3).isOK());
+        assertFalse(Assertor.that(3).isBetween(1, 3).isOK());
+
+        assertException(() -> {
+            Assertor.that(2_111.2).isBetween(1_111.1, 2_111.2, Locale.US, "%1$,.3f* is not between %2$,.3f* and %3$,.3f*").orElseThrow();
+        }, IllegalArgumentException.class, "2,111.200 is not between 1,111.100 and 2,111.200");
     }
 }

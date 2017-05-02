@@ -32,6 +32,10 @@ import java.util.Locale;
 
 import org.junit.Test;
 
+import fr.landel.utils.assertor.enums.EnumOperator;
+import fr.landel.utils.assertor.enums.EnumType;
+import fr.landel.utils.assertor.utils.AssertorObject;
+
 /**
  * Check {@link AssertorObject}
  *
@@ -82,7 +86,7 @@ public class AssertorObjectTest extends AbstractTest {
      */
     @Test
     public void testObject() {
-        PredicateAssertorCharSequence<String> assertor = Assertor.that("text");
+        AssertorStepCharSequence<String> assertor = Assertor.that("text");
 
         // intermediate condition (no call of isOK or orElseThrow), so no reset
         // and this condition is used in the next one

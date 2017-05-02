@@ -26,6 +26,9 @@ import java.util.Set;
 
 import org.junit.Test;
 
+import fr.landel.utils.assertor.enums.EnumAnalysisMode;
+import fr.landel.utils.assertor.utils.AssertorIterable;
+
 /**
  * Check {@link AssertorIterable}
  *
@@ -183,7 +186,7 @@ public class AssertorIterableTest extends AbstractTest {
         assertException(() -> {
             Assertor.that((Iterable<String>) null).isNotEmpty().orElseThrow();
             fail();
-        }, IllegalArgumentException.class, "the iterable 'should be NOT empty and NOT null");
+        }, IllegalArgumentException.class, "the iterable 'null' should be NOT empty and NOT null");
     }
 
     /**

@@ -23,6 +23,8 @@ import java.util.Locale;
 
 import org.junit.Test;
 
+import fr.landel.utils.assertor.utils.AssertorClass;
+
 /**
  * Check {@link AssertorClass}
  *

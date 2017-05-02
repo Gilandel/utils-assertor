@@ -23,6 +23,9 @@ import java.util.Objects;
 
 import org.junit.Test;
 
+import fr.landel.utils.assertor.enums.EnumType;
+import fr.landel.utils.assertor.utils.AssertorBoolean;
+
 /**
  * Check {@link AssertorBoolean}
  *

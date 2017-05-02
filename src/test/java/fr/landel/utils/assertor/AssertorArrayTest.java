@@ -22,6 +22,9 @@ import java.util.Objects;
 
 import org.junit.Test;
 
+import fr.landel.utils.assertor.enums.EnumAnalysisMode;
+import fr.landel.utils.assertor.utils.AssertorArray;
+
 /**
  * Check {@link AssertorArray}
  *

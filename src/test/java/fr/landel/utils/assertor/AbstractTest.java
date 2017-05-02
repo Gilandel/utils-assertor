@@ -20,6 +20,10 @@ import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.junit.ComparisonFailure;
 
+import fr.landel.utils.assertor.commons.ConstantsAssertor;
+import fr.landel.utils.assertor.commons.ParameterAssertor;
+import fr.landel.utils.assertor.commons.ResultAssertor;
+import fr.landel.utils.assertor.helper.HelperAssertor;
 import fr.landel.utils.commons.CastUtils;
 import fr.landel.utils.commons.expect.Expect;
 import fr.landel.utils.commons.function.ThrowableSupplier;
@@ -131,7 +135,7 @@ public abstract class AbstractTest extends ConstantsAssertor {
         private final StepAssertor<T> step;
         private ResultAssertor result;
 
-        public <S extends PredicateStep<S, T>> AssertorMatcher(final PredicateStep<S, T> predicate) {
+        public <S extends Step<S, T>> AssertorMatcher(final Step<S, T> predicate) {
             super();
             this.step = predicate.getStep();
         }

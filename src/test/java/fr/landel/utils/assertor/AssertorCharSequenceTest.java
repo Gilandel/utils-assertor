@@ -17,9 +17,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
 import java.util.regex.Pattern;
 
 import org.junit.Test;
+
+import fr.landel.utils.assertor.utils.AssertorCharSequence;
 
 /**
  * Check {@link AssertorCharSequence}
@@ -486,8 +489,7 @@ public class AssertorCharSequenceTest extends AbstractTest {
         assertException(() -> {
             Assertor.that("toto part en vacances").contains("toto").and().contains("voyage")
                     .or(Assertor.that("text").isBlank().or().not().contains("text")).orElseThrow();
-        }, IllegalArgumentException.class, "the char sequence 'toto part en vacances' should contain 'voyage'"
-                + " OR (the char sequence 'text' should be null, empty or blank OR the char sequence 'text' should NOT contain 'text')");
+        }, IllegalArgumentException.class, "the char sequence 'toto part en vacances' should contain 'voyage'");
 
         assertException(() -> {
             Assertor.that("toto part en vacances").contains('t').and().contains('y').orElseThrow();
@@ -501,8 +503,7 @@ public class AssertorCharSequenceTest extends AbstractTest {
         assertException(() -> {
             Assertor.that("toto part en vacances").contains('t').and().contains('y')
                     .or(Assertor.that("text").isBlank().or().not().contains('t')).orElseThrow();
-        }, IllegalArgumentException.class, "the char sequence 'toto part en vacances' should contain 'y'"
-                + " OR (the char sequence 'text' should be null, empty or blank OR the char sequence 'text' should NOT contain 't')");
+        }, IllegalArgumentException.class, "the char sequence 'toto part en vacances' should contain 'y'");
 
         assertException(() -> {
             Assertor.that((CharSequence) null).contains('t').and().contains((Character) null).orElseThrow();
@@ -632,5 +633,18 @@ public class AssertorCharSequenceTest extends AbstractTest {
         assertFalse(Assertor.that((String) null).find(regex).isOK());
         assertFalse(Assertor.that("Text").find((String) null).isOK());
         assertFalse(Assertor.that((String) null).find((String) null).isOK());
+    }
+
+    @Test
+    public void testSubAssertor() {
+        Assertor.that(new IOException("error")).isNotNull().andCharSequence(e -> e.getMessage()).startsWith("er").orElseThrow();
+
+        // @formatter:off
+        Assertor.that(new IOException("error"))
+                .isNotNull()
+                .andAssertor(e -> Assertor.that(e.getMessage()).startsWith("er"))
+                .andAssertor(e -> Assertor.that(e.getCause()).isNull())
+                .orElseThrow();
+        // @formatter:on
     }
 }

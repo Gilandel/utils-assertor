@@ -18,8 +18,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiPredicate;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
+import fr.landel.utils.assertor.commons.MessageAssertor;
+import fr.landel.utils.assertor.commons.ParameterAssertor;
+import fr.landel.utils.assertor.enums.EnumAnalysisMode;
+import fr.landel.utils.assertor.enums.EnumOperator;
+import fr.landel.utils.assertor.enums.EnumStep;
+import fr.landel.utils.assertor.enums.EnumType;
+import fr.landel.utils.commons.CastUtils;
 import fr.landel.utils.commons.ObjectUtils;
 import fr.landel.utils.commons.StringUtils;
 import fr.landel.utils.commons.builder.ToStringBuilder;
@@ -64,6 +72,8 @@ public class StepAssertor<T> implements Serializable {
 
     private final StepAssertor<?> previousStep;
     private final Optional<StepAssertor<?>> subStep;
+    private final Optional<Function<Object, ? extends Step<?, ?>>> subAssertor;
+    private final Optional<Function<Object, Object>> mapper;
 
     private final EnumAnalysisMode analysisMode;
 
@@ -113,12 +123,15 @@ public class StepAssertor<T> implements Serializable {
      * @param <Y>
      *            the sub step type
      */
-    private <X, Y> StepAssertor(final EnumStep stepType, final StepAssertor<X> previousStep, final StepAssertor<Y> subStep, final T object,
+    private <X, Y, S extends Step<S, Y>> StepAssertor(final EnumStep stepType, final StepAssertor<X> previousStep,
+            final StepAssertor<Y> subStep, final Function<X, S> subAssertor, final Function<X, Y> mapper, final T object,
             final EnumType type, final boolean checked, final EnumOperator operator, final boolean not,
             final EnumAnalysisMode analysisMode) {
 
         this.stepType = stepType;
         this.subStep = Optional.ofNullable(subStep);
+        this.subAssertor = CastUtils.cast(Optional.ofNullable(subAssertor));
+        this.mapper = CastUtils.cast(Optional.ofNullable(mapper));
 
         this.previousStep = previousStep;
 
@@ -143,11 +156,11 @@ public class StepAssertor<T> implements Serializable {
      *            the analysis preferred mode
      */
     public StepAssertor(final T object, final EnumType type, final EnumAnalysisMode analysisMode) {
-        this(EnumStep.CREATION, null, null, object, type, true, null, false, analysisMode);
+        this(EnumStep.CREATION, null, null, null, null, object, type, true, null, false, analysisMode);
     }
 
     /**
-     * Constructor for matcher {@code Assertor.matcher...}
+     * Constructor for predicate {@code Assertor.of...}
      * 
      * @param type
      *            the type of object
@@ -155,7 +168,7 @@ public class StepAssertor<T> implements Serializable {
      *            the analysis preferred mode
      */
     public StepAssertor(final EnumType type, final EnumAnalysisMode analysisMode) {
-        this(EnumStep.MATCHER, null, null, null, type, false, null, false, analysisMode);
+        this(EnumStep.PREDICATE, null, null, null, null, null, type, false, null, false, analysisMode);
     }
 
     /**
@@ -165,7 +178,7 @@ public class StepAssertor<T> implements Serializable {
      *            the previous step
      */
     public StepAssertor(final StepAssertor<T> previousStep) {
-        this(EnumStep.NOT, previousStep, null, null, null, false, null, true, previousStep.getAnalysisMode());
+        this(EnumStep.NOT, previousStep, null, null, null, null, null, false, null, true, previousStep.getAnalysisMode());
     }
 
     /**
@@ -177,7 +190,8 @@ public class StepAssertor<T> implements Serializable {
      *            the object under check
      */
     public StepAssertor(final StepAssertor<T> previousStep, final T object) {
-        this(EnumStep.MATCHER_OBJECT, previousStep, null, object, null, false, null, false, previousStep.getAnalysisMode());
+        // the type is not required already loaded from predicate step
+        this(EnumStep.PREDICATE_OBJECT, previousStep, null, null, null, object, null, true, null, false, previousStep.getAnalysisMode());
     }
 
     /**
@@ -198,7 +212,28 @@ public class StepAssertor<T> implements Serializable {
      */
     public <X> StepAssertor(final StepAssertor<X> previousStep, final T object, final EnumType type, final EnumOperator operator,
             final EnumAnalysisMode analysisMode) {
-        this(EnumStep.OBJECT, previousStep, null, object, type, true, operator, false, analysisMode);
+        this(EnumStep.OBJECT, previousStep, null, null, null, object, type, true, operator, false, analysisMode);
+    }
+
+    /**
+     * Combining constructor with new object, for (AND, OR and XOR combinations)
+     *
+     * @param previousStep
+     *            the previous step
+     * @param mapper
+     *            the mapper function
+     * @param type
+     *            the object type
+     * @param operator
+     *            the operator for the next combination
+     * @param analysisMode
+     *            the analysis preferred mode
+     * @param <X>
+     *            the type of previous step object
+     */
+    public <X> StepAssertor(final StepAssertor<X> previousStep, final Function<X, T> mapper, final EnumType type,
+            final EnumOperator operator, final EnumAnalysisMode analysisMode) {
+        this(EnumStep.PROPERTY, previousStep, null, null, mapper, null, type, true, operator, false, analysisMode);
     }
 
     /**
@@ -211,7 +246,7 @@ public class StepAssertor<T> implements Serializable {
      *            The operator for the next combination
      */
     public StepAssertor(final StepAssertor<T> previousStep, final EnumOperator operator) {
-        this(EnumStep.OPERATOR, previousStep, null, null, null, false, operator, false, previousStep.getAnalysisMode());
+        this(EnumStep.OPERATOR, previousStep, null, null, null, null, null, false, operator, false, previousStep.getAnalysisMode());
     }
 
     /**
@@ -227,7 +262,25 @@ public class StepAssertor<T> implements Serializable {
      *            the sub step type
      */
     public <Y> StepAssertor(final StepAssertor<T> previousStep, final StepAssertor<Y> subStep, final EnumOperator operator) {
-        this(EnumStep.SUB, previousStep, subStep, null, null, false, operator, false, previousStep.getAnalysisMode());
+        this(EnumStep.SUB, previousStep, subStep, null, null, null, null, false, operator, false, previousStep.getAnalysisMode());
+    }
+
+    /**
+     * Standard combining constructor for sub Assertor (not is set to false)
+     *
+     * @param previousStep
+     *            the previous step
+     * @param subAssertor
+     *            the sub assertor function
+     * @param operator
+     *            The operator for the next combination
+     * @param <Y>
+     *            the sub step type
+     */
+    public <Y, S extends Step<S, Y>> StepAssertor(final StepAssertor<T> previousStep, final Function<T, S> subAssertor,
+            final EnumOperator operator) {
+        this(EnumStep.SUB_ASSERTOR, previousStep, null, subAssertor, null, null, null, false, operator, false,
+                previousStep.getAnalysisMode());
     }
 
     /**
@@ -256,7 +309,7 @@ public class StepAssertor<T> implements Serializable {
     public StepAssertor(final StepAssertor<T> previousStep, final Predicate<T> preChecker, final BiPredicate<T, Boolean> checker,
             final boolean notAppliedByChecker, final MessageAssertor message, final CharSequence messageKey, final boolean messageKeyNot,
             final ParameterAssertor<?>... parameters) {
-        this(EnumStep.ASSERTION, previousStep, null, null, null, false, null, false, previousStep.getAnalysisMode());
+        this(EnumStep.ASSERTION, previousStep, null, null, null, null, null, false, null, false, previousStep.getAnalysisMode());
 
         this.messageKey = messageKey;
         this.messageKeyNot = messageKeyNot;
@@ -354,7 +407,7 @@ public class StepAssertor<T> implements Serializable {
     /**
      * @return the checked
      */
-    protected boolean isChecked() {
+    public boolean isChecked() {
         return this.checked;
     }
 
@@ -396,16 +449,30 @@ public class StepAssertor<T> implements Serializable {
     }
 
     /**
+     * @return the mapper function
+     */
+    public Optional<Function<Object, Object>> getMapper() {
+        return this.mapper;
+    }
+
+    /**
+     * @return the sub assertor
+     */
+    public Optional<Function<Object, ? extends Step<?, ?>>> getSubAssertor() {
+        return this.subAssertor;
+    }
+
+    /**
      * @return the clone of parameters
      */
-    protected List<ParameterAssertor<?>> getParameters() {
+    public List<ParameterAssertor<?>> getParameters() {
         return this.parameters;
     }
 
     /**
      * @return the messageKeyNot
      */
-    protected boolean isMessageKeyNot() {
+    public boolean isMessageKeyNot() {
         return this.messageKeyNot;
     }
 
@@ -419,13 +486,21 @@ public class StepAssertor<T> implements Serializable {
         case CREATION:
             sb.append("object", this.object);
             sb.append("type", this.type);
+            sb.append("analysisMode", this.analysisMode);
             break;
         case OBJECT:
             sb.append("object", this.object);
             sb.append("type", this.type);
+            sb.append("analysisMode", this.analysisMode);
             sb.append("operator", this.operator);
             break;
-        case OPERATOR:
+        case PROPERTY:
+            sb.append("type", this.type);
+            sb.append("analysisMode", this.analysisMode);
+            sb.append("operator", this.operator);
+            break;
+        case OPERATOR: // intentional fall-through
+        case SUB_ASSERTOR: // intentional fall-through
         case SUB:
             sb.append("operator", this.operator);
             break;
@@ -440,6 +515,7 @@ public class StepAssertor<T> implements Serializable {
             break;
         default:
         }
+
         return sb.build();
     }
 }

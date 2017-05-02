@@ -23,6 +23,7 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.runner.RunnerException;
 
+import fr.landel.utils.assertor.utils.AssertorCharSequence;
 import fr.landel.utils.microbenchmark.AbstractMicrobenchmark;
 
 /**

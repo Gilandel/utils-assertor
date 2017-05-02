@@ -23,6 +23,8 @@ import java.util.regex.Pattern;
 
 import org.junit.Test;
 
+import fr.landel.utils.assertor.utils.AssertorThrowable;
+
 /**
  * Check {@link AssertorThrowable}
  *

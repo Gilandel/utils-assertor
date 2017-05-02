@@ -22,6 +22,7 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.runner.RunnerException;
 
+import fr.landel.utils.assertor.utils.AssertorBoolean;
 import fr.landel.utils.microbenchmark.AbstractMicrobenchmark;
 
 /**

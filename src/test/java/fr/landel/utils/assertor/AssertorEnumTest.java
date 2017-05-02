@@ -20,6 +20,9 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import fr.landel.utils.assertor.enums.EnumOperator;
+import fr.landel.utils.assertor.enums.EnumType;
+import fr.landel.utils.assertor.utils.AssertorEnum;
 import fr.landel.utils.commons.EnumChar;
 
 /**

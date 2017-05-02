@@ -20,6 +20,11 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import fr.landel.utils.assertor.commons.MessageAssertor;
+import fr.landel.utils.assertor.enums.EnumOperator;
+import fr.landel.utils.assertor.enums.EnumStep;
+import fr.landel.utils.assertor.enums.EnumType;
+
 /**
  * Check {@link StepAssertor}
  *
@@ -83,7 +88,7 @@ public class StepAssertorTest extends AbstractTest {
     @Test
     public void testToString() {
         StepAssertor<String> step = new StepAssertor<>("text", EnumType.CHAR_SEQUENCE, null);
-        assertEquals("{CREATION, object: text, type: CHAR_SEQUENCE}", step.toString());
+        assertEquals("{CREATION, object: text, type: CHAR_SEQUENCE, analysisMode: STANDARD}", step.toString());
 
         step = new StepAssertor<>(step);
         assertEquals("{NOT, not: true}", step.toString());
@@ -92,7 +97,7 @@ public class StepAssertorTest extends AbstractTest {
         assertEquals("{OPERATOR, operator:  AND }", step.toString());
 
         StepAssertor<Integer> step2 = new StepAssertor<>(step, 1, EnumType.NUMBER_INTEGER, EnumOperator.AND, null);
-        assertEquals("{OBJECT, object: 1, type: NUMBER_INTEGER, operator:  AND }", step2.toString());
+        assertEquals("{OBJECT, object: 1, type: NUMBER_INTEGER, analysisMode: STANDARD, operator:  AND }", step2.toString());
 
         step = new StepAssertor<>(step, (string) -> true, (string, not) -> true, false, MessageAssertor.of(null, "msg", null), "key",
                 false);

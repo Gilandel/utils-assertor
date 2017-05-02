@@ -1,0 +1,88 @@
+/*-
+ * #%L
+ * utils-assertor
+ * %%
+ * Copyright (C) 2016 - 2017 Gilandel
+ * %%
+ * Authors: Gilles Landel
+ * URL: https://github.com/Gilandel
+ * 
+ * This file is under Apache License, version 2.0 (2004).
+ * #L%
+ */
+package fr.landel.utils.assertor.predicate;
+
+import fr.landel.utils.assertor.StepAssertor;
+import fr.landel.utils.assertor.helper.HelperStep;
+
+/**
+ * This class is an intermediate link in Assertor chain, see
+ * {@link PredicateAssertorStep}.
+ *
+ * @since Mar 28, 2017
+ * @author Gilles
+ *
+ * @param <S>
+ *            the type of predicate step
+ * @param <T>
+ *            the type of checked object
+ */
+public interface OperatorOr<S extends PredicateStep<S, T>, T> {
+
+    /**
+     * @return the step result
+     */
+    StepAssertor<T> getStep();
+
+    /**
+     * The only purpose is to avoid the copy of basic methods into children
+     * interfaces. This is an indirect way to create specific
+     * {@link PredicateStep} by overriding this interface. All children
+     * class has to override this method
+     * 
+     * @param result
+     *            the result
+     * @return the predicate step
+     */
+    S get(StepAssertor<T> result);
+
+    /**
+     * Applies a predicate step in the current one with the operator OR. The aim
+     * of this is to provide the equivalence of parenthesis in condition
+     * expressions.
+     * 
+     * <pre>
+     * // '' empty or 'text' not empty and contains 'r'
+     * Assertor.that("").isEmpty().or("text").isNotEmpty().and().contains("r").isOK();
+     * // -&gt; false (because: true or true and false =&gt; true or true = true =&gt;
+     * // true
+     * // and false = false)
+     * 
+     * // '' empty or ('text' not empty and contains 'r')
+     * Assertor.that("").isEmpty().or(Assertor.that("text").isNotEmpty().and().contains("r")).isOK();
+     * // -&gt; true (because: true or (true and false) =&gt; (true and false) =
+     * // false =&gt; true or false = true)
+     * 
+     * </pre>
+     * 
+     * @param other
+     *            the other predicate step
+     * @param <X>
+     *            The type of other checked object
+     * @param <R>
+     *            The {@linkplain PredicateStep} type
+     * @return this predicate step with the other injected
+     */
+    default <X, R extends PredicateStep<R, X>> S or(final PredicateStep<R, X> other) {
+        return this.get(HelperStep.or(this.getStep(), other.getStep()));
+    }
+
+    /**
+     * Append an operator 'OR' on the current step.
+     * 
+     * @return the predicate assertor
+     */
+    default PredicateAssertorStep<S, T> or() {
+        return () -> HelperStep.or(this.getStep());
+    }
+}

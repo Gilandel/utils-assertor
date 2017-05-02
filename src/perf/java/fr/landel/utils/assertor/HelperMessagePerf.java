@@ -24,7 +24,11 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.runner.RunnerException;
 
-import fr.landel.utils.assertor.ConstantsAssertor.MSG;
+import fr.landel.utils.assertor.commons.ConstantsAssertor.MSG;
+import fr.landel.utils.assertor.enums.EnumOperator;
+import fr.landel.utils.assertor.enums.EnumType;
+import fr.landel.utils.assertor.helper.HelperAssertor;
+import fr.landel.utils.assertor.helper.HelperMessage;
 import fr.landel.utils.microbenchmark.AbstractMicrobenchmark;
 
 /**
