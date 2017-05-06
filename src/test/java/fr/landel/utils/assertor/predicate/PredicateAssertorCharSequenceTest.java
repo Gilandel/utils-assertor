@@ -16,6 +16,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import org.junit.Test;
@@ -33,6 +34,21 @@ import fr.landel.utils.assertor.utils.AssertorCharSequence;
  *
  */
 public class PredicateAssertorCharSequenceTest extends AbstractTest {
+
+    /**
+     * Test method for {@link AssertorCharSequence} .
+     */
+    @Test
+    public void testPredicateGet() {
+        assertFalse(Assertor.ofCharSequence().hasHashCode(0).that("text").isOK());
+        assertTrue(Assertor.ofCharSequence().hasHashCode(Objects.hashCode("text")).that("text").isOK());
+
+        assertTrue(Assertor.ofCharSequence().contains("ex").and().hasHashCode(Objects.hashCode("text")).that("text").isOK());
+        assertTrue(Assertor.ofCharSequence().contains("ex").or().hasHashCode(Objects.hashCode("text")).that("text").isOK());
+        assertFalse(Assertor.ofCharSequence().contains("ex").xor().hasHashCode(Objects.hashCode("text")).that("text").isOK());
+        assertFalse(Assertor.ofCharSequence().contains("ex").nand().hasHashCode(Objects.hashCode("text")).that("text").isOK());
+        assertFalse(Assertor.ofCharSequence().contains("ex").nor().hasHashCode(Objects.hashCode("text")).that("text").isOK());
+    }
 
     /**
      * Test method for {@link AssertorCharSequence#hasLength(int)} .
@@ -54,6 +70,18 @@ public class PredicateAssertorCharSequenceTest extends AbstractTest {
         assertTrue(Assertor.ofCharSequence().not().hasLength(3).that("text").isOK());
         assertFalse(Assertor.ofCharSequence().not().hasLength(-1).that("text").isOK());
         assertFalse(Assertor.ofCharSequence().not().hasLength(1).that((String) null).isOK());
+
+        assertFalse(Assertor.ofCharSequence().not().hasLength(4).and().contains("ex").that("text").isOK());
+        assertTrue(Assertor.ofCharSequence().not().hasLength(4).or().contains("ex").that("text").isOK());
+        assertTrue(Assertor.ofCharSequence().not().hasLength(4).xor().contains("ex").that("text").isOK());
+        assertFalse(Assertor.ofCharSequence().not().hasLength(4).nand().contains("ex").that("text").isOK());
+        assertTrue(Assertor.ofCharSequence().not().hasLength(4).nor().contains("ex").that("text").isOK());
+
+        assertFalse(Assertor.ofCharSequence().not().hasLength(4).and(Assertor.ofCharSequence().contains("ex")).that("text").isOK());
+        assertTrue(Assertor.ofCharSequence().not().hasLength(4).or(Assertor.ofCharSequence().contains("ex")).that("text").isOK());
+        assertTrue(Assertor.ofCharSequence().not().hasLength(4).xor(Assertor.ofCharSequence().contains("ex")).that("text").isOK());
+        assertFalse(Assertor.ofCharSequence().not().hasLength(4).nand(Assertor.ofCharSequence().contains("ex")).that("text").isOK());
+        assertTrue(Assertor.ofCharSequence().not().hasLength(4).nor(Assertor.ofCharSequence().contains("ex")).that("text").isOK());
     }
 
     /**

@@ -29,8 +29,8 @@ import fr.landel.utils.assertor.utils.AssertorBoolean;
  * {@link PredicateAssertorStepBoolean} &gt; {@link PredicateStepBoolean} &gt; {@link PredicateAssertorStepBoolean} &gt; {@link PredicateStepBoolean}...
  * </pre>
  * 
- * This chain always starts with a {@link PredicateAssertorStepBoolean} and ends with
- * {@link PredicateStepBoolean}.
+ * This chain always starts with a {@link PredicateAssertorStepBoolean} and ends
+ * with {@link PredicateStepBoolean}.
  *
  * @since Aug 7, 2016
  * @author Gilles

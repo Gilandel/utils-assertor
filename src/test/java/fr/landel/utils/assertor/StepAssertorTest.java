@@ -21,6 +21,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import fr.landel.utils.assertor.commons.MessageAssertor;
+import fr.landel.utils.assertor.enums.EnumAnalysisMode;
 import fr.landel.utils.assertor.enums.EnumOperator;
 import fr.landel.utils.assertor.enums.EnumStep;
 import fr.landel.utils.assertor.enums.EnumType;
@@ -105,5 +106,17 @@ public class StepAssertorTest extends AbstractTest {
 
         step = new StepAssertor<>(step, step2, EnumOperator.AND);
         assertEquals("{SUB, operator:  AND }", step.toString());
+
+        step = new StepAssertor<>(step, s -> Assertor.that(s.length()).isEqual(4), EnumOperator.AND);
+        assertEquals("{SUB_ASSERTOR, operator:  AND }", step.toString());
+
+        step = new StepAssertor<>(step, i -> String.valueOf(i), EnumType.CHAR_SEQUENCE, EnumOperator.AND, EnumAnalysisMode.STANDARD);
+        assertEquals("{PROPERTY, type: CHAR_SEQUENCE, analysisMode: STANDARD, operator:  AND }", step.toString());
+
+        step = new StepAssertor<>(EnumType.CHAR_SEQUENCE, EnumAnalysisMode.STANDARD);
+        assertEquals("{PREDICATE, type: CHAR_SEQUENCE, analysisMode: STANDARD}", step.toString());
+
+        step = new StepAssertor<>(step, "text");
+        assertEquals("{PREDICATE_OBJECT, object: text, analysisMode: STANDARD}", step.toString());
     }
 }

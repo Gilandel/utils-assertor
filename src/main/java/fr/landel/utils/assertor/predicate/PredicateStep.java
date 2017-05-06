@@ -19,6 +19,7 @@ import fr.landel.utils.assertor.Assertor;
 import fr.landel.utils.assertor.AssertorEnd;
 import fr.landel.utils.assertor.StepAssertor;
 import fr.landel.utils.assertor.helper.HelperStep;
+import fr.landel.utils.commons.CastUtils;
 import fr.landel.utils.commons.Default;
 import fr.landel.utils.commons.Result;
 
@@ -96,10 +97,9 @@ public interface PredicateStep<S extends PredicateStep<S, T>, T>
      *            the result
      * @return the predicate step
      */
-    @SuppressWarnings("unchecked")
     @Override
     default S get(final StepAssertor<T> result) {
-        return (S) (PredicateStep<S, T>) () -> result;
+        return CastUtils.cast((PredicateStep<S, T>) () -> result);
     }
 
     /**

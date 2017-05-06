@@ -52,38 +52,39 @@ public class PredicateAssertorClassTest extends AbstractTest {
      */
     @Test
     public void testIsAssignableFrom() throws IOException {
-        assertTrue(Assertor.that(IOException.class).isAssignableFrom(Exception.class).isOK());
-        assertTrue(Assertor.that(IOException.class).isAssignableFrom(Exception.class, "test").isOK());
-        assertTrue(Assertor.that(IOException.class).isAssignableFrom(Exception.class, Locale.US, "test %2d", 12).isOK());
+        assertTrue(Assertor.<IOException> ofClass().isAssignableFrom(Exception.class).that(IOException.class).isOK());
+        assertTrue(Assertor.<IOException> ofClass().isAssignableFrom(Exception.class, "test").that(IOException.class).isOK());
+        assertTrue(Assertor.<IOException> ofClass().isAssignableFrom(Exception.class, Locale.US, "test %2d", 12).that(IOException.class)
+                .isOK());
 
-        assertTrue(Assertor.that(IOException.class).not().isAssignableFrom(Color.class).isOK());
-        assertTrue(Assertor.that(IOException.class).not().isNull().isOK());
+        assertTrue(Assertor.<IOException> ofClass().not().isAssignableFrom(Color.class).that(IOException.class).isOK());
+        assertTrue(Assertor.<IOException> ofClass().not().isNull().that(IOException.class).isOK());
 
-        assertTrue(Assertor.that(IOException.class).isNotNull().and().not().isAssignableFrom(Color.class).isOK());
-        assertTrue(Assertor.that(IOException.class).isNotNull().or().isAssignableFrom(Color.class).isOK());
-        assertTrue(Assertor.that(IOException.class).isNotNull().xor().isAssignableFrom(Color.class).isOK());
+        assertTrue(Assertor.<IOException> ofClass().isNotNull().and().not().isAssignableFrom(Color.class).that(IOException.class).isOK());
+        assertTrue(Assertor.<IOException> ofClass().isNotNull().or().isAssignableFrom(Color.class).that(IOException.class).isOK());
+        assertTrue(Assertor.<IOException> ofClass().isNotNull().xor().isAssignableFrom(Color.class).that(IOException.class).isOK());
 
         assertTrue(Assertor.that(IOException.class).isNotNull().and(Assertor.that(true).isTrue()).and().not().isAssignableFrom(Color.class)
                 .isOK());
 
         assertException(() -> {
-            Assertor.that(Exception.class).isAssignableFrom(IOException.class).orElseThrow();
+            Assertor.<Exception> ofClass().isAssignableFrom(IOException.class).that(Exception.class).orElseThrow();
         }, IllegalArgumentException.class);
 
         assertException(() -> {
-            Assertor.that(Exception.class).isAssignableFrom(IOException.class).orElseThrow("msg");
+            Assertor.<Exception> ofClass().isAssignableFrom(IOException.class).that(Exception.class).orElseThrow("msg");
         }, IllegalArgumentException.class, "msg");
 
         assertException(() -> {
-            Assertor.that(Exception.class).isAssignableFrom(null).orElseThrow("msg");
+            Assertor.<Exception> ofClass().isAssignableFrom(null).that(Exception.class).orElseThrow("msg");
         }, IllegalArgumentException.class, "msg");
 
         assertException(() -> {
-            Assertor.that((Class<?>) null).isAssignableFrom(null).orElseThrow("msg");
+            Assertor.ofClass().isAssignableFrom(null).that((Class<Object>) null).orElseThrow("msg");
         }, IllegalArgumentException.class, "msg");
 
         assertException(() -> {
-            Assertor.that((Class<?>) null).isAssignableFrom(Exception.class).orElseThrow("msg");
+            Assertor.ofClass().isAssignableFrom(Exception.class).that((Class<Object>) null).orElseThrow("msg");
         }, IllegalArgumentException.class, "msg");
     }
 
@@ -97,44 +98,49 @@ public class PredicateAssertorClassTest extends AbstractTest {
     public void testHasName() throws IOException {
         String name = IOException.class.getName();
 
-        assertTrue(Assertor.that(IOException.class).hasName(name).isOK());
-        assertFalse(Assertor.that(IOException.class).hasName("rr").isOK());
+        assertTrue(Assertor.<IOException> ofClass().hasName(name).that(IOException.class).isOK());
+        assertFalse(Assertor.<IOException> ofClass().hasName("rr").that(IOException.class).isOK());
 
-        assertTrue(Assertor.that(IOException.class).isNotNull().and().hasName(name).isOK());
-        assertTrue(Assertor.that(IOException.class).isNull().or().hasName(name).isOK());
-        assertTrue(Assertor.that(IOException.class).isNull().xor().hasName(name).isOK());
-        assertTrue(Assertor.that(IOException.class).isNull().or().not().hasName("ee").isOK());
-        assertFalse(Assertor.that(IOException.class).isNull().nand().not().hasName("ee").isOK());
-        assertTrue(Assertor.that(IOException.class).isNull().nor().not().hasName("ee").isOK());
+        assertTrue(Assertor.<IOException> ofClass().isNotNull().and().hasName(name).that(IOException.class).isOK());
+        assertTrue(Assertor.<IOException> ofClass().isNull().or().hasName(name).that(IOException.class).isOK());
+        assertTrue(Assertor.<IOException> ofClass().isNull().xor().hasName(name).that(IOException.class).isOK());
+        assertTrue(Assertor.<IOException> ofClass().isNull().or().not().hasName("ee").that(IOException.class).isOK());
+        assertFalse(Assertor.<IOException> ofClass().isNull().nand().not().hasName("ee").that(IOException.class).isOK());
+        assertTrue(Assertor.<IOException> ofClass().isNull().nor().not().hasName("ee").that(IOException.class).isOK());
 
-        assertTrue(Assertor.that(IOException.class).hasName(name).and("ere").contains('e').isOK());
-        assertTrue(Assertor.that(IOException.class).hasName(name).or("ere").contains('e').isOK());
-        assertTrue(Assertor.that(IOException.class).hasName(name).xor("ara").contains('e').isOK());
-        assertFalse(Assertor.that(IOException.class).hasName(name).nand("ara").contains('e').isOK());
-        assertTrue(Assertor.that(IOException.class).hasName(name).nor("ara").contains('e').isOK());
+        assertTrue(Assertor.<IOException> ofClass().hasName(name).and(Assertor.<IOException> ofClass().hasName("java.io.IOException"))
+                .that(IOException.class).isOK());
+        assertTrue(Assertor.<IOException> ofClass().hasName(name).or(Assertor.<IOException> ofClass().hasName("java.io.IOException"))
+                .that(IOException.class).isOK());
+        assertFalse(Assertor.<IOException> ofClass().hasName(name).xor(Assertor.<IOException> ofClass().hasName("java.io.IOException"))
+                .that(IOException.class).isOK());
+        assertFalse(Assertor.<IOException> ofClass().hasName(name).nand(Assertor.<IOException> ofClass().hasName("java.io.IOException"))
+                .that(IOException.class).isOK());
+        assertFalse(Assertor.<IOException> ofClass().hasName(name).nor(Assertor.<IOException> ofClass().hasName("java.io.IOException"))
+                .that(IOException.class).isOK());
 
         assertException(() -> {
-            Assertor.that(Exception.class).hasName("re").orElseThrow();
+            Assertor.<Exception> ofClass().hasName("re").that(Exception.class).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
         assertException(() -> {
-            Assertor.that(Exception.class).hasName("re").orElseThrow();
+            Assertor.<Exception> ofClass().hasName("re").that(Exception.class).orElseThrow();
             fail();
         }, IllegalArgumentException.class, "the class 'Exception' should have the name 're'");
 
         assertException(() -> {
-            Assertor.that((Class<?>) null).hasName("re").orElseThrow();
+            Assertor.ofClass().hasName("re").that((Class<Object>) null).orElseThrow();
             fail();
         }, IllegalArgumentException.class, "the classes cannot be null and the name cannot be null or empty");
 
         assertException(() -> {
-            Assertor.that(Exception.class).hasName("").orElseThrow();
+            Assertor.<Exception> ofClass().hasName("").that(Exception.class).orElseThrow();
             fail();
         }, IllegalArgumentException.class, "the classes cannot be null and the name cannot be null or empty");
 
         assertException(() -> {
-            Assertor.that(Exception.class).hasName(null).orElseThrow();
+            Assertor.<Exception> ofClass().hasName(null).that(Exception.class).orElseThrow();
             fail();
         }, IllegalArgumentException.class, "the classes cannot be null and the name cannot be null or empty");
     }
@@ -149,40 +155,43 @@ public class PredicateAssertorClassTest extends AbstractTest {
     public void testHasSimpleName() throws IOException {
         String name = IOException.class.getSimpleName();
 
-        assertTrue(Assertor.that(IOException.class).hasSimpleName(name).isOK());
-        assertFalse(Assertor.that(IOException.class).hasSimpleName("rr").isOK());
+        assertTrue(Assertor.<IOException> ofClass().hasSimpleName(name).that(IOException.class).isOK());
+        assertFalse(Assertor.<IOException> ofClass().hasSimpleName("rr").that(IOException.class).isOK());
 
-        assertTrue(Assertor.that(IOException.class).isNotNull().and().hasSimpleName(name).isOK());
-        assertTrue(Assertor.that(IOException.class).isNull().or().hasSimpleName(name).isOK());
-        assertTrue(Assertor.that(IOException.class).isNull().xor().hasSimpleName(name).isOK());
-        assertTrue(Assertor.that(IOException.class).isNull().or().not().hasSimpleName("ee").isOK());
+        assertTrue(Assertor.<IOException> ofClass().isNotNull().and().hasSimpleName(name).that(IOException.class).isOK());
+        assertTrue(Assertor.<IOException> ofClass().isNull().or().hasSimpleName(name).that(IOException.class).isOK());
+        assertTrue(Assertor.<IOException> ofClass().isNull().xor().hasSimpleName(name).that(IOException.class).isOK());
+        assertTrue(Assertor.<IOException> ofClass().isNull().or().not().hasSimpleName("ee").that(IOException.class).isOK());
 
-        assertTrue(Assertor.that(IOException.class).hasSimpleName(name).and("ere").contains('e').isOK());
-        assertTrue(Assertor.that(IOException.class).hasSimpleName(name).or("ere").contains('e').isOK());
-        assertTrue(Assertor.that(IOException.class).hasSimpleName(name).xor("ara").contains('e').isOK());
+        assertTrue(Assertor.<IOException> ofClass().hasSimpleName(name).and(Assertor.<IOException> ofClass().hasName("java.io.IOException"))
+                .that(IOException.class).isOK());
+        assertTrue(Assertor.<IOException> ofClass().hasSimpleName(name).or(Assertor.<IOException> ofClass().hasName("java.io.IOException"))
+                .that(IOException.class).isOK());
+        assertFalse(Assertor.<IOException> ofClass().hasSimpleName(name)
+                .xor(Assertor.<IOException> ofClass().hasName("java.io.IOException")).that(IOException.class).isOK());
 
         assertException(() -> {
-            Assertor.that(Exception.class).hasSimpleName("re").orElseThrow();
+            Assertor.<Exception> ofClass().hasSimpleName("re").that(Exception.class).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
         assertException(() -> {
-            Assertor.that(Exception.class).hasSimpleName("re").orElseThrow();
+            Assertor.<Exception> ofClass().hasSimpleName("re").that(Exception.class).orElseThrow();
             fail();
         }, IllegalArgumentException.class, "the class 'Exception' should have the simple name 're'");
 
         assertException(() -> {
-            Assertor.that((Class<?>) null).hasSimpleName("re").orElseThrow();
+            Assertor.ofClass().hasSimpleName("re").that((Class<Object>) null).orElseThrow();
             fail();
         }, IllegalArgumentException.class, "the classes cannot be null and the simple name cannot be null or empty");
 
         assertException(() -> {
-            Assertor.that(Exception.class).hasSimpleName("").orElseThrow();
+            Assertor.<Exception> ofClass().hasSimpleName("").that(Exception.class).orElseThrow();
             fail();
         }, IllegalArgumentException.class, "the classes cannot be null and the simple name cannot be null or empty");
 
         assertException(() -> {
-            Assertor.that(Exception.class).hasSimpleName(null).orElseThrow();
+            Assertor.<Exception> ofClass().hasSimpleName(null).that(Exception.class).orElseThrow();
             fail();
         }, IllegalArgumentException.class, "the classes cannot be null and the simple name cannot be null or empty");
     }
@@ -197,40 +206,43 @@ public class PredicateAssertorClassTest extends AbstractTest {
     public void testHasCanonicalName() throws IOException {
         String name = IOException.class.getCanonicalName();
 
-        assertTrue(Assertor.that(IOException.class).hasCanonicalName(name).isOK());
-        assertFalse(Assertor.that(IOException.class).hasCanonicalName("rr").isOK());
+        assertTrue(Assertor.<IOException> ofClass().hasCanonicalName(name).that(IOException.class).isOK());
+        assertFalse(Assertor.<IOException> ofClass().hasCanonicalName("rr").that(IOException.class).isOK());
 
-        assertTrue(Assertor.that(IOException.class).isNotNull().and().hasCanonicalName(name).isOK());
-        assertTrue(Assertor.that(IOException.class).isNull().or().hasCanonicalName(name).isOK());
-        assertTrue(Assertor.that(IOException.class).isNull().xor().hasCanonicalName(name).isOK());
-        assertTrue(Assertor.that(IOException.class).isNull().or().not().hasCanonicalName("ee").isOK());
+        assertTrue(Assertor.<IOException> ofClass().isNotNull().and().hasCanonicalName(name).that(IOException.class).isOK());
+        assertTrue(Assertor.<IOException> ofClass().isNull().or().hasCanonicalName(name).that(IOException.class).isOK());
+        assertTrue(Assertor.<IOException> ofClass().isNull().xor().hasCanonicalName(name).that(IOException.class).isOK());
+        assertTrue(Assertor.<IOException> ofClass().isNull().or().not().hasCanonicalName("ee").that(IOException.class).isOK());
 
-        assertTrue(Assertor.that(IOException.class).hasCanonicalName(name).and("ere").contains('e').isOK());
-        assertTrue(Assertor.that(IOException.class).hasCanonicalName(name).or("ere").contains('e').isOK());
-        assertTrue(Assertor.that(IOException.class).hasCanonicalName(name).xor("ara").contains('e').isOK());
+        assertTrue(Assertor.<IOException> ofClass().hasCanonicalName(name)
+                .and(Assertor.<IOException> ofClass().hasName("java.io.IOException")).that(IOException.class).isOK());
+        assertTrue(Assertor.<IOException> ofClass().hasCanonicalName(name)
+                .or(Assertor.<IOException> ofClass().hasName("java.io.IOException")).that(IOException.class).isOK());
+        assertFalse(Assertor.<IOException> ofClass().hasCanonicalName(name)
+                .xor(Assertor.<IOException> ofClass().hasName("java.io.IOException")).that(IOException.class).isOK());
 
         assertException(() -> {
-            Assertor.that(Exception.class).hasCanonicalName("re").orElseThrow();
+            Assertor.<Exception> ofClass().hasCanonicalName("re").that(Exception.class).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
         assertException(() -> {
-            Assertor.that(Exception.class).hasCanonicalName("re").orElseThrow();
+            Assertor.<Exception> ofClass().hasCanonicalName("re").that(Exception.class).orElseThrow();
             fail();
         }, IllegalArgumentException.class, "the class 'Exception' should have the canonical name 're'");
 
         assertException(() -> {
-            Assertor.that((Class<?>) null).hasCanonicalName("re").orElseThrow();
+            Assertor.ofClass().hasCanonicalName("re").that((Class<Object>) null).orElseThrow();
             fail();
         }, IllegalArgumentException.class, "the classes cannot be null and the canonical name cannot be null or empty");
 
         assertException(() -> {
-            Assertor.that(Exception.class).hasCanonicalName("").orElseThrow();
+            Assertor.<Exception> ofClass().hasCanonicalName("").that(Exception.class).orElseThrow();
             fail();
         }, IllegalArgumentException.class, "the classes cannot be null and the canonical name cannot be null or empty");
 
         assertException(() -> {
-            Assertor.that(Exception.class).hasCanonicalName(null).orElseThrow();
+            Assertor.<Exception> ofClass().hasCanonicalName(null).that(Exception.class).orElseThrow();
             fail();
         }, IllegalArgumentException.class, "the classes cannot be null and the canonical name cannot be null or empty");
     }
@@ -245,42 +257,45 @@ public class PredicateAssertorClassTest extends AbstractTest {
     public void testHasTypeName() throws IOException {
         String name = IOException.class.getTypeName();
 
-        assertTrue(Assertor.that(IOException.class).hasTypeName(name).isOK());
-        assertTrue(Assertor.that(Long.class).hasTypeName("java.lang.Long").isOK());
-        assertTrue(Assertor.that(long.class).hasTypeName("long").isOK());
-        assertFalse(Assertor.that(IOException.class).hasTypeName("rr").isOK());
+        assertTrue(Assertor.<IOException> ofClass().hasTypeName(name).that(IOException.class).isOK());
+        assertTrue(Assertor.<Long> ofClass().hasTypeName("java.lang.Long").that(Long.class).isOK());
+        assertTrue(Assertor.<Long> ofClass().hasTypeName("long").that(long.class).isOK());
+        assertFalse(Assertor.<IOException> ofClass().hasTypeName("rr").that(IOException.class).isOK());
 
-        assertTrue(Assertor.that(IOException.class).isNotNull().and().hasTypeName(name).isOK());
-        assertTrue(Assertor.that(IOException.class).isNull().or().hasTypeName(name).isOK());
-        assertTrue(Assertor.that(IOException.class).isNull().xor().hasTypeName(name).isOK());
-        assertTrue(Assertor.that(IOException.class).isNull().or().not().hasTypeName("ee").isOK());
+        assertTrue(Assertor.<IOException> ofClass().isNotNull().and().hasTypeName(name).that(IOException.class).isOK());
+        assertTrue(Assertor.<IOException> ofClass().isNull().or().hasTypeName(name).that(IOException.class).isOK());
+        assertTrue(Assertor.<IOException> ofClass().isNull().xor().hasTypeName(name).that(IOException.class).isOK());
+        assertTrue(Assertor.<IOException> ofClass().isNull().or().not().hasTypeName("ee").that(IOException.class).isOK());
 
-        assertTrue(Assertor.that(IOException.class).hasTypeName(name).and("ere").contains('e').isOK());
-        assertTrue(Assertor.that(IOException.class).hasTypeName(name).or("ere").contains('e').isOK());
-        assertTrue(Assertor.that(IOException.class).hasTypeName(name).xor("ara").contains('e').isOK());
+        assertTrue(Assertor.<IOException> ofClass().hasTypeName(name).and(Assertor.<IOException> ofClass().hasName("java.io.IOException"))
+                .that(IOException.class).isOK());
+        assertTrue(Assertor.<IOException> ofClass().hasTypeName(name).or(Assertor.<IOException> ofClass().hasName("java.io.IOException"))
+                .that(IOException.class).isOK());
+        assertFalse(Assertor.<IOException> ofClass().hasTypeName(name).xor(Assertor.<IOException> ofClass().hasName("java.io.IOException"))
+                .that(IOException.class).isOK());
 
         assertException(() -> {
-            Assertor.that(Exception.class).hasTypeName("re").orElseThrow();
+            Assertor.<Exception> ofClass().hasTypeName("re").that(Exception.class).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
         assertException(() -> {
-            Assertor.that(Exception.class).hasTypeName("re").orElseThrow();
+            Assertor.<Exception> ofClass().hasTypeName("re").that(Exception.class).orElseThrow();
             fail();
         }, IllegalArgumentException.class, "the class 'Exception' should have the type name 're'");
 
         assertException(() -> {
-            Assertor.that((Class<?>) null).hasTypeName("re").orElseThrow();
+            Assertor.ofClass().hasTypeName("re").that((Class<Object>) null).orElseThrow();
             fail();
         }, IllegalArgumentException.class, "the classes cannot be null and the type name cannot be null or empty");
 
         assertException(() -> {
-            Assertor.that(Exception.class).hasTypeName("").orElseThrow();
+            Assertor.<Exception> ofClass().hasTypeName("").that(Exception.class).orElseThrow();
             fail();
         }, IllegalArgumentException.class, "the classes cannot be null and the type name cannot be null or empty");
 
         assertException(() -> {
-            Assertor.that(Exception.class).hasTypeName(null).orElseThrow();
+            Assertor.<Exception> ofClass().hasTypeName(null).that(Exception.class).orElseThrow();
             fail();
         }, IllegalArgumentException.class, "the classes cannot be null and the type name cannot be null or empty");
     }
@@ -295,40 +310,43 @@ public class PredicateAssertorClassTest extends AbstractTest {
     public void testHasPackageName() throws IOException {
         String name = IOException.class.getPackage().getName();
 
-        assertTrue(Assertor.that(IOException.class).hasPackageName(name).isOK());
-        assertFalse(Assertor.that(IOException.class).hasPackageName("rr").isOK());
+        assertTrue(Assertor.<IOException> ofClass().hasPackageName(name).that(IOException.class).isOK());
+        assertFalse(Assertor.<IOException> ofClass().hasPackageName("rr").that(IOException.class).isOK());
 
-        assertTrue(Assertor.that(IOException.class).isNotNull().and().hasPackageName(name).isOK());
-        assertTrue(Assertor.that(IOException.class).isNull().or().hasPackageName(name).isOK());
-        assertTrue(Assertor.that(IOException.class).isNull().xor().hasPackageName(name).isOK());
-        assertTrue(Assertor.that(IOException.class).isNull().or().not().hasPackageName("ee").isOK());
+        assertTrue(Assertor.<IOException> ofClass().isNotNull().and().hasPackageName(name).that(IOException.class).isOK());
+        assertTrue(Assertor.<IOException> ofClass().isNull().or().hasPackageName(name).that(IOException.class).isOK());
+        assertTrue(Assertor.<IOException> ofClass().isNull().xor().hasPackageName(name).that(IOException.class).isOK());
+        assertTrue(Assertor.<IOException> ofClass().isNull().or().not().hasPackageName("ee").that(IOException.class).isOK());
 
-        assertTrue(Assertor.that(IOException.class).hasPackageName(name).and("ere").contains('e').isOK());
-        assertTrue(Assertor.that(IOException.class).hasPackageName(name).or("ere").contains('e').isOK());
-        assertTrue(Assertor.that(IOException.class).hasPackageName(name).xor("ara").contains('e').isOK());
+        assertTrue(Assertor.<IOException> ofClass().hasPackageName(name)
+                .and(Assertor.<IOException> ofClass().hasName("java.io.IOException")).that(IOException.class).isOK());
+        assertTrue(Assertor.<IOException> ofClass().hasPackageName(name).or(Assertor.<IOException> ofClass().hasName("java.io.IOException"))
+                .that(IOException.class).isOK());
+        assertFalse(Assertor.<IOException> ofClass().hasPackageName(name)
+                .xor(Assertor.<IOException> ofClass().hasName("java.io.IOException")).that(IOException.class).isOK());
 
         assertException(() -> {
-            Assertor.that(Exception.class).hasPackageName("re").orElseThrow();
+            Assertor.<Exception> ofClass().hasPackageName("re").that(Exception.class).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
         assertException(() -> {
-            Assertor.that(Exception.class).hasPackageName("re").orElseThrow();
+            Assertor.<Exception> ofClass().hasPackageName("re").that(Exception.class).orElseThrow();
             fail();
         }, IllegalArgumentException.class, "the class 'Exception' should have the package name 're'");
 
         assertException(() -> {
-            Assertor.that((Class<?>) null).hasPackageName("re").orElseThrow();
+            Assertor.ofClass().hasPackageName("re").that((Class<Object>) null).orElseThrow();
             fail();
         }, IllegalArgumentException.class, "the classes cannot be null and the package name cannot be null or empty");
 
         assertException(() -> {
-            Assertor.that(Exception.class).hasPackageName("").orElseThrow();
+            Assertor.<Exception> ofClass().hasPackageName("").that(Exception.class).orElseThrow();
             fail();
         }, IllegalArgumentException.class, "the classes cannot be null and the package name cannot be null or empty");
 
         assertException(() -> {
-            Assertor.that(Exception.class).hasPackageName(null).orElseThrow();
+            Assertor.<Exception> ofClass().hasPackageName(null).that(Exception.class).orElseThrow();
             fail();
         }, IllegalArgumentException.class, "the classes cannot be null and the package name cannot be null or empty");
     }

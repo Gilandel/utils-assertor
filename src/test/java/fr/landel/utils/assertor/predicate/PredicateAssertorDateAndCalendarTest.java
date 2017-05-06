@@ -39,14 +39,6 @@ import fr.landel.utils.commons.DateUtils;
 public class PredicateAssertorDateAndCalendarTest extends AbstractTest {
 
     /**
-     * Test method for {@link AssertorDate#AssertorDate()} .
-     */
-    @Test
-    public void testConstructor() {
-        assertNotNull(new AssertorDate());
-    }
-
-    /**
      * Test method for {@link AssertorDate#isEqual}.
      */
     @Test
@@ -56,33 +48,39 @@ public class PredicateAssertorDateAndCalendarTest extends AbstractTest {
         final Calendar calendar1 = DateUtils.getCalendar(date1);
         final Calendar calendar2 = DateUtils.getCalendar(date2);
 
-        assertTrue(Assertor.that(calendar1).isNotNull().isOK());
-        assertFalse(Assertor.that(calendar1).not().isAround(calendar2, Calendar.SECOND, 5).isOK());
-        assertTrue(Assertor.that(calendar1).isEqual(calendar2).and().isEqual(calendar1).isOK());
-        assertTrue(Assertor.that(calendar1).isEqual(calendar2).or().isEqual(calendar1).isOK());
-        assertFalse(Assertor.that(calendar1).isEqual(calendar2).xor().isEqual(calendar1).isOK());
-        assertFalse(Assertor.that(calendar1).isEqual(calendar2).nand().isEqual(calendar1).isOK());
-        assertFalse(Assertor.that(calendar1).isEqual(calendar2).nor().isEqual(calendar1).isOK());
+        assertTrue(Assertor.ofCalendar().isNotNull().that(calendar1).isOK());
+        assertFalse(Assertor.ofCalendar().not().isAround(calendar2, Calendar.SECOND, 5).that(calendar1).isOK());
+        assertTrue(Assertor.ofCalendar().isEqual(calendar2).and().isEqual(calendar1).that(calendar1).isOK());
+        assertTrue(Assertor.ofCalendar().isEqual(calendar2).or().isEqual(calendar1).that(calendar1).isOK());
+        assertFalse(Assertor.ofCalendar().isEqual(calendar2).xor().isEqual(calendar1).that(calendar1).isOK());
+        assertFalse(Assertor.ofCalendar().isEqual(calendar2).nand().isEqual(calendar1).that(calendar1).isOK());
+        assertFalse(Assertor.ofCalendar().isEqual(calendar2).nor().isEqual(calendar1).that(calendar1).isOK());
 
-        assertFalse(Assertor.that(calendar1).isEqual(calendar2).xor(Assertor.that(true).isTrue()).and().isEqual(calendar1).isOK());
+        assertTrue(Assertor.ofCalendar().isEqual(calendar2).that(calendar1).isOK());
+        assertFalse(Assertor.ofCalendar().isAfter(calendar2).and().isAround(calendar2, Calendar.MONTH, 1).that(calendar1).isOK());
+        assertTrue(Assertor.ofCalendar().isEqual(calendar2)
+                .xor(Assertor.ofCalendar().isAfter(calendar2).and().isAround(calendar2, Calendar.MONTH, 1)).that(calendar1).isOK());
 
-        assertTrue(Assertor.that(date1).isNotNull().isOK());
-        assertFalse(Assertor.that(date1).not().isAround(date2, Calendar.SECOND, 5).isOK());
-        assertTrue(Assertor.that(date1).isEqual(date2).and().isEqual(date1).isOK());
-        assertTrue(Assertor.that(date1).isEqual(date2).or().isEqual(date1).isOK());
-        assertFalse(Assertor.that(date1).isEqual(date2).xor().isEqual(date1).isOK());
-        assertFalse(Assertor.that(date1).isEqual(date2).nand().isEqual(date1).isOK());
-        assertFalse(Assertor.that(date1).isEqual(date2).nor().isEqual(date1).isOK());
+        assertTrue(Assertor.ofDate().isNotNull().that(date1).isOK());
+        assertFalse(Assertor.ofDate().not().isAround(date2, Calendar.SECOND, 5).that(date1).isOK());
+        assertTrue(Assertor.ofDate().isEqual(date2).and().isEqual(date1).that(date1).isOK());
+        assertTrue(Assertor.ofDate().isEqual(date2).or().isEqual(date1).that(date1).isOK());
+        assertFalse(Assertor.ofDate().isEqual(date2).xor().isEqual(date1).that(date1).isOK());
+        assertFalse(Assertor.ofDate().isEqual(date2).nand().isEqual(date1).that(date1).isOK());
+        assertFalse(Assertor.ofDate().isEqual(date2).nor().isEqual(date1).that(date1).isOK());
 
-        assertFalse(Assertor.that(date1).isEqual(date2).xor(Assertor.that(true).isTrue()).and().isEqual(date1).isOK());
+        assertTrue(Assertor.ofDate().isEqual(date2).that(date1).isOK());
+        assertFalse(Assertor.ofDate().isAfter(date2).and().isAround(date2, Calendar.MONTH, 1).that(date1).isOK());
+        assertTrue(Assertor.ofDate().isEqual(date2).xor(Assertor.ofDate().isAfter(date2).and().isAround(date2, Calendar.MONTH, 1))
+                .that(date1).isOK());
 
         try {
-            Assertor.that((Date) null).isEqual((Date) null).orElseThrow();
-            Assertor.that((Calendar) null).isEqual((Calendar) null).orElseThrow();
+            Assertor.ofDate().isEqual((Date) null).that((Date) null).orElseThrow();
+            Assertor.ofCalendar().isEqual((Calendar) null).that((Calendar) null).orElseThrow();
 
-            Assertor.that(date1).isEqual(date2).orElseThrow();
+            Assertor.ofDate().isEqual(date2).that(date1).orElseThrow();
 
-            Assertor.that(calendar1).isEqual(calendar2).orElseThrow();
+            Assertor.ofCalendar().isEqual(calendar2).that(calendar1).orElseThrow();
         } catch (IllegalArgumentException e) {
             fail("The test isn't correct");
         }
@@ -90,12 +88,12 @@ public class PredicateAssertorDateAndCalendarTest extends AbstractTest {
         final Date date3 = new Date(1464475553641L);
 
         assertException(() -> {
-            Assertor.that(date1).isEqual(date3).orElseThrow();
+            Assertor.ofDate().isEqual(date3).that(date1).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
         assertException(() -> {
-            Assertor.that(date3).isEqual(date1).orElseThrow();
+            Assertor.ofDate().isEqual(date1).that(date3).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
     }
@@ -108,24 +106,24 @@ public class PredicateAssertorDateAndCalendarTest extends AbstractTest {
         final Date date1 = new Date(1464475553640L);
         final Date date2 = new Date(1464475553641L);
 
-        Assertor.that(date1).isAround(date2, Calendar.SECOND, 5).orElseThrow();
-        Assertor.that(date1).isAround(date1, Calendar.SECOND, 5).orElseThrow();
+        Assertor.ofDate().isAround(date2, Calendar.SECOND, 5).that(date1).orElseThrow();
+        Assertor.ofDate().isAround(date1, Calendar.SECOND, 5).that(date1).orElseThrow();
 
         try {
-            Assertor.that(date1).isEqual(date2).orElseThrow();
-            Assertor.that((Date) null).isEqual(date2).and().isEqual(date2).orElseThrow();
+            Assertor.ofDate().isEqual(date2).that(date1).orElseThrow();
+            Assertor.ofDate().isEqual(date2).and().isEqual(date2).that((Date) null).orElseThrow();
             fail();
         } catch (IllegalArgumentException e) {
             assertNotNull(e);
         }
 
         assertException(() -> {
-            Assertor.that(date1).isEqual((Date) null).orElseThrow();
+            Assertor.ofDate().isEqual((Date) null).that(date1).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
         try {
-            Assertor.that((Date) null).isEqual(date2).orElseThrow();
+            Assertor.ofDate().isEqual(date2).that((Date) null).orElseThrow();
             fail();
         } catch (IllegalArgumentException e) {
             assertNotNull(e);
@@ -144,14 +142,14 @@ public class PredicateAssertorDateAndCalendarTest extends AbstractTest {
             calendar1.set(2016, 05, 29, 5, 5, 6);
             calendar2.set(2016, 05, 29, 5, 5, 5);
 
-            Assertor.that(calendar1).isAround(calendar2, Calendar.SECOND, 5).orElseThrow();
-            Assertor.that(calendar1).not().isAround(calendar2, Calendar.MILLISECOND, 5).orElseThrow();
+            Assertor.ofCalendar().isAround(calendar2, Calendar.SECOND, 5).that(calendar1).orElseThrow();
+            Assertor.ofCalendar().not().isAround(calendar2, Calendar.MILLISECOND, 5).that(calendar1).orElseThrow();
 
             calendar1.set(2016, 05, 29, 5, 5, 1);
 
-            Assertor.that(calendar1).isAround(calendar2, Calendar.SECOND, 5).orElseThrow();
+            Assertor.ofCalendar().isAround(calendar2, Calendar.SECOND, 5).that(calendar1).orElseThrow();
 
-            assertFalse(Assertor.that(calendar1).isAround(calendar2, -1, 2).isOK());
+            assertFalse(Assertor.ofCalendar().isAround(calendar2, -1, 2).that(calendar1).isOK());
         } catch (IllegalArgumentException e) {
             fail("The test isn't correct");
         }
@@ -170,7 +168,7 @@ public class PredicateAssertorDateAndCalendarTest extends AbstractTest {
 
         try {
             // Check is date1 is not around the date2 by max 5s (after)
-            Assertor.that(c1).isAround(c2, Calendar.SECOND, 2).orElseThrow();
+            Assertor.ofCalendar().isAround(c2, Calendar.SECOND, 2).that(c1).orElseThrow();
             fail();
         } catch (IllegalArgumentException e) {
             assertNotNull(e);
@@ -178,7 +176,7 @@ public class PredicateAssertorDateAndCalendarTest extends AbstractTest {
 
         try {
             // Check date1 = null
-            Assertor.that((Calendar) null).isAround(c2, Calendar.SECOND, 2).orElseThrow();
+            Assertor.ofCalendar().isAround(c2, Calendar.SECOND, 2).that((Calendar) null).orElseThrow();
             fail();
         } catch (IllegalArgumentException e) {
             assertNotNull(e);
@@ -186,7 +184,7 @@ public class PredicateAssertorDateAndCalendarTest extends AbstractTest {
 
         try {
             // Check date1 = null
-            Assertor.that((Calendar) null).isAround(c2, -1, -1).orElseThrow();
+            Assertor.ofCalendar().isAround(c2, -1, -1).that((Calendar) null).orElseThrow();
             fail();
         } catch (IllegalArgumentException e) {
             assertNotNull(e);
@@ -194,7 +192,7 @@ public class PredicateAssertorDateAndCalendarTest extends AbstractTest {
 
         try {
             // Check date2 = null
-            Assertor.that(c1).isAround((Calendar) null, Calendar.SECOND, 2).orElseThrow();
+            Assertor.ofCalendar().isAround((Calendar) null, Calendar.SECOND, 2).that(c1).orElseThrow();
             fail();
         } catch (IllegalArgumentException e) {
             assertNotNull(e);
@@ -202,7 +200,7 @@ public class PredicateAssertorDateAndCalendarTest extends AbstractTest {
 
         try {
             // Check calendar amount = zero
-            Assertor.that(c1).isAround(c2, Calendar.SECOND, 0).orElseThrow();
+            Assertor.ofCalendar().isAround(c2, Calendar.SECOND, 0).that(c1).orElseThrow();
             fail();
         } catch (IllegalArgumentException e) {
             assertNotNull(e);
@@ -210,7 +208,7 @@ public class PredicateAssertorDateAndCalendarTest extends AbstractTest {
 
         try {
             // Check unsupported calendar field
-            Assertor.that(c1).isAround(c2, 20, 0).orElseThrow();
+            Assertor.ofCalendar().isAround(c2, 20, 0).that(c1).orElseThrow();
             fail();
         } catch (IllegalArgumentException e) {
             assertNotNull(e);
@@ -220,7 +218,7 @@ public class PredicateAssertorDateAndCalendarTest extends AbstractTest {
 
         try {
             // Check is date1 is not around the date2 by max 5s (before)
-            Assertor.that(c1).isAround(c2, Calendar.SECOND, 2).orElseThrow();
+            Assertor.ofCalendar().isAround(c2, Calendar.SECOND, 2).that(c1).orElseThrow();
             fail();
         } catch (IllegalArgumentException e) {
             assertNotNull(e);
@@ -238,36 +236,36 @@ public class PredicateAssertorDateAndCalendarTest extends AbstractTest {
         c1.set(2016, 05, 29, 5, 5, 11);
         c2.set(2016, 05, 29, 5, 5, 5);
 
-        assertTrue(Assertor.that(c1).not().isAround(c2, Calendar.SECOND, 5).isOK());
-        assertTrue(Assertor.that(c1).isNotAround(c2, Calendar.SECOND, 5).isOK());
+        assertTrue(Assertor.ofCalendar().not().isAround(c2, Calendar.SECOND, 5).that(c1).isOK());
+        assertTrue(Assertor.ofCalendar().isNotAround(c2, Calendar.SECOND, 5).that(c1).isOK());
 
-        assertTrue(Assertor.that(c1.getTime()).not().isAround(c2.getTime(), Calendar.SECOND, 5).isOK());
-        assertTrue(Assertor.that(c1.getTime()).isNotAround(c2.getTime(), Calendar.SECOND, 5).isOK());
+        assertTrue(Assertor.ofDate().not().isAround(c2.getTime(), Calendar.SECOND, 5).that(c1.getTime()).isOK());
+        assertTrue(Assertor.ofDate().isNotAround(c2.getTime(), Calendar.SECOND, 5).that(c1.getTime()).isOK());
 
         c1.set(2016, 05, 29, 5, 5, 1);
 
-        assertTrue(Assertor.that(c1).isNotAround(c2, Calendar.SECOND, 3).isOK());
-        assertFalse(Assertor.that(c1).isNotAround(c2, Calendar.SECOND, 0).isOK());
-        assertTrue(Assertor.that(c1).isNotAround(c2, -1, 0).isOK());
+        assertTrue(Assertor.ofCalendar().isNotAround(c2, Calendar.SECOND, 3).that(c1).isOK());
+        assertFalse(Assertor.ofCalendar().isNotAround(c2, Calendar.SECOND, 0).that(c1).isOK());
+        assertTrue(Assertor.ofCalendar().isNotAround(c2, -1, 0).that(c1).isOK());
 
         assertException(() -> {
-            Assertor.that((Calendar) null).isNotAround(c2, Calendar.SECOND, 5).orElseThrow();
+            Assertor.ofCalendar().isNotAround(c2, Calendar.SECOND, 5).that((Calendar) null).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
         assertException(() -> {
-            Assertor.that(c1).isNotAround((Calendar) null, Calendar.SECOND, 5).orElseThrow();
+            Assertor.ofCalendar().isNotAround((Calendar) null, Calendar.SECOND, 5).that(c1).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
         assertException(() -> {
-            Assertor.that(c1).isNotAround((Calendar) null, Calendar.SECOND, 5).orElseThrow();
+            Assertor.ofCalendar().isNotAround((Calendar) null, Calendar.SECOND, 5).that(c1).orElseThrow();
             fail();
         }, IllegalArgumentException.class,
                 "neither dates can be null, calendar field has to be a supported value and calendar amount different to 0");
 
         assertException(() -> {
-            Assertor.that(c1.getTime()).isNotAround((Date) null, Calendar.SECOND, 5).orElseThrow();
+            Assertor.ofDate().isNotAround((Date) null, Calendar.SECOND, 5).that(c1.getTime()).orElseThrow();
             fail();
         }, IllegalArgumentException.class,
                 "neither dates can be null, calendar field has to be a supported value and calendar amount different to 0");
@@ -286,7 +284,7 @@ public class PredicateAssertorDateAndCalendarTest extends AbstractTest {
 
         try {
             // Check is date1 is not around the date2 by max 5s (after)
-            Assertor.that(c1).isNotAround(c2, Calendar.SECOND, 5).orElseThrow();
+            Assertor.ofCalendar().isNotAround(c2, Calendar.SECOND, 5).that(c1).orElseThrow();
             fail();
         } catch (IllegalArgumentException e) {
             assertNotNull(e);
@@ -294,7 +292,7 @@ public class PredicateAssertorDateAndCalendarTest extends AbstractTest {
 
         try {
             // Check calendar amount = zero
-            Assertor.that(c1).isNotAround(c2, Calendar.SECOND, 0).orElseThrow();
+            Assertor.ofCalendar().isNotAround(c2, Calendar.SECOND, 0).that(c1).orElseThrow();
             fail();
         } catch (IllegalArgumentException e) {
             assertNotNull(e);
@@ -302,7 +300,7 @@ public class PredicateAssertorDateAndCalendarTest extends AbstractTest {
 
         try {
             // Check unsupported calendar field
-            Assertor.that(c1).isNotAround(c2, 20, 0).orElseThrow();
+            Assertor.ofCalendar().isNotAround(c2, 20, 0).that(c1).orElseThrow();
             fail();
         } catch (IllegalArgumentException e) {
             assertNotNull(e);
@@ -312,7 +310,7 @@ public class PredicateAssertorDateAndCalendarTest extends AbstractTest {
 
         try {
             // Check is date1 is not around the date2 by max 5s (before)
-            Assertor.that(c1).isNotAround(c2, Calendar.SECOND, 5).orElseThrow();
+            Assertor.ofCalendar().isNotAround(c2, Calendar.SECOND, 5).that(c1).orElseThrow();
             fail();
         } catch (IllegalArgumentException e) {
             assertNotNull(e);
@@ -328,10 +326,10 @@ public class PredicateAssertorDateAndCalendarTest extends AbstractTest {
             final Date date1 = new Date(1464475553640L);
             final Date date2 = new Date(1464475553641L);
 
-            Assertor.that(DateUtils.getCalendar(date1)).isNotEqual(DateUtils.getCalendar(date2)).orElseThrow();
-            Assertor.that(date1).isNotEqual(date2).orElseThrow();
-            Assertor.that((Date) null).isNotEqual(date2).orElseThrow();
-            Assertor.that(date1).isNotEqual((Date) null).orElseThrow();
+            Assertor.ofCalendar().isNotEqual(DateUtils.getCalendar(date2)).that(DateUtils.getCalendar(date1)).orElseThrow();
+            Assertor.ofDate().isNotEqual(date2).that(date1).orElseThrow();
+            Assertor.ofDate().isNotEqual(date2).that((Date) null).orElseThrow();
+            Assertor.ofDate().isNotEqual((Date) null).that(date1).orElseThrow();
         } catch (IllegalArgumentException e) {
             fail("The test isn't correct");
         }
@@ -346,14 +344,14 @@ public class PredicateAssertorDateAndCalendarTest extends AbstractTest {
         Date date2 = new Date(1464475553640L);
 
         try {
-            Assertor.that(date1).isNotEqual(date2).orElseThrow();
+            Assertor.ofDate().isNotEqual(date2).that(date1).orElseThrow();
             fail();
         } catch (IllegalArgumentException e) {
             assertNotNull(e);
         }
 
         try {
-            Assertor.that((Date) null).isNotEqual((Date) null).orElseThrow();
+            Assertor.ofDate().isNotEqual((Date) null).that((Date) null).orElseThrow();
             fail();
         } catch (IllegalArgumentException e) {
             assertNotNull(e);
@@ -371,17 +369,17 @@ public class PredicateAssertorDateAndCalendarTest extends AbstractTest {
             final Date date1 = cal1.getTime();
             final Date date2 = cal2.getTime();
 
-            Assertor.that(date1).isAfter(date2).orElseThrow();
+            Assertor.ofDate().isAfter(date2).that(date1).orElseThrow();
 
-            Assertor.that(date1).isAfter(date2, -1, -1).orElseThrow();
-            Assertor.that(date1).isAfter(date2, -1, 0).orElseThrow();
-            Assertor.that(cal1).isAfter(cal2, -1, -1).orElseThrow();
-            Assertor.that(date1).isAfter(date2, Calendar.HOUR, 1).orElseThrow();
-            Assertor.that(cal1).isAfter(cal2, Calendar.HOUR, 1).orElseThrow();
-            Assertor.that(date1).not().isAfter(date2, Calendar.HOUR, -1).orElseThrow();
-            Assertor.that(cal1).not().isAfter(cal2, Calendar.HOUR, -1).orElseThrow();
-            Assertor.that(date2).not().isAfter(date1, Calendar.HOUR, 1).orElseThrow();
-            Assertor.that(cal2).not().isAfter(cal1, Calendar.HOUR, 1).orElseThrow();
+            Assertor.ofDate().isAfter(date2, -1, -1).that(date1).orElseThrow();
+            Assertor.ofDate().isAfter(date2, -1, 0).that(date1).orElseThrow();
+            Assertor.ofCalendar().isAfter(cal2, -1, -1).that(cal1).orElseThrow();
+            Assertor.ofDate().isAfter(date2, Calendar.HOUR, 1).that(date1).orElseThrow();
+            Assertor.ofCalendar().isAfter(cal2, Calendar.HOUR, 1).that(cal1).orElseThrow();
+            Assertor.ofDate().not().isAfter(date2, Calendar.HOUR, -1).that(date1).orElseThrow();
+            Assertor.ofCalendar().not().isAfter(cal2, Calendar.HOUR, -1).that(cal1).orElseThrow();
+            Assertor.ofDate().not().isAfter(date1, Calendar.HOUR, 1).that(date2).orElseThrow();
+            Assertor.ofCalendar().not().isAfter(cal1, Calendar.HOUR, 1).that(cal2).orElseThrow();
         } catch (IllegalArgumentException e) {
             fail("The test isn't correct");
         }
@@ -397,41 +395,41 @@ public class PredicateAssertorDateAndCalendarTest extends AbstractTest {
         Calendar calendar1 = DateUtils.getCalendar(date1);
         Calendar calendar2 = DateUtils.getCalendar(date2);
 
-        assertFalse(Assertor.that(date1).isAfter(date2).isOK());
-        assertFalse(Assertor.that(calendar1).isAfter(calendar2).isOK());
+        assertFalse(Assertor.ofDate().isAfter(date2).that(date1).isOK());
+        assertFalse(Assertor.ofCalendar().isAfter(calendar2).that(calendar1).isOK());
 
         date2 = new Date(1464475553640L);
 
         try {
-            Assertor.that(date1).isAfter(date2).orElseThrow();
+            Assertor.ofDate().isAfter(date2).that(date1).orElseThrow();
             fail();
         } catch (IllegalArgumentException e) {
             assertNotNull(e);
         }
 
         try {
-            Assertor.that((Date) null).isAfter(date2).orElseThrow();
+            Assertor.ofDate().isAfter(date2).that((Date) null).orElseThrow();
             fail();
         } catch (IllegalArgumentException e) {
             assertNotNull(e);
         }
 
         try {
-            Assertor.that((Date) null).isAfter((Date) null).orElseThrow();
+            Assertor.ofDate().isAfter((Date) null).that((Date) null).orElseThrow();
             fail();
         } catch (IllegalArgumentException e) {
             assertNotNull(e);
         }
 
         try {
-            Assertor.that(date1).isAfter((Date) null).orElseThrow();
+            Assertor.ofDate().isAfter((Date) null).that(date1).orElseThrow();
             fail();
         } catch (IllegalArgumentException e) {
             assertNotNull(e);
         }
 
         try {
-            Assertor.that(date1).isAfter(date2).orElseThrow(new IOException(), true);
+            Assertor.ofDate().isAfter(date2).that(date1).orElseThrow(new IOException(), true);
             fail();
         } catch (IOException e) {
             assertNotNull(e);
@@ -449,21 +447,21 @@ public class PredicateAssertorDateAndCalendarTest extends AbstractTest {
             Date date1 = cal1.getTime();
             final Date date2 = cal2.getTime();
 
-            Assertor.that(date1).isAfterOrEqual(date2).orElseThrow();
-            Assertor.that(cal1).isAfterOrEqual(cal2).orElseThrow();
+            Assertor.ofDate().isAfterOrEqual(date2).that(date1).orElseThrow();
+            Assertor.ofCalendar().isAfterOrEqual(cal2).that(cal1).orElseThrow();
 
-            assertTrue(Assertor.that(date1).isAfterOrEqual(date2, Calendar.HOUR, 1).isOK());
-            assertTrue(Assertor.that(cal1).isAfterOrEqual(cal2, Calendar.HOUR, 1).isOK());
+            assertTrue(Assertor.ofDate().isAfterOrEqual(date2, Calendar.HOUR, 1).that(date1).isOK());
+            assertTrue(Assertor.ofCalendar().isAfterOrEqual(cal2, Calendar.HOUR, 1).that(cal1).isOK());
 
             date1 = new GregorianCalendar(2016, 0, 1, 1, 1, 1).getTime();
 
-            Assertor.that(date1).isAfterOrEqual(date2).orElseThrow();
-            assertTrue(Assertor.that(date1).isAfterOrEqual(date2, -1, -1).isOK());
-            assertTrue(Assertor.that(cal1).isAfterOrEqual(cal2, -1, -1).isOK());
-            assertTrue(Assertor.that(date1).isAfterOrEqual(date2, Calendar.HOUR, 1).isOK());
-            assertTrue(Assertor.that(cal1).isAfterOrEqual(cal2, Calendar.HOUR, 1).isOK());
-            assertFalse(Assertor.that(cal1).isAfterOrEqual(cal2, Calendar.HOUR, -1).isOK());
-            assertFalse(Assertor.that(cal2).isAfterOrEqual(cal1, Calendar.HOUR, -1).isOK());
+            Assertor.ofDate().isAfterOrEqual(date2).that(date1).orElseThrow();
+            assertTrue(Assertor.ofDate().isAfterOrEqual(date2, -1, -1).that(date1).isOK());
+            assertTrue(Assertor.ofCalendar().isAfterOrEqual(cal2, -1, -1).that(cal1).isOK());
+            assertTrue(Assertor.ofDate().isAfterOrEqual(date2, Calendar.HOUR, 1).that(date1).isOK());
+            assertTrue(Assertor.ofCalendar().isAfterOrEqual(cal2, Calendar.HOUR, 1).that(cal1).isOK());
+            assertFalse(Assertor.ofCalendar().isAfterOrEqual(cal2, Calendar.HOUR, -1).that(cal1).isOK());
+            assertFalse(Assertor.ofCalendar().isAfterOrEqual(cal1, Calendar.HOUR, -1).that(cal2).isOK());
         } catch (IllegalArgumentException e) {
             fail("The test isn't correct");
         }
@@ -479,26 +477,26 @@ public class PredicateAssertorDateAndCalendarTest extends AbstractTest {
         final Date date1 = cal1.getTime();
         final Date date2 = cal2.getTime();
 
-        assertFalse(Assertor.that(date1).isAfterOrEqual(date2).isOK());
-        assertFalse(Assertor.that(cal1).isAfterOrEqual(cal2).isOK());
+        assertFalse(Assertor.ofDate().isAfterOrEqual(date2).that(date1).isOK());
+        assertFalse(Assertor.ofCalendar().isAfterOrEqual(cal2).that(cal1).isOK());
 
         assertException(() -> {
-            Assertor.that((Date) null).isAfterOrEqual(date2).orElseThrow();
+            Assertor.ofDate().isAfterOrEqual(date2).that((Date) null).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
         assertException(() -> {
-            Assertor.that(date1).isAfterOrEqual((Date) null).orElseThrow();
+            Assertor.ofDate().isAfterOrEqual((Date) null).that(date1).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
         assertException(() -> {
-            Assertor.that((Date) null).isAfterOrEqual((Date) null).orElseThrow();
+            Assertor.ofDate().isAfterOrEqual((Date) null).that((Date) null).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
         assertException(() -> {
-            Assertor.that(date1).isAfterOrEqual(date2).orElseThrow(new IOException(), true);
+            Assertor.ofDate().isAfterOrEqual(date2).that(date1).orElseThrow(new IOException(), true);
             fail();
         }, IOException.class);
     }
@@ -513,42 +511,42 @@ public class PredicateAssertorDateAndCalendarTest extends AbstractTest {
         final Date date1 = cal1.getTime();
         final Date date2 = cal2.getTime();
 
-        assertTrue(Assertor.that(date2).isBefore(date1).isOK());
-        assertTrue(Assertor.that(cal2).isBefore(cal1).isOK());
+        assertTrue(Assertor.ofDate().isBefore(date1).that(date2).isOK());
+        assertTrue(Assertor.ofCalendar().isBefore(cal1).that(cal2).isOK());
 
-        Assertor.that(date2).isBefore(date1, -1, -1).orElseThrow();
-        Assertor.that(cal2).isBefore(cal1, Calendar.HOUR, 1).orElseThrow();
-        Assertor.that(date2).isBefore(date1, Calendar.HOUR, 1).orElseThrow();
-        Assertor.that(date2).not().isBefore(date1, Calendar.HOUR, -1).orElseThrow();
-        Assertor.that(cal1).not().isBefore(cal2, Calendar.HOUR, 1).orElseThrow();
+        Assertor.ofDate().isBefore(date1, -1, -1).that(date2).orElseThrow();
+        Assertor.ofCalendar().isBefore(cal1, Calendar.HOUR, 1).that(cal2).orElseThrow();
+        Assertor.ofDate().isBefore(date1, Calendar.HOUR, 1).that(date2).orElseThrow();
+        Assertor.ofDate().not().isBefore(date1, Calendar.HOUR, -1).that(date2).orElseThrow();
+        Assertor.ofCalendar().not().isBefore(cal2, Calendar.HOUR, 1).that(cal1).orElseThrow();
 
         assertException(() -> {
-            Assertor.that(date1).isBefore(date2).orElseThrow();
+            Assertor.ofDate().isBefore(date2).that(date1).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
         assertException(() -> {
-            Assertor.that(date1).isBefore(date1).orElseThrow();
+            Assertor.ofDate().isBefore(date1).that(date1).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
         assertException(() -> {
-            Assertor.that((Date) null).isBefore(date1).orElseThrow();
+            Assertor.ofDate().isBefore(date1).that((Date) null).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
         assertException(() -> {
-            Assertor.that(date1).isBefore((Date) null).orElseThrow();
+            Assertor.ofDate().isBefore((Date) null).that(date1).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
         assertException(() -> {
-            Assertor.that((Date) null).isBefore((Date) null).orElseThrow();
+            Assertor.ofDate().isBefore((Date) null).that((Date) null).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
         assertException(() -> {
-            Assertor.that(date1).isBefore(date1).orElseThrow(new IOException(), true);
+            Assertor.ofDate().isBefore(date1).that(date1).orElseThrow(new IOException(), true);
             fail();
         }, IOException.class);
     }
@@ -563,47 +561,47 @@ public class PredicateAssertorDateAndCalendarTest extends AbstractTest {
         Date date1 = cal1.getTime();
         final Date date2 = cal2.getTime();
 
-        assertTrue(Assertor.that(date1).isBeforeOrEqual(date2).isOK());
-        assertTrue(Assertor.that(cal1).isBeforeOrEqual(cal2).isOK());
+        assertTrue(Assertor.ofDate().isBeforeOrEqual(date2).that(date1).isOK());
+        assertTrue(Assertor.ofCalendar().isBeforeOrEqual(cal2).that(cal1).isOK());
 
-        assertTrue(Assertor.that(date1).isBeforeOrEqual(date2, -1, -1).isOK());
-        assertTrue(Assertor.that(cal1).isBeforeOrEqual(cal2, -1, -1).isOK());
-        assertTrue(Assertor.that(date1).isBeforeOrEqual(date2, Calendar.HOUR, 1).isOK());
-        assertTrue(Assertor.that(cal1).isBeforeOrEqual(cal2, Calendar.HOUR, 1).isOK());
-        assertFalse(Assertor.that(cal1).isBeforeOrEqual(cal2, Calendar.MINUTE, 1).isOK());
-        assertFalse(Assertor.that(cal2).isBeforeOrEqual(cal1, Calendar.HOUR, 1).isOK());
+        assertTrue(Assertor.ofDate().isBeforeOrEqual(date2, -1, -1).that(date1).isOK());
+        assertTrue(Assertor.ofCalendar().isBeforeOrEqual(cal2, -1, -1).that(cal1).isOK());
+        assertTrue(Assertor.ofDate().isBeforeOrEqual(date2, Calendar.HOUR, 1).that(date1).isOK());
+        assertTrue(Assertor.ofCalendar().isBeforeOrEqual(cal2, Calendar.HOUR, 1).that(cal1).isOK());
+        assertFalse(Assertor.ofCalendar().isBeforeOrEqual(cal2, Calendar.MINUTE, 1).that(cal1).isOK());
+        assertFalse(Assertor.ofCalendar().isBeforeOrEqual(cal1, Calendar.HOUR, 1).that(cal2).isOK());
 
         date1 = new GregorianCalendar(2016, 0, 1, 2, 1, 1).getTime();
 
-        assertTrue(Assertor.that(date1).isBeforeOrEqual(date2).isOK());
-        assertTrue(Assertor.that(date1).isBeforeOrEqual(date2, -1, -1).isOK());
-        assertTrue(Assertor.that(date1).isBeforeOrEqual(date2, Calendar.HOUR, 1).isOK());
+        assertTrue(Assertor.ofDate().isBeforeOrEqual(date2).that(date1).isOK());
+        assertTrue(Assertor.ofDate().isBeforeOrEqual(date2, -1, -1).that(date1).isOK());
+        assertTrue(Assertor.ofDate().isBeforeOrEqual(date2, Calendar.HOUR, 1).that(date1).isOK());
 
         final Date date3 = new Date(1464475553641L);
         final Date date4 = new Date(1464475553640L);
 
         assertException(() -> {
-            Assertor.that(date3).isBeforeOrEqual(date4).orElseThrow();
+            Assertor.ofDate().isBeforeOrEqual(date4).that(date3).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
         assertException(() -> {
-            Assertor.that((Date) null).isBeforeOrEqual(date4).orElseThrow();
+            Assertor.ofDate().isBeforeOrEqual(date4).that((Date) null).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
         assertException(() -> {
-            Assertor.that(date3).isBeforeOrEqual((Date) null).orElseThrow();
+            Assertor.ofDate().isBeforeOrEqual((Date) null).that(date3).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
         assertException(() -> {
-            Assertor.that((Date) null).isBeforeOrEqual((Date) null).orElseThrow();
+            Assertor.ofDate().isBeforeOrEqual((Date) null).that((Date) null).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
         assertException(() -> {
-            Assertor.that(date3).isBeforeOrEqual(date4).orElseThrow(new IOException(), true);
+            Assertor.ofDate().isBeforeOrEqual(date4).that(date3).orElseThrow(new IOException(), true);
             fail();
         }, IOException.class);
     }

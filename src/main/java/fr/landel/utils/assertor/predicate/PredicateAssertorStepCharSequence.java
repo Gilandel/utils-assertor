@@ -24,15 +24,15 @@ import fr.landel.utils.assertor.utils.AssertorCharSequence;
 /**
  * This class define methods that can be applied on the checked
  * {@link CharSequence} object. To provide a result, it's also provide a chain
- * builder by returning a {@link PredicateStepCharSequence}. The chain
- * looks like:
+ * builder by returning a {@link PredicateStepCharSequence}. The chain looks
+ * like:
  * 
  * <pre>
  * {@link PredicateAssertorStepCharSequence} &gt; {@link PredicateStepCharSequence} &gt; {@link PredicateAssertorStepCharSequence} &gt; {@link PredicateStepCharSequence}...
  * </pre>
  * 
- * This chain always starts with a {@link PredicateAssertorStepCharSequence} and ends
- * with {@link PredicateStepCharSequence}.
+ * This chain always starts with a {@link PredicateAssertorStepCharSequence} and
+ * ends with {@link PredicateStepCharSequence}.
  *
  * @since Aug 7, 2016
  * @author Gilles
@@ -549,8 +549,8 @@ public interface PredicateAssertorStepCharSequence<T extends CharSequence> exten
      * @return The operator
      * @category localized_message
      */
-    default PredicateStepCharSequence<T> isEqualIgnoreCase(final CharSequence string, final Locale locale,
-            final CharSequence message, final Object... arguments) {
+    default PredicateStepCharSequence<T> isEqualIgnoreCase(final CharSequence string, final Locale locale, final CharSequence message,
+            final Object... arguments) {
         return () -> AssertorCharSequence.isEqual(this.getStep(), string, true, false, MessageAssertor.of(locale, message, arguments));
     }
 
@@ -754,8 +754,7 @@ public interface PredicateAssertorStepCharSequence<T extends CharSequence> exten
      * @return The operator
      * @category message
      */
-    default PredicateStepCharSequence<T> isNotEqual(final CharSequence string, final CharSequence message,
-            final Object... arguments) {
+    default PredicateStepCharSequence<T> isNotEqual(final CharSequence string, final CharSequence message, final Object... arguments) {
         return this.isNotEqual(string, null, message, arguments);
     }
 
@@ -859,8 +858,8 @@ public interface PredicateAssertorStepCharSequence<T extends CharSequence> exten
      * @return The operator
      * @category localized_message
      */
-    default PredicateStepCharSequence<T> isNotEqualIgnoreCase(final CharSequence string, final Locale locale,
-            final CharSequence message, final Object... arguments) {
+    default PredicateStepCharSequence<T> isNotEqualIgnoreCase(final CharSequence string, final Locale locale, final CharSequence message,
+            final Object... arguments) {
         return () -> AssertorCharSequence.isNotEqual(this.getStep(), string, true, false, MessageAssertor.of(locale, message, arguments));
     }
 
@@ -1066,8 +1065,7 @@ public interface PredicateAssertorStepCharSequence<T extends CharSequence> exten
      * @return The operator
      * @category message
      */
-    default PredicateStepCharSequence<T> contains(final Character character, final CharSequence message,
-            final Object... arguments) {
+    default PredicateStepCharSequence<T> contains(final Character character, final CharSequence message, final Object... arguments) {
         return this.contains(character, null, message, arguments);
     }
 
@@ -1145,8 +1143,7 @@ public interface PredicateAssertorStepCharSequence<T extends CharSequence> exten
      * @return The operator
      * @category message
      */
-    default PredicateStepCharSequence<T> contains(final CharSequence substring, final CharSequence message,
-            final Object... arguments) {
+    default PredicateStepCharSequence<T> contains(final CharSequence substring, final CharSequence message, final Object... arguments) {
         return this.contains(substring, null, message, arguments);
     }
 
@@ -1224,8 +1221,7 @@ public interface PredicateAssertorStepCharSequence<T extends CharSequence> exten
      * @return The operator
      * @category message
      */
-    default PredicateStepCharSequence<T> startsWith(final CharSequence substring, final CharSequence message,
-            final Object... arguments) {
+    default PredicateStepCharSequence<T> startsWith(final CharSequence substring, final CharSequence message, final Object... arguments) {
         return this.startsWith(substring, null, message, arguments);
     }
 
@@ -1333,8 +1329,8 @@ public interface PredicateAssertorStepCharSequence<T extends CharSequence> exten
      * @return The operator
      * @category localized_message
      */
-    default PredicateStepCharSequence<T> startsWithIgnoreCase(final CharSequence substring, final Locale locale,
-            final CharSequence message, final Object... arguments) {
+    default PredicateStepCharSequence<T> startsWithIgnoreCase(final CharSequence substring, final Locale locale, final CharSequence message,
+            final Object... arguments) {
         return () -> AssertorCharSequence.startsWithIgnoreCase(this.getStep(), substring, MessageAssertor.of(locale, message, arguments));
     }
 
@@ -1382,8 +1378,7 @@ public interface PredicateAssertorStepCharSequence<T extends CharSequence> exten
      * @return The operator
      * @category message
      */
-    default PredicateStepCharSequence<T> endsWith(final CharSequence substring, final CharSequence message,
-            final Object... arguments) {
+    default PredicateStepCharSequence<T> endsWith(final CharSequence substring, final CharSequence message, final Object... arguments) {
         return this.endsWith(substring, null, message, arguments);
     }
 
@@ -1491,8 +1486,8 @@ public interface PredicateAssertorStepCharSequence<T extends CharSequence> exten
      * @return The operator
      * @category localized_message
      */
-    default PredicateStepCharSequence<T> endsWithIgnoreCase(final CharSequence substring, final Locale locale,
-            final CharSequence message, final Object... arguments) {
+    default PredicateStepCharSequence<T> endsWithIgnoreCase(final CharSequence substring, final Locale locale, final CharSequence message,
+            final Object... arguments) {
         return () -> AssertorCharSequence.endsWithIgnoreCase(this.getStep(), substring, MessageAssertor.of(locale, message, arguments));
     }
 

@@ -29,8 +29,8 @@ import fr.landel.utils.assertor.utils.AssertorNumber;
  * {@link PredicateAssertorStepNumber} &gt; {@link PredicateStepNumber} &gt; {@link PredicateAssertorStepNumber} &gt; {@link PredicateStepNumber}...
  * </pre>
  * 
- * This chain always starts with a {@link PredicateAssertorStepNumber} and ends with
- * {@link PredicateStepNumber}.
+ * This chain always starts with a {@link PredicateAssertorStepNumber} and ends
+ * with {@link PredicateStepNumber}.
  *
  * @since Aug 3, 2016
  * @author Gilles
@@ -133,8 +133,7 @@ public interface PredicateAssertorStepNumber<N extends Number & Comparable<N>> e
      *            The arguments of the message, use {@link String#format}
      * @return The operator
      */
-    default PredicateStepNumber<N> isEqual(final N number, final Locale locale, final CharSequence message,
-            final Object... arguments) {
+    default PredicateStepNumber<N> isEqual(final N number, final Locale locale, final CharSequence message, final Object... arguments) {
         return () -> AssertorNumber.isEqual(this.getStep(), number, MessageAssertor.of(locale, message, arguments));
     }
 
@@ -214,8 +213,7 @@ public interface PredicateAssertorStepNumber<N extends Number & Comparable<N>> e
      *            The arguments of the message, use {@link String#format}
      * @return The operator
      */
-    default PredicateStepNumber<N> isNotEqual(final N number, final Locale locale, final CharSequence message,
-            final Object... arguments) {
+    default PredicateStepNumber<N> isNotEqual(final N number, final Locale locale, final CharSequence message, final Object... arguments) {
         return () -> AssertorNumber.isNotEqual(this.getStep(), number, MessageAssertor.of(locale, message, arguments));
     }
 
@@ -493,8 +491,7 @@ public interface PredicateAssertorStepNumber<N extends Number & Comparable<N>> e
      *            The arguments of the message, use {@link String#format}
      * @return The operator
      */
-    default PredicateStepNumber<N> isGT(final N number, final Locale locale, final CharSequence message,
-            final Object... arguments) {
+    default PredicateStepNumber<N> isGT(final N number, final Locale locale, final CharSequence message, final Object... arguments) {
         return () -> AssertorNumber.isGT(this.getStep(), number, MessageAssertor.of(locale, message, arguments));
     }
 
@@ -583,8 +580,7 @@ public interface PredicateAssertorStepNumber<N extends Number & Comparable<N>> e
      *            The arguments of the message, use {@link String#format}
      * @return The operator
      */
-    default PredicateStepNumber<N> isGTE(final N number, final Locale locale, final CharSequence message,
-            final Object... arguments) {
+    default PredicateStepNumber<N> isGTE(final N number, final Locale locale, final CharSequence message, final Object... arguments) {
         return () -> AssertorNumber.isGTE(this.getStep(), number, MessageAssertor.of(locale, message, arguments));
     }
 
@@ -670,8 +666,7 @@ public interface PredicateAssertorStepNumber<N extends Number & Comparable<N>> e
      *            The arguments of the message, use {@link String#format}
      * @return The operator
      */
-    default PredicateStepNumber<N> isLT(final N number, final Locale locale, final CharSequence message,
-            final Object... arguments) {
+    default PredicateStepNumber<N> isLT(final N number, final Locale locale, final CharSequence message, final Object... arguments) {
         return () -> AssertorNumber.isLT(this.getStep(), number, MessageAssertor.of(locale, message, arguments));
     }
 
@@ -760,8 +755,88 @@ public interface PredicateAssertorStepNumber<N extends Number & Comparable<N>> e
      *            The arguments of the message, use {@link String#format}
      * @return The operator
      */
-    default PredicateStepNumber<N> isLTE(final N number, final Locale locale, final CharSequence message,
-            final Object... arguments) {
+    default PredicateStepNumber<N> isLTE(final N number, final Locale locale, final CharSequence message, final Object... arguments) {
         return () -> AssertorNumber.isLTE(this.getStep(), number, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
+     * Prepare the next step to validate if {@link Number} is between the left
+     * hand number (inclusive) and the right hand number (exclusive).
+     * 
+     * <p>
+     * precondition: none number can be {@code null} and {@code lhn} must be
+     * lower than {@code rhn}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(number).isBetween(bound1, bound2).orElseThrow();
+     * </pre>
+     * 
+     * @param lhn
+     *            the left hand number (lower bound)
+     * @param rhn
+     *            the right hand number (upper bound)
+     * @return The operator
+     */
+    default PredicateStepNumber<N> isBetween(final N lhn, final N rhn) {
+        return this.isBetween(lhn, rhn, null);
+    }
+
+    /**
+     * Prepare the next step to validate if {@link Number} is between the left
+     * hand number (inclusive) and the right hand number (exclusive).
+     * 
+     * <p>
+     * precondition: none number can be {@code null} and {@code lhn} must be
+     * lower than {@code rhn}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(number).isBetween(bound1, bound2, "%1$,.3f* is not between %2$,.3f* and %3$,.3f*").orElseThrow();
+     * </pre>
+     * 
+     * @param lhn
+     *            the left hand number (lower bound)
+     * @param rhn
+     *            the right hand number (upper bound)
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     */
+    default PredicateStepNumber<N> isBetween(final N lhn, final N rhn, final CharSequence message, final Object... arguments) {
+        return this.isBetween(lhn, rhn, null, message, arguments);
+    }
+
+    /**
+     * Prepare the next step to validate if {@link Number} is between the left
+     * hand number (inclusive) and the right hand number (exclusive).
+     * 
+     * <p>
+     * precondition: none number can be {@code null} and {@code lhn} must be
+     * lower than {@code rhn}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(number).isBetween(bound1, bound2, Locale.US, "%1$,.3f* is not between %2$,.3f* and %3$,.3f*").orElseThrow();
+     * </pre>
+     * 
+     * @param lhn
+     *            the left hand number (lower bound)
+     * @param rhn
+     *            the right hand number (upper bound)
+     * @param locale
+     *            The locale of the message (only applied for this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     */
+    default PredicateStepNumber<N> isBetween(final N lhn, final N rhn, final Locale locale, final CharSequence message,
+            final Object... arguments) {
+        return () -> AssertorNumber.isBetween(this.getStep(), lhn, rhn, MessageAssertor.of(locale, message, arguments));
     }
 }

@@ -13,7 +13,6 @@
 package fr.landel.utils.assertor.predicate;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -22,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Set;
 
 import org.junit.Test;
@@ -43,11 +43,17 @@ public class PredicateAssertorIterableTest extends AbstractTest {
     private final String ERROR = "error expected";
 
     /**
-     * Test method for {@link AssertorIterable#AssertorIterable()} .
+     * Test method for {@link AssertorIterable} .
      */
     @Test
-    public void testConstructor() {
-        assertNotNull(new AssertorIterable());
+    public void testPredicateGet() {
+        final String el = "element";
+
+        final Set<String> set = new HashSet<>();
+        set.add(el);
+
+        assertFalse(Assertor.<Set<String>, String> ofIterable().hasHashCode(0).that(set).isOK());
+        assertTrue(Assertor.<Set<String>, String> ofIterable().hasHashCode(Objects.hashCode(set)).that(set).isOK());
     }
 
     /**
@@ -63,18 +69,19 @@ public class PredicateAssertorIterableTest extends AbstractTest {
         final Set<String> set = new HashSet<>();
         set.add(el);
 
-        assertTrue(Assertor.that(set).isNotEmpty().and(Assertor.that(el).isNotBlank()).isOK());
+        assertTrue(Assertor.<Set<String>, String> ofIterable().isNotEmpty().and(Assertor.<Set<String>, String> ofIterable().contains(el))
+                .that(set).isOK());
 
-        assertTrue(Assertor.that(set).hasSize(1).isOK());
-        assertFalse(Assertor.that(set).hasSize(2).isOK());
-        assertFalse(Assertor.that((Set<String>) null).hasSize(1).isOK());
-        assertFalse(Assertor.that(set).hasSize(-1).isOK());
+        assertTrue(Assertor.<Set<String>, String> ofIterable().hasSize(1).that(set).isOK());
+        assertFalse(Assertor.<Set<String>, String> ofIterable().hasSize(2).that(set).isOK());
+        assertFalse(Assertor.<Set<String>, String> ofIterable().hasSize(1).that((Set<String>) null).isOK());
+        assertFalse(Assertor.<Set<String>, String> ofIterable().hasSize(-1).that(set).isOK());
 
-        assertTrue(Assertor.that(set).hasSize(1).and().contains(el).isOK());
-        assertTrue(Assertor.that(set).hasSize(1).or().contains(el).isOK());
-        assertTrue(Assertor.that(set).hasSize(1).xor().not().contains(el).isOK());
-        assertFalse(Assertor.that(set).hasSize(1).nand().not().contains(el).isOK());
-        assertTrue(Assertor.that(set).hasSize(1).nor().not().contains(el).isOK());
+        assertTrue(Assertor.<Set<String>, String> ofIterable().hasSize(1).and().contains(el).that(set).isOK());
+        assertTrue(Assertor.<Set<String>, String> ofIterable().hasSize(1).or().contains(el).that(set).isOK());
+        assertTrue(Assertor.<Set<String>, String> ofIterable().hasSize(1).xor().not().contains(el).that(set).isOK());
+        assertFalse(Assertor.<Set<String>, String> ofIterable().hasSize(1).nand().not().contains(el).that(set).isOK());
+        assertTrue(Assertor.<Set<String>, String> ofIterable().hasSize(1).nor().not().contains(el).that(set).isOK());
 
         final Iterable<String> iterable = new Iterable<String>() {
             @Override
@@ -83,8 +90,8 @@ public class PredicateAssertorIterableTest extends AbstractTest {
             }
         };
 
-        assertTrue(Assertor.that(iterable).hasSize(1).isOK());
-        assertFalse(Assertor.that(iterable).hasSize(2).isOK());
+        assertTrue(Assertor.<Iterable<String>, String> ofIterable().hasSize(1).that(iterable).isOK());
+        assertFalse(Assertor.<Iterable<String>, String> ofIterable().hasSize(2).that(iterable).isOK());
     }
 
     /**
@@ -100,10 +107,10 @@ public class PredicateAssertorIterableTest extends AbstractTest {
         final Set<String> set = new HashSet<>();
         set.add(el);
 
-        assertFalse(Assertor.that(set).not().hasSize(1).isOK());
-        assertTrue(Assertor.that(set).not().hasSize(2).isOK());
-        assertFalse(Assertor.that((Set<String>) null).not().hasSize(1).isOK());
-        assertFalse(Assertor.that(set).not().hasSize(-1).isOK());
+        assertFalse(Assertor.<Set<String>, String> ofIterable().not().hasSize(1).that(set).isOK());
+        assertTrue(Assertor.<Set<String>, String> ofIterable().not().hasSize(2).that(set).isOK());
+        assertFalse(Assertor.<Set<String>, String> ofIterable().not().hasSize(1).that((Set<String>) null).isOK());
+        assertFalse(Assertor.<Set<String>, String> ofIterable().not().hasSize(-1).that(set).isOK());
 
         final Iterable<String> iterable = new Iterable<String>() {
             @Override
@@ -112,8 +119,8 @@ public class PredicateAssertorIterableTest extends AbstractTest {
             }
         };
 
-        assertFalse(Assertor.that(iterable).not().hasSize(1).isOK());
-        assertTrue(Assertor.that(iterable).not().hasSize(2).isOK());
+        assertFalse(Assertor.<Iterable<String>, String> ofIterable().not().hasSize(1).that(iterable).isOK());
+        assertTrue(Assertor.<Iterable<String>, String> ofIterable().not().hasSize(2).that(iterable).isOK());
     }
 
     /**
@@ -128,22 +135,22 @@ public class PredicateAssertorIterableTest extends AbstractTest {
 
         final Set<String> set = new HashSet<>();
 
-        Assertor.that(set).isEmpty().orElseThrow();
+        Assertor.<Set<String>, String> ofIterable().isEmpty().that(set).orElseThrow();
 
         set.add(el);
 
         assertException(() -> {
-            Assertor.that(set).isEmpty().orElseThrow();
+            Assertor.<Set<String>, String> ofIterable().isEmpty().that(set).orElseThrow();
             fail(ERROR);
         }, IllegalArgumentException.class);
 
         assertException(() -> {
-            Assertor.that(set).isEmpty().orElseThrow("iterable is not empty");
+            Assertor.<Set<String>, String> ofIterable().isEmpty().that(set).orElseThrow("iterable is not empty");
             fail(ERROR);
         }, IllegalArgumentException.class, "iterable is not empty");
 
         assertException(() -> {
-            Assertor.that(set).isEmpty().orElseThrow(new IOException(), true);
+            Assertor.<Set<String>, String> ofIterable().isEmpty().that(set).orElseThrow(new IOException(), true);
             fail(ERROR);
         }, IOException.class);
     }
@@ -161,32 +168,32 @@ public class PredicateAssertorIterableTest extends AbstractTest {
         final Set<String> set = new HashSet<>();
         set.add(el);
 
-        Assertor.that(set).isNotEmpty().orElseThrow();
+        Assertor.<Set<String>, String> ofIterable().isNotEmpty().that(set).orElseThrow();
 
         assertException(() -> {
-            Assertor.that(set).not().isNotEmpty().orElseThrow("iterable is not empty");
+            Assertor.<Set<String>, String> ofIterable().not().isNotEmpty().that(set).orElseThrow("iterable is not empty");
             fail(ERROR);
         }, IllegalArgumentException.class, "iterable is not empty");
 
         set.clear();
 
         assertException(() -> {
-            Assertor.that(set).isNotEmpty().orElseThrow();
+            Assertor.<Set<String>, String> ofIterable().isNotEmpty().that(set).orElseThrow();
             fail(ERROR);
         }, IllegalArgumentException.class);
 
         assertException(() -> {
-            Assertor.that(set).isNotEmpty().orElseThrow("iterable is empty");
+            Assertor.<Set<String>, String> ofIterable().isNotEmpty().that(set).orElseThrow("iterable is empty");
             fail(ERROR);
         }, IllegalArgumentException.class, "iterable is empty");
 
         assertException(() -> {
-            Assertor.that(set).isNotEmpty().orElseThrow(new IOException(), true);
+            Assertor.<Set<String>, String> ofIterable().isNotEmpty().that(set).orElseThrow(new IOException(), true);
             fail(ERROR);
         }, IOException.class);
 
         assertException(() -> {
-            Assertor.that((Iterable<String>) null).isNotEmpty().orElseThrow();
+            Assertor.<Iterable<String>, String> ofIterable().isNotEmpty().that((Iterable<String>) null).orElseThrow();
             fail();
         }, IllegalArgumentException.class, "the iterable 'null' should be NOT empty and NOT null");
     }
@@ -205,44 +212,46 @@ public class PredicateAssertorIterableTest extends AbstractTest {
         final Set<String> set = new HashSet<>();
         set.add(el1);
 
-        Assertor.that(set).contains(el1).orElseThrow("iterable doesn't contain the element %s*");
-        Assertor.that(set, EnumAnalysisMode.STREAM).contains(el1).orElseThrow("iterable doesn't contain the element %s*");
-        Assertor.that(set, EnumAnalysisMode.PARALLEL).contains(el1).orElseThrow("iterable doesn't contain the element %s*");
+        Assertor.<Set<String>, String> ofIterable().contains(el1).that(set).orElseThrow("iterable doesn't contain the element %s*");
+        Assertor.<Set<String>, String> ofIterable(EnumAnalysisMode.STREAM).contains(el1).that(set)
+                .orElseThrow("iterable doesn't contain the element %s*");
+        Assertor.<Set<String>, String> ofIterable(EnumAnalysisMode.PARALLEL).contains(el1).that(set)
+                .orElseThrow("iterable doesn't contain the element %s*");
 
         assertException(() -> {
-            Assertor.that(set).contains(el2).orElseThrow("iterable doesn't contain the element %2$s*");
+            Assertor.<Set<String>, String> ofIterable().contains(el2).that(set).orElseThrow("iterable doesn't contain the element %2$s*");
             fail(ERROR);
         }, IllegalArgumentException.class, "iterable doesn't contain the element " + el2);
 
         assertException(() -> {
-            Assertor.that(set).contains(el2).orElseThrow(new IOException(), true);
+            Assertor.<Set<String>, String> ofIterable().contains(el2).that(set).orElseThrow(new IOException(), true);
             fail(ERROR);
         }, IOException.class);
 
         assertException(() -> {
-            Assertor.that(set).contains((String) null).orElseThrow();
+            Assertor.<Set<String>, String> ofIterable().contains((String) null).that(set).orElseThrow();
             fail(ERROR);
         }, IllegalArgumentException.class, "the iterable '[element1]' should contain the object 'null'");
 
         set.clear();
 
         assertException(() -> {
-            Assertor.that(set).contains(el1).orElseThrow();
+            Assertor.<Set<String>, String> ofIterable().contains(el1).that(set).orElseThrow();
             fail(ERROR);
         }, IllegalArgumentException.class);
 
         assertException(() -> {
-            Assertor.that(set).contains(el1).orElseThrow();
+            Assertor.<Set<String>, String> ofIterable().contains(el1).that(set).orElseThrow();
             fail(ERROR);
         }, IllegalArgumentException.class, "the iterable cannot be null");
 
         assertException(() -> {
-            Assertor.that((Iterable<String>) null).contains(el1).orElseThrow();
+            Assertor.<Iterable<String>, String> ofIterable().contains(el1).that((Iterable<String>) null).orElseThrow();
             fail(ERROR);
         }, IllegalArgumentException.class, "the iterable cannot be null");
 
         assertException(() -> {
-            Assertor.that(set).contains((String) null).orElseThrow();
+            Assertor.<Set<String>, String> ofIterable().contains((String) null).that(set).orElseThrow();
             fail(ERROR);
         }, IllegalArgumentException.class, "the iterable cannot be null");
     }
@@ -263,65 +272,69 @@ public class PredicateAssertorIterableTest extends AbstractTest {
         set.add(el1);
         set2.add(el1);
 
-        Assertor.that(set).containsAll(set2).orElseThrow("iterable doesn't contain the list %s*");
-        Assertor.that(set).containsAny(set2).orElseThrow("iterable doesn't contain the list %s*");
-        Assertor.that(set, EnumAnalysisMode.STREAM).containsAll(set2).orElseThrow("iterable doesn't contain the list %s*");
-        Assertor.that(set, EnumAnalysisMode.STREAM).containsAny(set2).orElseThrow("iterable doesn't contain the list %s*");
-        Assertor.that(set, EnumAnalysisMode.PARALLEL).containsAll(set2).orElseThrow("iterable doesn't contain the list %s*");
-        Assertor.that(set, EnumAnalysisMode.PARALLEL).containsAny(set2).orElseThrow("iterable doesn't contain the list %s*");
+        Assertor.<Set<String>, String> ofIterable().containsAll(set2).that(set).orElseThrow("iterable doesn't contain the list %s*");
+        Assertor.<Set<String>, String> ofIterable().containsAny(set2).that(set).orElseThrow("iterable doesn't contain the list %s*");
+        Assertor.<Set<String>, String> ofIterable(EnumAnalysisMode.STREAM).containsAll(set2).that(set)
+                .orElseThrow("iterable doesn't contain the list %s*");
+        Assertor.<Set<String>, String> ofIterable(EnumAnalysisMode.STREAM).containsAny(set2).that(set)
+                .orElseThrow("iterable doesn't contain the list %s*");
+        Assertor.<Set<String>, String> ofIterable(EnumAnalysisMode.PARALLEL).containsAll(set2).that(set)
+                .orElseThrow("iterable doesn't contain the list %s*");
+        Assertor.<Set<String>, String> ofIterable(EnumAnalysisMode.PARALLEL).containsAny(set2).that(set)
+                .orElseThrow("iterable doesn't contain the list %s*");
 
         set2.add(el2);
-        Assertor.that(set).containsAny(set2).orElseThrow("iterable doesn't contain the list %s*");
+        Assertor.<Set<String>, String> ofIterable().containsAny(set2).that(set).orElseThrow("iterable doesn't contain the list %s*");
 
         assertException(() -> {
-            Assertor.that(set).containsAll(set2).orElseThrow("iterable doesn't contain the list %2$s*");
+            Assertor.<Set<String>, String> ofIterable().containsAll(set2).that(set).orElseThrow("iterable doesn't contain the list %2$s*");
             fail(ERROR);
         }, IllegalArgumentException.class, "iterable doesn't contain the list " + set2.toString());
 
         assertException(() -> {
-            Assertor.that(set).containsAll(set2).orElseThrow(new IOException(), true);
+            Assertor.<Set<String>, String> ofIterable().containsAll(set2).that(set).orElseThrow(new IOException(), true);
             fail(ERROR);
         }, IOException.class);
 
         assertException(() -> {
-            Assertor.that(set).containsAll((Iterable<String>) null).orElseThrow();
+            Assertor.<Set<String>, String> ofIterable().containsAll((Iterable<String>) null).that(set).orElseThrow();
             fail(ERROR);
         }, IllegalArgumentException.class, "neither iterables can be null");
 
         assertException(() -> {
-            Assertor.that(set).containsAny((Iterable<String>) null).orElseThrow();
+            Assertor.<Set<String>, String> ofIterable().containsAny((Iterable<String>) null).that(set).orElseThrow();
             fail(ERROR);
         }, IllegalArgumentException.class, "neither iterables can be null");
 
         set.clear();
 
         assertException(() -> {
-            Assertor.that(set).containsAll(set2).orElseThrow();
+            Assertor.<Set<String>, String> ofIterable().containsAll(set2).that(set).orElseThrow();
             fail(ERROR);
         }, IllegalArgumentException.class);
 
         assertException(() -> {
-            Assertor.that(set).containsAll(set2).orElseThrow();
+            Assertor.<Set<String>, String> ofIterable().containsAll(set2).that(set).orElseThrow();
             fail(ERROR);
         }, IllegalArgumentException.class, "neither iterables can be null");
 
         assertException(() -> {
-            Assertor.that((Iterable<String>) null).contains(el1).orElseThrow();
+            Assertor.<Iterable<String>, String> ofIterable().contains(el1).that((Iterable<String>) null).orElseThrow();
             fail(ERROR);
         }, IllegalArgumentException.class, "the iterable cannot be null");
 
         assertException(() -> {
-            Assertor.that((Iterable<String>) null).containsAny(set2).orElseThrow();
+            Assertor.<Iterable<String>, String> ofIterable().containsAny(set2).that((Iterable<String>) null).orElseThrow();
             fail(ERROR);
         }, IllegalArgumentException.class, "neither iterables can be null");
 
         assertException(() -> {
-            Assertor.that(set).containsAll((Iterable<String>) null).orElseThrow();
+            Assertor.<Set<String>, String> ofIterable().containsAll((Iterable<String>) null).that(set).orElseThrow();
             fail(ERROR);
         }, IllegalArgumentException.class, "neither iterables can be null");
 
         set.add(null);
-        Assertor.that(set).contains(null).orElseThrow();
+        Assertor.<Set<String>, String> ofIterable().contains(null).that(set).orElseThrow();
     }
 
     /**
@@ -338,32 +351,34 @@ public class PredicateAssertorIterableTest extends AbstractTest {
         final Set<String> set = new HashSet<>();
         set.add(el1);
 
-        Assertor.that(set).not().contains(el2).orElseThrow("iterable contains the element %s*");
-        Assertor.that(set).not().contains((String) null).orElseThrow();
-        Assertor.that(set, EnumAnalysisMode.STREAM).not().contains(el2).orElseThrow("iterable contains the element %s*");
-        Assertor.that(set, EnumAnalysisMode.STREAM).not().contains((String) null).orElseThrow();
-        Assertor.that(set, EnumAnalysisMode.PARALLEL).not().contains(el2).orElseThrow("iterable contains the element %s*");
-        Assertor.that(set, EnumAnalysisMode.PARALLEL).not().contains((String) null).orElseThrow();
+        Assertor.<Set<String>, String> ofIterable().not().contains(el2).that(set).orElseThrow("iterable contains the element %s*");
+        Assertor.<Set<String>, String> ofIterable().not().contains((String) null).that(set).orElseThrow();
+        Assertor.<Set<String>, String> ofIterable(EnumAnalysisMode.STREAM).not().contains(el2).that(set)
+                .orElseThrow("iterable contains the element %s*");
+        Assertor.<Set<String>, String> ofIterable(EnumAnalysisMode.STREAM).not().contains((String) null).that(set).orElseThrow();
+        Assertor.<Set<String>, String> ofIterable(EnumAnalysisMode.PARALLEL).not().contains(el2).that(set)
+                .orElseThrow("iterable contains the element %s*");
+        Assertor.<Set<String>, String> ofIterable(EnumAnalysisMode.PARALLEL).not().contains((String) null).that(set).orElseThrow();
 
         assertException(() -> {
-            Assertor.that(set).not().contains(el1).orElseThrow();
+            Assertor.<Set<String>, String> ofIterable().not().contains(el1).that(set).orElseThrow();
             fail(ERROR);
         }, IllegalArgumentException.class, "the iterable '[element1]' should NOT contain the object 'element1'");
 
         assertException(() -> {
-            Assertor.that(set).not().contains(el1).orElseThrow("iterable contains the element %2$s*");
+            Assertor.<Set<String>, String> ofIterable().not().contains(el1).that(set).orElseThrow("iterable contains the element %2$s*");
             fail(ERROR);
         }, IllegalArgumentException.class, "iterable contains the element " + el1);
 
         assertException(() -> {
-            Assertor.that(set).not().contains(el1).orElseThrow(new IOException(), false);
+            Assertor.<Set<String>, String> ofIterable().not().contains(el1).that(set).orElseThrow(new IOException(), false);
             fail(ERROR);
         }, IOException.class);
 
         set.clear();
 
         assertException(() -> {
-            Assertor.that((Iterable<String>) null).not().contains(el1).orElseThrow();
+            Assertor.<Iterable<String>, String> ofIterable().not().contains(el1).that((Iterable<String>) null).orElseThrow();
             fail(ERROR);
         }, IllegalArgumentException.class, "the iterable cannot be null");
     }
@@ -385,48 +400,50 @@ public class PredicateAssertorIterableTest extends AbstractTest {
         set2.add(el1);
         set2.add(el2);
 
-        Assertor.that(set).not().containsAll(set2).orElseThrow("iterable contains the list %s*");
-        Assertor.that(set, EnumAnalysisMode.STREAM).not().containsAll(set2).orElseThrow("iterable contains the list %s*");
-        Assertor.that(set, EnumAnalysisMode.PARALLEL).not().containsAll(set2).orElseThrow("iterable contains the list %s*");
+        Assertor.<Set<String>, String> ofIterable().not().containsAll(set2).that(set).orElseThrow("iterable contains the list %s*");
+        Assertor.<Set<String>, String> ofIterable(EnumAnalysisMode.STREAM).not().containsAll(set2).that(set)
+                .orElseThrow("iterable contains the list %s*");
+        Assertor.<Set<String>, String> ofIterable(EnumAnalysisMode.PARALLEL).not().containsAll(set2).that(set)
+                .orElseThrow("iterable contains the list %s*");
 
         set2.remove(el1);
 
         assertException(() -> {
-            Assertor.that(set).not().containsAll(set2).orElseThrow("iterable contains the list %2$s*");
+            Assertor.<Set<String>, String> ofIterable().not().containsAll(set2).that(set).orElseThrow("iterable contains the list %2$s*");
             fail(ERROR);
         }, IllegalArgumentException.class, "iterable contains the list " + set2.toString());
 
         assertException(() -> {
-            Assertor.that(set).not().containsAll(set2).orElseThrow(new IOException(), true);
+            Assertor.<Set<String>, String> ofIterable().not().containsAll(set2).that(set).orElseThrow(new IOException(), true);
             fail(ERROR);
         }, IOException.class);
 
         assertException(() -> {
-            Assertor.that(set).not().containsAll((Iterable<String>) null).orElseThrow();
+            Assertor.<Set<String>, String> ofIterable().not().containsAll((Iterable<String>) null).that(set).orElseThrow();
             fail(ERROR);
         }, IllegalArgumentException.class, "neither iterables can be null");
 
-        assertFalse(Assertor.that(set).not().containsAll(set2).isOK());
-        assertFalse(Assertor.that(set).not().containsAll(set).isOK());
-        assertTrue(Assertor.that(set).not().containsAny(set2).isOK());
-        assertFalse(Assertor.that(set).not().containsAny(set).isOK());
+        assertFalse(Assertor.<Set<String>, String> ofIterable().not().containsAll(set2).that(set).isOK());
+        assertFalse(Assertor.<Set<String>, String> ofIterable().not().containsAll(set).that(set).isOK());
+        assertTrue(Assertor.<Set<String>, String> ofIterable().not().containsAny(set2).that(set).isOK());
+        assertFalse(Assertor.<Set<String>, String> ofIterable().not().containsAny(set).that(set).isOK());
 
         set.clear();
 
         assertException(() -> {
-            Assertor.that((Iterable<String>) null).not().containsAll(set2).orElseThrow();
+            Assertor.<Iterable<String>, String> ofIterable().not().containsAll(set2).that((Iterable<String>) null).orElseThrow();
             fail(ERROR);
         }, IllegalArgumentException.class, "neither iterables can be null");
 
         assertException(() -> {
-            Assertor.that(set).not().containsAll((Iterable<String>) null).orElseThrow();
+            Assertor.<Set<String>, String> ofIterable().not().containsAll((Iterable<String>) null).that(set).orElseThrow();
             fail(ERROR);
         }, IllegalArgumentException.class, "neither iterables can be null");
 
-        assertFalse(Assertor.that(set).not().containsAll(set2).isOK());
-        assertFalse(Assertor.that(set).not().containsAll(set).isOK());
-        assertFalse(Assertor.that(set).not().containsAny(set2).isOK());
-        assertFalse(Assertor.that(set).not().containsAny(set).isOK());
+        assertFalse(Assertor.<Set<String>, String> ofIterable().not().containsAll(set2).that(set).isOK());
+        assertFalse(Assertor.<Set<String>, String> ofIterable().not().containsAll(set).that(set).isOK());
+        assertFalse(Assertor.<Set<String>, String> ofIterable().not().containsAny(set2).that(set).isOK());
+        assertFalse(Assertor.<Set<String>, String> ofIterable().not().containsAny(set).that(set).isOK());
     }
 
     /**
@@ -437,7 +454,7 @@ public class PredicateAssertorIterableTest extends AbstractTest {
     @Test
     public void testIsNotEmptyOKCollectionOfQString() {
         try {
-            Assertor.that(Arrays.asList("")).isNotEmpty().orElseThrow("empty collection");
+            Assertor.ofIterable().isNotEmpty().that(Arrays.asList("")).orElseThrow("empty collection");
         } catch (IllegalArgumentException e) {
             fail("The test isn't correct");
         }
@@ -450,7 +467,7 @@ public class PredicateAssertorIterableTest extends AbstractTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void testIsNotEmptyKOCollectionOfQString() {
-        Assertor.that(Collections.emptyList()).isNotEmpty().orElseThrow("empty collection");
+        Assertor.ofIterable().isNotEmpty().that(Collections.emptyList()).orElseThrow("empty collection");
     }
 
     /**
@@ -460,7 +477,7 @@ public class PredicateAssertorIterableTest extends AbstractTest {
     @Test
     public void testIsNotEmptyOKCollectionOfQ() {
         try {
-            Assertor.that(Arrays.asList("")).isNotEmpty().orElseThrow();
+            Assertor.ofIterable().isNotEmpty().that(Arrays.asList("")).orElseThrow();
         } catch (IllegalArgumentException e) {
             fail("The test isn't correct");
         }
@@ -472,6 +489,6 @@ public class PredicateAssertorIterableTest extends AbstractTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void testIsNotEmptyKOCollectionOfQ() {
-        Assertor.that(Collections.emptyList()).isNotEmpty().orElseThrow();
+        Assertor.ofIterable().isNotEmpty().that(Collections.emptyList()).orElseThrow();
     }
 }

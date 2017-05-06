@@ -501,6 +501,14 @@ public class StepAssertor<T> implements Serializable {
             sb.append("analysisMode", this.analysisMode);
             sb.append("operator", this.operator);
             break;
+        case PREDICATE:
+            sb.append("type", this.type);
+            sb.append("analysisMode", this.analysisMode);
+            break;
+        case PREDICATE_OBJECT:
+            sb.append("object", this.object);
+            sb.append("analysisMode", this.analysisMode);
+            break;
         case OPERATOR: // intentional fall-through
         case SUB_ASSERTOR: // intentional fall-through
         case SUB:

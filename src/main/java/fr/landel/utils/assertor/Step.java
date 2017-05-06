@@ -14,6 +14,7 @@ package fr.landel.utils.assertor;
 
 import java.util.Optional;
 
+import fr.landel.utils.commons.CastUtils;
 import fr.landel.utils.commons.Default;
 import fr.landel.utils.commons.Result;
 
@@ -80,17 +81,10 @@ public interface Step<S extends Step<S, T>, T>
     StepAssertor<T> getStep();
 
     /**
-     * The only purpose is to avoid the copy of basic methods into children
-     * interfaces. This is an indirect way to create specific {@link Step} by
-     * overriding this interface. All children class has to override this method
-     * 
-     * @param result
-     *            the result
-     * @return the predicate step
+     * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
     @Override
     default S get(final StepAssertor<T> result) {
-        return (S) (Step<S, T>) () -> result;
+        return CastUtils.cast((Step<S, T>) () -> result);
     }
 }

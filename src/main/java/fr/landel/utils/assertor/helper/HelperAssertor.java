@@ -200,7 +200,7 @@ public class HelperAssertor extends ConstantsAssertor {
         boolean inMatcherMode = marcherMode;
         if (inMatcherMode) {
             obj = object;
-            // - second: through the PredicateStep#matches function
+            // - second:
         } else if (EnumStep.PREDICATE_OBJECT.equals(step.getStepType())) {
             obj = step.getObject();
             inMatcherMode = true;
@@ -218,6 +218,9 @@ public class HelperAssertor extends ConstantsAssertor {
             // Assertor.matcherNumber...)
             case PREDICATE:
                 type = s.getType();
+                if (EnumType.UNKNOWN.equals(type)) {
+                    type = EnumType.getType(obj);
+                }
                 param = new ParameterAssertor<>(obj, type, true);
 
                 parameters.add(param);
@@ -246,7 +249,7 @@ public class HelperAssertor extends ConstantsAssertor {
                     valid = resultValid.getRight();
                 }
 
-                if (!valid) {
+                if (operator != null && !valid) {
                     dontNeedCheck = checkValidityAndOperator(resultValid.getLeft(), operator, message, loadMessage);
                 }
 
@@ -296,16 +299,18 @@ public class HelperAssertor extends ConstantsAssertor {
             // Assertor.that(2).isZero().or(Assertor.that(2).isGTE(1).and().isLTE(10)))
             case SUB:
                 if (s.getSubStep().isPresent()) {
-                    final Triple<Boolean, EnumOperator, ResultAssertor> output = HelperAssertor.managesSub(s, matcherObject, inMatcherMode,
-                            parameters, valid, operator, message, loadMessage);
+                    dontNeedCheck = checkValidityAndOperator(valid, s.getOperator(), message, loadMessage);
 
-                    if (output.getRight() != null) {
-                        return output.getRight();
-                    } else {
-                        valid = output.getLeft();
-                        operator = output.getMiddle();
+                    if (!dontNeedCheck.isPresent()) {
+                        final Triple<Boolean, EnumOperator, ResultAssertor> output = HelperAssertor.managesSub(s, matcherObject,
+                                inMatcherMode, parameters, valid, operator, message, loadMessage);
 
-                        dontNeedCheck = checkValidityAndOperator(valid, operator, message, loadMessage);
+                        if (output.getRight() != null) {
+                            return output.getRight();
+                        } else {
+                            valid = output.getLeft();
+                            operator = output.getMiddle();
+                        }
                     }
                 }
                 break;
@@ -313,23 +318,28 @@ public class HelperAssertor extends ConstantsAssertor {
             case SUB_ASSERTOR:
                 if (s.getSubAssertor().isPresent()) {
                     operator = s.getOperator();
-                    final ResultAssertor intermediateResult = combine(s.getSubAssertor().get().apply(obj).getStep(), null, inMatcherMode,
-                            loadMessage);
-
-                    valid = intermediateResult.isPrecondition() && intermediateResult.isValid();
-
-                    parameters.addAll(intermediateResult.getParameters());
-
-                    if (!valid && loadMessage && intermediateResult.getMessage() != null) {
-                        if (message.length() > 0) {
-                            message.append(operator);
-                        }
-                        message.append(EnumChar.PARENTHESIS_OPEN);
-                        message.append(intermediateResult.getMessage());
-                        message.append(EnumChar.PARENTHESIS_CLOSE);
-                    }
 
                     dontNeedCheck = checkValidityAndOperator(valid, operator, message, loadMessage);
+
+                    if (!dontNeedCheck.isPresent()) {
+                        final ResultAssertor intermediateResult = combine(s.getSubAssertor().get().apply(obj).getStep(), null,
+                                inMatcherMode, loadMessage);
+
+                        valid = intermediateResult.isPrecondition() && intermediateResult.isValid();
+
+                        parameters.addAll(intermediateResult.getParameters());
+
+                        if (!valid && loadMessage && intermediateResult.getMessage() != null) {
+                            if (message.length() > 0) {
+                                message.append(operator);
+                            }
+                            message.append(EnumChar.PARENTHESIS_OPEN);
+                            message.append(intermediateResult.getMessage());
+                            message.append(EnumChar.PARENTHESIS_CLOSE);
+                        }
+
+                        dontNeedCheck = checkValidityAndOperator(valid, operator, message, loadMessage);
+                    }
                 }
                 break;
             default: // MATCHER_OBJECT (don't need treatment)

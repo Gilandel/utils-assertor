@@ -58,7 +58,7 @@ public class ConstantsAssertor {
         PROPS = new Properties();
         try (final InputStream is = Assertor.class.getClassLoader().getResourceAsStream("assertor_messages.properties")) {
             PROPS.load(is);
-        } catch (final IOException e) {
+        } catch (final IOException | IllegalArgumentException e) {
             LOGGER.error("Cannot load the assertor configuration file", e);
         }
     }

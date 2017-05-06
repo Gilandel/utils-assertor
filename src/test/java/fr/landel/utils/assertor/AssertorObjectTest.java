@@ -29,12 +29,15 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
+import java.util.function.Predicate;
 
 import org.junit.Test;
 
 import fr.landel.utils.assertor.enums.EnumOperator;
 import fr.landel.utils.assertor.enums.EnumType;
 import fr.landel.utils.assertor.utils.AssertorObject;
+import fr.landel.utils.commons.function.PredicateThrowable;
 
 /**
  * Check {@link AssertorObject}
@@ -215,11 +218,10 @@ public class AssertorObjectTest extends AbstractTest {
     /**
      * Test method for {@link AssertorObject#isNotEqual(Object)} .
      */
-    @Test(expected = IllegalArgumentException.class)
-    public void testIsNotEqualKOCharSequence() {
+    public void testIsNotEqualOKCharSequence() {
         StringBuilder sb1 = new StringBuilder("texte11");
         StringBuilder sb2 = new StringBuilder("texte11");
-        Assertor.that(sb1).isNotEqual(sb2).orElseThrow();
+        assertTrue(Assertor.that((Object) sb1).isNotEqual(sb2).isOK());
     }
 
     /**
@@ -283,7 +285,7 @@ public class AssertorObjectTest extends AbstractTest {
 
             StringBuilder sb1 = new StringBuilder("texte4");
             StringBuilder sb2 = new StringBuilder("texte4");
-            Assertor.that(sb1).isEqual(sb2).orElseThrow(new IOException(), true);
+            assertFalse(Assertor.that((Object) sb1).isEqual(sb2).isOK());
 
             assertTrue(Assertor.that('A').isEqual((char) 65).isOK());
 
@@ -476,46 +478,74 @@ public class AssertorObjectTest extends AbstractTest {
      * Test method for {@link AssertorObject#validates} .
      */
     @Test
-    public void testValidates() {
-        assertTrue(Assertor.that((Object) 0).validates((obj) -> obj != null).isOK());
+    public void testValidatesPredicateThrowable() {
+        assertTrue(Assertor.that((Object) 0).validates(Objects::nonNull).isOK());
 
-        assertFalse(Assertor.that("/var/log/dev.log").validates((path) -> {
+        final PredicateThrowable<String, IOException> predicateFile = (path) -> {
             if (!new File(path).exists()) {
                 throw new IOException();
             }
             return true;
-        }).isOK());
+        };
+
+        assertFalse(Assertor.that("/var/log/dev.log").validates(predicateFile).isOK());
 
         assertFalse(Assertor.that("/var/log/dev.log").validates(null).isOK());
 
-        assertTrue(Assertor.that((Object) null).validates((obj) -> obj == null, "Path is invalid").isOK());
+        assertTrue(Assertor.that((Object) null).validates(Objects::isNull, "Path is invalid").isOK());
 
-        assertTrue(Assertor.that((Object) 0).validates((obj) -> obj != null, "Path is invalid").isOK());
+        assertTrue(Assertor.that((Object) 0).validates(Objects::nonNull, "Path is invalid").isOK());
 
-        assertFalse(Assertor.that("/var/log/dev.log").validates((path) -> {
-            if (!new File(path).exists()) {
-                throw new IOException();
-            }
-            return true;
-        }, "Path '%1$s*' provide by '%s' is invalid", "John").isOK());
+        assertFalse(Assertor.that("/var/log/dev.log").validates(predicateFile, "Path '%1$s*' provide by '%s' is invalid", "John").isOK());
 
-        assertTrue(Assertor.that((Object) 0).validates((obj) -> obj != null, Locale.US, "Path is invalid").isOK());
+        assertTrue(Assertor.that((Object) 0).validates(Objects::nonNull, Locale.US, "Path is invalid").isOK());
 
         assertEquals("Path '/var/log/dev.log' provided by 'John' is invalid in '10.27'ms",
-                Assertor.that("/var/log/dev.log").validates((path) -> {
-                    if (!new File(path).exists()) {
-                        throw new IOException();
-                    }
-                    return true;
-                }, Locale.US, "Path '%1$s*' provided by '%s' is invalid in '%.2f'ms", "John", 10.26589f).getErrors().get());
+                Assertor.that("/var/log/dev.log")
+                        .validates(predicateFile, Locale.US, "Path '%1$s*' provided by '%s' is invalid in '%.2f'ms", "John", 10.26589f)
+                        .getErrors().get());
 
         assertEquals("Path '/var/log/dev.log' provided by 'John' is invalid in '10,27'ms",
-                Assertor.that("/var/log/dev.log").validates((path) -> {
-                    if (!new File(path).exists()) {
-                        throw new IOException();
-                    }
-                    return true;
-                }, Locale.FRANCE, "Path '%1$s*' provided by '%s' is invalid in '%.2f'ms", "John", 10.26589f).getErrors().get());
+                Assertor.that("/var/log/dev.log")
+                        .validates(predicateFile, Locale.FRANCE, "Path '%1$s*' provided by '%s' is invalid in '%.2f'ms", "John", 10.26589f)
+                        .getErrors().get());
+    }
+
+    /**
+     * Test method for {@link AssertorObject#validates} .
+     */
+    @Test
+    public void testValidatesPredicate() {
+        assertTrue(Assertor.that((Object) 0).validates((Predicate<Object>) Objects::nonNull).isOK());
+
+        final Predicate<String> predicateFile = (path) -> {
+            if (!new File(path).exists()) {
+                return false;
+            }
+            return true;
+        };
+
+        assertFalse(Assertor.that("/var/log/dev.log").validates(predicateFile).isOK());
+
+        assertFalse(Assertor.that("/var/log/dev.log").validates((Predicate<String>) null).isOK());
+
+        assertTrue(Assertor.that((Object) null).validates((Predicate<Object>) Objects::isNull, "Path is invalid").isOK());
+
+        assertTrue(Assertor.that((Object) 0).validates((Predicate<Object>) Objects::nonNull, "Path is invalid").isOK());
+
+        assertFalse(Assertor.that("/var/log/dev.log").validates(predicateFile, "Path '%1$s*' provide by '%s' is invalid", "John").isOK());
+
+        assertTrue(Assertor.that((Object) 0).validates((Predicate<Object>) Objects::nonNull, Locale.US, "Path is invalid").isOK());
+
+        assertEquals("Path '/var/log/dev.log' provided by 'John' is invalid in '10.27'ms",
+                Assertor.that("/var/log/dev.log")
+                        .validates(predicateFile, Locale.US, "Path '%1$s*' provided by '%s' is invalid in '%.2f'ms", "John", 10.26589f)
+                        .getErrors().get());
+
+        assertEquals("Path '/var/log/dev.log' provided by 'John' is invalid in '10,27'ms",
+                Assertor.that("/var/log/dev.log")
+                        .validates(predicateFile, Locale.FRANCE, "Path '%1$s*' provided by '%s' is invalid in '%.2f'ms", "John", 10.26589f)
+                        .getErrors().get());
     }
 
     /**

@@ -63,7 +63,13 @@ public enum EnumStep {
      */
     PREDICATE_OBJECT,
 
+    /**
+     * To create a sub assertor from a property of the current object
+     */
     SUB_ASSERTOR,
 
+    /**
+     * To map the current object
+     */
     PROPERTY;
 }

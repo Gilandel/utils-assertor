@@ -110,19 +110,19 @@ public class AssertorTemporalTest extends AbstractTest {
 
         try {
             Assertor.that(localDateTime1).isEqual(localDateTime2).orElseThrow();
-            Assertor.that((Date) null).isEqual(localDateTime2).and().isEqual(date2).orElseThrow();
+            Assertor.that((LocalDateTime) null).isEqual(localDateTime2).and().isEqual(date2).orElseThrow();
             fail();
         } catch (IllegalArgumentException e) {
             assertNotNull(e);
         }
 
         assertException(() -> {
-            Assertor.that(localDateTime1).isEqual((Date) null).orElseThrow();
+            Assertor.that(localDateTime1).isEqual((LocalDateTime) null).orElseThrow();
             fail();
         }, IllegalArgumentException.class);
 
         try {
-            Assertor.that((Date) null).isEqual(localDateTime2).orElseThrow();
+            Assertor.that((LocalDateTime) null).isEqual(localDateTime2).orElseThrow();
             fail();
         } catch (IllegalArgumentException e) {
             assertNotNull(e);
