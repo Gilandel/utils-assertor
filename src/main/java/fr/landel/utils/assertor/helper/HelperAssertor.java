@@ -15,6 +15,7 @@ package fr.landel.utils.assertor.helper;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiPredicate;
 
@@ -23,6 +24,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 
 import fr.landel.utils.assertor.Assertor;
+import fr.landel.utils.assertor.Step;
 import fr.landel.utils.assertor.StepAssertor;
 import fr.landel.utils.assertor.commons.ConstantsAssertor;
 import fr.landel.utils.assertor.commons.ParameterAssertor;
@@ -212,6 +214,10 @@ public class HelperAssertor extends ConstantsAssertor {
         matcherObject = obj;
 
         for (StepAssertor<?> s : steps) {
+            if (s.getStepType() == null) {
+                continue;
+            }
+
             switch (s.getStepType()) {
 
             // the first step of an Assertor in matcher mode (ex:
@@ -322,10 +328,11 @@ public class HelperAssertor extends ConstantsAssertor {
                     dontNeedCheck = checkValidityAndOperator(valid, operator, message, loadMessage);
 
                     if (!dontNeedCheck.isPresent()) {
-                        final ResultAssertor intermediateResult = combine(s.getSubAssertor().get().apply(obj).getStep(), null,
-                                inMatcherMode, loadMessage);
+                        final Step<?, ?> stepSubAssertor = Objects.requireNonNull(s.getSubAssertor().get().apply(obj),
+                                "Sub assertor mapper cannot be null");
+                        final ResultAssertor intermediateResult = combine(stepSubAssertor.getStep(), null, inMatcherMode, loadMessage);
 
-                        valid = intermediateResult.isPrecondition() && intermediateResult.isValid();
+                        valid = intermediateResult.isPrecondition() && isValid(valid, intermediateResult.isValid(), operator);
 
                         parameters.addAll(intermediateResult.getParameters());
 
@@ -338,8 +345,14 @@ public class HelperAssertor extends ConstantsAssertor {
                             message.append(EnumChar.PARENTHESIS_CLOSE);
                         }
 
-                        dontNeedCheck = checkValidityAndOperator(valid, operator, message, loadMessage);
+                        if (intermediateResult.isPrecondition()) {
+                            dontNeedCheck = checkValidityAndOperator(intermediateResult.isValid(), operator, message, loadMessage);
+                        } else {
+                            dontNeedCheck = Optional.of(Pair.of(false, intermediateResult.getMessage()));
+                        }
                     }
+                } else {
+                    throw new IllegalStateException("sub assertor cannot be null");
                 }
                 break;
             default: // MATCHER_OBJECT (don't need treatment)
@@ -471,10 +484,9 @@ public class HelperAssertor extends ConstantsAssertor {
         return Triple.of(nextValid, nextOperator, null);
     }
 
-    @SuppressWarnings("unchecked")
     private static <T> boolean preCheck(final StepAssertor<T> step, final Object object) {
         if (step.getPreChecker() != null) {
-            return step.getPreChecker().test((T) object);
+            return step.getPreChecker().test(CastUtils.cast(object));
         }
         return true;
     }

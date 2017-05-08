@@ -242,6 +242,7 @@ public final class HelperMessage extends ConstantsAssertor {
      * @return the parameter string
      */
     protected static StringBuilder getParam(final int index, final EnumType type) {
+        Objects.requireNonNull(type, "type");
         final StringBuilder stringBuilder = new StringBuilder();
 
         final Consumer<String> append = s -> stringBuilder.append(PREFIX_PERCENT).append(index).append(s);

@@ -143,6 +143,15 @@ public class HelperAssertorTest extends AbstractTest {
         assertException(() -> {
             HelperAssertor.combine(a, "test", true, false);
         }, IllegalArgumentException.class);
+
+        // check step type null
+
+        setFinalField(StepAssertor.class, "stepType", step, null);
+        final StepAssertor<String> stepFinal = step;
+        HelperAssertor.combine(stepFinal, true);
+
+        assertTrue(result.isPrecondition());
+        assertTrue(result.isValid());
     }
 
     /**

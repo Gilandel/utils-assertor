@@ -488,7 +488,7 @@ public interface OperatorAnd<S extends Step<S, T>, T> {
 
     /**
      * Append a sub-assertor with the operator {@link EnumOperator#AND} on the
-     * current step.
+     * current step. Be sure you sub-assertor manage {@code null} values.
      * 
      * @param subAssertor
      *            the sub-assertor

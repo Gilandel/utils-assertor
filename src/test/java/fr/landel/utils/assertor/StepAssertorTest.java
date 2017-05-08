@@ -118,5 +118,9 @@ public class StepAssertorTest extends AbstractTest {
 
         step = new StepAssertor<>(step, "text");
         assertEquals("{PREDICATE_OBJECT, object: text, analysisMode: STANDARD}", step.toString());
+
+        setFinalField(StepAssertor.class, "stepType", step, null);
+        final StepAssertor<String> stepFinal = step;
+        assertException(() -> stepFinal.toString(), NullPointerException.class, "stepType");
     }
 }

@@ -29,6 +29,11 @@ Work progress:
 </dependency>
 ```
 
+## TODO
+rewrite core helper that manages combination
+avoid unnecessary messages generation if not required
+improve message generation (parenthesis, precondition, operator...)
+
 ## Summary
 
 1. [Summary](#summary)

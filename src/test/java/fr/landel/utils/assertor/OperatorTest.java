@@ -18,15 +18,23 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.awt.Color;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Objects;
+import java.util.function.Function;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.junit.Test;
 
 import fr.landel.utils.assertor.enums.EnumAnalysisMode;
+import fr.landel.utils.assertor.enums.EnumOperator;
 import fr.landel.utils.commons.DateUtils;
+import fr.landel.utils.commons.MapUtils2;
 
 /**
  * Test operator class
@@ -96,7 +104,69 @@ public class OperatorTest extends AbstractTest {
         assertFalse(Assertor.that(Color.BLACK).isNull().and().isEqual(Color.black).isOK());
         assertFalse(Assertor.that(Color.BLACK).isNull().and((Object) 0).isNotNull().isOK());
 
+        // SUB
+
         assertTrue(Assertor.that(true).isTrue().and(Assertor.that("text").isEmpty().or().contains("e")).isOK());
+        // left part error
+        assertEquals("the boolean should be false",
+                Assertor.that(true).isFalse().and(Assertor.that("text").isEmpty().or().contains("e")).getErrors().get());
+        // right part error
+        assertEquals("(the char sequence 'text' should contain 's')",
+                Assertor.that(true).isTrue().and(Assertor.that("text").contains("s")).getErrors().get());
+        // both parts error
+        assertEquals("the boolean should be false",
+                Assertor.that(true).isFalse().and(Assertor.that("text").isEmpty().or().contains("s")).getErrors().get());
+        assertEquals("the combination 'true' and ' NAND ' is invalid",
+                Assertor.that(true).isTrue().nand(Assertor.that("text").isEmpty().or().contains("s")).getErrors().get());
+        assertEquals("the boolean should be false OR (the char sequence 'text' should contain 's')",
+                Assertor.that(true).isFalse().or(Assertor.that("text").isNotEmpty().and().contains("s")).getErrors().get());
+        // precondition error
+        assertEquals("the char sequence cannot be null and the searched substring cannot be null or empty",
+                Assertor.that(true).isTrue().and(Assertor.that("text").contains((String) null)).getErrors().get());
+
+        // SUB ASSERTOR
+
+        assertTrue(Assertor.that(text).isNotEmpty().andAssertor(t -> Assertor.that(t.length()).isGT(3)).isOK());
+        // left part error
+        assertEquals("the char sequence 'text' should be null or empty",
+                Assertor.that(text).isEmpty().andAssertor(t -> Assertor.that(t.length()).isGT(4)).getErrors().get());
+        // right part error
+        assertEquals("(the number '4' should be greater than '4')",
+                Assertor.that(text).isNotEmpty().andAssertor(t -> Assertor.that(t.length()).isGT(4)).getErrors().get());
+        // precondition error
+        assertEquals("the char sequence cannot be null and the searched substring cannot be null or empty",
+                Assertor.that(text).isNotEmpty().andAssertor(t -> Assertor.that(t.substring(0)).contains((String) null)).getErrors().get());
+        // null
+        assertFalse(Assertor.that((String) null).isEmpty().andAssertor(t -> {
+            if (t != null) {
+                return Assertor.that(t.substring(1)).contains("e");
+            } else {
+                return Assertor.that((String) null).isNull();
+            }
+        }).getErrors().isPresent());
+
+        assertException(() -> Assertor.that(text).isNotEmpty().andAssertor((Function<String, StepCharSequence<String>>) null).isOK(),
+                IllegalStateException.class, "sub assertor cannot be null");
+
+        // MAPPER
+
+        assertTrue(Assertor.that(true).isTrue().andObject(b -> b.toString()).hasHashCode(Objects.hashCode("true")).isOK());
+        assertTrue(Assertor.that(true).isTrue().andCharSequence(b -> b.toString()).contains("ue").isOK());
+        assertTrue(Assertor.that("test").isNotEmpty().andArray(s -> ArrayUtils.toObject(s.getBytes(StandardCharsets.UTF_8)))
+                .contains((byte) 'e').isOK());
+        assertTrue(Assertor.that(true).isTrue().andBoolean(b -> !b).isFalse().isOK());
+        assertTrue(Assertor.that(true).isTrue().andClass(b -> b.getClass()).hasSimpleName("Boolean").isOK());
+        assertTrue(Assertor.that(true).isTrue().andDate(b -> new Date(1464475553641L)).isAfter(new Date(1464475553640L)).isOK());
+        assertTrue(Assertor.that(true).isTrue().andCalendar(b -> DateUtils.getCalendar(new Date(1464475553641L)))
+                .isBefore(Calendar.getInstance()).isOK());
+        assertTrue(Assertor.that(true).isTrue().andTemporal(b -> DateUtils.getLocalDateTime(new Date(1464475553641L)))
+                .isBefore(LocalDateTime.now()).isOK());
+        assertTrue(Assertor.that(true).isTrue().andEnum(b -> EnumOperator.AND).hasName("AND").isOK());
+        assertTrue(Assertor.that(true).isTrue().andIterable(b -> Arrays.asList('t', 'r')).contains('t').isOK());
+        assertTrue(Assertor.that(true).isTrue().andMap(b -> MapUtils2.newHashMap("key", b)).contains("key", true).isOK());
+        assertTrue(Assertor.that(true).isTrue().andNumber(b -> b.hashCode()).isGT(0).isOK()); // 1231
+        assertTrue(Assertor.that(true).isTrue().andThrowable(b -> new IOException(b.toString()))
+                .validates(e -> e.getMessage().contains("true")).isOK());
     }
 
     /**
@@ -161,6 +231,35 @@ public class OperatorTest extends AbstractTest {
         assertTrue(Assertor.that(Color.BLACK).isNotNull().or(Assertor.that(text).isEmpty()).isOK());
 
         assertTrue(Assertor.that(true).isFalse().or(Assertor.that("text").startsWith("t").and().contains("e")).isOK());
+
+        // SUB ASSERTOR
+
+        assertTrue(Assertor.that(text).isNotEmpty().orAssertor(t -> Assertor.that(t.length()).isGT(4)).isOK());
+        assertEquals("the char sequence 'text' should be null or empty OR (the number '4' should be greater than '4')",
+                Assertor.that(text).isEmpty().orAssertor(t -> Assertor.that(t.length()).isGT(4)).getErrors().get());
+
+        assertException(() -> Assertor.that(text).isNotEmpty().orAssertor((Function<String, StepCharSequence<String>>) null).isOK(),
+                IllegalStateException.class, "sub assertor cannot be null");
+
+        // MAPPER
+
+        assertTrue(Assertor.that(true).isTrue().orObject(b -> b.toString()).hasHashCode(Objects.hashCode("true")).isOK());
+        assertTrue(Assertor.that(true).isTrue().orCharSequence(b -> b.toString()).contains("ue").isOK());
+        assertTrue(Assertor.that("test").isNotEmpty().orArray(s -> ArrayUtils.toObject(s.getBytes(StandardCharsets.UTF_8)))
+                .contains((byte) 'e').isOK());
+        assertTrue(Assertor.that(true).isTrue().orBoolean(b -> !b).isFalse().isOK());
+        assertTrue(Assertor.that(true).isTrue().orClass(b -> b.getClass()).hasSimpleName("Boolean").isOK());
+        assertTrue(Assertor.that(true).isTrue().orDate(b -> new Date(1464475553641L)).isAfter(new Date(1464475553640L)).isOK());
+        assertTrue(Assertor.that(true).isTrue().orCalendar(b -> DateUtils.getCalendar(new Date(1464475553641L)))
+                .isBefore(Calendar.getInstance()).isOK());
+        assertTrue(Assertor.that(true).isTrue().orTemporal(b -> DateUtils.getLocalDateTime(new Date(1464475553641L)))
+                .isBefore(LocalDateTime.now()).isOK());
+        assertTrue(Assertor.that(true).isTrue().orEnum(b -> EnumOperator.AND).hasName("AND").isOK());
+        assertTrue(Assertor.that(true).isTrue().orIterable(b -> Arrays.asList('t', 'r')).contains('t').isOK());
+        assertTrue(Assertor.that(true).isTrue().orMap(b -> MapUtils2.newHashMap("key", b)).contains("key", true).isOK());
+        assertTrue(Assertor.that(true).isTrue().orNumber(b -> b.hashCode()).isGT(0).isOK()); // 1231
+        assertTrue(Assertor.that(true).isTrue().orThrowable(b -> new IOException(b.toString()))
+                .validates(e -> e.getMessage().contains("true")).isOK());
     }
 
     /**
@@ -223,6 +322,35 @@ public class OperatorTest extends AbstractTest {
         assertTrue(Assertor.that(Color.BLACK).isNull().xor((Object) 0).isNotNull().isOK());
 
         assertTrue(Assertor.that(Color.BLACK).isNotNull().xor(Assertor.that(text).isEmpty()).isOK());
+
+        // SUB ASSERTOR
+
+        assertTrue(Assertor.that(text).isNotEmpty().xorAssertor(t -> Assertor.that(t.length()).isGT(4)).isOK());
+        assertEquals("the char sequence 'text' should be null or empty XOR (the number '4' should be greater than '4')",
+                Assertor.that(text).isEmpty().xorAssertor(t -> Assertor.that(t.length()).isGT(4)).getErrors().get());
+
+        assertException(() -> Assertor.that(text).isNotEmpty().xorAssertor((Function<String, StepCharSequence<String>>) null).isOK(),
+                IllegalStateException.class, "sub assertor cannot be null");
+
+        // MAPPER
+
+        assertTrue(Assertor.that(false).isTrue().xorObject(b -> b.toString()).hasHashCode(Objects.hashCode("false")).isOK());
+        assertTrue(Assertor.that(false).isTrue().xorCharSequence(b -> b.toString()).contains("se").isOK());
+        assertTrue(Assertor.that("test").isNotEmpty().xorArray(s -> ArrayUtils.toObject(s.getBytes(StandardCharsets.UTF_8)))
+                .contains((byte) 'x').isOK());
+        assertTrue(Assertor.that(false).isTrue().xorBoolean(b -> !!b).isFalse().isOK());
+        assertTrue(Assertor.that(false).isTrue().xorClass(b -> b.getClass()).hasSimpleName("Boolean").isOK());
+        assertTrue(Assertor.that(false).isTrue().xorDate(b -> new Date(1464475553641L)).isAfter(new Date(1464475553640L)).isOK());
+        assertTrue(Assertor.that(false).isTrue().xorCalendar(b -> DateUtils.getCalendar(new Date(1464475553641L)))
+                .isBefore(Calendar.getInstance()).isOK());
+        assertTrue(Assertor.that(false).isTrue().xorTemporal(b -> DateUtils.getLocalDateTime(new Date(1464475553641L)))
+                .isBefore(LocalDateTime.now()).isOK());
+        assertTrue(Assertor.that(false).isTrue().xorEnum(b -> EnumOperator.AND).hasName("AND").isOK());
+        assertTrue(Assertor.that(false).isTrue().xorIterable(b -> Arrays.asList('t', 'r')).contains('t').isOK());
+        assertTrue(Assertor.that(false).isTrue().xorMap(b -> MapUtils2.newHashMap("key", b)).contains("key", false).isOK());
+        assertTrue(Assertor.that(false).isTrue().xorNumber(b -> b.hashCode()).isGT(0).isOK()); // 1231
+        assertTrue(Assertor.that(false).isTrue().xorThrowable(b -> new IOException(b.toString()))
+                .validates(e -> e.getMessage().contains("false")).isOK());
     }
 
     /**
@@ -247,6 +375,9 @@ public class OperatorTest extends AbstractTest {
 
         assertFalse(Assertor.that(text).isNotEmpty().nand(LocalDateTime.now()).isAfter(LocalDateTime.MAX).isOK());
         assertFalse(Assertor.that(text).isNotEmpty().nand(LocalDateTime.now()).isAfter(LocalDateTime.MIN).isOK());
+
+        assertFalse(Assertor.that(text).isNotEmpty().nandNumber(t -> t.length()).isGT(Integer.MAX_VALUE).isOK());
+        assertFalse(Assertor.that(text).isNotEmpty().nandNumber(t -> t.length()).isGT(Integer.MIN_VALUE).isOK());
 
         assertFalse(Assertor.that(text).isEmpty().nand(2).isGT(1).isOK());
         assertTrue(Assertor.that(text).isEmpty().nand(2).isLT(1).isOK());
@@ -287,6 +418,38 @@ public class OperatorTest extends AbstractTest {
         assertFalse(Assertor.that(Color.BLACK).isNotNull().nand(Assertor.that(text).isEmpty()).isOK());
         assertEquals("the combination 'true' and ' NAND ' is invalid",
                 Assertor.that(Color.BLACK).isNotNull().nand(Assertor.that(text).isEmpty()).getErrors().get());
+
+        // SUB ASSERTOR
+
+        assertTrue(Assertor.that(text).isEmpty().nandAssertor(t -> Assertor.that(t.length()).isGT(4)).isOK());
+        assertEquals("the combination 'true' and ' NAND ' is invalid",
+                Assertor.that(text).isNotEmpty().nandAssertor(t -> Assertor.that(t.length()).isGT(4)).getErrors().get());
+
+        assertException(() -> Assertor.that(text).isNotEmpty().nandAssertor((Function<String, StepCharSequence<String>>) null).isOK(),
+                IllegalStateException.class, "sub assertor cannot be null");
+
+        // MAPPER
+
+        assertException(() -> Assertor.that(text).isNotEmpty().nandNumber((Function<String, Integer>) null).isGT(Integer.MAX_VALUE).isOK(),
+                IllegalStateException.class, "property cannot be null");
+
+        assertTrue(Assertor.that(false).isTrue().nandObject(b -> b.toString()).hasHashCode(0).isOK());
+        assertTrue(Assertor.that(false).isTrue().nandCharSequence(b -> b.toString()).contains("ue").isOK());
+        assertTrue(Assertor.that("test").isEmpty().nandArray(s -> ArrayUtils.toObject(s.getBytes(StandardCharsets.UTF_8)))
+                .contains((byte) 'x').isOK());
+        assertTrue(Assertor.that(false).isTrue().nandBoolean(b -> !b).isFalse().isOK());
+        assertTrue(Assertor.that(false).isTrue().nandClass(b -> b.getClass()).hasSimpleName("Bool").isOK());
+        assertTrue(Assertor.that(false).isTrue().nandDate(b -> new Date(1464475553641L)).isBefore(new Date(1464475553640L)).isOK());
+        assertTrue(Assertor.that(false).isTrue().nandCalendar(b -> DateUtils.getCalendar(new Date(1464475553641L)))
+                .isAfter(Calendar.getInstance()).isOK());
+        assertTrue(Assertor.that(false).isTrue().nandTemporal(b -> DateUtils.getLocalDateTime(new Date(1464475553641L)))
+                .isAfter(LocalDateTime.now()).isOK());
+        assertTrue(Assertor.that(false).isTrue().nandEnum(b -> EnumOperator.OR).hasName("AND").isOK());
+        assertTrue(Assertor.that(false).isTrue().nandIterable(b -> Arrays.asList('t', 'r')).contains('u').isOK());
+        assertTrue(Assertor.that(false).isTrue().nandMap(b -> MapUtils2.newHashMap("key", b)).contains("key", true).isOK());
+        assertTrue(Assertor.that(false).isTrue().nandNumber(b -> b.hashCode()).isGT(Integer.MAX_VALUE).isOK()); // 1231
+        assertTrue(Assertor.that(false).isTrue().nandThrowable(b -> new IOException(b.toString()))
+                .validates(e -> e.getMessage().contains("true")).isOK());
     }
 
     /**
@@ -351,6 +514,35 @@ public class OperatorTest extends AbstractTest {
         assertTrue(Assertor.that(Color.BLACK).isNull().nor((Object) 0).isNotNull().isOK());
 
         assertTrue(Assertor.that(Color.BLACK).isNotNull().nor(Assertor.that(text).isEmpty()).isOK());
+
+        // SUB ASSERTOR
+
+        assertTrue(Assertor.that(text).isNotEmpty().norAssertor(t -> Assertor.that(t.length()).isGT(4)).isOK());
+        assertEquals("the char sequence 'text' should be null or empty",
+                Assertor.that(text).isEmpty().norAssertor(t -> Assertor.that(t.length()).isGT(4)).getErrors().get());
+
+        assertException(() -> Assertor.that(text).isNotEmpty().norAssertor((Function<String, StepCharSequence<String>>) null).isOK(),
+                IllegalStateException.class, "sub assertor cannot be null");
+
+        // MAPPER
+
+        assertTrue(Assertor.that(false).isTrue().norObject(b -> b.toString()).hasHashCode(Objects.hashCode("true")).isOK());
+        assertTrue(Assertor.that(false).isTrue().norCharSequence(b -> b.toString()).contains("ue").isOK());
+        assertTrue(Assertor.that("test").isNotEmpty().norArray(s -> ArrayUtils.toObject(s.getBytes(StandardCharsets.UTF_8)))
+                .contains((byte) 'x').isOK());
+        assertTrue(Assertor.that(false).isTrue().norBoolean(b -> !b).isFalse().isOK());
+        assertTrue(Assertor.that(false).isTrue().norClass(b -> b.getClass()).hasSimpleName("Boolean").isOK());
+        assertTrue(Assertor.that(false).isTrue().norDate(b -> new Date(1464475553641L)).isAfter(new Date(1464475553640L)).isOK());
+        assertTrue(Assertor.that(false).isTrue().norCalendar(b -> DateUtils.getCalendar(new Date(1464475553641L)))
+                .isBefore(Calendar.getInstance()).isOK());
+        assertTrue(Assertor.that(false).isTrue().norTemporal(b -> DateUtils.getLocalDateTime(new Date(1464475553641L)))
+                .isBefore(LocalDateTime.now()).isOK());
+        assertTrue(Assertor.that(false).isTrue().norEnum(b -> EnumOperator.AND).hasName("AND").isOK());
+        assertTrue(Assertor.that(false).isTrue().norIterable(b -> Arrays.asList('t', 'r')).contains('t').isOK());
+        assertTrue(Assertor.that(false).isTrue().norMap(b -> MapUtils2.newHashMap("key", b)).contains("key", true).isOK());
+        assertTrue(Assertor.that(false).isTrue().norNumber(b -> b.hashCode()).isGT(0).isOK()); // 1231
+        assertTrue(Assertor.that(false).isTrue().norThrowable(b -> new IOException(b.toString()))
+                .validates(e -> e.getMessage().contains("true")).isOK());
     }
 
     /**

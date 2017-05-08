@@ -12,6 +12,10 @@
  */
 package fr.landel.utils.assertor;
 
+import static org.junit.Assert.fail;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.regex.Pattern;
@@ -54,6 +58,36 @@ public abstract class AbstractTest extends ConstantsAssertor {
             return new AssertionError("The expected exception never comes up.");
         }
     };
+
+    /**
+     * Override a final field value
+     * 
+     * @param clazz
+     *            the class containing the field
+     * @param fieldName
+     *            the field name, used by reflection to identify it
+     * @param object
+     *            the object instance
+     * @param value
+     *            the value to apply
+     */
+    public static final void setFinalField(final Class<?> clazz, final String fieldName, final Object object, final Object value) {
+        try {
+            final Field stepType = clazz.getDeclaredField(fieldName);
+            // set public
+            stepType.setAccessible(true);
+
+            // remove final
+            final Field modifiersField = Field.class.getDeclaredField("modifiers");
+            modifiersField.setAccessible(true);
+            modifiersField.setInt(stepType, stepType.getModifiers() & ~Modifier.FINAL);
+
+            // set the value
+            stepType.set(object, value);
+        } catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
+            fail(e.getMessage());
+        }
+    }
 
     /**
      * Check that the consumed code throws the specified exception.

@@ -16,6 +16,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
@@ -480,6 +481,8 @@ public class StepAssertor<T> implements Serializable {
 
     @Override
     public String toString() {
+        Objects.requireNonNull(this.stepType, "stepType");
+
         final ToStringBuilder sb = new ToStringBuilder(ToStringStyles.JSON_SPACED);
 
         sb.append(this.stepType.name());
