@@ -221,14 +221,13 @@ public class AssertorDate extends ConstantsAssertor {
             calendar2 = (Calendar) ((Calendar) date).clone();
         }
 
-        if (calendarAmount != 0) {
-            if (compare < 0) {
-                calendar1.add(calendarField, calendarAmount);
-                return !calendar1.before(calendar2);
-            } else if (compare > 0) {
-                calendar2.add(calendarField, calendarAmount);
-                return !calendar2.before(calendar1);
-            }
+        // prechecker calendarAmount != 0
+        if (compare < 0) {
+            calendar1.add(calendarField, calendarAmount);
+            return !calendar1.before(calendar2);
+        } else if (compare > 0) {
+            calendar2.add(calendarField, calendarAmount);
+            return !calendar2.before(calendar1);
         }
         return true; // normally, not used (equals)
     }
