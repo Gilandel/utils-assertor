@@ -338,7 +338,7 @@ public class OperatorTest extends AbstractTest {
         assertTrue(Assertor.that(false).isTrue().xorCharSequence(b -> b.toString()).contains("se").isOK());
         assertTrue(Assertor.that("test").isNotEmpty().xorArray(s -> ArrayUtils.toObject(s.getBytes(StandardCharsets.UTF_8)))
                 .contains((byte) 'x').isOK());
-        assertTrue(Assertor.that(false).isTrue().xorBoolean(b -> !!b).isFalse().isOK());
+        assertTrue(Assertor.that(false).isTrue().xorBoolean(b -> b).isFalse().isOK());
         assertTrue(Assertor.that(false).isTrue().xorClass(b -> b.getClass()).hasSimpleName("Boolean").isOK());
         assertTrue(Assertor.that(false).isTrue().xorDate(b -> new Date(1464475553641L)).isAfter(new Date(1464475553640L)).isOK());
         assertTrue(Assertor.that(false).isTrue().xorCalendar(b -> DateUtils.getCalendar(new Date(1464475553641L)))
