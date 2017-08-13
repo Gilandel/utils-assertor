@@ -43,7 +43,7 @@ public class HelperMessagePerf extends AbstractMicrobenchmark {
 
     @Override
     protected double getExpectedMinNbOpsPerSeconds() {
-        return 1_000_000d;
+        return 500_000d;
     }
 
     /**
