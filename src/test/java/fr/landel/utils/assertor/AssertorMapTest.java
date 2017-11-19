@@ -2,12 +2,19 @@
  * #%L
  * utils-assertor
  * %%
- * Copyright (C) 2016 - 2017 Gilandel
+ * Copyright (C) 2016 - 2017 Gilles Landel
  * %%
- * Authors: Gilles Landel
- * URL: https://github.com/Gilandel
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  * 
- * This file is under Apache License, version 2.0 (2004).
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  * #L%
  */
 package fr.landel.utils.assertor;
@@ -25,6 +32,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
+
+import fr.landel.utils.assertor.enums.EnumAnalysisMode;
+import fr.landel.utils.assertor.utils.AssertorMap;
 
 /**
  * Check {@link AssertorMap}
@@ -57,7 +67,7 @@ public class AssertorMapTest extends AbstractTest {
 
         final Map<String, Integer> map = new HashMap<>();
 
-        final PredicateAssertorMap<String, Integer> assertMap = Assertor.that(map);
+        final AssertorStepMap<Map<String, Integer>, String, Integer> assertMap = Assertor.that(map);
 
         assertMap.isEmpty().orElseThrow();
 
@@ -96,7 +106,7 @@ public class AssertorMapTest extends AbstractTest {
         final Map<String, Integer> map = new HashMap<>();
         map.put(el, 1);
 
-        final PredicateAssertorMap<String, Integer> assertMap = Assertor.that(map);
+        final AssertorStepMap<Map<String, Integer>, String, Integer> assertMap = Assertor.that(map);
 
         assertMap.isNotEmpty().orElseThrow();
 
@@ -158,7 +168,7 @@ public class AssertorMapTest extends AbstractTest {
         assertFalse(Assertor.that((Map<String, Integer>) null).containsAny(map).isOK());
     }
 
-    private void checkContains(final PredicateAssertorMap<String, Integer> assertMap, final String key1, final String key2,
+    private void checkContains(final AssertorStepMap<Map<String, Integer>, String, Integer> assertMap, final String key1, final String key2,
             final Integer val1, final List<String> keys, final Map<String, Integer> map, final Map<String, Integer> map1)
             throws IOException {
 
@@ -240,8 +250,8 @@ public class AssertorMapTest extends AbstractTest {
         assertFalse(Assertor.that((Map<String, Integer>) null).not().containsAll(map1).isOK());
     }
 
-    private void checkDoesNotContain(final PredicateAssertorMap<String, Integer> assertMap, final String key1, final String key2,
-            final Integer val1, final Integer val2, final List<String> keys, final Map<String, Integer> map,
+    private void checkDoesNotContain(final AssertorStepMap<Map<String, Integer>, String, Integer> assertMap, final String key1,
+            final String key2, final Integer val1, final Integer val2, final List<String> keys, final Map<String, Integer> map,
             final Map<String, Integer> map1) throws IOException {
 
         assertMap.isNotNull().and().contains(key1).orElseThrow();

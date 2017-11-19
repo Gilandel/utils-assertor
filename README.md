@@ -29,6 +29,11 @@ Work progress:
 </dependency>
 ```
 
+## TODO
+rewrite core helper that manages combination
+avoid unnecessary messages generation if not required
+improve message generation (parenthesis, precondition, operator...)
+
 ## Summary
 
 1. [Summary](#summary)
@@ -182,14 +187,6 @@ All assertions start with  `Assertor.that(object)` and following the type of the
 Assertor.that(strParam).isEmpty().or().startsWith("prefix").orElseThrow();
 ```
 
-A second versions, to start, exists through `Assertor.matcher*`, this version allows to create a predicate without the object to check.
-The aim is to create a predicate and returns it from a function or to improve performance by preparing a global predicate. 
-```java
-PredicateStepNumber<Integer> predicate = Assertor.matcherNumber(Integer.class).isGT(1);
-// ...
-predicate.that(num).orElseThrow();`
-```
-
 Assertions can also start with `Assertor.that(object, analysisMode)` to specify the analysis mode.  
 Three mode are available, for example 'contains' method on map, will prefer, in:
 - STANDARD: to iterate/loop over the iterable to find an occurrence,
@@ -198,10 +195,40 @@ Three mode are available, for example 'contains' method on map, will prefer, in:
 
 By default, 'STANDARD' mode is applied. These modes are also available on operator methods (and, or, xor, nand and nor).
 
+A second version, to start an assertion, exists through `Assertor.of*`, this version allows to create a predicate (without the object to check).
+The aim are to return a predicate via a function to use it in the caller or to improve performance by preparing a shared predicate.  
+Same types are supported ([see Description](#description)).  
+```java
+PredicateStepNumber<Integer> predicate = Assertor.ofNumber(Integer.class).isGT(1);
+// ...
+predicate.that(num).orElseThrow();
+
+// ex:
+PredicateStep<?, Object> predicateObject = Assertor.ofObject().isNotNull();
+PredicateStepArray<Integer> predicateIntegers = Assertor.<Integer>ofArray().contains(1);
+PredicateStepBoolean predicateBoolean = Assertor.ofBoolean().isTrue();
+PredicateStepCharSequence<StringBuilder> predicateStringBuilder = Assertor.<StringBuilder>ofCharSequence().contains('a');
+PredicateStepClass<IOException> predicateClass = Assertor.<IOException>ofClass().isAssignableFrom(Exception.class);
+PredicateStepCalendar predicateCalendar = Assertor.ofCalendar().isAfter(new GregorianCalendar(2000, 0, 1));
+PredicateStepDate predicateDate = Assertor.ofDate().isAfter(new Date());
+PredicateStepTemporal<ChronoLocalDateTime<?>> predicateTemporal = Assertor.<ChronoLocalDateTime<?>> ofTemporal().isAfter(localDateTime1);
+PredicateStepEnum<EnumType> predicateEnum = Assertor.<EnumType> ofEnum().hasName("UNKNOWN");
+PredicateStepIterable<List<String>, String> predicateIterable = Assertor.<List<String>, String> ofIterable().contains("");
+PredicateStepMap<String, Integer> predicateMap = Assertor.<String, Integer> ofMap().contains("test");
+PredicateStepThrowable<Throwable> predicateThrowable = Assertor.ofThrowable().hasCauseAssignableFrom(IllegalArgumentException.class, false);
+PredicateStepNumber<Integer> predicateNumber = Assertor.<Integer> ofNumber().isGT(13).and(Assertor.<Long> ofNumber().isGT(18L));
+```
+
+
 About structure, an assertion can be cut in three parts:
 - The definition of what we check: `Assertor.that(myObject))...`
 - The check: `...isNull().or().isInstance(Color.class)...`
 - The output: `...orElseThrow()`
+
+An assertion can also be built though:
+- The definition of what we check: `Assertor.ofCharSequance(String.class))...`
+- The check: `...isNull().or().isInstance(Color.class)...`
+- The output: `...that(object).orElseThrow()`
 
 Multiples objects can be check in the same line:
 ```java

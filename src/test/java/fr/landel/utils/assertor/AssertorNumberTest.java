@@ -2,12 +2,19 @@
  * #%L
  * utils-assertor
  * %%
- * Copyright (C) 2016 - 2017 Gilandel
+ * Copyright (C) 2016 - 2017 Gilles Landel
  * %%
- * Authors: Gilles Landel
- * URL: https://github.com/Gilandel
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  * 
- * This file is under Apache License, version 2.0 (2004).
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  * #L%
  */
 package fr.landel.utils.assertor;
@@ -17,7 +24,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Locale;
+
 import org.junit.Test;
+
+import fr.landel.utils.assertor.utils.AssertorNumber;
 
 /**
  * Check {@link AssertorNumber}
@@ -303,5 +314,25 @@ public class AssertorNumberTest extends AbstractTest {
         assertException(() -> {
             Assertor.that(2).isLTE(1, "error1").orElseThrow("error2");
         }, IllegalArgumentException.class, "error2");
+    }
+
+    /**
+     * Test method for {@link AssertorNumber#isBetween}.
+     */
+    @Test
+    public void testIsBetween() {
+        Assertor.that(2).isBetween(1, 3).orElseThrow(JUNIT_THROWABLE);
+
+        // precondition
+        assertFalse(Assertor.that(2).isBetween(3, 3).isOK());
+        assertFalse(Assertor.that(2).isBetween(null, 3).isOK());
+
+        // check
+        assertFalse(Assertor.that(0).isBetween(1, 3).isOK());
+        assertFalse(Assertor.that(3).isBetween(1, 3).isOK());
+
+        assertException(() -> {
+            Assertor.that(2_111.2).isBetween(1_111.1, 2_111.2, Locale.US, "%1$,.3f* is not between %2$,.3f* and %3$,.3f*").orElseThrow();
+        }, IllegalArgumentException.class, "2,111.200 is not between 1,111.100 and 2,111.200");
     }
 }
