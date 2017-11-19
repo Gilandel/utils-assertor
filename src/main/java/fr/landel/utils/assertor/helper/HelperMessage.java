@@ -26,6 +26,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -72,6 +73,9 @@ public final class HelperMessage extends ConstantsAssertor {
     private static final String SUFFIX_TIME_MINUTE = "$tM*:";
     private static final String SUFFIX_TIME_SECOND = "$tS* ";
     private static final String SUFFIX_TIME_ZONE = "$tZ*";
+
+    private static final String MISSING_DEFAULT_MESSAGE_KEY = "default message key";
+    private static final String MISSING_PARAM_TYPE = "parameter type";
 
     /**
      * Converts parameters list into array and also converts types to improve
@@ -127,8 +131,9 @@ public final class HelperMessage extends ConstantsAssertor {
     }
 
     /**
-     * Gets the message (the locale can be change through <code>setLocale</code>
-     * ). Supports injecting parameters in message by using %s* or %1$s*
+     * Gets the message supplier (if the locale is not specified, function uses
+     * the locale defined through {@link Assertor#setLocale(Locale)}). Supports
+     * injecting parameters and arguments in message by using %s* or %1$s*
      * 
      * @param message
      *            the message object
@@ -138,29 +143,31 @@ public final class HelperMessage extends ConstantsAssertor {
      *            If not has to be appended to the default message key
      * @param parameters
      *            The list of parameters to inject in message
-     * @return The message formatted
+     * @return The message formatted supplier
      */
-    public static String getMessage(final MessageAssertor message, final CharSequence defaultKey, final boolean not,
+    public static Supplier<CharSequence> getMessage(final MessageAssertor message, final CharSequence defaultKey, final boolean not,
             final List<ParameterAssertor<?>> parameters) {
 
-        final Locale locale;
-        final String currentMessage;
-        final Object[] currentArguments;
-        if (message != null && message.getMessage() != null) {
-            currentMessage = message.getMessage().toString();
-            currentArguments = message.getArguments();
-            locale = message.getLocale();
-        } else {
-            currentMessage = HelperMessage.getDefaultMessage(defaultKey, false, not, parameters).toString();
-            currentArguments = null;
-            locale = null;
-        }
+        return () -> {
+            final Locale locale;
+            final String currentMessage;
+            final Object[] currentArguments;
+            if (message != null && message.getMessage() != null) {
+                currentMessage = message.getMessage().toString();
+                currentArguments = message.getArguments();
+                locale = message.getLocale();
+            } else {
+                currentMessage = HelperMessage.getDefaultMessage(defaultKey, false, not, parameters).toString();
+                currentArguments = null;
+                locale = null;
+            }
 
-        if (currentMessage.indexOf(PERCENT) > -1) {
-            return HelperMessage.getMessage(ConstantsAssertor.DEFAULT_ASSERTION, locale, currentMessage, parameters, currentArguments);
-        } else {
-            return currentMessage;
-        }
+            if (currentMessage.indexOf(PERCENT) > -1) {
+                return HelperMessage.getMessage(ConstantsAssertor.DEFAULT_ASSERTION, locale, currentMessage, parameters, currentArguments);
+            } else {
+                return currentMessage;
+            }
+        };
     }
 
     /**
@@ -219,7 +226,8 @@ public final class HelperMessage extends ConstantsAssertor {
      */
     public static String getDefaultMessage(final CharSequence key, final boolean precondition, final boolean not,
             final List<ParameterAssertor<?>> parameters) {
-        Objects.requireNonNull(key);
+
+        Objects.requireNonNull(key, MISSING_DEFAULT_MESSAGE_KEY);
 
         final StringBuilder keyProperty = new StringBuilder(key);
 
@@ -249,7 +257,7 @@ public final class HelperMessage extends ConstantsAssertor {
      * @return the parameter string
      */
     protected static StringBuilder getParam(final int index, final EnumType type) {
-        Objects.requireNonNull(type, "type");
+        Objects.requireNonNull(type, MISSING_PARAM_TYPE);
         final StringBuilder stringBuilder = new StringBuilder();
 
         final Consumer<String> append = s -> stringBuilder.append(PREFIX_PERCENT).append(index).append(s);

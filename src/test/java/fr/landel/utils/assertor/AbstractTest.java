@@ -189,7 +189,7 @@ public abstract class AbstractTest extends ConstantsAssertor {
 
         @Override
         public void describeTo(final Description description) {
-            description.appendText(this.result.getMessage());
+            description.appendText(HelperAssertor.getMessage(this.result));
         }
     }
 }

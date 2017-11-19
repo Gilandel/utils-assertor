@@ -104,7 +104,8 @@ public class HelperAssertorTest extends AbstractTest {
         result = HelperAssertor.combine(step, true);
 
         assertFalse(result.isPrecondition());
-        assertEquals("the char sequence cannot be null and the searched substring cannot be null or empty", result.getMessage());
+        assertEquals("the char sequence cannot be null and the searched substring cannot be null or empty",
+                HelperAssertor.getMessage(result));
 
         // INVALID SUB
 
@@ -117,7 +118,7 @@ public class HelperAssertorTest extends AbstractTest {
 
         assertTrue(result.isPrecondition());
         assertFalse(result.isValid());
-        assertEquals("(the boolean should be true)", result.getMessage().toString());
+        assertEquals("(the boolean should be true)", HelperAssertor.getMessage(result));
 
         // OPERATOR NULL (== AND)
 
@@ -127,7 +128,7 @@ public class HelperAssertorTest extends AbstractTest {
 
         assertTrue(result.isPrecondition());
         assertFalse(result.isValid());
-        assertEquals("(the boolean should be true)", result.getMessage().toString());
+        assertEquals("(the boolean should be true)", HelperAssertor.getMessage(result));
 
         assertFalse(Assertor.that("test").isNotBlank().and(Assertor.that((CharSequence) null).contains("test")).isOK());
 

@@ -228,7 +228,7 @@ public class HelperMessageTest extends AbstractTest {
         parameters.add(new ParameterAssertor<>(null, null));
 
         assertException(() -> HelperMessage.getDefaultMessage(MSG.BOOLEAN.TRUE, true, false, parameters), NullPointerException.class,
-                "type");
+                "parameter type");
 
         Object[] convertedParams = HelperMessage.convertParams(parameters);
 

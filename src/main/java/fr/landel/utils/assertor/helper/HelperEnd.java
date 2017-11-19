@@ -43,6 +43,9 @@ import fr.landel.utils.commons.function.ConsumerThrowable;
  */
 public final class HelperEnd {
 
+    private static final String MISSING_FUNCTION = "function";
+    private static final String MISSING_SUPPLIER_EXCEPTION = "exceptionSupplier";
+
     public static <T> Result<T> asResult(final StepAssertor<T> step) {
         final ResultAssertor result = HelperAssertor.combine(step, false);
 
@@ -59,7 +62,7 @@ public final class HelperEnd {
     }
 
     public static <T> Optional<String> getErrors(final StepAssertor<T> step) {
-        final String message = HelperAssertor.combine(step, true).getMessage();
+        final String message = HelperAssertor.getMessage(HelperAssertor.combine(step, true));
 
         if (StringUtils.isNotEmpty(message)) {
             return Optional.of(message);
@@ -84,7 +87,7 @@ public final class HelperEnd {
             if (message != null) {
                 error = HelperMessage.getMessage(ConstantsAssertor.DEFAULT_ASSERTION, locale, message, result.getParameters(), arguments);
             } else {
-                error = result.getMessage();
+                error = HelperAssertor.getMessage(result);
             }
             throw new IllegalArgumentException(error);
         });
@@ -92,18 +95,18 @@ public final class HelperEnd {
 
     public static <T, E extends Throwable> T orElseThrow(final StepAssertor<T> step,
             final BiFunction<String, List<ParameterAssertor<?>>, E> function) throws E {
-        Objects.requireNonNull(function);
+        Objects.requireNonNull(function, MISSING_FUNCTION);
 
         return orElseThrow(step, true, result -> {
-            final E exception = function.apply(result.getMessage(), result.getParameters());
-            exception.addSuppressed(new IllegalArgumentException(result.getMessage()));
+            final E exception = function.apply(HelperAssertor.getMessage(result), result.getParameters());
+            exception.addSuppressed(new IllegalArgumentException(HelperAssertor.getMessage(result)));
 
             throw exception;
         });
     }
 
     public static <T, E extends Throwable> T orElseThrow(final StepAssertor<T> step, final Supplier<E> exceptionSupplier) throws E {
-        Objects.requireNonNull(exceptionSupplier);
+        Objects.requireNonNull(exceptionSupplier, MISSING_SUPPLIER_EXCEPTION);
 
         return orElseThrow(step, false, result -> {
             throw exceptionSupplier.get();
@@ -115,11 +118,11 @@ public final class HelperEnd {
         return orElseThrow(step, exception == null || injectSuppressed, result -> {
             if (exception != null) {
                 if (injectSuppressed) {
-                    exception.addSuppressed(new IllegalArgumentException(result.getMessage()));
+                    exception.addSuppressed(new IllegalArgumentException(HelperAssertor.getMessage(result)));
                 }
                 throw exception;
             } else {
-                throw new IllegalArgumentException(result.getMessage());
+                throw new IllegalArgumentException(HelperAssertor.getMessage(result));
             }
         });
     }
