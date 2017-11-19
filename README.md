@@ -25,14 +25,9 @@ Work progress:
 <dependency>
 	<groupId>fr.landel.utils</groupId>
 	<artifactId>utils-assertor</artifactId>
-	<version>1.0.4</version>
+	<version>1.1.0</version>
 </dependency>
 ```
-
-## TODO
-rewrite core helper that manages combination
-avoid unnecessary messages generation if not required
-improve message generation (parenthesis, precondition, operator...)
 
 ## Summary
 

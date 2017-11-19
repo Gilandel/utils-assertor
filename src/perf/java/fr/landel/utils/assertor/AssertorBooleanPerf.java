@@ -20,9 +20,11 @@
 package fr.landel.utils.assertor;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
 
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Scope;
@@ -51,7 +53,7 @@ public class AssertorBooleanPerf extends AbstractMicrobenchmark {
      * Perf method for {@link AssertorBoolean}.
      */
     @Benchmark
-    public void assertorBasicPerf1() {
+    public void assertorBasicPerfOK() {
         Assertor.that(true).isTrue().isOK();
         Assertor.that(true).isTrue().getErrors();
         Assertor.that(true).isTrue().orElseThrow();
@@ -59,7 +61,13 @@ public class AssertorBooleanPerf extends AbstractMicrobenchmark {
         Assertor.that(false).isFalse().isOK();
         Assertor.that(false).isFalse().getErrors();
         Assertor.that(false).isFalse().orElseThrow();
+    }
 
+    /**
+     * Perf method for {@link AssertorBoolean}.
+     */
+    @Benchmark
+    public void assertorBasicPerfKO() {
         Assertor.that(true).isFalse().isOK();
         Assertor.that(true).isFalse().getErrors();
         try {
@@ -74,6 +82,51 @@ public class AssertorBooleanPerf extends AbstractMicrobenchmark {
             Assertor.that(false).isTrue().orElseThrow();
         } catch (IllegalArgumentException e) {
             // do nothing
+        }
+    }
+
+    /**
+     * Perf method for {@link assertThat} from Hamcrest.
+     */
+    @Benchmark
+    public void assertorHamcrestPerfOK() {
+        assertThat(true, Matchers.is(true));
+        assertThat(true, Matchers.is(true));
+        assertThat(true, Matchers.is(true));
+
+        assertThat(false, Matchers.is(false));
+        assertThat(false, Matchers.is(false));
+        assertThat(false, Matchers.is(false));
+    }
+
+    /**
+     * Perf method for {@link assertThat} from Hamcrest.
+     */
+    @Benchmark
+    public void assertorHamcrestPerfKO() {
+        try {
+            assertThat(false, Matchers.is(true));
+        } catch (AssertionError e) {
+        }
+        try {
+            assertThat(false, Matchers.is(true));
+        } catch (AssertionError e) {
+        }
+        try {
+            assertThat(false, Matchers.is(true));
+        } catch (AssertionError e) {
+        }
+        try {
+            assertThat(true, Matchers.is(false));
+        } catch (AssertionError e) {
+        }
+        try {
+            assertThat(true, Matchers.is(false));
+        } catch (AssertionError e) {
+        }
+        try {
+            assertThat(true, Matchers.is(false));
+        } catch (AssertionError e) {
         }
     }
 
