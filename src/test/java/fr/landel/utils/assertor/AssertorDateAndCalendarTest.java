@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.regex.Pattern;
 
 import org.junit.Test;
 
@@ -363,6 +364,57 @@ public class AssertorDateAndCalendarTest extends AbstractTest {
         } catch (IllegalArgumentException e) {
             assertNotNull(e);
         }
+    }
+
+    /**
+     * Test method for
+     * {@link AssertorDate#isBetween(StepAssertor, Comparable, Comparable, fr.landel.utils.assertor.commons.MessageAssertor)}.
+     */
+    @Test
+    public void testIsBetween() {
+        Date date1 = new Date(1464475553640L);
+        Date date2 = new Date(1464475553641L);
+        Date date3 = new Date(1464475553642L);
+
+        assertTrue(Assertor.that(date2).isBetween(date1, date3).isOK());
+        assertTrue(Assertor.that(date1).isBetween(date1, date3).isOK());
+        assertTrue(Assertor.that(date3).isBetween(date1, date3).isOK());
+        assertFalse(Assertor.that(date1).isBetween(date2, date3).isOK());
+        assertFalse(Assertor.that(date3).isBetween(date1, date2).isOK());
+
+        assertFalse(Assertor.that(date2).not().isBetween(date1, date3).isOK());
+        assertFalse(Assertor.that(date1).not().isBetween(date1, date3).isOK());
+        assertFalse(Assertor.that(date3).not().isBetween(date1, date3).isOK());
+        assertTrue(Assertor.that(date1).not().isBetween(date2, date3).isOK());
+        assertTrue(Assertor.that(date3).not().isBetween(date1, date2).isOK());
+
+        assertException(() -> Assertor.that((Date) null).isBetween(null, null).orElseThrow(), IllegalArgumentException.class,
+                "neither dates can be null");
+
+        assertException(() -> Assertor.that(date1).isBetween(date2, date3).orElseThrow(), IllegalArgumentException.class,
+                Pattern.compile("the date '.*' should be between '.*' and '.*'"));
+
+        Calendar cal1 = DateUtils.getCalendar(date1);
+        Calendar cal2 = DateUtils.getCalendar(date2);
+        Calendar cal3 = DateUtils.getCalendar(date3);
+
+        assertTrue(Assertor.that(cal2).isBetween(cal1, cal3).isOK());
+        assertTrue(Assertor.that(cal1).isBetween(cal1, cal3).isOK());
+        assertTrue(Assertor.that(cal3).isBetween(cal1, cal3).isOK());
+        assertFalse(Assertor.that(cal1).isBetween(cal2, cal3).isOK());
+        assertFalse(Assertor.that(cal3).isBetween(cal1, cal2).isOK());
+
+        assertFalse(Assertor.that(cal2).not().isBetween(cal1, cal3).isOK());
+        assertFalse(Assertor.that(cal1).not().isBetween(cal1, cal3).isOK());
+        assertFalse(Assertor.that(cal3).not().isBetween(cal1, cal3).isOK());
+        assertTrue(Assertor.that(cal1).not().isBetween(cal2, cal3).isOK());
+        assertTrue(Assertor.that(cal3).not().isBetween(cal1, cal2).isOK());
+
+        assertException(() -> Assertor.that(cal1).isBetween(cal2, cal3).orElseThrow(), IllegalArgumentException.class,
+                Pattern.compile("the date '.*' should be between '.*' and '.*'"));
+
+        assertException(() -> Assertor.that((Calendar) null).isBetween(null, null).orElseThrow(), IllegalArgumentException.class,
+                "neither dates can be null");
     }
 
     /**

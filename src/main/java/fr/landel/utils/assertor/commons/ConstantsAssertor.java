@@ -110,7 +110,7 @@ public class ConstantsAssertor {
         String property = PROPS.getProperty(String.valueOf(key));
         if (property != null) {
             if (ArrayUtils.isNotEmpty(arguments)) {
-                for (int i = 0; i < arguments.length; i++) {
+                for (int i = 0; i < arguments.length; ++i) {
                     property = property.replace(new StringBuilder(EnumChar.BRACE_OPEN.toString()).append(i).append(EnumChar.BRACE_CLOSE),
                             arguments[i]);
                 }
@@ -379,6 +379,11 @@ public class ConstantsAssertor {
             String AROUND = "date.around";
 
             /**
+             * Message key for date between
+             */
+            String BETWEEN = "date.between";
+
+            /**
              * Message key for date after
              */
             String AFTER = "date.after";
@@ -417,6 +422,11 @@ public class ConstantsAssertor {
              * Message key for temporal around
              */
             String AROUND = "temporal.around";
+
+            /**
+             * Message key for temporal between
+             */
+            String BETWEEN = "temporal.between";
 
             /**
              * Message key for temporal after
@@ -472,6 +482,11 @@ public class ConstantsAssertor {
              * Message key for array contains any values
              */
             String CONTAINS_ANY = "array.contains.array.any";
+
+            /**
+             * Message key for array contains values in a specified order
+             */
+            String CONTAINS_IN_ORDER = "array.contains.array.inOrder";
         }
 
         /**
@@ -507,6 +522,11 @@ public class ConstantsAssertor {
              * Message key for iterable contains any values
              */
             String CONTAINS_ANY = "iterable.contains.iterable.any";
+
+            /**
+             * Message key for iterable contains values in a specified order
+             */
+            String CONTAINS_IN_ORDER = "iterable.contains.iterable.inOrder";
         }
 
         /**
@@ -534,6 +554,11 @@ public class ConstantsAssertor {
             String CONTAINS_KEY = "map.contains.key";
 
             /**
+             * Message key for map contains value
+             */
+            String CONTAINS_VALUE = "map.contains.value";
+
+            /**
              * Message key for map contains key/value pair
              */
             String CONTAINS_PAIR = "map.contains.pair";
@@ -549,6 +574,26 @@ public class ConstantsAssertor {
             String CONTAINS_KEYS_ANY = "map.contains.keys.any";
 
             /**
+             * Message key for map contains entries in a specified order
+             */
+            String CONTAINS_KEYS_IN_ORDER = "map.contains.keys.inOrder";
+
+            /**
+             * Message key for map contains all values
+             */
+            String CONTAINS_VALUES_ALL = "map.contains.values.all";
+
+            /**
+             * Message key for map contains any values
+             */
+            String CONTAINS_VALUES_ANY = "map.contains.values.any";
+
+            /**
+             * Message key for map contains entries in a specified order
+             */
+            String CONTAINS_VALUES_IN_ORDER = "map.contains.values.inOrder";
+
+            /**
              * Message key for map contains all map entries
              */
             String CONTAINS_MAP_ALL = "map.contains.map.all";
@@ -557,6 +602,11 @@ public class ConstantsAssertor {
              * Message key for map contains any map entries
              */
             String CONTAINS_MAP_ANY = "map.contains.map.any";
+
+            /**
+             * Message key for map contains entries in a specified order
+             */
+            String CONTAINS_MAP_IN_ORDER = "map.contains.map.inOrder";
         }
 
         /**

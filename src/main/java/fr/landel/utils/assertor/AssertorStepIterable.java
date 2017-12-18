@@ -476,4 +476,76 @@ public interface AssertorStepIterable<I extends Iterable<T>, T> extends Assertor
             final Object... arguments) {
         return () -> AssertorIterable.containsAny(this.getStep(), values, MessageAssertor.of(locale, message, arguments));
     }
+
+    /**
+     * Asserts that the given {@link Iterable} contains ALL elements of
+     * {@code values} in the same order.
+     * 
+     * <p>
+     * precondition: neither {@link Iterable} can be {@code null} or empty
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(iterable).containsInOrder(values).orElseThrow();
+     * </pre>
+     * 
+     * @param values
+     *            The {@link Iterable} values
+     * @return The operator
+     */
+    default StepIterable<I, T> containsInOrder(final Iterable<T> values) {
+        return this.containsInOrder(values, null);
+    }
+
+    /**
+     * Asserts that the given {@link Iterable} contains ALL elements of
+     * {@code values} in the same order.
+     * 
+     * <p>
+     * precondition: neither {@link Iterable} can be {@code null} or empty
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(iterable).containsInOrder(values, "elements aren't found or in the same order").orElseThrow();
+     * </pre>
+     * 
+     * @param values
+     *            The {@link Iterable} values
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     */
+    default StepIterable<I, T> containsInOrder(final Iterable<T> values, final CharSequence message, final Object... arguments) {
+        return this.containsInOrder(values, null, message, arguments);
+    }
+
+    /**
+     * Asserts that the given {@link Iterable} contains ALL elements of
+     * {@code values} in the same order.
+     * 
+     * <p>
+     * precondition: neither {@link Iterable} can be {@code null} or empty
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(iterable).containsInOrder(values, Locale.US, "elements aren't found or in the same order").orElseThrow();
+     * </pre>
+     * 
+     * @param values
+     *            The {@link Iterable} values
+     * @param locale
+     *            The locale of the message (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     */
+    default StepIterable<I, T> containsInOrder(final Iterable<T> values, final Locale locale, final CharSequence message,
+            final Object... arguments) {
+        return () -> AssertorIterable.containsInOrder(this.getStep(), values, MessageAssertor.of(locale, message, arguments));
+    }
 }

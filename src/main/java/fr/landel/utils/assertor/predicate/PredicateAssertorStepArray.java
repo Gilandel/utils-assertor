@@ -36,8 +36,8 @@ import fr.landel.utils.assertor.utils.AssertorArray;
  * {@link PredicateAssertorStepArray} &gt; {@link PredicateStepArray} &gt; {@link PredicateAssertorStepArray} &gt; {@link PredicateStepArray}...
  * </pre>
  * 
- * This chain always starts with a {@link PredicateAssertorStepArray} and ends with
- * {@link PredicateStepArray}.
+ * This chain always starts with a {@link PredicateAssertorStepArray} and ends
+ * with {@link PredicateStepArray}.
  *
  * @since Aug 3, 2016
  * @author Gilles
@@ -132,8 +132,7 @@ public interface PredicateAssertorStepArray<T> extends PredicateAssertorStep<Pre
      * @return the assertor step
      * @category localized_message
      */
-    default PredicateStepArray<T> hasLength(final int length, final Locale locale, final CharSequence message,
-            final Object... arguments) {
+    default PredicateStepArray<T> hasLength(final int length, final Locale locale, final CharSequence message, final Object... arguments) {
         return () -> AssertorArray.hasLength(this.getStep(), length, MessageAssertor.of(locale, message, arguments));
     }
 
@@ -334,8 +333,7 @@ public interface PredicateAssertorStepArray<T> extends PredicateAssertorStep<Pre
      * @return the assertor step
      * @category localized_message
      */
-    default PredicateStepArray<T> contains(final T object, final Locale locale, final CharSequence message,
-            final Object... arguments) {
+    default PredicateStepArray<T> contains(final T object, final Locale locale, final CharSequence message, final Object... arguments) {
         return () -> AssertorArray.contains(this.getStep(), object, MessageAssertor.of(locale, message, arguments));
     }
 
@@ -481,5 +479,77 @@ public interface PredicateAssertorStepArray<T> extends PredicateAssertorStep<Pre
     default PredicateStepArray<T> containsAny(final T[] objects, final Locale locale, final CharSequence message,
             final Object... arguments) {
         return () -> AssertorArray.containsAny(this.getStep(), objects, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
+     * Asserts that the given {@code array} contains ALL elements of
+     * {@code values} in the same order.
+     * 
+     * <p>
+     * precondition: neither {@code array} can be {@code null} or empty
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(array).containsInOrder(values).orElseThrow();
+     * </pre>
+     * 
+     * @param values
+     *            The {@code array} values
+     * @return The operator
+     */
+    default PredicateStepArray<T> containsInOrder(final T[] values) {
+        return this.containsInOrder(values, null);
+    }
+
+    /**
+     * Asserts that the given {@code array} contains ALL elements of
+     * {@code values} in the same order.
+     * 
+     * <p>
+     * precondition: neither {@code array} can be {@code null} or empty
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(array).containsInOrder(values, "elements aren't found or in the same order").orElseThrow();
+     * </pre>
+     * 
+     * @param values
+     *            The {@code array} values
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     */
+    default PredicateStepArray<T> containsInOrder(final T[] values, final CharSequence message, final Object... arguments) {
+        return this.containsInOrder(values, null, message, arguments);
+    }
+
+    /**
+     * Asserts that the given {@code array} contains ALL elements of
+     * {@code values} in the same order.
+     * 
+     * <p>
+     * precondition: neither {@code array} can be {@code null} or empty
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(array).containsInOrder(values, Locale.US, "elements aren't found or in the same order").orElseThrow();
+     * </pre>
+     * 
+     * @param values
+     *            The {@code array} values
+     * @param locale
+     *            The locale of the message (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     */
+    default PredicateStepArray<T> containsInOrder(final T[] values, final Locale locale, final CharSequence message,
+            final Object... arguments) {
+        return () -> AssertorArray.containsInOrder(this.getStep(), values, MessageAssertor.of(locale, message, arguments));
     }
 }

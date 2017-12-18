@@ -351,7 +351,7 @@ public interface AssertorStepArray<T> extends AssertorStep<StepArray<T>, T[]> {
      * @return the assertor step
      * @category no_message
      */
-    default StepArray<T> containsAll(final T[] objects) {
+    default StepArray<T> containsAll(@SuppressWarnings("unchecked") final T... objects) {
         return this.containsAll(objects, null);
     }
 
@@ -422,7 +422,7 @@ public interface AssertorStepArray<T> extends AssertorStep<StepArray<T>, T[]> {
      * @return the assertor step
      * @category no_message
      */
-    default StepArray<T> containsAny(final T[] objects) {
+    default StepArray<T> containsAny(@SuppressWarnings("unchecked") final T... objects) {
         return this.containsAny(objects, null);
     }
 
@@ -475,5 +475,76 @@ public interface AssertorStepArray<T> extends AssertorStep<StepArray<T>, T[]> {
      */
     default StepArray<T> containsAny(final T[] objects, final Locale locale, final CharSequence message, final Object... arguments) {
         return () -> AssertorArray.containsAny(this.getStep(), objects, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
+     * Asserts that the given {@code array} contains ALL elements of
+     * {@code values} in the same order.
+     * 
+     * <p>
+     * precondition: neither {@code array} can be {@code null} or empty
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(array).containsInOrder(values).orElseThrow();
+     * </pre>
+     * 
+     * @param values
+     *            The {@code array} values
+     * @return The operator
+     */
+    default StepArray<T> containsInOrder(@SuppressWarnings("unchecked") final T... values) {
+        return this.containsInOrder(values, null);
+    }
+
+    /**
+     * Asserts that the given {@code array} contains ALL elements of
+     * {@code values} in the same order.
+     * 
+     * <p>
+     * precondition: neither {@code array} can be {@code null} or empty
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(array).containsInOrder(values, "elements aren't found or in the same order").orElseThrow();
+     * </pre>
+     * 
+     * @param values
+     *            The {@code array} values
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     */
+    default StepArray<T> containsInOrder(final T[] values, final CharSequence message, final Object... arguments) {
+        return this.containsInOrder(values, null, message, arguments);
+    }
+
+    /**
+     * Asserts that the given {@code array} contains ALL elements of
+     * {@code values} in the same order.
+     * 
+     * <p>
+     * precondition: neither {@code array} can be {@code null} or empty
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(array).containsInOrder(values, Locale.US, "elements aren't found or in the same order").orElseThrow();
+     * </pre>
+     * 
+     * @param values
+     *            The {@code array} values
+     * @param locale
+     *            The locale of the message (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     */
+    default StepArray<T> containsInOrder(final T[] values, final Locale locale, final CharSequence message, final Object... arguments) {
+        return () -> AssertorArray.containsInOrder(this.getStep(), values, MessageAssertor.of(locale, message, arguments));
     }
 }

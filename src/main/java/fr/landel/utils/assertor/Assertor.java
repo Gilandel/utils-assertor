@@ -259,7 +259,8 @@ public class Assertor {
      *            the type of array under checking
      * @return the predicate array assertor
      */
-    public static <T> AssertorStepArray<T> that(final T[] array) {
+    @SafeVarargs
+    public static <T> AssertorStepArray<T> that(final T... array) {
         return that(array, null);
     }
 

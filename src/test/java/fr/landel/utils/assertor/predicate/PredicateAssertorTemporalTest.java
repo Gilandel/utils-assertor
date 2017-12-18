@@ -35,11 +35,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 import org.junit.Test;
 
 import fr.landel.utils.assertor.AbstractTest;
 import fr.landel.utils.assertor.Assertor;
+import fr.landel.utils.assertor.StepAssertor;
 import fr.landel.utils.assertor.utils.AssertorTemporal;
 import fr.landel.utils.commons.DateUtils;
 
@@ -383,6 +385,41 @@ public class PredicateAssertorTemporalTest extends AbstractTest {
         } catch (IllegalArgumentException e) {
             assertNotNull(e);
         }
+    }
+
+    /**
+     * Test method for
+     * {@link AssertorTemporal#isBetween(StepAssertor, Temporal, Temporal, fr.landel.utils.assertor.commons.MessageAssertor)}.
+     */
+    @Test
+    public void testIsBetween() {
+        Date date1 = new Date(1464475553640L);
+        Date date2 = new Date(1464475553641L);
+        Date date3 = new Date(1464475553642L);
+
+        final LocalDateTime localDateTime1 = DateUtils.getLocalDateTime(date1);
+        final LocalDateTime localDateTime2 = DateUtils.getLocalDateTime(date2);
+        final LocalDateTime localDateTime3 = DateUtils.getLocalDateTime(date3);
+
+        PredicateAssertorStepTemporal<ChronoLocalDateTime<?>> predicate = Assertor.<ChronoLocalDateTime<?>> ofTemporal();
+
+        assertTrue(predicate.isBetween(localDateTime1, localDateTime3).that(localDateTime2).isOK());
+        assertTrue(predicate.isBetween(localDateTime1, localDateTime3).that(localDateTime1).isOK());
+        assertTrue(predicate.isBetween(localDateTime1, localDateTime3).that(localDateTime3).isOK());
+        assertFalse(predicate.isBetween(localDateTime2, localDateTime3).that(localDateTime1).isOK());
+        assertFalse(predicate.isBetween(localDateTime1, localDateTime2).that(localDateTime3).isOK());
+
+        assertFalse(predicate.not().isBetween(localDateTime1, localDateTime3).that(localDateTime2).isOK());
+        assertFalse(predicate.not().isBetween(localDateTime1, localDateTime3).that(localDateTime1).isOK());
+        assertFalse(predicate.not().isBetween(localDateTime1, localDateTime3).that(localDateTime3).isOK());
+        assertTrue(predicate.not().isBetween(localDateTime2, localDateTime3).that(localDateTime1).isOK());
+        assertTrue(predicate.not().isBetween(localDateTime1, localDateTime2).that(localDateTime3).isOK());
+
+        assertException(() -> predicate.isBetween(null, null).that((LocalDateTime) null).orElseThrow(), IllegalArgumentException.class,
+                "neither temporals can be null");
+
+        assertException(() -> predicate.isBetween(localDateTime2, localDateTime3).that(localDateTime1).orElseThrow(),
+                IllegalArgumentException.class, Pattern.compile("the temporal '.*' should be between '.*' and '.*'"));
     }
 
     /**

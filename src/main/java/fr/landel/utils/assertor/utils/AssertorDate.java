@@ -241,6 +241,34 @@ public class AssertorDate extends ConstantsAssertor {
 
     /**
      * Prepare the next step to validate if the {@link Date} or {@link Calendar}
+     * is between the specified dates (same type)
+     * 
+     * @param step
+     *            the current step
+     * @param dateStart
+     *            the minimum date
+     * @param dateEnd
+     *            the maximum date
+     * @param message
+     *            the message if invalid
+     * @param <T>
+     *            the date type
+     * @return the next step
+     */
+    public static <T extends Comparable<T>> StepAssertor<T> isBetween(final StepAssertor<T> step, final T dateStart, final T dateEnd,
+            final MessageAssertor message) {
+
+        final Predicate<T> preChecker = (date) -> date != null && dateStart != null && dateEnd != null;
+
+        final BiPredicate<T, Boolean> checker = (date, not) -> Comparators.compare(date, dateStart) >= 0
+                && Comparators.compare(date, dateEnd) <= 0;
+
+        return new StepAssertor<>(step, preChecker, checker, false, message, MSG.DATE.BETWEEN, false, new ParameterAssertor<>(dateStart),
+                new ParameterAssertor<>(dateEnd));
+    }
+
+    /**
+     * Prepare the next step to validate if the {@link Date} or {@link Calendar}
      * is after the specified date (same type)
      * 
      * <p>

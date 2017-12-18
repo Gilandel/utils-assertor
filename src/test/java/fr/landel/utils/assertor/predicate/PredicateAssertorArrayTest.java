@@ -223,4 +223,69 @@ public class PredicateAssertorArrayTest extends AbstractTest {
         assertTrue(Assertor.ofArray(EnumAnalysisMode.PARALLEL).not().containsAll(new String[] {null, "4"})
                 .that(new String[] {null, "2", "3"}).isOK());
     }
+
+    /**
+     * Check {@link AssertorArray#containsInOrder}
+     */
+    @Test
+    public void testContainsInOrder() {
+        String[] arrayTU = {"t", "u"};
+        String[] arrayTUClone = {"t", "u"};
+        String[] arrayUT = {"u", "t"};
+        String[] arrayU = {"u"};
+        String[] arrayTVTUV = {"t", "v", "t", "u", "v"};
+        String[] arrayXTUTUV = {"x", "t", "u", "t", "u", "v"};
+        String[] arrayTUV = {"t", "u", "v"};
+        String[] arrayUV = {"u", "v"};
+        String[] arrayZ = {"z"};
+        String[] arrayTNull = {"t", null};
+
+        for (EnumAnalysisMode mode : EnumAnalysisMode.values()) {
+            PredicateAssertorStepArray<String> predicate = Assertor.<String> ofArray(mode);
+
+            assertTrue(predicate.containsInOrder(arrayTUClone).that(arrayTU).isOK());
+            assertFalse(predicate.not().containsInOrder(arrayTUClone).that(arrayTU).isOK());
+
+            assertFalse(predicate.containsInOrder(arrayUT).that(arrayTU).isOK());
+            assertTrue(predicate.not().containsInOrder(arrayUT).that(arrayTU).isOK());
+
+            assertTrue(predicate.containsInOrder(arrayU).that(arrayTU).isOK());
+            assertFalse(predicate.not().containsInOrder(arrayU).that(arrayTU).isOK());
+
+            assertTrue(predicate.containsInOrder(arrayTU).that(arrayTVTUV).isOK());
+            assertTrue(predicate.containsInOrder(arrayTU).that(arrayXTUTUV).isOK());
+            assertTrue(predicate.containsInOrder(arrayTU).that(arrayTU).isOK());
+            assertTrue(predicate.containsInOrder(arrayTNull).that(arrayTNull).isOK());
+            assertTrue(predicate.containsInOrder(arrayTU).that(arrayTUV).isOK());
+            assertTrue(predicate.containsInOrder(arrayUV).that(arrayTUV).isOK());
+            assertFalse(predicate.containsInOrder(arrayTUV).that(arrayTU).isOK());
+            assertFalse(predicate.containsInOrder(arrayUT).that(arrayTU).isOK());
+            assertFalse(predicate.containsInOrder(arrayZ).that(arrayTU).isOK());
+
+            assertFalse(predicate.not().containsInOrder(arrayTU).that(arrayTVTUV).isOK());
+            assertFalse(predicate.not().containsInOrder(arrayTU).that(arrayXTUTUV).isOK());
+            assertFalse(predicate.not().containsInOrder(arrayTU).that(arrayTU).isOK());
+            assertFalse(predicate.not().containsInOrder(arrayTNull).that(arrayTNull).isOK());
+            assertFalse(predicate.not().containsInOrder(arrayTU).that(arrayTUV).isOK());
+            assertFalse(predicate.not().containsInOrder(arrayUV).that(arrayTUV).isOK());
+            assertTrue(predicate.not().containsInOrder(arrayTUV).that(arrayTU).isOK());
+            assertTrue(predicate.not().containsInOrder(arrayUT).that(arrayTU).isOK());
+            assertTrue(predicate.not().containsInOrder(arrayZ).that(arrayTU).isOK());
+
+            assertFalse(predicate.containsInOrder(arrayU).that((String[]) null).isOK());
+            assertFalse(predicate.containsInOrder((String[]) null).that(arrayTU).isOK());
+
+            assertException(() -> predicate.containsInOrder(arrayTUV).that(arrayTU).orElseThrow(), IllegalArgumentException.class,
+                    "the array '[t, u]' should contain all values of '[t, u, v]' in the same order");
+
+            assertException(() -> predicate.not().containsInOrder(arrayTU).that(arrayTVTUV).orElseThrow(), IllegalArgumentException.class,
+                    "the array '[t, v, t, u, v]' should NOT contain all values of '[t, u]' or should be in an other order");
+
+            assertException(() -> predicate.containsInOrder(arrayU).that((String[]) null).orElseThrow(), IllegalArgumentException.class,
+                    "neither arrays can be null or empty");
+
+            assertException(() -> predicate.containsInOrder((String[]) null).that(arrayTU).orElseThrow(), IllegalArgumentException.class,
+                    "neither arrays can be null or empty");
+        }
+    }
 }

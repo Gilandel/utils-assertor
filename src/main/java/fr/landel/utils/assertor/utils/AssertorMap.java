@@ -19,10 +19,11 @@
  */
 package fr.landel.utils.assertor.utils;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.Spliterator;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -38,6 +39,8 @@ import fr.landel.utils.assertor.commons.ParameterAssertor;
 import fr.landel.utils.assertor.enums.EnumAnalysisMode;
 import fr.landel.utils.assertor.enums.EnumType;
 import fr.landel.utils.assertor.helper.HelperAssertor;
+import fr.landel.utils.commons.CastUtils;
+import fr.landel.utils.commons.MapUtils2;
 
 /**
  * Utility class to prepare the check of {@link Map}
@@ -193,6 +196,35 @@ public class AssertorMap extends ConstantsAssertor {
     }
 
     /**
+     * Prepare the next step to validate if the {@link Map} contains all
+     * {@code values} entries
+     * 
+     * <p>
+     * precondition: neither {@link Map} and {@code values} can be {@code null}
+     * or empty
+     * </p>
+     * 
+     * @param step
+     *            the current step
+     * @param values
+     *            the values to find
+     * @param message
+     *            the message if invalid
+     * @param <M>
+     *            the {@link Map} type
+     * @param <K>
+     *            the {@link Map} key elements type
+     * @param <V>
+     *            the {@link Map} value elements type
+     * @return the next step
+     */
+    public static <M extends Map<K, V>, K, V> StepAssertor<M> containsAllValues(final StepAssertor<M> step, final Iterable<V> values,
+            final MessageAssertor message) {
+
+        return containsValues(step, values, MSG.MAP.CONTAINS_VALUES_ALL, true, message);
+    }
+
+    /**
      * Prepare the next step to validate if the {@link Map} contains any
      * {@code map} entries
      * 
@@ -250,6 +282,35 @@ public class AssertorMap extends ConstantsAssertor {
     }
 
     /**
+     * Prepare the next step to validate if the {@link Map} contains any
+     * {@code values} entries
+     * 
+     * <p>
+     * precondition: neither {@link Map} and {@code values} can be {@code null}
+     * or empty
+     * </p>
+     * 
+     * @param step
+     *            the current step
+     * @param values
+     *            the values to find
+     * @param message
+     *            the message if invalid
+     * @param <M>
+     *            the {@link Map} type
+     * @param <K>
+     *            the {@link Map} key elements type
+     * @param <V>
+     *            the {@link Map} value elements type
+     * @return the next step
+     */
+    public static <M extends Map<K, V>, K, V> StepAssertor<M> containsAnyValues(final StepAssertor<M> step, final Iterable<V> values,
+            final MessageAssertor message) {
+
+        return containsValues(step, values, MSG.MAP.CONTAINS_VALUES_ANY, false, message);
+    }
+
+    /**
      * Prepare the next step to validate if the {@link Map} contains the
      * specified key
      * 
@@ -274,7 +335,7 @@ public class AssertorMap extends ConstantsAssertor {
     public static <M extends Map<K, V>, K, V> StepAssertor<M> contains(final StepAssertor<M> step, final K key,
             final MessageAssertor message) {
 
-        final Predicate<M> preChecker = (map) -> MapUtils.isNotEmpty(map);
+        final Predicate<M> preChecker = MapUtils::isNotEmpty;
 
         final BiPredicate<M, Boolean> checker = (map, not) -> map.containsKey(key);
 
@@ -308,7 +369,7 @@ public class AssertorMap extends ConstantsAssertor {
     public static <M extends Map<K, V>, K, V> StepAssertor<M> contains(final StepAssertor<M> step, final K key, final V value,
             final MessageAssertor message) {
 
-        final Predicate<M> preChecker = (map) -> MapUtils.isNotEmpty(map);
+        final Predicate<M> preChecker = MapUtils::isNotEmpty;
 
         final BiPredicate<M, Boolean> checker = (map, not) -> AssertorMap.contains(map, key, value);
 
@@ -316,14 +377,58 @@ public class AssertorMap extends ConstantsAssertor {
                 new ParameterAssertor<>(value));
     }
 
+    /**
+     * Prepare the next step to validate if the {@link Map} contains the
+     * specified value
+     * 
+     * <p>
+     * precondition: {@link Map} cannot be {@code null} or empty
+     * </p>
+     * 
+     * @param step
+     *            the current step
+     * @param value
+     *            the value to find
+     * @param message
+     *            the message if invalid
+     * @param <M>
+     *            the {@link Map} type
+     * @param <K>
+     *            the {@link Map} key elements type
+     * @param <V>
+     *            the {@link Map} value elements type
+     * @return the next step
+     */
+    public static <M extends Map<K, V>, K, V> StepAssertor<M> containsValue(final StepAssertor<M> step, final V value,
+            final MessageAssertor message) {
+
+        final Predicate<M> preChecker = MapUtils::isNotEmpty;
+
+        final BiPredicate<M, Boolean> checker = (map, not) -> map.containsValue(value);
+
+        return new StepAssertor<>(step, preChecker, checker, false, message, MSG.MAP.CONTAINS_VALUE, false, new ParameterAssertor<>(value));
+    }
+
     private static <M extends Map<K, V>, K, V> StepAssertor<M> contains(final StepAssertor<M> step, final Iterable<K> keys,
             final CharSequence key, final boolean all, final MessageAssertor message) {
 
         final Predicate<M> preChecker = (map) -> MapUtils.isNotEmpty(map) && !IterableUtils.isEmpty(keys);
 
-        final BiPredicate<M, Boolean> checker = (map, not) -> AssertorMap.contains(map, keys, all, not, step.getAnalysisMode());
+        final BiPredicate<M, Boolean> checker = (map, not) -> AssertorMap.contains(map, keys, map::containsKey, all, not,
+                step.getAnalysisMode());
 
         return new StepAssertor<>(step, preChecker, checker, true, message, key, false, new ParameterAssertor<>(keys, EnumType.ITERABLE));
+    }
+
+    private static <M extends Map<K, V>, K, V> StepAssertor<M> containsValues(final StepAssertor<M> step, final Iterable<V> values,
+            final CharSequence key, final boolean all, final MessageAssertor message) {
+
+        final Predicate<M> preChecker = (map) -> MapUtils.isNotEmpty(map) && !IterableUtils.isEmpty(values);
+
+        final BiPredicate<M, Boolean> checker = (map, not) -> AssertorMap.contains(map, values, map::containsValue, all, not,
+                step.getAnalysisMode());
+
+        return new StepAssertor<>(step, preChecker, checker, true, message, key, false, new ParameterAssertor<>(values, EnumType.ITERABLE));
     }
 
     private static <M extends Map<K, V>, K, V> StepAssertor<M> contains(final StepAssertor<M> step, final Map<K, V> map,
@@ -336,23 +441,22 @@ public class AssertorMap extends ConstantsAssertor {
         return new StepAssertor<>(step, preChecker, checker, true, message, key, false, new ParameterAssertor<>(map, EnumType.MAP));
     }
 
-    private static <M extends Map<K, V>, K, V> boolean contains(final M map, final Iterable<K> keys, final boolean all, final boolean not,
-            final EnumAnalysisMode analysisMode) {
+    private static <M extends Map<K, V>, K, V, T> boolean contains(final M map, final Iterable<T> objects, final Predicate<T> predicate,
+            final boolean all, final boolean not, final EnumAnalysisMode analysisMode) {
+
         long found = 0;
 
-        final Spliterator<K> spliterator = keys.spliterator();
         if (EnumAnalysisMode.STANDARD.equals(analysisMode)) {
-            for (K key : keys) {
-                if (map.containsKey(key)) {
+            for (T object : objects) {
+                if (predicate.test(object)) {
                     ++found;
                 }
             }
         } else {
-            found = StreamSupport.stream(spliterator, EnumAnalysisMode.PARALLEL.equals(analysisMode)).filter(o -> map.containsKey(o))
-                    .count();
+            found = StreamSupport.stream(objects.spliterator(), EnumAnalysisMode.PARALLEL.equals(analysisMode)).filter(predicate).count();
         }
 
-        return HelperAssertor.isValid(all, not, found, IterableUtils.size(keys));
+        return HelperAssertor.isValid(all, not, found, IterableUtils.size(objects));
     }
 
     private static <M extends Map<K, V>, K, V> boolean contains(final M map, final Map<K, V> objects, final boolean all, final boolean not,
@@ -389,5 +493,164 @@ public class AssertorMap extends ConstantsAssertor {
             }
         }
         return false;
+    }
+
+    /**
+     * Prepare the next step to validate if the {@link Map} contains the entries
+     * in a specified order. To work correctly, the map must be sorted or
+     * linked.
+     * 
+     * <p>
+     * precondition: {@link Map} and {@link Iterable} cannot be {@code null} or
+     * empty
+     * </p>
+     * 
+     * @param step
+     *            the current step
+     * @param keys
+     *            the keys to find
+     * @param message
+     *            the message if invalid
+     * @param <M>
+     *            the {@link Map} type
+     * @param <K>
+     *            the {@link Map} key elements type
+     * @param <V>
+     *            the {@link Map} value elements type
+     * @return the next step
+     */
+    public static <M extends Map<K, V>, K, V> StepAssertor<M> containsKeysInOrder(final StepAssertor<M> step, final Iterable<K> keys,
+            final MessageAssertor message) {
+
+        final Predicate<M> preChecker = map1 -> MapUtils.isNotEmpty(map1) && !IterableUtils.isEmpty(keys);
+
+        final BiPredicate<M, Boolean> checker = (map1, not) -> AssertorMap.hasInOrder(map1, keys, not, step.getAnalysisMode(),
+                MapUtils2::areKeysEqual, CastUtils.cast(Object.class));
+
+        return new StepAssertor<>(step, preChecker, checker, true, message, MSG.MAP.CONTAINS_KEYS_IN_ORDER, false,
+                new ParameterAssertor<>(keys, EnumType.ITERABLE));
+    }
+
+    /**
+     * Prepare the next step to validate if the {@link Map} contains the entries
+     * in a specified order. To work correctly, the map must be sorted or
+     * linked.
+     * 
+     * <p>
+     * precondition: {@link Map} and {@link Iterable} cannot be {@code null} or
+     * empty
+     * </p>
+     * 
+     * @param step
+     *            the current step
+     * @param values
+     *            the values to find
+     * @param message
+     *            the message if invalid
+     * @param <M>
+     *            the {@link Map} type
+     * @param <K>
+     *            the {@link Map} key elements type
+     * @param <V>
+     *            the {@link Map} value elements type
+     * @return the next step
+     */
+    public static <M extends Map<K, V>, K, V> StepAssertor<M> containsValuesInOrder(final StepAssertor<M> step, final Iterable<V> values,
+            final MessageAssertor message) {
+
+        final Predicate<M> preChecker = map1 -> MapUtils.isNotEmpty(map1) && !IterableUtils.isEmpty(values);
+
+        final BiPredicate<M, Boolean> checker = (map1, not) -> AssertorMap.hasInOrder(map1, values, not, step.getAnalysisMode(),
+                MapUtils2::areValuesEqual, CastUtils.cast(Object.class));
+
+        return new StepAssertor<>(step, preChecker, checker, true, message, MSG.MAP.CONTAINS_VALUES_IN_ORDER, false,
+                new ParameterAssertor<>(values, EnumType.ITERABLE));
+    }
+
+    /**
+     * Prepare the next step to validate if the {@link Map} contains the entries
+     * in a specified order. To work correctly, the map must be sorted or
+     * linked.
+     * 
+     * <p>
+     * precondition: {@link Map} cannot be {@code null} or empty
+     * </p>
+     * 
+     * @param step
+     *            the current step
+     * @param map
+     *            the map entries to find
+     * @param message
+     *            the message if invalid
+     * @param <M>
+     *            the {@link Map} type
+     * @param <K>
+     *            the {@link Map} key elements type
+     * @param <V>
+     *            the {@link Map} value elements type
+     * @return the next step
+     */
+    public static <M extends Map<K, V>, K, V> StepAssertor<M> containsInOrder(final StepAssertor<M> step, final Map<K, V> map,
+            final MessageAssertor message) {
+
+        final Predicate<M> preChecker = map1 -> MapUtils.isNotEmpty(map1) && MapUtils.isNotEmpty(map);
+
+        final BiPredicate<M, Boolean> checker = (map1, not) -> AssertorMap.hasInOrder(map1, IterableUtils.toList(map.entrySet()), not,
+                step.getAnalysisMode(), MapUtils2::areEntriesEqual, CastUtils.cast(Entry.class));
+
+        return new StepAssertor<>(step, preChecker, checker, true, message, MSG.MAP.CONTAINS_MAP_IN_ORDER, false,
+                new ParameterAssertor<>(map, EnumType.MAP));
+    }
+
+    private static <M extends Map<K, V>, K, V, T> boolean hasInOrder(final M map, final Iterable<T> objects, final boolean not,
+            final EnumAnalysisMode analysisMode, final BiPredicate<Entry<K, V>, T> entriesEqualChecker, final Class<T> objectsClass) {
+
+        int found = 0;
+
+        final int size1 = map.size();
+        final int size2 = IterableUtils.size(objects);
+
+        if (size1 < size2) {
+            return not;
+        }
+
+        final Set<Entry<K, V>> entries1 = map.entrySet();
+        final List<T> entries2 = IterableUtils.toList(objects);
+
+        if (EnumAnalysisMode.STANDARD.equals(analysisMode)) {
+            for (Entry<K, V> entry1 : entries1) {
+                if (found < size2) {
+                    if (entriesEqualChecker.test(entry1, entries2.get(found))) {
+                        ++found;
+                    } else if (found > 0) {
+                        found = 0;
+                    }
+                }
+            }
+        } else {
+            final AtomicInteger count = new AtomicInteger(0);
+
+            final Stream<Entry<K, V>> stream;
+            if (EnumAnalysisMode.PARALLEL.equals(analysisMode)) {
+                stream = entries1.parallelStream();
+            } else {
+                stream = entries1.stream();
+            }
+
+            stream.forEachOrdered(o -> {
+                int inc = count.get();
+                if (inc < size2) {
+                    if (entriesEqualChecker.test(o, entries2.get(inc))) {
+                        count.incrementAndGet();
+                    } else if (inc > 0) {
+                        count.set(0);
+                    }
+                }
+            });
+
+            found = count.get();
+        }
+
+        return not ^ (found == size2);
     }
 }

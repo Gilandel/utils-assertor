@@ -44,6 +44,8 @@ import fr.landel.utils.microbenchmark.AbstractMicrobenchmark;
 @State(Scope.Benchmark)
 public class AssertorBooleanPerf extends AbstractMicrobenchmark {
 
+    private static final String[] OBJECTS = new String[] {"a", "b"};
+
     @Override
     protected double getExpectedMinNbOpsPerSeconds() {
         return 30_000d;
@@ -61,6 +63,8 @@ public class AssertorBooleanPerf extends AbstractMicrobenchmark {
         Assertor.that(false).isFalse().isOK();
         Assertor.that(false).isFalse().getErrors();
         Assertor.that(false).isFalse().orElseThrow();
+
+        Assertor.that(OBJECTS).containsAll(new String[] {OBJECTS[0], OBJECTS[1]}).isOK();
     }
 
     /**
@@ -97,6 +101,8 @@ public class AssertorBooleanPerf extends AbstractMicrobenchmark {
         assertThat(false, Matchers.is(false));
         assertThat(false, Matchers.is(false));
         assertThat(false, Matchers.is(false));
+
+        assertThat(OBJECTS, Matchers.arrayContainingInAnyOrder(OBJECTS[0], OBJECTS[1]));
     }
 
     /**

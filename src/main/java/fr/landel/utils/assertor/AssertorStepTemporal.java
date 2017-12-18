@@ -358,6 +358,83 @@ public interface AssertorStepTemporal<T extends Temporal & Comparable<T>> extend
     }
 
     /**
+     * Check if the checked {@link Temporal} is between the
+     * {@code temporalStart} and {@code temporalEnd}.
+     * 
+     * <p>
+     * precondition: neither temporals can be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(temporal).isBetween(temporal1, temporal2).orElseThrow();
+     * </pre>
+     * 
+     * @param temporalStart
+     *            the start temporal to compare
+     * @param temporalEnd
+     *            the end temporal to compare
+     * @return the assertor step
+     */
+    default StepTemporal<T> isBetween(final T temporalStart, final T temporalEnd) {
+        return this.isBetween(temporalStart, temporalEnd, null);
+    }
+
+    /**
+     * Check if the checked {@link Temporal} is between the
+     * {@code temporalStart} and {@code temporalEnd}.
+     * 
+     * <p>
+     * precondition: neither temporals can be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(temporal).isBetween(temporal1, temporal2, "Not between temporals").orElseThrow();
+     * </pre>
+     * 
+     * @param temporalStart
+     *            the start temporal to compare
+     * @param temporalEnd
+     *            the end temporal to compare
+     * @param message
+     *            the message on mismatch
+     * @param arguments
+     *            the message arguments
+     * @return the assertor step
+     */
+    default StepTemporal<T> isBetween(final T temporalStart, final T temporalEnd, final CharSequence message, final Object... arguments) {
+        return this.isBetween(temporalStart, temporalEnd, null, message, arguments);
+    }
+
+    /**
+     * Check if the checked {@link Temporal} is between the
+     * {@code temporalStart} and {@code temporalEnd}.
+     * 
+     * <p>
+     * precondition: neither temporals can be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(temporal).isBetween(temporal1, temporal2, Locale.US, "Not between temporals").orElseThrow();
+     * </pre>
+     * 
+     * @param temporalStart
+     *            the start temporal to compare
+     * @param temporalEnd
+     *            the end temporal to compare
+     * @param locale
+     *            the message locale
+     * @param message
+     *            the message on mismatch
+     * @param arguments
+     *            the message arguments
+     * @return the assertor step
+     */
+    default StepTemporal<T> isBetween(final T temporalStart, final T temporalEnd, final Locale locale, final CharSequence message,
+            final Object... arguments) {
+        return () -> AssertorTemporal.isBetween(this.getStep(), temporalStart, temporalEnd, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
      * Check if the checked {@link Temporal} is after the {@code temporal}.
      * 
      * <p>
