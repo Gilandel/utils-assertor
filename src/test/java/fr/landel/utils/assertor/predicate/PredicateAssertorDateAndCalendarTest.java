@@ -28,11 +28,13 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.regex.Pattern;
 
 import org.junit.Test;
 
 import fr.landel.utils.assertor.AbstractTest;
 import fr.landel.utils.assertor.Assertor;
+import fr.landel.utils.assertor.StepAssertor;
 import fr.landel.utils.assertor.utils.AssertorDate;
 import fr.landel.utils.commons.DateUtils;
 
@@ -363,6 +365,61 @@ public class PredicateAssertorDateAndCalendarTest extends AbstractTest {
         } catch (IllegalArgumentException e) {
             assertNotNull(e);
         }
+    }
+
+    /**
+     * Test method for
+     * {@link AssertorDate#isBetween(StepAssertor, Comparable, Comparable, fr.landel.utils.assertor.commons.MessageAssertor)}.
+     */
+    @Test
+    public void testIsBetween() {
+        Date date1 = new Date(1464475553640L);
+        Date date2 = new Date(1464475553641L);
+        Date date3 = new Date(1464475553642L);
+
+        PredicateAssertorStepDate predicateDate = Assertor.ofDate();
+
+        assertTrue(predicateDate.isBetween(date1, date3).that(date2).isOK());
+        assertTrue(predicateDate.isBetween(date1, date3).that(date1).isOK());
+        assertTrue(predicateDate.isBetween(date1, date3).that(date3).isOK());
+        assertFalse(predicateDate.isBetween(date2, date3).that(date1).isOK());
+        assertFalse(predicateDate.isBetween(date1, date2).that(date3).isOK());
+
+        assertFalse(predicateDate.not().isBetween(date1, date3).that(date2).isOK());
+        assertFalse(predicateDate.not().isBetween(date1, date3).that(date1).isOK());
+        assertFalse(predicateDate.not().isBetween(date1, date3).that(date3).isOK());
+        assertTrue(predicateDate.not().isBetween(date2, date3).that(date1).isOK());
+        assertTrue(predicateDate.not().isBetween(date1, date2).that(date3).isOK());
+
+        assertException(() -> predicateDate.isBetween(null, null).that((Date) null).orElseThrow(), IllegalArgumentException.class,
+                "neither dates can be null");
+
+        assertException(() -> predicateDate.isBetween(date2, date3).that(date1).orElseThrow(), IllegalArgumentException.class,
+                Pattern.compile("the date '.*' should be between '.*' and '.*'"));
+
+        Calendar cal1 = DateUtils.getCalendar(date1);
+        Calendar cal2 = DateUtils.getCalendar(date2);
+        Calendar cal3 = DateUtils.getCalendar(date3);
+
+        PredicateAssertorStepCalendar predicateCalendar = Assertor.ofCalendar();
+
+        assertTrue(predicateCalendar.isBetween(cal1, cal3).that(cal2).isOK());
+        assertTrue(predicateCalendar.isBetween(cal1, cal3).that(cal1).isOK());
+        assertTrue(predicateCalendar.isBetween(cal1, cal3).that(cal3).isOK());
+        assertFalse(predicateCalendar.isBetween(cal2, cal3).that(cal1).isOK());
+        assertFalse(predicateCalendar.isBetween(cal1, cal2).that(cal3).isOK());
+
+        assertFalse(predicateCalendar.not().isBetween(cal1, cal3).that(cal2).isOK());
+        assertFalse(predicateCalendar.not().isBetween(cal1, cal3).that(cal1).isOK());
+        assertFalse(predicateCalendar.not().isBetween(cal1, cal3).that(cal3).isOK());
+        assertTrue(predicateCalendar.not().isBetween(cal2, cal3).that(cal1).isOK());
+        assertTrue(predicateCalendar.not().isBetween(cal1, cal2).that(cal3).isOK());
+
+        assertException(() -> predicateCalendar.isBetween(cal2, cal3).that(cal1).orElseThrow(), IllegalArgumentException.class,
+                Pattern.compile("the date '.*' should be between '.*' and '.*'"));
+
+        assertException(() -> predicateCalendar.isBetween(null, null).that((Calendar) null).orElseThrow(), IllegalArgumentException.class,
+                "neither dates can be null");
     }
 
     /**

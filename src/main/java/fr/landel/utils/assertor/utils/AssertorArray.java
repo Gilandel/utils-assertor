@@ -19,6 +19,9 @@
  */
 package fr.landel.utils.assertor.utils;
 
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -197,12 +200,40 @@ public class AssertorArray extends ConstantsAssertor {
         return AssertorArray.contains(step, array, false, MSG.ARRAY.CONTAINS_ANY, message);
     }
 
+    /**
+     * Prepare the next step to validate if the array contains elements in the
+     * specified order of the specified array
+     * 
+     * <p>
+     * precondition: neither of {@code array} can be {@code null} or empty
+     * </p>
+     * 
+     * @param step
+     *            the current step
+     * @param array
+     *            the array to find
+     * @param message
+     *            the message if invalid
+     * @param <T>
+     *            the array elements type
+     * @return the next step
+     */
+    public static <T> StepAssertor<T[]> containsInOrder(final StepAssertor<T[]> step, final T[] array, final MessageAssertor message) {
+
+        final Predicate<T[]> preChecker = (object) -> ArrayUtils.isNotEmpty(array) && ArrayUtils.isNotEmpty(object);
+
+        final BiPredicate<T[], Boolean> checker = (object, not) -> AssertorArray.hasInOrder(object, array, not, step.getAnalysisMode());
+
+        return new StepAssertor<>(step, preChecker, checker, true, message, MSG.ARRAY.CONTAINS_IN_ORDER, false,
+                new ParameterAssertor<>(array, EnumType.ARRAY));
+    }
+
     private static <T> boolean has(final T[] array, final T object, final EnumAnalysisMode analysisMode) {
         final Predicate<T> predicate;
         if (object != null) {
-            predicate = o -> object.equals(o);
+            predicate = object::equals;
         } else {
-            predicate = o -> o == null;
+            predicate = Objects::isNull;
         }
 
         if (EnumAnalysisMode.STANDARD.equals(analysisMode)) {
@@ -224,6 +255,11 @@ public class AssertorArray extends ConstantsAssertor {
 
     private static <T> boolean has(final T[] array1, final T[] array2, final boolean all, final boolean not,
             final EnumAnalysisMode analysisMode) {
+
+        if (all && !not && array1.length < array2.length) {
+            return false;
+        }
+
         long found = 0;
 
         if (EnumAnalysisMode.STANDARD.equals(analysisMode)) {
@@ -241,5 +277,51 @@ public class AssertorArray extends ConstantsAssertor {
         }
 
         return HelperAssertor.isValid(all, not, found, array2.length);
+    }
+
+    private static <T> boolean hasInOrder(final T[] array1, final T[] array2, final boolean not, final EnumAnalysisMode analysisMode) {
+
+        int found = 0;
+
+        final int size1 = array1.length;
+        final int size2 = array2.length;
+
+        if (size1 < size2) {
+            return not;
+        } else if (size1 == size2) {
+            return not ^ Arrays.equals(array1, array2);
+        }
+
+        if (EnumAnalysisMode.STANDARD.equals(analysisMode)) {
+            for (int i = 0; i < size1 && found < size2; ++i) {
+                if (Objects.equals(array1[i], array2[found])) {
+                    ++found;
+                } else if (found > 0) {
+                    found = 0;
+                }
+            }
+        } else {
+            final AtomicInteger count = new AtomicInteger(0);
+
+            Stream<T> stream = Stream.of(array1);
+            if (EnumAnalysisMode.PARALLEL.equals(analysisMode)) {
+                stream = stream.parallel();
+            }
+
+            stream.forEachOrdered(o -> {
+                int inc = count.get();
+                if (inc < size2) {
+                    if (Objects.equals(o, array2[inc])) {
+                        count.incrementAndGet();
+                    } else if (inc > 0) {
+                        count.set(0);
+                    }
+                }
+            });
+
+            found = count.get();
+        }
+
+        return not ^ (found == size2);
     }
 }

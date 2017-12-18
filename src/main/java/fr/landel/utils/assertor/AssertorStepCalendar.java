@@ -539,6 +539,84 @@ public interface AssertorStepCalendar extends AssertorStep<StepCalendar, Calenda
     }
 
     /**
+     * Check if the checked {@link Calendar} is between the {@code dateStart}
+     * and {@code dateEnd}.
+     * 
+     * <p>
+     * precondition: neither dates can be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(date).isBetween(date1, date2).orElseThrow();
+     * </pre>
+     * 
+     * @param dateStart
+     *            the start date to compare
+     * @param dateEnd
+     *            the end date to compare
+     * @return the assertor step
+     */
+    default StepCalendar isBetween(final Calendar dateStart, final Calendar dateEnd) {
+        return this.isBetween(dateStart, dateEnd, null);
+    }
+
+    /**
+     * Check if the checked {@link Calendar} is between the {@code dateStart}
+     * and {@code dateEnd}.
+     * 
+     * <p>
+     * precondition: neither dates can be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(date).isBetween(date1, date2, "Not between dates").orElseThrow();
+     * </pre>
+     * 
+     * @param dateStart
+     *            the start date to compare
+     * @param dateEnd
+     *            the end date to compare
+     * @param message
+     *            the message on mismatch
+     * @param arguments
+     *            the message arguments
+     * @return the assertor step
+     */
+    default StepCalendar isBetween(final Calendar dateStart, final Calendar dateEnd, final CharSequence message,
+            final Object... arguments) {
+        return this.isBetween(dateStart, dateEnd, null, message, arguments);
+    }
+
+    /**
+     * Check if the checked {@link Calendar} is between the {@code dateStart}
+     * and {@code dateEnd}.
+     * 
+     * <p>
+     * precondition: neither dates can be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(date).isBetween(date1, date2, Locale.US, "Not between dates").orElseThrow();
+     * </pre>
+     * 
+     * @param dateStart
+     *            the start date to compare
+     * @param dateEnd
+     *            the end date to compare
+     * @param locale
+     *            the message locale
+     * @param message
+     *            the message on mismatch
+     * @param arguments
+     *            the message arguments
+     * @return the assertor step
+     */
+    default StepCalendar isBetween(final Calendar dateStart, final Calendar dateEnd, final Locale locale, final CharSequence message,
+            final Object... arguments) {
+        return () -> AssertorDate.isBetween(this.getStep(), dateStart, dateEnd, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
      * Check if the checked {@link Calendar} is after the {@code date}.
      * 
      * <p>

@@ -191,6 +191,34 @@ public class AssertorTemporal extends ConstantsAssertor {
     }
 
     /**
+     * Prepare the next step to validate if the {@link Temporal} is between the
+     * specified Temporals (same type)
+     * 
+     * @param step
+     *            the current step
+     * @param temporalStart
+     *            the minimum date
+     * @param temporalEnd
+     *            the maximum date
+     * @param message
+     *            the message if invalid
+     * @param <T>
+     *            the Temporal type
+     * @return the next step
+     */
+    public static <T extends Temporal & Comparable<T>> StepAssertor<T> isBetween(final StepAssertor<T> step, final T temporalStart,
+            final T temporalEnd, final MessageAssertor message) {
+
+        final Predicate<T> preChecker = (Temporal) -> Temporal != null && temporalStart != null && temporalEnd != null;
+
+        final BiPredicate<T, Boolean> checker = (Temporal, not) -> Comparators.compare(Temporal, temporalStart) >= 0
+                && Comparators.compare(Temporal, temporalEnd) <= 0;
+
+        return new StepAssertor<>(step, preChecker, checker, false, message, MSG.TEMPORAL.BETWEEN, false,
+                new ParameterAssertor<>(temporalStart), new ParameterAssertor<>(temporalEnd));
+    }
+
+    /**
      * Prepare the next step to validate if the comparable {@link Temporal} is
      * after the specified temporal (same type)
      * 

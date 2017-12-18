@@ -418,6 +418,77 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
     }
 
     /**
+     * Asserts that the given {@link Map} contains the specified {@code value}.
+     * 
+     * <p>
+     * precondition: the {@link Map} cannot be {@code null} or empty
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).containsValue(value).orElseThrow();
+     * </pre>
+     * 
+     * @param value
+     *            The {@link Map} value
+     * @return The operator
+     * @category no_message
+     */
+    default StepMap<M, K, V> containsValue(final V value) {
+        return this.containsValue(value, null);
+    }
+
+    /**
+     * Asserts that the given {@link Map} contains the specified {@code value}.
+     * 
+     * <p>
+     * precondition: the {@link Map} cannot be {@code null} or empty
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).contains(key, value, "the value was not found in the map").orElseThrow();
+     * </pre>
+     * 
+     * @param value
+     *            The {@link Map} value
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category message
+     */
+    default StepMap<M, K, V> containsValue(final V value, final CharSequence message, final Object... arguments) {
+        return this.containsValue(value, null, message, arguments);
+    }
+
+    /**
+     * Asserts that the given {@link Map} contains the specified {@code value}.
+     * 
+     * <p>
+     * precondition: the {@link Map} cannot be {@code null} or empty
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).contains(value, Locale.US, "the value was not found in the map").orElseThrow();
+     * </pre>
+     * 
+     * @param value
+     *            The {@link Map} value
+     * @param locale
+     *            The locale of the message (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category localized_message
+     */
+    default StepMap<M, K, V> containsValue(final V value, final Locale locale, final CharSequence message, final Object... arguments) {
+        return () -> AssertorMap.containsValue(this.getStep(), value, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
      * Asserts that the given {@link Map} contains ALL the specified
      * {@code keys}.
      * 
@@ -570,6 +641,84 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
     }
 
     /**
+     * Asserts that the given {@link Map} contains ALL the specified
+     * {@code values}.
+     * 
+     * <p>
+     * precondition: neither {@link Map} and {@code values} can be {@code null}
+     * or empty
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).containsAllValues(values).orElseThrow();
+     * </pre>
+     * 
+     * @param values
+     *            The {@link Iterable} values
+     * @return The operator
+     * @category no_message
+     */
+    default StepMap<M, K, V> containsAllValues(final Iterable<V> values) {
+        return this.containsAllValues(values, null);
+    }
+
+    /**
+     * Asserts that the given {@link Map} contains ALL the specified
+     * {@code values}.
+     * 
+     * <p>
+     * precondition: neither {@link Map} and {@code values} can be {@code null}
+     * or empty
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).containsAllValues(values, "not all values can be found in the map").orElseThrow();
+     * </pre>
+     * 
+     * @param values
+     *            The {@link Iterable} values
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category message
+     */
+    default StepMap<M, K, V> containsAllValues(final Iterable<V> values, final CharSequence message, final Object... arguments) {
+        return this.containsAllValues(values, null, message, arguments);
+    }
+
+    /**
+     * Asserts that the given {@link Map} contains ALL the specified
+     * {@code values}.
+     * 
+     * <p>
+     * precondition: neither {@link Map} and {@code values} can be {@code null}
+     * or empty
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).containsAllValues(values, Locale.US, "not all values can be found in the map").orElseThrow();
+     * </pre>
+     * 
+     * @param values
+     *            The {@link Iterable} values
+     * @param locale
+     *            The locale of the message (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category localized_message
+     */
+    default StepMap<M, K, V> containsAllValues(final Iterable<V> values, final Locale locale, final CharSequence message,
+            final Object... arguments) {
+        return () -> AssertorMap.containsAllValues(this.getStep(), values, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
      * Asserts that the given {@link Map} contains ANY key from the specified
      * {@link Iterable}.
      * 
@@ -719,5 +868,320 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
      */
     default StepMap<M, K, V> containsAny(final Map<K, V> map, final Locale locale, final CharSequence message, final Object... arguments) {
         return () -> AssertorMap.containsAny(this.getStep(), map, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
+     * Asserts that the given {@link Map} contains ANY specified {@code values}.
+     * 
+     * <p>
+     * precondition: neither {@link Map} and {@code values} can be {@code null}
+     * or empty
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).containsAnyValues(values).orElseThrow();
+     * </pre>
+     * 
+     * @param values
+     *            The {@link Iterable} values
+     * @return The operator
+     * @category no_message
+     */
+    default StepMap<M, K, V> containsAnyValues(final Iterable<V> values) {
+        return this.containsAnyValues(values, null);
+    }
+
+    /**
+     * Asserts that the given {@link Map} contains ANY specified {@code values}.
+     * 
+     * <p>
+     * precondition: neither {@link Map} and {@code values} can be {@code null}
+     * or empty
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).containsAnyValues(values, "not all values can be found in the map").orElseThrow();
+     * </pre>
+     * 
+     * @param values
+     *            The {@link Iterable} values
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category message
+     */
+    default StepMap<M, K, V> containsAnyValues(final Iterable<V> values, final CharSequence message, final Object... arguments) {
+        return this.containsAnyValues(values, null, message, arguments);
+    }
+
+    /**
+     * Asserts that the given {@link Map} contains ANY specified {@code values}.
+     * 
+     * <p>
+     * precondition: neither {@link Map} and {@code values} can be {@code null}
+     * or empty
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).containsAnyValues(values, Locale.US, "not all values can be found in the map").orElseThrow();
+     * </pre>
+     * 
+     * @param values
+     *            The {@link Iterable} values
+     * @param locale
+     *            The locale of the message (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category localized_message
+     */
+    default StepMap<M, K, V> containsAnyValues(final Iterable<V> values, final Locale locale, final CharSequence message,
+            final Object... arguments) {
+        return () -> AssertorMap.containsAnyValues(this.getStep(), values, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
+     * Asserts that the given {@link Map} contains all entries from the
+     * specified {@code map} in the same order. Each maps must be sorted or
+     * linked otherwise result is unpredictable.
+     * 
+     * <p>
+     * precondition: neither {@link Map} can be {@code null} or empty
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).containsInOrder(entries).orElseThrow();
+     * </pre>
+     * 
+     * @param map
+     *            The {@link Map}
+     * @return The operator
+     * @category no_message
+     */
+    default StepMap<M, K, V> containsInOrder(final Map<K, V> map) {
+        return this.containsInOrder(map, null);
+    }
+
+    /**
+     * Asserts that the given {@link Map} contains all entries from the
+     * specified {@code map} in the same order. Each maps must be sorted or
+     * linked otherwise result is unpredictable.
+     * 
+     * <p>
+     * precondition: neither {@link Map} can be {@code null} or empty
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).containsInOrder(entries, "the maps are not in the same order").orElseThrow();
+     * </pre>
+     * 
+     * @param map
+     *            The {@link Map}
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category message
+     */
+    default StepMap<M, K, V> containsInOrder(final Map<K, V> map, final CharSequence message, final Object... arguments) {
+        return this.containsInOrder(map, null, message, arguments);
+    }
+
+    /**
+     * Asserts that the given {@link Map} contains all entries from the
+     * specified {@code map} in the same order. Each maps must be sorted or
+     * linked otherwise result is unpredictable.
+     * 
+     * <p>
+     * precondition: neither {@link Map} can be {@code null} or empty
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).containsInOrder(entries, Locale.US, "the maps are not in the same order").orElseThrow();
+     * </pre>
+     * 
+     * @param map
+     *            The {@link Map}
+     * @param locale
+     *            The locale of the message (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category localized_message
+     */
+    default StepMap<M, K, V> containsInOrder(final Map<K, V> map, final Locale locale, final CharSequence message,
+            final Object... arguments) {
+        return () -> AssertorMap.containsInOrder(this.getStep(), map, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
+     * Asserts that the given {@link Map} contains all keys in the same order.
+     * The map and the keys' iterable must be sorted or linked otherwise result
+     * is unpredictable.
+     * 
+     * <p>
+     * precondition: neither {@link Map} nor iterable can be {@code null} or
+     * empty
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).containsInOrder(keys).orElseThrow();
+     * </pre>
+     * 
+     * @param keys
+     *            The {@link Map} keys
+     * @return The operator
+     * @category no_message
+     */
+    default StepMap<M, K, V> containsInOrder(final Iterable<K> keys) {
+        return this.containsInOrder(keys, null);
+    }
+
+    /**
+     * Asserts that the given {@link Map} contains all keys in the same order.
+     * The map and the keys' iterable must be sorted or linked otherwise result
+     * is unpredictable.
+     * 
+     * <p>
+     * precondition: neither {@link Map} nor iterable can be {@code null} or
+     * empty
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).containsInOrder(keys, Locale.US, "the keys are not in the same order").orElseThrow();
+     * </pre>
+     * 
+     * @param keys
+     *            The {@link Map} keys
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category localized_message
+     */
+    default StepMap<M, K, V> containsInOrder(final Iterable<K> keys, final CharSequence message, final Object... arguments) {
+        return this.containsInOrder(keys, null, message, arguments);
+    }
+
+    /**
+     * Asserts that the given {@link Map} contains all keys in the same order.
+     * The map and the keys' iterable must be sorted or linked otherwise result
+     * is unpredictable.
+     * 
+     * <p>
+     * precondition: neither {@link Map} nor iterable can be {@code null} or
+     * empty
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).containsInOrder(keys, Locale.US, "the keys are not in the same order").orElseThrow();
+     * </pre>
+     * 
+     * @param keys
+     *            The {@link Map} keys
+     * @param locale
+     *            The locale of the message (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category localized_message
+     */
+    default StepMap<M, K, V> containsInOrder(final Iterable<K> keys, final Locale locale, final CharSequence message,
+            final Object... arguments) {
+        return () -> AssertorMap.containsKeysInOrder(this.getStep(), keys, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
+     * Asserts that the given {@link Map} contains all values in the same order.
+     * The map and the values' iterable must be sorted or linked otherwise
+     * result is unpredictable.
+     * 
+     * <p>
+     * precondition: neither {@link Map} nor iterable can be {@code null} or
+     * empty
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).containsInOrder(values).orElseThrow();
+     * </pre>
+     * 
+     * @param values
+     *            The {@link Map} values
+     * @return The operator
+     * @category no_message
+     */
+    default StepMap<M, K, V> containsValuesInOrder(final Iterable<V> values) {
+        return this.containsValuesInOrder(values, null);
+    }
+
+    /**
+     * Asserts that the given {@link Map} contains all values in the same order.
+     * The map and the values' iterable must be sorted or linked otherwise
+     * result is unpredictable.
+     * 
+     * <p>
+     * precondition: neither {@link Map} nor iterable can be {@code null} or
+     * empty
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).containsInOrder(values, "the values are not in the same order").orElseThrow();
+     * </pre>
+     * 
+     * @param values
+     *            The {@link Map} values
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category message
+     */
+    default StepMap<M, K, V> containsValuesInOrder(final Iterable<V> values, final CharSequence message, final Object... arguments) {
+        return this.containsValuesInOrder(values, null, message, arguments);
+    }
+
+    /**
+     * Asserts that the given {@link Map} contains all values in the same order.
+     * The map and the values' iterable must be sorted or linked otherwise
+     * result is unpredictable.
+     * 
+     * <p>
+     * precondition: neither {@link Map} nor iterable can be {@code null} or
+     * empty
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).containsInOrder(values, Locale.US, "the values are not in the same order").orElseThrow();
+     * </pre>
+     * 
+     * @param values
+     *            The {@link Map} values
+     * @param locale
+     *            The locale of the message (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category localized_message
+     */
+    default StepMap<M, K, V> containsValuesInOrder(final Iterable<V> values, final Locale locale, final CharSequence message,
+            final Object... arguments) {
+        return () -> AssertorMap.containsValuesInOrder(this.getStep(), values, MessageAssertor.of(locale, message, arguments));
     }
 }

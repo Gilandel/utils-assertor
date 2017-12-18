@@ -26,17 +26,22 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
 
 import fr.landel.utils.assertor.AbstractTest;
 import fr.landel.utils.assertor.Assertor;
+import fr.landel.utils.assertor.StepAssertor;
 import fr.landel.utils.assertor.enums.EnumAnalysisMode;
 import fr.landel.utils.assertor.utils.AssertorMap;
+import fr.landel.utils.commons.MapUtils2;
 
 /**
  * Check {@link AssertorMap}
@@ -381,5 +386,137 @@ public class PredicateAssertorMapTest extends AbstractTest {
 
         assertFalse(Assertor.<String, Integer> ofMap().not().hasSize(-1).that(map).isOK());
         assertFalse(Assertor.<String, Integer> ofMap().not().hasSize(1).that((Map<String, Integer>) null).isOK());
+    }
+
+    /**
+     * Check
+     * {@link AssertorMap#containsInOrder(StepAssertor, Map, fr.landel.utils.assertor.commons.MessageAssertor)}
+     */
+    @Test
+    public void testContainsInOrder() {
+        Map<String, Integer> mapTU = MapUtils2.newMap(LinkedHashMap::new, Pair.of("t", 1), Pair.of("u", 2));
+        Map<String, Integer> mapTU2 = MapUtils2.newMap(LinkedHashMap::new, Pair.of("t", 2), Pair.of("u", 3));
+        Map<String, Integer> mapTUClone = MapUtils2.newMap(LinkedHashMap::new, Pair.of("t", 1), Pair.of("u", 2));
+        Map<String, Integer> mapUT = MapUtils2.newMap(LinkedHashMap::new, Pair.of("u", 2), Pair.of("t", 1));
+        Map<String, Integer> mapU = Collections.singletonMap("u", 2);
+        Map<String, Integer> mapTVU = MapUtils2.newMap(LinkedHashMap::new, Pair.of("t", 1), Pair.of("v", 3), Pair.of("t", 1),
+                Pair.of("u", 2), Pair.of("v", 3));
+        // t, v, u (old keys are replaced)
+        Map<String, Integer> mapXTUV = MapUtils2.newMap(LinkedHashMap::new, Pair.of("x", 4), Pair.of("t", 1), Pair.of("u", 2),
+                Pair.of("t", 1), Pair.of("u", 2), Pair.of("v", 3));
+        // x, t, u , v (old keys are replaced)
+        Map<String, Integer> mapTNull = MapUtils2.newMap(LinkedHashMap::new, Pair.of("t", 1), Pair.of(null, 2));
+        Map<String, Integer> mapZ = MapUtils2.newMap(LinkedHashMap::new, Pair.of("z", 5));
+        Map<String, Integer> mapUV = MapUtils2.newMap(LinkedHashMap::new, Pair.of("u", 2), Pair.of("v", 3));
+        Map<String, Integer> mapTUV = MapUtils2.newMap(LinkedHashMap::new, Pair.of("t", 1), Pair.of("u", 2), Pair.of("v", 3));
+
+        for (EnumAnalysisMode mode : EnumAnalysisMode.values()) {
+            PredicateAssertorStepMap<String, Integer> predicate = Assertor.<String, Integer> ofMap(mode);
+
+            assertTrue(predicate.containsInOrder(mapTUClone).that(mapTU).isOK());
+            assertFalse(predicate.containsInOrder(mapUT).that(mapTU).isOK());
+            assertTrue(predicate.containsInOrder(mapU).that(mapTU).isOK());
+
+            assertFalse(predicate.containsInOrder(mapTU).that(mapTVU).isOK());
+            assertTrue(predicate.containsInOrder(mapTU).that(mapXTUV).isOK());
+            assertTrue(predicate.containsInOrder(mapTUClone).that(mapTU).isOK());
+            assertTrue(predicate.containsInOrder(mapTNull).that(mapTNull).isOK());
+            assertTrue(predicate.containsInOrder(mapTU).that(mapTUV).isOK());
+            assertTrue(predicate.containsInOrder(mapUV).that(mapTUV).isOK());
+            assertFalse(predicate.containsInOrder(mapTUV).that(mapTU).isOK());
+            assertFalse(predicate.containsInOrder(mapUT).that(mapTU).isOK());
+            assertFalse(predicate.containsInOrder(mapZ).that(mapTU).isOK());
+
+            // NOT
+            assertFalse(predicate.not().containsInOrder(mapTUClone).that(mapTU).isOK());
+            assertTrue(predicate.not().containsInOrder(mapUT).that(mapTU).isOK());
+            assertFalse(predicate.not().containsInOrder(mapU).that(mapTU).isOK());
+
+            assertTrue(predicate.not().containsInOrder(mapTU).that(mapTVU).isOK());
+            assertFalse(predicate.not().containsInOrder(mapTU).that(mapXTUV).isOK());
+            assertFalse(predicate.not().containsInOrder(mapTUClone).that(mapTU).isOK());
+            assertFalse(predicate.not().containsInOrder(mapTNull).that(mapTNull).isOK());
+            assertFalse(predicate.not().containsInOrder(mapTU).that(mapTUV).isOK());
+            assertFalse(predicate.not().containsInOrder(mapUV).that(mapTUV).isOK());
+            assertTrue(predicate.not().containsInOrder(mapTUV).that(mapTU).isOK());
+            assertTrue(predicate.not().containsInOrder(mapUT).that(mapTU).isOK());
+            assertTrue(predicate.not().containsInOrder(mapZ).that(mapTU).isOK());
+
+            // Keys and values
+
+            assertFalse(predicate.containsInOrder(mapZ.keySet()).that(mapTU).isOK());
+            assertTrue(predicate.not().containsInOrder(mapZ.keySet()).that(mapTU).isOK());
+
+            assertFalse(predicate.containsValuesInOrder(mapZ.values()).that(mapTU).isOK());
+            assertTrue(predicate.not().containsValuesInOrder(mapZ.values()).that(mapTU).isOK());
+
+            assertFalse(predicate.containsInOrder(mapTU2).that(mapTU).isOK());
+            assertFalse(predicate.containsValuesInOrder(mapTU2.values()).that(mapTU).isOK());
+            assertTrue(predicate.containsInOrder(mapTU2.keySet()).that(mapTU).isOK());
+            assertTrue(predicate.not().containsInOrder(mapTU2).that(mapTU).isOK());
+            assertTrue(predicate.not().containsValuesInOrder(mapTU2.values()).that(mapTU).isOK());
+            assertFalse(predicate.not().containsInOrder(mapTU2.keySet()).that(mapTU).isOK());
+
+            assertFalse(predicate.containsInOrder(mapUV).that(mapTU2).isOK());
+            assertTrue(predicate.containsValuesInOrder(mapUV.values()).that(mapTU2).isOK());
+            assertFalse(predicate.containsInOrder(mapUV.keySet()).that(mapTU2).isOK());
+            assertTrue(predicate.not().containsInOrder(mapUV).that(mapTU2).isOK());
+            assertFalse(predicate.not().containsValuesInOrder(mapUV.values()).that(mapTU2).isOK());
+            assertTrue(predicate.not().containsInOrder(mapUV.keySet()).that(mapTU2).isOK());
+
+            assertTrue(predicate.containsInOrder(mapTU2.keySet()).that(mapTU).isOK());
+            assertFalse(predicate.not().containsInOrder(mapTU2.keySet()).that(mapTU).isOK());
+        }
+    }
+
+    /**
+     * Check {@link AssertorMap#containsValues}
+     */
+    @Test
+    public void testContainsValue() {
+        Map<String, Integer> mapTU = MapUtils2.newMap(LinkedHashMap::new, Pair.of("t", 1), Pair.of("u", 2));
+
+        assertTrue(Assertor.<String, Integer> ofMap().containsValue(1).that(mapTU).isOK());
+        assertFalse(Assertor.<String, Integer> ofMap().containsValue(0).that(mapTU).isOK());
+    }
+
+    /**
+     * Check {@link AssertorMap#containsAnyValues}
+     */
+    @Test
+    public void testContainsAnyValues() {
+        Map<String, Integer> mapTU = MapUtils2.newMap(LinkedHashMap::new, Pair.of("t", 1), Pair.of("u", 2));
+
+        for (EnumAnalysisMode mode : EnumAnalysisMode.values()) {
+            PredicateAssertorStepMap<String, Integer> predicate = Assertor.<String, Integer> ofMap(mode);
+
+            assertTrue(predicate.containsAnyValues(Arrays.asList(1, 2)).that(mapTU).isOK());
+            assertTrue(predicate.containsAnyValues(Arrays.asList(1, 2, 3)).that(mapTU).isOK());
+            assertTrue(predicate.containsAnyValues(Arrays.asList(0, 1)).that(mapTU).isOK());
+            assertFalse(predicate.containsAnyValues(Arrays.asList(0)).that(mapTU).isOK());
+
+            assertFalse(predicate.containsAnyValues(Arrays.asList(0)).that((Map<String, Integer>) null).isOK());
+            assertFalse(predicate.containsAnyValues((List<Integer>) null).that(mapTU).isOK());
+        }
+    }
+
+    /**
+     * Check {@link AssertorMap#containsAllValues}
+     */
+    @Test
+    public void testContainsAllValues() {
+        Map<String, Integer> mapTU = MapUtils2.newMap(LinkedHashMap::new, Pair.of("t", 1), Pair.of("u", 2));
+
+        for (EnumAnalysisMode mode : EnumAnalysisMode.values()) {
+            PredicateAssertorStepMap<String, Integer> predicate = Assertor.<String, Integer> ofMap(mode);
+
+            assertTrue(predicate.containsAllValues(Arrays.asList(1, 2)).that(mapTU).isOK());
+            assertFalse(predicate.containsAllValues(Arrays.asList(1, 2, 3)).that(mapTU).isOK());
+            assertFalse(predicate.containsAllValues(Arrays.asList(0, 1)).that(mapTU).isOK());
+            assertFalse(predicate.containsAllValues(Arrays.asList(0)).that(mapTU).isOK());
+
+            assertFalse(predicate.containsAllValues(Arrays.asList(0)).that((Map<String, Integer>) null).isOK());
+            assertFalse(predicate.containsAllValues((List<Integer>) null).that(mapTU).isOK());
+        }
     }
 }

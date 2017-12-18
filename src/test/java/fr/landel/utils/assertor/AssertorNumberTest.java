@@ -22,13 +22,19 @@ package fr.landel.utils.assertor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
+import org.hamcrest.Matchers;
 import org.junit.Test;
 
+import fr.landel.utils.assertor.predicate.PredicateStepCharSequence;
 import fr.landel.utils.assertor.utils.AssertorNumber;
+import fr.landel.utils.commons.CollectionUtils2;
 
 /**
  * Check {@link AssertorNumber}
@@ -326,6 +332,27 @@ public class AssertorNumberTest extends AbstractTest {
         // precondition
         assertFalse(Assertor.that(2).isBetween(3, 3).isOK());
         assertFalse(Assertor.that(2).isBetween(null, 3).isOK());
+
+        PredicateStepCharSequence<String> predicate = Assertor.<String> ofCharSequence().isNotBlank().and().isEqualIgnoreCase("true");
+
+        assertTrue(Assertor.that(Arrays.asList("test")).containsAny(Arrays.asList("test")).isOK());
+
+        System.out.println(Assertor.that(true).isFalse().getErrors().get());
+
+        List<String> objects = Arrays.asList("a", "b");
+        assertThat(CollectionUtils2.toArray(objects), Matchers.arrayContaining(objects.get(0), objects.get(1)));
+
+        Assertor.that(CollectionUtils2.toArray(objects)).containsAll(new String[] {objects.get(0), objects.get(1)}).isOK();
+
+        try {
+            assertThat(false, Matchers.is(true));
+        } catch (AssertionError e) {
+            System.out.println(e.getLocalizedMessage());
+        }
+
+        assertTrue(predicate.that("true").isOK());
+        assertFalse(predicate.that("false").isOK());
+        assertTrue(Assertor.that("true").isNotBlank().andBoolean(Boolean::parseBoolean).isTrue().isOK());
 
         // check
         assertFalse(Assertor.that(0).isBetween(1, 3).isOK());

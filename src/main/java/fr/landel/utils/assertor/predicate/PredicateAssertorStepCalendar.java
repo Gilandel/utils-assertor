@@ -37,8 +37,8 @@ import fr.landel.utils.assertor.utils.AssertorDate;
  * {@link PredicateAssertorStepCalendar} &gt; {@link PredicateStepCalendar} &gt; {@link PredicateAssertorStepCalendar} &gt; {@link PredicateStepCalendar}...
  * </pre>
  * 
- * This chain always starts with a {@link PredicateAssertorStepCalendar} and ends
- * with {@link PredicateStepCalendar}.
+ * This chain always starts with a {@link PredicateAssertorStepCalendar} and
+ * ends with {@link PredicateStepCalendar}.
  *
  * @since Aug 3, 2016
  * @author Gilles
@@ -130,8 +130,7 @@ public interface PredicateAssertorStepCalendar extends PredicateAssertorStep<Pre
      * @return the assertor step
      * @category localized_message
      */
-    default PredicateStepCalendar isEqual(final Calendar date, final Locale locale, final CharSequence message,
-            final Object... arguments) {
+    default PredicateStepCalendar isEqual(final Calendar date, final Locale locale, final CharSequence message, final Object... arguments) {
         return () -> AssertorDate.isEqual(this.getStep(), date, MessageAssertor.of(locale, message, arguments));
     }
 
@@ -369,8 +368,8 @@ public interface PredicateAssertorStepCalendar extends PredicateAssertorStep<Pre
      * @return the assertor step
      * @category localized_message
      */
-    default PredicateStepCalendar isAround(final Calendar date, final int calendarField, final int calendarAmount,
-            final Locale locale, final CharSequence message, final Object... arguments) {
+    default PredicateStepCalendar isAround(final Calendar date, final int calendarField, final int calendarAmount, final Locale locale,
+            final CharSequence message, final Object... arguments) {
         return () -> AssertorDate.isAround(this.getStep(), date, calendarField, calendarAmount,
                 MessageAssertor.of(locale, message, arguments));
     }
@@ -536,10 +535,88 @@ public interface PredicateAssertorStepCalendar extends PredicateAssertorStep<Pre
      * @return the assertor step
      * @category localized_message
      */
-    default PredicateStepCalendar isNotAround(final Calendar date, final int calendarField, final int calendarAmount,
-            final Locale locale, final CharSequence message, final Object... arguments) {
+    default PredicateStepCalendar isNotAround(final Calendar date, final int calendarField, final int calendarAmount, final Locale locale,
+            final CharSequence message, final Object... arguments) {
         return () -> AssertorDate.isNotAround(this.getStep(), date, calendarField, calendarAmount,
                 MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
+     * Check if the checked {@link Calendar} is between the {@code dateStart}
+     * and {@code dateEnd}.
+     * 
+     * <p>
+     * precondition: neither dates can be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(date).isBetween(date1, date2).orElseThrow();
+     * </pre>
+     * 
+     * @param dateStart
+     *            the start date to compare
+     * @param dateEnd
+     *            the end date to compare
+     * @return the assertor step
+     */
+    default PredicateStepCalendar isBetween(final Calendar dateStart, final Calendar dateEnd) {
+        return this.isBetween(dateStart, dateEnd, null);
+    }
+
+    /**
+     * Check if the checked {@link Calendar} is between the {@code dateStart}
+     * and {@code dateEnd}.
+     * 
+     * <p>
+     * precondition: neither dates can be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(date).isBetween(date1, date2, "Not between dates").orElseThrow();
+     * </pre>
+     * 
+     * @param dateStart
+     *            the start date to compare
+     * @param dateEnd
+     *            the end date to compare
+     * @param message
+     *            the message on mismatch
+     * @param arguments
+     *            the message arguments
+     * @return the assertor step
+     */
+    default PredicateStepCalendar isBetween(final Calendar dateStart, final Calendar dateEnd, final CharSequence message,
+            final Object... arguments) {
+        return this.isBetween(dateStart, dateEnd, null, message, arguments);
+    }
+
+    /**
+     * Check if the checked {@link Calendar} is between the {@code dateStart}
+     * and {@code dateEnd}.
+     * 
+     * <p>
+     * precondition: neither dates can be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(date).isBetween(date1, date2, Locale.US, "Not between dates").orElseThrow();
+     * </pre>
+     * 
+     * @param dateStart
+     *            the start date to compare
+     * @param dateEnd
+     *            the end date to compare
+     * @param locale
+     *            the message locale
+     * @param message
+     *            the message on mismatch
+     * @param arguments
+     *            the message arguments
+     * @return the assertor step
+     */
+    default PredicateStepCalendar isBetween(final Calendar dateStart, final Calendar dateEnd, final Locale locale,
+            final CharSequence message, final Object... arguments) {
+        return () -> AssertorDate.isBetween(this.getStep(), dateStart, dateEnd, MessageAssertor.of(locale, message, arguments));
     }
 
     /**
@@ -609,8 +686,7 @@ public interface PredicateAssertorStepCalendar extends PredicateAssertorStep<Pre
      * @return the assertor step
      * @category localized_message
      */
-    default PredicateStepCalendar isAfter(final Calendar date, final Locale locale, final CharSequence message,
-            final Object... arguments) {
+    default PredicateStepCalendar isAfter(final Calendar date, final Locale locale, final CharSequence message, final Object... arguments) {
         return () -> AssertorDate.isAfter(this.getStep(), date, MessageAssertor.of(locale, message, arguments));
     }
 
@@ -775,8 +851,8 @@ public interface PredicateAssertorStepCalendar extends PredicateAssertorStep<Pre
      * @return the assertor step
      * @category localized_message
      */
-    default PredicateStepCalendar isAfter(final Calendar date, final int calendarField, final int calendarAmount,
-            final Locale locale, final CharSequence message, final Object... arguments) {
+    default PredicateStepCalendar isAfter(final Calendar date, final int calendarField, final int calendarAmount, final Locale locale,
+            final CharSequence message, final Object... arguments) {
         return () -> AssertorDate.isAfter(this.getStep(), date, calendarField, calendarAmount,
                 MessageAssertor.of(locale, message, arguments));
     }
@@ -1260,8 +1336,8 @@ public interface PredicateAssertorStepCalendar extends PredicateAssertorStep<Pre
      * @return the assertor step
      * @category localized_message
      */
-    default PredicateStepCalendar isBefore(final Calendar date, final int calendarField, final int calendarAmount,
-            final Locale locale, final CharSequence message, final Object... arguments) {
+    default PredicateStepCalendar isBefore(final Calendar date, final int calendarField, final int calendarAmount, final Locale locale,
+            final CharSequence message, final Object... arguments) {
         return () -> AssertorDate.isBefore(this.getStep(), date, calendarField, calendarAmount,
                 MessageAssertor.of(locale, message, arguments));
     }

@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -250,17 +251,17 @@ public class PredicateAssertorIterableTest extends AbstractTest {
         assertException(() -> {
             Assertor.<Set<String>, String> ofIterable().contains(el1).that(set).orElseThrow();
             fail(ERROR);
-        }, IllegalArgumentException.class, "the iterable cannot be null");
+        }, IllegalArgumentException.class, "the iterable cannot be null or empty");
 
         assertException(() -> {
             Assertor.<Iterable<String>, String> ofIterable().contains(el1).that((Iterable<String>) null).orElseThrow();
             fail(ERROR);
-        }, IllegalArgumentException.class, "the iterable cannot be null");
+        }, IllegalArgumentException.class, "the iterable cannot be null or empty");
 
         assertException(() -> {
             Assertor.<Set<String>, String> ofIterable().contains((String) null).that(set).orElseThrow();
             fail(ERROR);
-        }, IllegalArgumentException.class, "the iterable cannot be null");
+        }, IllegalArgumentException.class, "the iterable cannot be null or empty");
     }
 
     /**
@@ -306,12 +307,12 @@ public class PredicateAssertorIterableTest extends AbstractTest {
         assertException(() -> {
             Assertor.<Set<String>, String> ofIterable().containsAll((Iterable<String>) null).that(set).orElseThrow();
             fail(ERROR);
-        }, IllegalArgumentException.class, "neither iterables can be null");
+        }, IllegalArgumentException.class, "neither iterables can be null or empty");
 
         assertException(() -> {
             Assertor.<Set<String>, String> ofIterable().containsAny((Iterable<String>) null).that(set).orElseThrow();
             fail(ERROR);
-        }, IllegalArgumentException.class, "neither iterables can be null");
+        }, IllegalArgumentException.class, "neither iterables can be null or empty");
 
         set.clear();
 
@@ -323,22 +324,22 @@ public class PredicateAssertorIterableTest extends AbstractTest {
         assertException(() -> {
             Assertor.<Set<String>, String> ofIterable().containsAll(set2).that(set).orElseThrow();
             fail(ERROR);
-        }, IllegalArgumentException.class, "neither iterables can be null");
+        }, IllegalArgumentException.class, "neither iterables can be null or empty");
 
         assertException(() -> {
             Assertor.<Iterable<String>, String> ofIterable().contains(el1).that((Iterable<String>) null).orElseThrow();
             fail(ERROR);
-        }, IllegalArgumentException.class, "the iterable cannot be null");
+        }, IllegalArgumentException.class, "the iterable cannot be null or empty");
 
         assertException(() -> {
             Assertor.<Iterable<String>, String> ofIterable().containsAny(set2).that((Iterable<String>) null).orElseThrow();
             fail(ERROR);
-        }, IllegalArgumentException.class, "neither iterables can be null");
+        }, IllegalArgumentException.class, "neither iterables can be null or empty");
 
         assertException(() -> {
             Assertor.<Set<String>, String> ofIterable().containsAll((Iterable<String>) null).that(set).orElseThrow();
             fail(ERROR);
-        }, IllegalArgumentException.class, "neither iterables can be null");
+        }, IllegalArgumentException.class, "neither iterables can be null or empty");
 
         set.add(null);
         Assertor.<Set<String>, String> ofIterable().contains(null).that(set).orElseThrow();
@@ -387,7 +388,7 @@ public class PredicateAssertorIterableTest extends AbstractTest {
         assertException(() -> {
             Assertor.<Iterable<String>, String> ofIterable().not().contains(el1).that((Iterable<String>) null).orElseThrow();
             fail(ERROR);
-        }, IllegalArgumentException.class, "the iterable cannot be null");
+        }, IllegalArgumentException.class, "the iterable cannot be null or empty");
     }
 
     /**
@@ -428,7 +429,7 @@ public class PredicateAssertorIterableTest extends AbstractTest {
         assertException(() -> {
             Assertor.<Set<String>, String> ofIterable().not().containsAll((Iterable<String>) null).that(set).orElseThrow();
             fail(ERROR);
-        }, IllegalArgumentException.class, "neither iterables can be null");
+        }, IllegalArgumentException.class, "neither iterables can be null or empty");
 
         assertFalse(Assertor.<Set<String>, String> ofIterable().not().containsAll(set2).that(set).isOK());
         assertFalse(Assertor.<Set<String>, String> ofIterable().not().containsAll(set).that(set).isOK());
@@ -440,12 +441,12 @@ public class PredicateAssertorIterableTest extends AbstractTest {
         assertException(() -> {
             Assertor.<Iterable<String>, String> ofIterable().not().containsAll(set2).that((Iterable<String>) null).orElseThrow();
             fail(ERROR);
-        }, IllegalArgumentException.class, "neither iterables can be null");
+        }, IllegalArgumentException.class, "neither iterables can be null or empty");
 
         assertException(() -> {
             Assertor.<Set<String>, String> ofIterable().not().containsAll((Iterable<String>) null).that(set).orElseThrow();
             fail(ERROR);
-        }, IllegalArgumentException.class, "neither iterables can be null");
+        }, IllegalArgumentException.class, "neither iterables can be null or empty");
 
         assertFalse(Assertor.<Set<String>, String> ofIterable().not().containsAll(set2).that(set).isOK());
         assertFalse(Assertor.<Set<String>, String> ofIterable().not().containsAll(set).that(set).isOK());
@@ -497,5 +498,58 @@ public class PredicateAssertorIterableTest extends AbstractTest {
     @Test(expected = IllegalArgumentException.class)
     public void testIsNotEmptyKOCollectionOfQ() {
         Assertor.ofIterable().isNotEmpty().that(Collections.emptyList()).orElseThrow();
+    }
+
+    /**
+     * Check {@link AssertorIterable#containsInOrder}
+     */
+    @Test
+    public void testContainsInOrder() {
+        List<String> listTU = Arrays.asList("t", "u");
+        List<String> listTUClone = Arrays.asList("t", "u");
+        List<String> listUT = Arrays.asList("u", "t");
+        List<String> listU = Arrays.asList("u");
+        List<String> listTVTUV = Arrays.asList("t", "v", "t", "u", "v");
+        List<String> listXTUTUV = Arrays.asList("x", "t", "u", "t", "u", "v");
+        List<String> listTUV = Arrays.asList("t", "u", "v");
+        List<String> listUV = Arrays.asList("u", "v");
+        List<String> listZ = Arrays.asList("z");
+        List<String> listTNull = Arrays.asList("t", null);
+
+        for (EnumAnalysisMode mode : EnumAnalysisMode.values()) {
+            PredicateAssertorStepIterable<List<String>, String> predicate = Assertor.<List<String>, String> ofIterable(mode);
+
+            assertTrue(predicate.containsInOrder(listTUClone).that(listTU).isOK());
+            assertFalse(predicate.not().containsInOrder(listTUClone).that(listTU).isOK());
+
+            assertFalse(predicate.containsInOrder(listUT).that(listTU).isOK());
+            assertTrue(predicate.not().containsInOrder(listUT).that(listTU).isOK());
+
+            assertTrue(predicate.containsInOrder(listU).that(listTU).isOK());
+            assertFalse(predicate.not().containsInOrder(listU).that(listTU).isOK());
+
+            assertTrue(predicate.containsInOrder(listTU).that(listTVTUV).isOK());
+            assertTrue(predicate.containsInOrder(listTU).that(listXTUTUV).isOK());
+            assertTrue(predicate.containsInOrder(listTU).that(listTU).isOK());
+            assertTrue(predicate.containsInOrder(listTNull).that(listTNull).isOK());
+            assertTrue(predicate.containsInOrder(listTU).that(listTUV).isOK());
+            assertTrue(predicate.containsInOrder(listUV).that(listTUV).isOK());
+            assertFalse(predicate.containsInOrder(listTUV).that(listTU).isOK());
+            assertFalse(predicate.containsInOrder(listUT).that(listTU).isOK());
+            assertFalse(predicate.containsInOrder(listZ).that(listTU).isOK());
+
+            assertFalse(predicate.not().containsInOrder(listTU).that(listTVTUV).isOK());
+            assertFalse(predicate.not().containsInOrder(listTU).that(listXTUTUV).isOK());
+            assertFalse(predicate.not().containsInOrder(listTU).that(listTU).isOK());
+            assertFalse(predicate.not().containsInOrder(listTNull).that(listTNull).isOK());
+            assertFalse(predicate.not().containsInOrder(listTU).that(listTUV).isOK());
+            assertFalse(predicate.not().containsInOrder(listUV).that(listTUV).isOK());
+            assertTrue(predicate.not().containsInOrder(listTUV).that(listTU).isOK());
+            assertTrue(predicate.not().containsInOrder(listUT).that(listTU).isOK());
+            assertTrue(predicate.not().containsInOrder(listZ).that(listTU).isOK());
+
+            assertFalse(predicate.not().containsInOrder(listU).that((List<String>) null).isOK());
+            assertFalse(predicate.not().containsInOrder((List<String>) null).that(listTU).isOK());
+        }
     }
 }

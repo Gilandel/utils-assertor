@@ -184,6 +184,7 @@ public class AssertorArrayTest extends AbstractTest {
         assertFalse(Assertor.that(new String[] {}).contains((String) null).isOK());
         assertFalse(Assertor.that((String[]) null).contains("").isOK());
 
+        assertFalse(Assertor.that(new String[] {null, "2", "3"}).containsAll(new String[] {null, "3", "4", "5"}).isOK());
         assertTrue(Assertor.that(new String[] {null, "2", "3"}).containsAll(new String[] {null, "3"}).isOK());
         assertFalse(Assertor.that(new String[] {null, "2", "3"}).containsAll(new String[] {null, "4"}).isOK());
         assertFalse(Assertor.that(new String[] {null, "2", "3"}).containsAll(new String[] {"4"}).isOK());
@@ -225,5 +226,74 @@ public class AssertorArrayTest extends AbstractTest {
                 Assertor.that(new String[] {null, "2", "3"}, EnumAnalysisMode.STREAM).not().containsAll(new String[] {null, "4"}).isOK());
         assertTrue(
                 Assertor.that(new String[] {null, "2", "3"}, EnumAnalysisMode.PARALLEL).not().containsAll(new String[] {null, "4"}).isOK());
+    }
+
+    /**
+     * Check {@link AssertorArray#containsInOrder}
+     */
+    @Test
+    public void testContainsInOrder() {
+        String[] arrayTU = {"t", "u"};
+        String[] arrayTUClone = {"t", "u"};
+        String[] arrayUT = {"u", "t"};
+        String[] arrayU = {"u"};
+        String[] arrayTVTUV = {"t", "v", "t", "u", "v"};
+        String[] arrayXTUTUV = {"x", "t", "u", "t", "u", "v"};
+        String[] arrayTUV = {"t", "u", "v"};
+        String[] arrayUV = {"u", "v"};
+        String[] arrayZ = {"z"};
+        String[] arrayTNull = {"t", null};
+
+        for (EnumAnalysisMode mode : EnumAnalysisMode.values()) {
+            AssertorStepArray<String> assertorTU = Assertor.that(arrayTU, mode);
+
+            assertTrue(assertorTU.containsInOrder(arrayTUClone).isOK());
+            assertFalse(assertorTU.not().containsInOrder(arrayTUClone).isOK());
+
+            assertFalse(assertorTU.containsInOrder(arrayUT).isOK());
+            assertTrue(assertorTU.not().containsInOrder(arrayUT).isOK());
+
+            assertTrue(assertorTU.containsInOrder(arrayU).isOK());
+            assertFalse(assertorTU.not().containsInOrder(arrayU).isOK());
+
+            assertTrue(Assertor.that(arrayTVTUV, mode).containsInOrder(arrayTU).isOK());
+            assertTrue(Assertor.that(arrayXTUTUV, mode).containsInOrder(arrayTU).isOK());
+            assertTrue(Assertor.that(arrayTU, mode).containsInOrder(arrayTU).isOK());
+            assertTrue(Assertor.that(arrayTNull, mode).containsInOrder(arrayTNull).isOK());
+            assertTrue(Assertor.that(arrayTUV, mode).containsInOrder(arrayTU).isOK());
+            assertTrue(Assertor.that(arrayTUV, mode).containsInOrder(arrayUV).isOK());
+            assertFalse(Assertor.that(arrayTU, mode).containsInOrder(arrayTUV).isOK());
+            assertFalse(Assertor.that(arrayTU, mode).containsInOrder(arrayUT).isOK());
+            assertFalse(Assertor.that(arrayTU, mode).containsInOrder(arrayZ).isOK());
+
+            assertFalse(Assertor.that(arrayTVTUV, mode).not().containsInOrder(arrayTU).isOK());
+            assertFalse(Assertor.that(arrayXTUTUV, mode).not().containsInOrder(arrayTU).isOK());
+            assertFalse(Assertor.that(arrayTU, mode).not().containsInOrder(arrayTU).isOK());
+            assertFalse(Assertor.that(arrayTNull, mode).not().containsInOrder(arrayTNull).isOK());
+            assertFalse(Assertor.that(arrayTUV, mode).not().containsInOrder(arrayTU).isOK());
+            assertFalse(Assertor.that(arrayTUV, mode).not().containsInOrder(arrayUV).isOK());
+            assertTrue(Assertor.that(arrayTU, mode).not().containsInOrder(arrayTUV).isOK());
+            assertTrue(Assertor.that(arrayTU, mode).not().containsInOrder(arrayUT).isOK());
+            assertTrue(Assertor.that(arrayTU, mode).not().containsInOrder(arrayZ).isOK());
+
+            assertFalse(Assertor.that((String[]) null, mode).containsInOrder(arrayU).isOK());
+            assertFalse(assertorTU.containsInOrder((String[]) null).isOK());
+
+            assertException(() -> Assertor.that(arrayTU, mode).containsInOrder(arrayTUV).orElseThrow(), IllegalArgumentException.class,
+                    "the array '[t, u]' should contain all values of '[t, u, v]' in the same order");
+
+            assertException(() -> Assertor.that(arrayTVTUV, mode).not().containsInOrder(arrayTU).orElseThrow(),
+                    IllegalArgumentException.class,
+                    "the array '[t, v, t, u, v]' should NOT contain all values of '[t, u]' or should be in an other order");
+
+            assertException(() -> Assertor.that((String[]) null, mode).containsInOrder(arrayU).orElseThrow(),
+                    IllegalArgumentException.class, "neither arrays can be null or empty");
+
+            assertException(() -> Assertor.that(new String[0], mode).containsInOrder(arrayU).orElseThrow(), IllegalArgumentException.class,
+                    "neither arrays can be null or empty");
+
+            assertException(() -> assertorTU.containsInOrder((String[]) null).orElseThrow(), IllegalArgumentException.class,
+                    "neither arrays can be null or empty");
+        }
     }
 }

@@ -25,14 +25,9 @@ Work progress:
 <dependency>
 	<groupId>fr.landel.utils</groupId>
 	<artifactId>utils-assertor</artifactId>
-	<version>1.0.4</version>
+	<version>1.1.1</version>
 </dependency>
 ```
-
-## TODO
-rewrite core helper that manages combination
-avoid unnecessary messages generation if not required
-improve message generation (parenthesis, precondition, operator...)
 
 ## Summary
 
@@ -90,7 +85,7 @@ improve message generation (parenthesis, precondition, operator...)
       1. [isNotEqualIgnoreLineReturns](#isnotequalignorelinereturns)
       1. [isEqualIgnoreCaseAndLineReturns](#isequalignorecaseandlinereturns)
       1. [isNotEqualIgnoreCaseAndLineReturns](#isnotequalignorecaseandlinereturns)
-   1. [contains](#contains-1)
+      1. [contains](#contains-1)
       1. [startsWith](#startswith)
       1. [startsWithIgnoreCase](#startswithignorecase)
       1. [endsWith](#endswith)
@@ -157,7 +152,7 @@ improve message generation (parenthesis, precondition, operator...)
       1. [hasCauseNotNull](#hascausenotnull)
       1. [hasCauseAssignableFrom](#hascauseassignablefrom)
       1. [hasCauseInstanceOf](#hascauseinstanceof)
-1. [TODO](#todo)
+1. [Changelog](#changelog)
 1. [License](#license)
 
 ## Description
@@ -2921,6 +2916,22 @@ Assertor.that((Exception) null).hasCauseInstanceOf(Exception.class, Pattern.comp
 Assertor.that(new Exception("error")).hasCauseInstanceOf(null, Pattern.compile("^e.*$"), false).orElseThrow(); // -> throws an exception
 Assertor.that(new IOException()).hasCauseInstanceOf(Exception.class, (Pattern) null, false).orElseThrow(); // -> throws an exception
 ```
+
+## Changelog
+### 1.1.1 - 2017-12-18
+- New: add new methods to check map, iterable and array ordered content (containsInOrder, containsValuesInOrder, containsAnyValues, containsAllValues)
+- New: Add isBeetween functions for date, calendar and temporal
+- Update: Assertor.that() supports varArgs to create an array
+- Fix: Correct message for iterable precondictions
+
+### 1.1.0 - 2017-11-19
+- New: Messages are now only generates on demand (at the end of the chain)
+- New: Use Java 9 compiler
+- New: Add isBeetween for number and validates for object functions
+- New: Add predicate mode to prepare assertions (Assertor.<>of...)
+- New: Change and improve build chain (on operator) to support predicate mode
+- Update: Correct and update license
+- Fix: Javadoc
 
 ## License
 Apache License, version 2.0

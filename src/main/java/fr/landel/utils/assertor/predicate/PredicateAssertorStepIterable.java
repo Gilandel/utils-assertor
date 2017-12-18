@@ -36,8 +36,8 @@ import fr.landel.utils.assertor.utils.AssertorIterable;
  * {@link PredicateAssertorStepIterable} &gt; {@link PredicateStepIterable} &gt; {@link PredicateAssertorStepIterable} &gt; {@link PredicateStepIterable}...
  * </pre>
  * 
- * This chain always starts with a {@link PredicateAssertorStepIterable} and ends
- * with {@link PredicateStepIterable}.
+ * This chain always starts with a {@link PredicateAssertorStepIterable} and
+ * ends with {@link PredicateStepIterable}.
  *
  * @since Aug 3, 2016
  * @author Gilles
@@ -377,8 +377,7 @@ public interface PredicateAssertorStepIterable<I extends Iterable<T>, T> extends
      *            The arguments of the message, use {@link String#format}
      * @return The operator
      */
-    default PredicateStepIterable<I, T> containsAll(final Iterable<T> values, final CharSequence message,
-            final Object... arguments) {
+    default PredicateStepIterable<I, T> containsAll(final Iterable<T> values, final CharSequence message, final Object... arguments) {
         return this.containsAll(values, null, message, arguments);
     }
 
@@ -450,8 +449,7 @@ public interface PredicateAssertorStepIterable<I extends Iterable<T>, T> extends
      *            The arguments of the message, use {@link String#format}
      * @return The operator
      */
-    default PredicateStepIterable<I, T> containsAny(final Iterable<T> values, final CharSequence message,
-            final Object... arguments) {
+    default PredicateStepIterable<I, T> containsAny(final Iterable<T> values, final CharSequence message, final Object... arguments) {
         return this.containsAny(values, null, message, arguments);
     }
 
@@ -481,5 +479,77 @@ public interface PredicateAssertorStepIterable<I extends Iterable<T>, T> extends
     default PredicateStepIterable<I, T> containsAny(final Iterable<T> values, final Locale locale, final CharSequence message,
             final Object... arguments) {
         return () -> AssertorIterable.containsAny(this.getStep(), values, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
+     * Asserts that the given {@link Iterable} contains ALL elements of
+     * {@code values} in the same order.
+     * 
+     * <p>
+     * precondition: neither {@link Iterable} can be {@code null} or empty
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(iterable).containsInOrder(values).orElseThrow();
+     * </pre>
+     * 
+     * @param values
+     *            The {@link Iterable} values
+     * @return The operator
+     */
+    default PredicateStepIterable<I, T> containsInOrder(final Iterable<T> values) {
+        return this.containsInOrder(values, null);
+    }
+
+    /**
+     * Asserts that the given {@link Iterable} contains ALL elements of
+     * {@code values} in the same order.
+     * 
+     * <p>
+     * precondition: neither {@link Iterable} can be {@code null} or empty
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(iterable).containsInOrder(values, "elements aren't found or in the same order").orElseThrow();
+     * </pre>
+     * 
+     * @param values
+     *            The {@link Iterable} values
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     */
+    default PredicateStepIterable<I, T> containsInOrder(final Iterable<T> values, final CharSequence message, final Object... arguments) {
+        return this.containsInOrder(values, null, message, arguments);
+    }
+
+    /**
+     * Asserts that the given {@link Iterable} contains ALL elements of
+     * {@code values} in the same order.
+     * 
+     * <p>
+     * precondition: neither {@link Iterable} can be {@code null} or empty
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(iterable).containsInOrder(values, Locale.US, "elements aren't found or in the same order").orElseThrow();
+     * </pre>
+     * 
+     * @param values
+     *            The {@link Iterable} values
+     * @param locale
+     *            The locale of the message (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     */
+    default PredicateStepIterable<I, T> containsInOrder(final Iterable<T> values, final Locale locale, final CharSequence message,
+            final Object... arguments) {
+        return () -> AssertorIterable.containsInOrder(this.getStep(), values, MessageAssertor.of(locale, message, arguments));
     }
 }

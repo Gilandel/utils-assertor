@@ -37,8 +37,8 @@ import fr.landel.utils.assertor.utils.AssertorMap;
  * {@link PredicateAssertorStepMap} &gt; {@link PredicateStepMap} &gt; {@link PredicateAssertorStepMap} &gt; {@link PredicateStepMap}...
  * </pre>
  * 
- * This chain always starts with a {@link PredicateAssertorStepMap} and ends with
- * {@link PredicateStepMap}.
+ * This chain always starts with a {@link PredicateAssertorStepMap} and ends
+ * with {@link PredicateStepMap}.
  *
  * @since Aug 3, 2016
  * @author Gilles
@@ -72,7 +72,8 @@ public interface PredicateAssertorStepMap<K, V> extends PredicateAssertorStep<Pr
      * </p>
      * 
      * <pre>
-     * Assertor.that(map).hasSize(size).orElseThrow();
+     * PredicateStepMap&lt;String, Integer&gt; checkMapSize = Assertor.&lt;String, Integer&gt; ofMap().hasSize(size);
+     * checkMapSize.that(map).orElseThrow();
      * </pre>
      * 
      * @param size
@@ -93,7 +94,8 @@ public interface PredicateAssertorStepMap<K, V> extends PredicateAssertorStep<Pr
      * </p>
      * 
      * <pre>
-     * Assertor.that(map).hasSize(size, "bad size").orElseThrow();
+     * PredicateStepMap&lt;String, Integer&gt; checkMapSize = Assertor.&lt;String, Integer&gt; ofMap().hasSize(size, "bad size");
+     * checkMapSize.that(map).orElseThrow();
      * </pre>
      * 
      * @param size
@@ -118,7 +120,8 @@ public interface PredicateAssertorStepMap<K, V> extends PredicateAssertorStep<Pr
      * </p>
      * 
      * <pre>
-     * Assertor.that(map).hasSize(size, Locale.US, "bad size").orElseThrow();
+     * PredicateStepMap&lt;String, Integer&gt; checkMapSize = Assertor.&lt;String, Integer&gt; ofMap().hasSize(size, Locale.US, "bad size");
+     * checkMapSize.that(map).orElseThrow();
      * </pre>
      * 
      * @param size
@@ -133,8 +136,7 @@ public interface PredicateAssertorStepMap<K, V> extends PredicateAssertorStep<Pr
      * @return The operator
      * @category localized_message
      */
-    default PredicateStepMap<K, V> hasSize(final int size, final Locale locale, final CharSequence message,
-            final Object... arguments) {
+    default PredicateStepMap<K, V> hasSize(final int size, final Locale locale, final CharSequence message, final Object... arguments) {
         return () -> AssertorMap.hasSize(this.getStep(), size, MessageAssertor.of(locale, message, arguments));
     }
 
@@ -146,7 +148,8 @@ public interface PredicateAssertorStepMap<K, V> extends PredicateAssertorStep<Pr
      * </p>
      * 
      * <pre>
-     * Assertor.that(map).isEmpty().orElseThrow();
+     * PredicateStepMap&lt;String, Integer&gt; checkMapIsEmpty = Assertor.&lt;String, Integer&gt; ofMap().isEmpty();
+     * checkMapIsEmpty.that(map).orElseThrow();
      * </pre>
      * 
      * @return The operator
@@ -164,7 +167,8 @@ public interface PredicateAssertorStepMap<K, V> extends PredicateAssertorStep<Pr
      * </p>
      * 
      * <pre>
-     * Assertor.that(map).isEmpty("the map must be null or empty").orElseThrow();
+     * PredicateStepMap&lt;String, Integer&gt; checkMapIsEmpty = Assertor.&lt;String, Integer&gt; ofMap().isEmpty("the map must be null or empty");
+     * checkMapIsEmpty.that(map).orElseThrow();
      * </pre>
      * 
      * @param message
@@ -186,7 +190,9 @@ public interface PredicateAssertorStepMap<K, V> extends PredicateAssertorStep<Pr
      * </p>
      * 
      * <pre>
-     * Assertor.that(map).isEmpty(Locale.US, "the map must be null or empty").orElseThrow();
+     * PredicateStepMap&lt;String, Integer&gt; checkMapIsEmpty = Assertor.&lt;String, Integer&gt; ofMap().isEmpty(Locale.US,
+     *         "the map must be null or empty");
+     * checkMapIsEmpty.that(map).orElseThrow();
      * </pre>
      * 
      * @param locale
@@ -211,7 +217,8 @@ public interface PredicateAssertorStepMap<K, V> extends PredicateAssertorStep<Pr
      * </p>
      * 
      * <pre>
-     * Assertor.that(map).isNotEmpty().orElseThrow();
+     * PredicateStepMap&lt;String, Integer&gt; checkMapIsNotEmpty = Assertor.&lt;String, Integer&gt; ofMap().isNotEmpty();
+     * checkMapIsNotEmpty.that(map).orElseThrow();
      * </pre>
      * 
      * @return The operator
@@ -229,7 +236,8 @@ public interface PredicateAssertorStepMap<K, V> extends PredicateAssertorStep<Pr
      * </p>
      * 
      * <pre>
-     * Assertor.that(map).isNotEmpty("the map cannot be null or empty").orElseThrow();
+     * PredicateStepMap&lt;String, Integer&gt; checkMapIsNotEmpty = Assertor.&lt;String, Integer&gt; ofMap().isNotEmpty("the map cannot be null or empty");
+     * checkMapIsNotEmpty.that(map).orElseThrow();
      * </pre>
      * 
      * @param message
@@ -244,50 +252,6 @@ public interface PredicateAssertorStepMap<K, V> extends PredicateAssertorStep<Pr
     }
 
     /**
-     * Asserts that the given {@link Map} contains the specified {@code key}.
-     * 
-     * <p>
-     * precondition: the {@link Map} cannot be {@code null} or empty
-     * </p>
-     * 
-     * <pre>
-     * Assertor.that(map).contains(key).orElseThrow();
-     * </pre>
-     * 
-     * @param key
-     *            The {@link Map} key
-     * @return The operator
-     * @category no_message
-     */
-    default PredicateStepMap<K, V> contains(final K key) {
-        return this.contains(key, (CharSequence) null);
-    }
-
-    /**
-     * Asserts that the given {@link Map} contains the specified {@code key}.
-     * 
-     * <p>
-     * precondition: the {@link Map} cannot be {@code null} or empty
-     * </p>
-     * 
-     * <pre>
-     * Assertor.that(map).contains(key, "the key was not found in the map").orElseThrow();
-     * </pre>
-     * 
-     * @param key
-     *            The {@link Map} key
-     * @param message
-     *            The message on mismatch
-     * @param arguments
-     *            The arguments of the message, use {@link String#format}
-     * @return The operator
-     * @category message
-     */
-    default PredicateStepMap<K, V> contains(final K key, final CharSequence message, final Object... arguments) {
-        return this.contains(key, (Locale) null, message, arguments);
-    }
-
-    /**
      * Asserts that the given {@link Map} is not {@code null} and not empty.
      * 
      * <p>
@@ -295,7 +259,9 @@ public interface PredicateAssertorStepMap<K, V> extends PredicateAssertorStep<Pr
      * </p>
      * 
      * <pre>
-     * Assertor.that(map).isNotEmpty(Locale.US, "the map cannot be null or empty").orElseThrow();
+     * PredicateStepMap&lt;String, Integer&gt; checkMapIsNotEmpty = Assertor.&lt;String, Integer&gt; ofMap().isNotEmpty(Locale.US,
+     *         "the map cannot be null or empty");
+     * checkMapIsNotEmpty.that(map).orElseThrow();
      * </pre>
      * 
      * @param locale
@@ -320,7 +286,56 @@ public interface PredicateAssertorStepMap<K, V> extends PredicateAssertorStep<Pr
      * </p>
      * 
      * <pre>
-     * Assertor.that(map).contains(key, Locale.US, "the key was not found in the map").orElseThrow();
+     * PredicateStepMap&lt;String, Integer&gt; checkMapContains = Assertor.&lt;String, Integer&gt; ofMap().contains(key);
+     * checkMapContains.that(map).orElseThrow();
+     * </pre>
+     * 
+     * @param key
+     *            The {@link Map} key
+     * @return The operator
+     * @category no_message
+     */
+    default PredicateStepMap<K, V> contains(final K key) {
+        return this.contains(key, (CharSequence) null);
+    }
+
+    /**
+     * Asserts that the given {@link Map} contains the specified {@code key}.
+     * 
+     * <p>
+     * precondition: the {@link Map} cannot be {@code null} or empty
+     * </p>
+     * 
+     * <pre>
+     * PredicateStepMap&lt;String, Integer&gt; checkMapContains = Assertor.&lt;String, Integer&gt; ofMap().contains(key,
+     *         "the key was not found in the map");
+     * checkMapContains.that(map).orElseThrow();
+     * </pre>
+     * 
+     * @param key
+     *            The {@link Map} key
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category message
+     */
+    default PredicateStepMap<K, V> contains(final K key, final CharSequence message, final Object... arguments) {
+        return this.contains(key, (Locale) null, message, arguments);
+    }
+
+    /**
+     * Asserts that the given {@link Map} contains the specified {@code key}.
+     * 
+     * <p>
+     * precondition: the {@link Map} cannot be {@code null} or empty
+     * </p>
+     * 
+     * <pre>
+     * PredicateStepMap&lt;String, Integer&gt; checkMapContains = Assertor.&lt;String, Integer&gt; ofMap().contains(key, Locale.US,
+     *         "the key was not found in the map");
+     * checkMapContains.that(map).orElseThrow();
      * </pre>
      * 
      * @param key
@@ -335,8 +350,7 @@ public interface PredicateAssertorStepMap<K, V> extends PredicateAssertorStep<Pr
      * @return The operator
      * @category localized_message
      */
-    default PredicateStepMap<K, V> contains(final K key, final Locale locale, final CharSequence message,
-            final Object... arguments) {
+    default PredicateStepMap<K, V> contains(final K key, final Locale locale, final CharSequence message, final Object... arguments) {
         return () -> AssertorMap.contains(this.getStep(), key, MessageAssertor.of(locale, message, arguments));
     }
 
@@ -349,7 +363,8 @@ public interface PredicateAssertorStepMap<K, V> extends PredicateAssertorStep<Pr
      * </p>
      * 
      * <pre>
-     * Assertor.that(map).contains(key, value).orElseThrow();
+     * PredicateStepMap&lt;String, Integer&gt; checkMapContains = Assertor.&lt;String, Integer&gt; ofMap().contains(key, value);
+     * checkMapContains.that(map).orElseThrow();
      * </pre>
      * 
      * @param key
@@ -372,7 +387,9 @@ public interface PredicateAssertorStepMap<K, V> extends PredicateAssertorStep<Pr
      * </p>
      * 
      * <pre>
-     * Assertor.that(map).contains(key, value, "the pair key/value was not found in the map").orElseThrow();
+     * PredicateStepMap&lt;String, Integer&gt; checkMapContains = Assertor.&lt;String, Integer&gt; ofMap().contains(key, value,
+     *         "the pair key/value was not found in the map");
+     * checkMapContains.that(map).orElseThrow();
      * </pre>
      * 
      * @param key
@@ -399,7 +416,9 @@ public interface PredicateAssertorStepMap<K, V> extends PredicateAssertorStep<Pr
      * </p>
      * 
      * <pre>
-     * Assertor.that(map).contains(key, value, Locale.US, "the pair key/value was not found in the map").orElseThrow();
+     * PredicateStepMap&lt;String, Integer&gt; checkMapContains = Assertor.&lt;String, Integer&gt; ofMap().contains(key, value, Locale.US,
+     *         "the pair key/value was not found in the map");
+     * checkMapContains.that(map).orElseThrow();
      * </pre>
      * 
      * @param key
@@ -422,6 +441,83 @@ public interface PredicateAssertorStepMap<K, V> extends PredicateAssertorStep<Pr
     }
 
     /**
+     * Asserts that the given {@link Map} contains the specified {@code value}.
+     * 
+     * <p>
+     * precondition: the {@link Map} cannot be {@code null} or empty
+     * </p>
+     * 
+     * <pre>
+     * PredicateStepMap&lt;String, Integer&gt; checkMapContains = Assertor.&lt;String, Integer&gt; ofMap().contains(value);
+     * checkMapContains.that(map).orElseThrow();
+     * </pre>
+     * 
+     * @param value
+     *            The {@link Map} value
+     * @return The operator
+     * @category no_message
+     */
+    default PredicateStepMap<K, V> containsValue(final V value) {
+        return this.containsValue(value, null);
+    }
+
+    /**
+     * Asserts that the given {@link Map} contains the specified {@code value}.
+     * 
+     * <p>
+     * precondition: the {@link Map} cannot be {@code null} or empty
+     * </p>
+     * 
+     * <pre>
+     * PredicateStepMap&lt;String, Integer&gt; checkMapContains = Assertor.&lt;String, Integer&gt; ofMap().contains(value,
+     *         "the value was not found in the map");
+     * checkMapContains.that(map).orElseThrow();
+     * </pre>
+     * 
+     * @param value
+     *            The {@link Map} value
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category message
+     */
+    default PredicateStepMap<K, V> containsValue(final V value, final CharSequence message, final Object... arguments) {
+        return this.containsValue(value, null, message, arguments);
+    }
+
+    /**
+     * Asserts that the given {@link Map} contains the specified {@code value}.
+     * 
+     * <p>
+     * precondition: the {@link Map} cannot be {@code null} or empty
+     * </p>
+     * 
+     * <pre>
+     * PredicateStepMap&lt;String, Integer&gt; checkMapContains = Assertor.&lt;String, Integer&gt; ofMap().contains(value, Locale.US,
+     *         "the value was not found in the map");
+     * checkMapContains.that(map).orElseThrow();
+     * </pre>
+     * 
+     * @param value
+     *            The {@link Map} value
+     * @param locale
+     *            The locale of the message (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category localized_message
+     */
+    default PredicateStepMap<K, V> containsValue(final V value, final Locale locale, final CharSequence message,
+            final Object... arguments) {
+        return () -> AssertorMap.containsValue(this.getStep(), value, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
      * Asserts that the given {@link Map} contains ALL the specified
      * {@code keys}.
      * 
@@ -431,7 +527,8 @@ public interface PredicateAssertorStepMap<K, V> extends PredicateAssertorStep<Pr
      * </p>
      * 
      * <pre>
-     * Assertor.that(map).containsAll(keys).orElseThrow();
+     * PredicateStepMap&lt;String, Integer&gt; checkMapContainsAllKeys = Assertor.&lt;String, Integer&gt; ofMap().containsAll(keys);
+     * checkMapContainsAllKeys.that(map).orElseThrow();
      * </pre>
      * 
      * @param keys
@@ -453,7 +550,9 @@ public interface PredicateAssertorStepMap<K, V> extends PredicateAssertorStep<Pr
      * </p>
      * 
      * <pre>
-     * Assertor.that(map).containsAll(keys, "not all keys can be found in the map").orElseThrow();
+     * PredicateStepMap&lt;String, Integer&gt; checkMapContainsAllKeys = Assertor.&lt;String, Integer&gt; ofMap().containsAll(keys,
+     *         "not all keys can be found in the map");
+     * checkMapContainsAllKeys.that(map).orElseThrow();
      * </pre>
      * 
      * @param keys
@@ -479,7 +578,9 @@ public interface PredicateAssertorStepMap<K, V> extends PredicateAssertorStep<Pr
      * </p>
      * 
      * <pre>
-     * Assertor.that(map).containsAll(keys, Locale.US, "not all keys can be found in the map").orElseThrow();
+     * PredicateStepMap&lt;String, Integer&gt; checkMapContainsAllKeys = Assertor.&lt;String, Integer&gt; ofMap().containsAll(keys, Locale.US,
+     *         "not all keys can be found in the map");
+     * checkMapContainsAllKeys.that(map).orElseThrow();
      * </pre>
      * 
      * @param keys
@@ -508,7 +609,8 @@ public interface PredicateAssertorStepMap<K, V> extends PredicateAssertorStep<Pr
      * </p>
      * 
      * <pre>
-     * Assertor.that(map).containsAll(entries).orElseThrow();
+     * PredicateStepMap&lt;String, Integer&gt; checkMapContainsAll = Assertor.&lt;String, Integer&gt; ofMap().containsAll(entries);
+     * checkMapContainsAll.that(map).orElseThrow();
      * </pre>
      * 
      * @param map
@@ -529,7 +631,9 @@ public interface PredicateAssertorStepMap<K, V> extends PredicateAssertorStep<Pr
      * </p>
      * 
      * <pre>
-     * Assertor.that(map).containsAll(entries, "not all pairs key/value can be found in the map").orElseThrow();
+     * PredicateStepMap&lt;String, Integer&gt; checkMapContainsAll = Assertor.&lt;String, Integer&gt; ofMap().containsAll(entries,
+     *         "not all pairs key/value can be found in the map");
+     * checkMapContainsAll.that(map).orElseThrow();
      * </pre>
      * 
      * @param map
@@ -554,7 +658,9 @@ public interface PredicateAssertorStepMap<K, V> extends PredicateAssertorStep<Pr
      * </p>
      * 
      * <pre>
-     * Assertor.that(map).containsAll(entries, Locale.US, "not all pairs key/value can be found in the map").orElseThrow();
+     * PredicateStepMap&lt;String, Integer&gt; checkMapContainsAll = Assertor.&lt;String, Integer&gt; ofMap().containsAll(entries, Locale.US,
+     *         "not all pairs key/value can be found in the map");
+     * checkMapContainsAll.that(map).orElseThrow();
      * </pre>
      * 
      * @param map
@@ -575,6 +681,89 @@ public interface PredicateAssertorStepMap<K, V> extends PredicateAssertorStep<Pr
     }
 
     /**
+     * Asserts that the given {@link Map} contains ALL the specified
+     * {@code values}.
+     * 
+     * <p>
+     * precondition: neither {@link Map} and {@code values} can be {@code null}
+     * or empty
+     * </p>
+     * 
+     * <pre>
+     * PredicateStepMap&lt;String, Integer&gt; checkMapContainsValues = Assertor.&lt;String, Integer&gt; ofMap().containsAllValues(values);
+     * checkMapContainsValues.that(map).orElseThrow();
+     * </pre>
+     * 
+     * @param values
+     *            The {@link Iterable} values
+     * @return The operator
+     * @category no_message
+     */
+    default PredicateStepMap<K, V> containsAllValues(final Iterable<V> values) {
+        return this.containsAllValues(values, null);
+    }
+
+    /**
+     * Asserts that the given {@link Map} contains ALL the specified
+     * {@code values}.
+     * 
+     * <p>
+     * precondition: neither {@link Map} and {@code values} can be {@code null}
+     * or empty
+     * </p>
+     * 
+     * <pre>
+     * PredicateStepMap&lt;String, Integer&gt; checkMapContainsValues = Assertor.&lt;String, Integer&gt; ofMap().containsAllValues(values,
+     *         "not all values can be found in the map");
+     * checkMapContainsValues.that(map).orElseThrow();
+     * </pre>
+     * 
+     * @param values
+     *            The {@link Iterable} values
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category message
+     */
+    default PredicateStepMap<K, V> containsAllValues(final Iterable<V> values, final CharSequence message, final Object... arguments) {
+        return this.containsAllValues(values, null, message, arguments);
+    }
+
+    /**
+     * Asserts that the given {@link Map} contains ALL the specified
+     * {@code values}.
+     * 
+     * <p>
+     * precondition: neither {@link Map} and {@code values} can be {@code null}
+     * or empty
+     * </p>
+     * 
+     * <pre>
+     * PredicateStepMap&lt;String, Integer&gt; checkMapContainsValues = Assertor.&lt;String, Integer&gt; ofMap().containsAllValues(values, Locale.US,
+     *         "not all values can be found in the map");
+     * checkMapContainsValues.that(map).orElseThrow();
+     * </pre>
+     * 
+     * @param values
+     *            The {@link Iterable} values
+     * @param locale
+     *            The locale of the message (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category localized_message
+     */
+    default PredicateStepMap<K, V> containsAllValues(final Iterable<V> values, final Locale locale, final CharSequence message,
+            final Object... arguments) {
+        return () -> AssertorMap.containsAllValues(this.getStep(), values, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
      * Asserts that the given {@link Map} contains ANY key from the specified
      * {@link Iterable}.
      * 
@@ -584,7 +773,8 @@ public interface PredicateAssertorStepMap<K, V> extends PredicateAssertorStep<Pr
      * </p>
      * 
      * <pre>
-     * Assertor.that(map).containsAny(keys).orElseThrow();
+     * PredicateStepMap&lt;String, Integer&gt; checkMapContainsAnyKeys = Assertor.&lt;String, Integer&gt; ofMap().containsAny(keys);
+     * checkMapContainsAnyKeys.that(map).orElseThrow();
      * </pre>
      * 
      * @param keys
@@ -606,7 +796,9 @@ public interface PredicateAssertorStepMap<K, V> extends PredicateAssertorStep<Pr
      * </p>
      * 
      * <pre>
-     * Assertor.that(map).containsAny(keys, "no pair key can be found in the map").orElseThrow();
+     * PredicateStepMap&lt;String, Integer&gt; checkMapContainsAnyKeys = Assertor.&lt;String, Integer&gt; ofMap().containsAny(keys,
+     *         "no pair key can be found in the map");
+     * checkMapContainsAnyKeys.that(map).orElseThrow();
      * </pre>
      * 
      * @param keys
@@ -632,7 +824,9 @@ public interface PredicateAssertorStepMap<K, V> extends PredicateAssertorStep<Pr
      * </p>
      * 
      * <pre>
-     * Assertor.that(map).containsAny(keys, Locale.US, "no pair key can be found in the map").orElseThrow();
+     * PredicateStepMap&lt;String, Integer&gt; checkMapContainsAnyKeys = Assertor.&lt;String, Integer&gt; ofMap().containsAny(keys, Locale.US,
+     *         "no pair key can be found in the map");
+     * checkMapContainsAnyKeys.that(map).orElseThrow();
      * </pre>
      * 
      * @param keys
@@ -661,7 +855,8 @@ public interface PredicateAssertorStepMap<K, V> extends PredicateAssertorStep<Pr
      * </p>
      * 
      * <pre>
-     * Assertor.that(map).containsAny(entries).orElseThrow();
+     * PredicateStepMap&lt;String, Integer&gt; checkMapContainsAny = Assertor.&lt;String, Integer&gt; ofMap().containsAny(entries);
+     * checkMapContainsAny.that(map).orElseThrow();
      * </pre>
      * 
      * @param map
@@ -682,7 +877,9 @@ public interface PredicateAssertorStepMap<K, V> extends PredicateAssertorStep<Pr
      * </p>
      * 
      * <pre>
-     * Assertor.that(map).containsAny(entries, "no pair key/value can be found in the map").orElseThrow();
+     * PredicateStepMap&lt;String, Integer&gt; checkMapContainsAny = Assertor.&lt;String, Integer&gt; ofMap().containsAny(entries,
+     *         "no pair key/value can be found in the map");
+     * checkMapContainsAny.that(map).orElseThrow();
      * </pre>
      * 
      * @param map
@@ -707,7 +904,9 @@ public interface PredicateAssertorStepMap<K, V> extends PredicateAssertorStep<Pr
      * </p>
      * 
      * <pre>
-     * Assertor.that(map).containsAny(entries, Locale.US, "no pair key/value can be found in the map").orElseThrow();
+     * PredicateStepMap&lt;String, Integer&gt; checkMapContainsAny = Assertor.&lt;String, Integer&gt; ofMap().containsAny(entries, Locale.US,
+     *         "no pair key/value can be found in the map");
+     * checkMapContainsAny.that(map).orElseThrow();
      * </pre>
      * 
      * @param map
@@ -725,5 +924,335 @@ public interface PredicateAssertorStepMap<K, V> extends PredicateAssertorStep<Pr
     default PredicateStepMap<K, V> containsAny(final Map<K, V> map, final Locale locale, final CharSequence message,
             final Object... arguments) {
         return () -> AssertorMap.containsAny(this.getStep(), map, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
+     * Asserts that the given {@link Map} contains ANY specified {@code values}.
+     * 
+     * <p>
+     * precondition: neither {@link Map} and {@code values} can be {@code null}
+     * or empty
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).containsAnyValues(values).orElseThrow();
+     * </pre>
+     * 
+     * @param values
+     *            The {@link Iterable} values
+     * @return The operator
+     * @category no_message
+     */
+    default PredicateStepMap<K, V> containsAnyValues(final Iterable<V> values) {
+        return this.containsAnyValues(values, null);
+    }
+
+    /**
+     * Asserts that the given {@link Map} contains ANY specified {@code values}.
+     * 
+     * <p>
+     * precondition: neither {@link Map} and {@code values} can be {@code null}
+     * or empty
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).containsAnyValues(values, "not all values can be found in the map").orElseThrow();
+     * </pre>
+     * 
+     * @param values
+     *            The {@link Iterable} values
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category message
+     */
+    default PredicateStepMap<K, V> containsAnyValues(final Iterable<V> values, final CharSequence message, final Object... arguments) {
+        return this.containsAnyValues(values, null, message, arguments);
+    }
+
+    /**
+     * Asserts that the given {@link Map} contains ANY specified {@code values}.
+     * 
+     * <p>
+     * precondition: neither {@link Map} and {@code values} can be {@code null}
+     * or empty
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).containsAnyValues(values, Locale.US, "not all values can be found in the map").orElseThrow();
+     * </pre>
+     * 
+     * @param values
+     *            The {@link Iterable} values
+     * @param locale
+     *            The locale of the message (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category localized_message
+     */
+    default PredicateStepMap<K, V> containsAnyValues(final Iterable<V> values, final Locale locale, final CharSequence message,
+            final Object... arguments) {
+        return () -> AssertorMap.containsAnyValues(this.getStep(), values, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
+     * Asserts that the given {@link Map} contains all entries from the
+     * specified {@code map} in the same order. Each maps must be sorted or
+     * linked otherwise result is unpredictable.
+     * 
+     * <p>
+     * precondition: neither {@link Map} can be {@code null} or empty
+     * </p>
+     * 
+     * <pre>
+     * PredicateStepMap&lt;String, Integer&gt; checkMapOrder = Assertor.&lt;String, Integer&gt; ofMap().containsInOrder(entries);
+     * checkMapOrder.that(map).orElseThrow();
+     * </pre>
+     * 
+     * @param map
+     *            The {@link Map}
+     * @return The operator
+     * @category message
+     */
+    default PredicateStepMap<K, V> containsInOrder(final Map<K, V> map) {
+        return this.containsInOrder(map, null);
+    }
+
+    /**
+     * Asserts that the given {@link Map} contains all entries from the
+     * specified {@code map} in the same order. Each maps must be sorted or
+     * linked otherwise result is unpredictable.
+     * 
+     * <p>
+     * precondition: neither {@link Map} can be {@code null} or empty
+     * </p>
+     * 
+     * <pre>
+     * PredicateStepMap&lt;String, Integer&gt; checkMapOrder = Assertor.&lt;String, Integer&gt; ofMap().containsInOrder(entries,
+     *         "the maps are not in the same order");
+     * checkMapOrder.that(map).orElseThrow();
+     * </pre>
+     * 
+     * @param map
+     *            The {@link Map}
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category message
+     */
+    default PredicateStepMap<K, V> containsInOrder(final Map<K, V> map, final CharSequence message, final Object... arguments) {
+        return this.containsInOrder(map, null, message, arguments);
+    }
+
+    /**
+     * Asserts that the given {@link Map} contains all entries from the
+     * specified {@code map} in the same order. Each maps must be sorted or
+     * linked otherwise result is unpredictable.
+     * 
+     * <p>
+     * precondition: neither {@link Map} can be {@code null} or empty
+     * </p>
+     * 
+     * <pre>
+     * PredicateStepMap&lt;String, Integer&gt; checkMapOrder = Assertor.&lt;String, Integer&gt; ofMap().containsInOrder(entries, Locale.US,
+     *         "the maps are not in the same order");
+     * checkMapOrder.that(map).orElseThrow();
+     * </pre>
+     * 
+     * @param map
+     *            The {@link Map}
+     * @param locale
+     *            The locale of the message (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category localized_message
+     */
+    default PredicateStepMap<K, V> containsInOrder(final Map<K, V> map, final Locale locale, final CharSequence message,
+            final Object... arguments) {
+        return () -> AssertorMap.containsInOrder(this.getStep(), map, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
+     * Asserts that the given {@link Map} contains all keys in the same order.
+     * The map and the keys' iterable must be sorted or linked otherwise result
+     * is unpredictable.
+     * 
+     * <p>
+     * precondition: neither {@link Map} nor iterable can be {@code null} or
+     * empty
+     * </p>
+     * 
+     * <pre>
+     * PredicateStepMap&lt;String, Integer&gt; checkMapOrder = Assertor.&lt;String, Integer&gt; ofMap().containsInOrder(keys);
+     * checkMapOrder.that(map).orElseThrow();
+     * </pre>
+     * 
+     * @param keys
+     *            The keys' {@link Iterable}
+     * @return The operator
+     * @category no_message
+     */
+    default PredicateStepMap<K, V> containsInOrder(final Iterable<K> keys) {
+        return this.containsInOrder(keys, null);
+    }
+
+    /**
+     * Asserts that the given {@link Map} contains all keys in the same order.
+     * The map and the keys' iterable must be sorted or linked otherwise result
+     * is unpredictable.
+     * 
+     * <p>
+     * precondition: neither {@link Map} nor iterable can be {@code null} or
+     * empty
+     * </p>
+     * 
+     * <pre>
+     * PredicateStepMap&lt;String, Integer&gt; checkMapOrder = Assertor.&lt;String, Integer&gt; ofMap().containsInOrder(keys,
+     *         "the keys are not in the same order");
+     * checkMapOrder.that(map).orElseThrow();
+     * </pre>
+     * 
+     * @param keys
+     *            The keys' {@link Iterable}
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category message
+     */
+    default PredicateStepMap<K, V> containsInOrder(final Iterable<K> keys, final CharSequence message, final Object... arguments) {
+        return this.containsInOrder(keys, null, message, arguments);
+    }
+
+    /**
+     * Asserts that the given {@link Map} contains all keys in the same order.
+     * The map and the keys' iterable must be sorted or linked otherwise result
+     * is unpredictable.
+     * 
+     * <p>
+     * precondition: neither {@link Map} nor iterable can be {@code null} or
+     * empty
+     * </p>
+     * 
+     * <pre>
+     * PredicateStepMap&lt;String, Integer&gt; checkMapOrder = Assertor.&lt;String, Integer&gt; ofMap().containsInOrder(keys, Locale.US,
+     *         "the keys are not in the same order");
+     * checkMapOrder.that(map).orElseThrow();
+     * </pre>
+     * 
+     * @param keys
+     *            The keys' {@link Iterable}
+     * @param locale
+     *            The locale of the message (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category localized_message
+     */
+    default PredicateStepMap<K, V> containsInOrder(final Iterable<K> keys, final Locale locale, final CharSequence message,
+            final Object... arguments) {
+        return () -> AssertorMap.containsKeysInOrder(this.getStep(), keys, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
+     * Asserts that the given {@link Map} contains all values in the same order.
+     * The map and the values' iterable must be sorted or linked otherwise
+     * result is unpredictable.
+     * 
+     * <p>
+     * precondition: neither {@link Map} nor iterable can be {@code null} or
+     * empty
+     * </p>
+     * 
+     * <pre>
+     * PredicateStepMap&lt;String, Integer&gt; checkMapOrder = Assertor.&lt;String, Integer&gt; ofMap().containsInOrder(values);
+     * checkMapOrder.that(map).orElseThrow();
+     * </pre>
+     * 
+     * @param values
+     *            The values' {@link Iterable}
+     * @return The operator
+     * @category no_message
+     */
+    default PredicateStepMap<K, V> containsValuesInOrder(final Iterable<V> values) {
+        return this.containsValuesInOrder(values, null);
+    }
+
+    /**
+     * Asserts that the given {@link Map} contains all values in the same order.
+     * The map and the values' iterable must be sorted or linked otherwise
+     * result is unpredictable.
+     * 
+     * <p>
+     * precondition: neither {@link Map} nor iterable can be {@code null} or
+     * empty
+     * </p>
+     * 
+     * <pre>
+     * PredicateStepMap&lt;String, Integer&gt; checkMapOrder = Assertor.&lt;String, Integer&gt; ofMap().containsInOrder(values,
+     *         "the values are not in the same order");
+     * checkMapOrder.that(map).orElseThrow();
+     * </pre>
+     * 
+     * @param values
+     *            The values' {@link Iterable}
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category message
+     */
+    default PredicateStepMap<K, V> containsValuesInOrder(final Iterable<V> values, final CharSequence message, final Object... arguments) {
+        return this.containsValuesInOrder(values, null, message, arguments);
+    }
+
+    /**
+     * Asserts that the given {@link Map} contains all values in the same order.
+     * The map and the values' iterable must be sorted or linked otherwise
+     * result is unpredictable.
+     * 
+     * <p>
+     * precondition: neither {@link Map} nor iterable can be {@code null} or
+     * empty
+     * </p>
+     * 
+     * <pre>
+     * PredicateStepMap&lt;String, Integer&gt; checkMapOrder = Assertor.&lt;String, Integer&gt; ofMap().containsInOrder(values, Locale.US,
+     *         "the values are not in the same order");
+     * checkMapOrder.that(map).orElseThrow();
+     * </pre>
+     * 
+     * @param values
+     *            The values' {@link Iterable}
+     * @param locale
+     *            The locale of the message (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category localized_message
+     */
+    default PredicateStepMap<K, V> containsValuesInOrder(final Iterable<V> values, final Locale locale, final CharSequence message,
+            final Object... arguments) {
+        return () -> AssertorMap.containsValuesInOrder(this.getStep(), values, MessageAssertor.of(locale, message, arguments));
     }
 }

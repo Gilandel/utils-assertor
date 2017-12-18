@@ -32,15 +32,14 @@ import fr.landel.utils.assertor.utils.AssertorTemporal;
 /**
  * This class define methods that can be applied on the checked comparable
  * {@link Temporal} object. To provide a result, it's also provide a chain
- * builder by returning a {@link PredicateStepTemporal}. The chain looks
- * like:
+ * builder by returning a {@link PredicateStepTemporal}. The chain looks like:
  * 
  * <pre>
  * {@link PredicateAssertorStepTemporal} &gt; {@link PredicateStepTemporal} &gt; {@link PredicateAssertorStepTemporal} &gt; {@link PredicateStepTemporal}...
  * </pre>
  * 
- * This chain always starts with a {@link PredicateAssertorStepTemporal} and ends
- * with {@link PredicateStepTemporal}.
+ * This chain always starts with a {@link PredicateAssertorStepTemporal} and
+ * ends with {@link PredicateStepTemporal}.
  *
  * @since Aug 3, 2016
  * @author Gilles
@@ -133,8 +132,7 @@ public interface PredicateAssertorStepTemporal<T extends Temporal & Comparable<T
      *            the message arguments
      * @return the assertor step
      */
-    default PredicateStepTemporal<T> isEqual(final T temporal, final Locale locale, final CharSequence message,
-            final Object... arguments) {
+    default PredicateStepTemporal<T> isEqual(final T temporal, final Locale locale, final CharSequence message, final Object... arguments) {
         return () -> AssertorTemporal.isEqual(this.getStep(), temporal, MessageAssertor.of(locale, message, arguments));
     }
 
@@ -364,6 +362,84 @@ public interface PredicateAssertorStepTemporal<T extends Temporal & Comparable<T
     }
 
     /**
+     * Check if the checked {@link Temporal} is between the
+     * {@code temporalStart} and {@code temporalEnd}.
+     * 
+     * <p>
+     * precondition: neither temporals can be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(temporal).isBetween(temporal1, temporal2).orElseThrow();
+     * </pre>
+     * 
+     * @param temporalStart
+     *            the start temporal to compare
+     * @param temporalEnd
+     *            the end temporal to compare
+     * @return the assertor step
+     */
+    default PredicateStepTemporal<T> isBetween(final T temporalStart, final T temporalEnd) {
+        return this.isBetween(temporalStart, temporalEnd, null);
+    }
+
+    /**
+     * Check if the checked {@link Temporal} is between the
+     * {@code temporalStart} and {@code temporalEnd}.
+     * 
+     * <p>
+     * precondition: neither temporals can be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(temporal).isBetween(temporal1, temporal2, "Not between temporals").orElseThrow();
+     * </pre>
+     * 
+     * @param temporalStart
+     *            the start temporal to compare
+     * @param temporalEnd
+     *            the end temporal to compare
+     * @param message
+     *            the message on mismatch
+     * @param arguments
+     *            the message arguments
+     * @return the assertor step
+     */
+    default PredicateStepTemporal<T> isBetween(final T temporalStart, final T temporalEnd, final CharSequence message,
+            final Object... arguments) {
+        return this.isBetween(temporalStart, temporalEnd, null, message, arguments);
+    }
+
+    /**
+     * Check if the checked {@link Temporal} is between the
+     * {@code temporalStart} and {@code temporalEnd}.
+     * 
+     * <p>
+     * precondition: neither temporals can be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(temporal).isBetween(temporal1, temporal2, Locale.US, "Not between temporals").orElseThrow();
+     * </pre>
+     * 
+     * @param temporalStart
+     *            the start temporal to compare
+     * @param temporalEnd
+     *            the end temporal to compare
+     * @param locale
+     *            the message locale
+     * @param message
+     *            the message on mismatch
+     * @param arguments
+     *            the message arguments
+     * @return the assertor step
+     */
+    default PredicateStepTemporal<T> isBetween(final T temporalStart, final T temporalEnd, final Locale locale, final CharSequence message,
+            final Object... arguments) {
+        return () -> AssertorTemporal.isBetween(this.getStep(), temporalStart, temporalEnd, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
      * Check if the checked {@link Temporal} is after the {@code temporal}.
      * 
      * <p>
@@ -427,8 +503,7 @@ public interface PredicateAssertorStepTemporal<T extends Temporal & Comparable<T
      *            the message arguments
      * @return the assertor step
      */
-    default PredicateStepTemporal<T> isAfter(final T temporal, final Locale locale, final CharSequence message,
-            final Object... arguments) {
+    default PredicateStepTemporal<T> isAfter(final T temporal, final Locale locale, final CharSequence message, final Object... arguments) {
         return () -> AssertorTemporal.isAfter(this.getStep(), temporal, MessageAssertor.of(locale, message, arguments));
     }
 
@@ -624,8 +699,8 @@ public interface PredicateAssertorStepTemporal<T extends Temporal & Comparable<T
      *            the message arguments
      * @return the assertor step
      */
-    default PredicateStepTemporal<T> isAfterOrEqual(final T temporal, final TemporalAmount temporalAmount,
-            final CharSequence message, final Object... arguments) {
+    default PredicateStepTemporal<T> isAfterOrEqual(final T temporal, final TemporalAmount temporalAmount, final CharSequence message,
+            final Object... arguments) {
         return this.isAfterOrEqual(temporal, temporalAmount, null, message, arguments);
     }
 
@@ -921,8 +996,8 @@ public interface PredicateAssertorStepTemporal<T extends Temporal & Comparable<T
      *            the message arguments
      * @return the assertor step
      */
-    default PredicateStepTemporal<T> isBeforeOrEqual(final T temporal, final TemporalAmount temporalAmount,
-            final CharSequence message, final Object... arguments) {
+    default PredicateStepTemporal<T> isBeforeOrEqual(final T temporal, final TemporalAmount temporalAmount, final CharSequence message,
+            final Object... arguments) {
         return this.isBeforeOrEqual(temporal, temporalAmount, null, message, arguments);
     }
 
