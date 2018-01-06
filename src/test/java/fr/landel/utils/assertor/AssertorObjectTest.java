@@ -181,7 +181,7 @@ public class AssertorObjectTest extends AbstractTest {
     @Test
     public void testIsNotNullOKObject() {
         try {
-            Assertor.that(1).isNotNull();
+            Assertor.that(1).isNotNull().orElseThrow();
         } catch (IllegalArgumentException e) {
             fail("The test isn't correct");
         }
@@ -287,7 +287,7 @@ public class AssertorObjectTest extends AbstractTest {
     @Test
     public void testIsEqualOKObjectObject() throws IOException {
         try {
-            Assertor.that("texte4").isEqual("texte4");
+            Assertor.that("texte4").isEqual("texte4").orElseThrow();
             Assertor.that(5).isEqual(5).orElseThrow(new IOException(), true);
 
             StringBuilder sb1 = new StringBuilder("texte4");
