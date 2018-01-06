@@ -27,7 +27,6 @@ import java.util.Map;
 
 import fr.landel.utils.assertor.enums.EnumAnalysisMode;
 import fr.landel.utils.assertor.enums.EnumType;
-import fr.landel.utils.assertor.predicate.PredicateAssertorStep;
 import fr.landel.utils.assertor.predicate.PredicateAssertorStepArray;
 import fr.landel.utils.assertor.predicate.PredicateAssertorStepBoolean;
 import fr.landel.utils.assertor.predicate.PredicateAssertorStepCalendar;
@@ -38,9 +37,9 @@ import fr.landel.utils.assertor.predicate.PredicateAssertorStepEnum;
 import fr.landel.utils.assertor.predicate.PredicateAssertorStepIterable;
 import fr.landel.utils.assertor.predicate.PredicateAssertorStepMap;
 import fr.landel.utils.assertor.predicate.PredicateAssertorStepNumber;
+import fr.landel.utils.assertor.predicate.PredicateAssertorStepObject;
 import fr.landel.utils.assertor.predicate.PredicateAssertorStepTemporal;
 import fr.landel.utils.assertor.predicate.PredicateAssertorStepThrowable;
-import fr.landel.utils.assertor.predicate.PredicateStep;
 
 /**
  * The base class to start an assertor chain. The 'that' and 'of...' methods are
@@ -482,28 +481,24 @@ public class Assertor {
     /**
      * Create a predicate Assertor for {@link Object} Matcher
      * 
-     * @param <S>
-     *            the type of predicate step
      * @param <T>
      *            the type of object
      * @return the predicate assertor for {@link Object}
      */
-    public static <S extends PredicateStep<S, T>, T> PredicateAssertorStep<S, T> ofObject() {
+    public static <T> PredicateAssertorStepObject<T> ofObject() {
         return ofObject(null);
     }
 
     /**
      * Create a predicate Assertor for {@link Object} Matcher
      * 
-     * @param <S>
-     *            the type of predicate step
      * @param <T>
      *            the type of object
      * @param analysisMode
      *            the preferred analysis mode
      * @return the predicate assertor for {@link Object}
      */
-    public static <S extends PredicateStep<S, T>, T> PredicateAssertorStep<S, T> ofObject(final EnumAnalysisMode analysisMode) {
+    public static <T> PredicateAssertorStepObject<T> ofObject(final EnumAnalysisMode analysisMode) {
         return () -> new StepAssertor<>(EnumType.UNKNOWN, analysisMode);
     }
 

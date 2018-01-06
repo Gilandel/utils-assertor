@@ -26,40 +26,40 @@ import fr.landel.utils.assertor.helper.HelperStep;
  * This class is an intermediate or final link in chain, see
  * {@link PredicateStep}.
  *
- * @since Aug 3, 2016
+ * @since Jan 6, 2018
  * @author Gilles
  *
  */
 @FunctionalInterface
-public interface PredicateStepNumber<N extends Number & Comparable<N>> extends PredicateStep<PredicateStepNumber<N>, N> {
+public interface PredicateStepObject<T> extends PredicateStep<PredicateStepObject<T>, T> {
 
     @Override
-    default PredicateStepNumber<N> get(final StepAssertor<N> result) {
+    default PredicateStepObject<T> get(final StepAssertor<T> result) {
         return () -> result;
     }
 
     @Override
-    default PredicateAssertorStepNumber<N> and() {
+    default PredicateAssertorStepObject<T> and() {
         return () -> HelperStep.and(this.getStep());
     }
 
     @Override
-    default PredicateAssertorStepNumber<N> or() {
+    default PredicateAssertorStepObject<T> or() {
         return () -> HelperStep.or(this.getStep());
     }
 
     @Override
-    default PredicateAssertorStepNumber<N> xor() {
+    default PredicateAssertorStepObject<T> xor() {
         return () -> HelperStep.xor(this.getStep());
     }
 
     @Override
-    default PredicateAssertorStepNumber<N> nand() {
+    default PredicateAssertorStepObject<T> nand() {
         return () -> HelperStep.nand(this.getStep());
     }
 
     @Override
-    default PredicateAssertorStepNumber<N> nor() {
+    default PredicateAssertorStepObject<T> nor() {
         return () -> HelperStep.nor(this.getStep());
     }
 }

@@ -81,19 +81,19 @@ public class PredicateAssertorObjectTest extends AbstractTest {
      * Test method for {@link AssertorObject}.
      */
     @Test
-    public <S extends PredicateStep<S, String>> void testObject() {
-        PredicateAssertorStep<S, String> assertor = Assertor.ofObject();
+    public void testObject() {
+        PredicateAssertorStepObject<String> assertor = Assertor.ofObject();
 
         // intermediate condition (no call of isOK or orElseThrow), so no reset
         // and this condition is used in the next one
         assertor.isNotNull();
         assertTrue(assertor.isNotNull().that("text").isOK());
 
-        assertTrue(assertor.isNotNull().and().not().isNull().and(Assertor.<S, String> ofObject().isEqual("")).that("").isOK());
-        assertTrue(assertor.isNotNull().or().not().isNull().or(Assertor.<S, String> ofObject().isEqual("")).that("").isOK());
-        assertTrue(assertor.isNotNull().xor().not().isNull().xor(Assertor.<S, String> ofObject().isEqual("")).that("").isOK());
-        assertFalse(assertor.isNotNull().nand().not().isNull().nand(Assertor.<S, String> ofObject().isEqual("")).that("").isOK());
-        assertTrue(assertor.isNotNull().nor().not().isNull().nor(Assertor.<S, String> ofObject().isEqual("")).that("").isOK());
+        assertTrue(assertor.isNotNull().and().not().isNull().and(Assertor.<String> ofObject().isEqual("")).that("").isOK());
+        assertTrue(assertor.isNotNull().or().not().isNull().or(Assertor.<String> ofObject().isEqual("")).that("").isOK());
+        assertTrue(assertor.isNotNull().xor().not().isNull().xor(Assertor.<String> ofObject().isEqual("")).that("").isOK());
+        assertFalse(assertor.isNotNull().nand().not().isNull().nand(Assertor.<String> ofObject().isEqual("")).that("").isOK());
+        assertTrue(assertor.isNotNull().nor().not().isNull().nor(Assertor.<String> ofObject().isEqual("")).that("").isOK());
 
         assertFalse(Assertor.ofObject().hasHashCode(0).that(Comparators.CHAR).isOK());
         assertTrue(Assertor.ofObject().hasHashCode(Objects.hashCode(Comparators.CHAR)).that(Comparators.CHAR).isOK());
@@ -473,7 +473,7 @@ public class PredicateAssertorObjectTest extends AbstractTest {
      * Test method for {@link AssertorObject#validates} .
      */
     @Test
-    public <S extends PredicateStep<S, String>> void testValidatesPredicateThrowable() {
+    public void testValidatesPredicateThrowable() {
         assertTrue(Assertor.ofObject().validates(Objects::nonNull).that((Object) 0).isOK());
 
         final PredicateThrowable<String, IOException> predicateFile = (path) -> {
@@ -483,7 +483,7 @@ public class PredicateAssertorObjectTest extends AbstractTest {
             return true;
         };
 
-        assertFalse(Assertor.<S, String> ofObject().validates(predicateFile).that("/var/log/dev.log").isOK());
+        assertFalse(Assertor.<String> ofObject().validates(predicateFile).that("/var/log/dev.log").isOK());
 
         assertFalse(Assertor.ofObject().validates(null).that("/var/log/dev.log").isOK());
 
@@ -491,7 +491,7 @@ public class PredicateAssertorObjectTest extends AbstractTest {
 
         assertTrue(Assertor.ofObject().validates(Objects::nonNull, "Path is invalid").that((Object) 0).isOK());
 
-        assertFalse(Assertor.<S, String> ofObject().validates(predicateFile, "Path '%1$s*' provide by '%s' is invalid", "John")
+        assertFalse(Assertor.<String> ofObject().validates(predicateFile, "Path '%1$s*' provide by '%s' is invalid", "John")
                 .that("/var/log/dev.log").isOK());
 
         assertTrue(Assertor.ofObject().validates(Objects::nonNull, Locale.US, "Path is invalid").that((Object) 0).isOK());
@@ -511,7 +511,7 @@ public class PredicateAssertorObjectTest extends AbstractTest {
      * Test method for {@link AssertorObject#validates} .
      */
     @Test
-    public <S extends PredicateStep<S, String>> void testValidatesPredicate() {
+    public void testValidatesPredicate() {
         assertTrue(Assertor.ofObject().validates((Predicate<Object>) Objects::nonNull).that((Object) 0).isOK());
 
         final Predicate<String> predicateFile = (path) -> {
@@ -521,15 +521,15 @@ public class PredicateAssertorObjectTest extends AbstractTest {
             return true;
         };
 
-        assertFalse(Assertor.<S, String> ofObject().validates(predicateFile).that("/var/log/dev.log").isOK());
+        assertFalse(Assertor.<String> ofObject().validates(predicateFile).that("/var/log/dev.log").isOK());
 
-        assertFalse(Assertor.<S, String> ofObject().validates((Predicate<String>) null).that("/var/log/dev.log").isOK());
+        assertFalse(Assertor.<String> ofObject().validates((Predicate<String>) null).that("/var/log/dev.log").isOK());
 
         assertTrue(Assertor.ofObject().validates((Predicate<Object>) Objects::isNull, "Path is invalid").that((Object) null).isOK());
 
         assertTrue(Assertor.ofObject().validates((Predicate<Object>) Objects::nonNull, "Path is invalid").that((Object) 0).isOK());
 
-        assertFalse(Assertor.<S, String> ofObject().validates(predicateFile, "Path '%1$s*' provide by '%s' is invalid", "John")
+        assertFalse(Assertor.<String> ofObject().validates(predicateFile, "Path '%1$s*' provide by '%s' is invalid", "John")
                 .that("/var/log/dev.log").isOK());
 
         assertTrue(
