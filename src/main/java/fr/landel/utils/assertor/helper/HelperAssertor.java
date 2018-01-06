@@ -288,6 +288,7 @@ public class HelperAssertor extends ConstantsAssertor {
                 if (s.getMapper().isPresent()) {
                     operator = s.getOperator();
                     obj = s.getMapper().get().apply(obj);
+                    type = s.getType();
                     checked = s.isChecked();
                     param = new ParameterAssertor<>(obj, type, checked);
 
@@ -302,6 +303,7 @@ public class HelperAssertor extends ConstantsAssertor {
             case OBJECT:
                 operator = s.getOperator();
                 obj = s.getObject();
+                type = s.getType();
                 checked = s.isChecked();
                 param = new ParameterAssertor<>(obj, type, checked);
 
