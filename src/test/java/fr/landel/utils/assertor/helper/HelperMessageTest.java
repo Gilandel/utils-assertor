@@ -179,6 +179,17 @@ public class HelperMessageTest extends AbstractTest {
         // prerequisite error set as message
         assertEquals("the char sequence cannot be null and the searched substring cannot be null or empty",
                 Assertor.that("text1").contains((CharSequence) null).and("text2").isBlank().getErrors().get());
+
+        Assertor.that(12).isGT(12).nor("text").contains("ex").orElseThrow();
+        Assertor.that(12).not().isGT(12).or("text").not().contains("ex").orElseThrow();
+        Assertor.that(12).isLTE(12).or("text").not().contains("ex").orElseThrow();
+
+        assertEquals("the number '12' should be greater than '12' NAND the char sequence 'text' should contain 'ex'",
+                Assertor.that(12).isGT(12).nand("text").contains("ex").getErrors().get());
+        assertEquals("the char sequence 'text' should NOT contain 'ex'",
+                Assertor.that(12).not().isGT(12).and("text").not().contains("ex").getErrors().get());
+        assertEquals("the char sequence 'text' should NOT contain 'ex'",
+                Assertor.that(12).isLTE(12).and("text").not().contains("ex").getErrors().get());
     }
 
     /**

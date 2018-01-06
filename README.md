@@ -25,7 +25,7 @@ Work progress:
 <dependency>
 	<groupId>fr.landel.utils</groupId>
 	<artifactId>utils-assertor</artifactId>
-	<version>1.1.2</version>
+	<version>1.1.3</version>
 </dependency>
 ```
 
@@ -609,7 +609,8 @@ Assertor.that(12).isGT(12).nand("text").contains("ex").orElseThrow();
 // 12 > 12 nand 'text' contains 'ex'
 // !(12 > 12) && !('text' contains 'ex')
 // Equivalent:
-Assertor.that(12).isLTE(12).and().not().contains("ex").orElseThrow();
+Assertor.that(12).not().isGT(12).and("text").not().contains("ex").orElseThrow();
+Assertor.that(12).isLTE(12).and("text").not().contains("ex").orElseThrow();
 ```
 
 ### NOR
@@ -636,7 +637,8 @@ Assertor.that(12).isGT(12).nor("text").contains("ex").orElseThrow();
 // 12 > 12 nor 'text' contains 'ex'
 // !(12 > 12) || !('text' contains 'ex')
 // Equivalent:
-Assertor.that(12).isLTE(12).or().not().contains("ex").orElseThrow();
+Assertor.that(12).not().isGT(12).or("text").not().contains("ex").orElseThrow();
+Assertor.that(12).isLTE(12).or("text").not().contains("ex").orElseThrow();
 ```
 
 ## Available methods
@@ -2918,6 +2920,9 @@ Assertor.that(new IOException()).hasCauseInstanceOf(Exception.class, (Pattern) n
 ```
 
 ## Changelog
+### 1.1.3 - 2018-01-06
+- Fix: Error on generating message on multiple checked types combination (ex: `Assertor.that(12).isGT(12).nand("text").contains("ex").orElseThrow()`)
+
 ### 1.1.2 - 2018-01-06
 - Update: Simplify predicate object creation (Predicate for object doesn't need anymore the predicate step type, use `PredicateAssertorStepObject<MyClass> predicate = Assertor.<MyClass>ofObject()` instead of `PredicateAssertorStep<S, MyClass> predicate = Assertor.<S, MyClass>ofObject()` with `<S extends PredicateStep<S, MyClass>>`)
 
