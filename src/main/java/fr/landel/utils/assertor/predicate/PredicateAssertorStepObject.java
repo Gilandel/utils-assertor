@@ -23,43 +23,39 @@ import fr.landel.utils.assertor.StepAssertor;
 import fr.landel.utils.assertor.helper.HelperStep;
 
 /**
- * This class is an intermediate or final link in chain, see
- * {@link PredicateStep}.
+ * This class define methods that can be applied on the checked {@link Object}.
+ * To provide a result, it's also provide a chain builder by returning a
+ * {@link PredicateStepObject}. The chain looks like:
+ * 
+ * <pre>
+ * {@link PredicateAssertorStepObject} &gt; {@link PredicateStepObject} &gt; {@link PredicateAssertorStepObject} &gt; {@link PredicateStepObject}...
+ * </pre>
+ * 
+ * This chain always starts with a {@link PredicateAssertorStepObject} and ends
+ * with {@link PredicateStepObject}.
  *
- * @since Aug 3, 2016
+ * @since Jan 6, 2018
  * @author Gilles
  *
+ * @param <T>
+ *            The type of checked object
  */
 @FunctionalInterface
-public interface PredicateStepNumber<N extends Number & Comparable<N>> extends PredicateStep<PredicateStepNumber<N>, N> {
+public interface PredicateAssertorStepObject<T> extends PredicateAssertorStep<PredicateStepObject<T>, T> {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    default PredicateStepNumber<N> get(final StepAssertor<N> result) {
+    default PredicateStepObject<T> get(final StepAssertor<T> result) {
         return () -> result;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    default PredicateAssertorStepNumber<N> and() {
-        return () -> HelperStep.and(this.getStep());
-    }
-
-    @Override
-    default PredicateAssertorStepNumber<N> or() {
-        return () -> HelperStep.or(this.getStep());
-    }
-
-    @Override
-    default PredicateAssertorStepNumber<N> xor() {
-        return () -> HelperStep.xor(this.getStep());
-    }
-
-    @Override
-    default PredicateAssertorStepNumber<N> nand() {
-        return () -> HelperStep.nand(this.getStep());
-    }
-
-    @Override
-    default PredicateAssertorStepNumber<N> nor() {
-        return () -> HelperStep.nor(this.getStep());
+    default PredicateAssertorStepObject<T> not() {
+        return () -> HelperStep.not(getStep());
     }
 }

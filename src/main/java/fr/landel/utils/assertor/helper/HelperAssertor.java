@@ -2,7 +2,7 @@
  * #%L
  * utils-assertor
  * %%
- * Copyright (C) 2016 - 2017 Gilles Landel
+ * Copyright (C) 2016 - 2018 Gilles Landel
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -229,8 +229,8 @@ public class HelperAssertor extends ConstantsAssertor {
 
             switch (s.getStepType()) {
 
-            // the first step of an Assertor in matcher mode (ex:
-            // Assertor.matcherNumber...)
+            // the first step of an Assertor in predicate mode (ex:
+            // Assertor.ofNumber...)
             case PREDICATE:
                 type = s.getType();
                 if (EnumType.UNKNOWN.equals(type)) {

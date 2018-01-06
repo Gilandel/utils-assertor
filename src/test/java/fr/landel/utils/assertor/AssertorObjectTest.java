@@ -2,7 +2,7 @@
  * #%L
  * utils-assertor
  * %%
- * Copyright (C) 2016 - 2017 Gilles Landel
+ * Copyright (C) 2016 - 2018 Gilles Landel
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -181,7 +181,7 @@ public class AssertorObjectTest extends AbstractTest {
     @Test
     public void testIsNotNullOKObject() {
         try {
-            Assertor.that(1).isNotNull();
+            Assertor.that(1).isNotNull().orElseThrow();
         } catch (IllegalArgumentException e) {
             fail("The test isn't correct");
         }
@@ -287,7 +287,7 @@ public class AssertorObjectTest extends AbstractTest {
     @Test
     public void testIsEqualOKObjectObject() throws IOException {
         try {
-            Assertor.that("texte4").isEqual("texte4");
+            Assertor.that("texte4").isEqual("texte4").orElseThrow();
             Assertor.that(5).isEqual(5).orElseThrow(new IOException(), true);
 
             StringBuilder sb1 = new StringBuilder("texte4");

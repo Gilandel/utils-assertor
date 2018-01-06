@@ -25,7 +25,7 @@ Work progress:
 <dependency>
 	<groupId>fr.landel.utils</groupId>
 	<artifactId>utils-assertor</artifactId>
-	<version>1.1.1</version>
+	<version>1.1.2</version>
 </dependency>
 ```
 
@@ -191,27 +191,27 @@ Three mode are available, for example 'contains' method on map, will prefer, in:
 By default, 'STANDARD' mode is applied. These modes are also available on operator methods (and, or, xor, nand and nor).
 
 A second version, to start an assertion, exists through `Assertor.of*`, this version allows to create a predicate (without the object to check).
-The aim are to return a predicate via a function to use it in the caller or to improve performance by preparing a shared predicate.  
+The aim is to return a predicate. This function can be used in a the caller or later to improve performance by preparing a shared predicate.  
 Same types are supported ([see Description](#description)).  
 ```java
-PredicateStepNumber<Integer> predicate = Assertor.ofNumber(Integer.class).isGT(1);
+PredicateStepNumber<Integer> predicate = Assertor.<Integer>ofNumber().isGT(1);
 // ...
 predicate.that(num).orElseThrow();
 
 // ex:
-PredicateStep<?, Object> predicateObject = Assertor.ofObject().isNotNull();
+PredicateStepObject<Object> predicateObject = Assertor.ofObject().isNotNull();
 PredicateStepArray<Integer> predicateIntegers = Assertor.<Integer>ofArray().contains(1);
 PredicateStepBoolean predicateBoolean = Assertor.ofBoolean().isTrue();
 PredicateStepCharSequence<StringBuilder> predicateStringBuilder = Assertor.<StringBuilder>ofCharSequence().contains('a');
 PredicateStepClass<IOException> predicateClass = Assertor.<IOException>ofClass().isAssignableFrom(Exception.class);
 PredicateStepCalendar predicateCalendar = Assertor.ofCalendar().isAfter(new GregorianCalendar(2000, 0, 1));
 PredicateStepDate predicateDate = Assertor.ofDate().isAfter(new Date());
-PredicateStepTemporal<ChronoLocalDateTime<?>> predicateTemporal = Assertor.<ChronoLocalDateTime<?>> ofTemporal().isAfter(localDateTime1);
-PredicateStepEnum<EnumType> predicateEnum = Assertor.<EnumType> ofEnum().hasName("UNKNOWN");
-PredicateStepIterable<List<String>, String> predicateIterable = Assertor.<List<String>, String> ofIterable().contains("");
-PredicateStepMap<String, Integer> predicateMap = Assertor.<String, Integer> ofMap().contains("test");
+PredicateStepTemporal<ChronoLocalDateTime<?>> predicateTemporal = Assertor.<ChronoLocalDateTime<?>>ofTemporal().isAfter(localDateTime1);
+PredicateStepEnum<EnumType> predicateEnum = Assertor.<EnumType>ofEnum().hasName("UNKNOWN");
+PredicateStepIterable<List<String>, String> predicateIterable = Assertor.<List<String>, String>ofIterable().contains("");
+PredicateStepMap<String, Integer> predicateMap = Assertor.<String, Integer>ofMap().contains("test");
 PredicateStepThrowable<Throwable> predicateThrowable = Assertor.ofThrowable().hasCauseAssignableFrom(IllegalArgumentException.class, false);
-PredicateStepNumber<Integer> predicateNumber = Assertor.<Integer> ofNumber().isGT(13).and(Assertor.<Long> ofNumber().isGT(18L));
+PredicateStepNumber<Integer> predicateNumber = Assertor.<Integer>ofNumber().isGT(13).and(Assertor.<Long> ofNumber().isGT(18L));
 ```
 
 
@@ -2918,6 +2918,9 @@ Assertor.that(new IOException()).hasCauseInstanceOf(Exception.class, (Pattern) n
 ```
 
 ## Changelog
+### 1.1.2 - 2018-01-06
+- Update: Simplify predicate object creation (Predicate for object doesn't need anymore the predicate step type, use `PredicateAssertorStepObject<MyClass> predicate = Assertor.<MyClass>ofObject()` instead of `PredicateAssertorStep<S, MyClass> predicate = Assertor.<S, MyClass>ofObject()` with `<S extends PredicateStep<S, MyClass>>`)
+
 ### 1.1.1 - 2017-12-18
 - New: add new methods to check map, iterable and array ordered content (containsInOrder, containsValuesInOrder, containsAnyValues, containsAllValues)
 - New: Add isBeetween functions for date, calendar and temporal
