@@ -32,7 +32,11 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.function.Predicate;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
 
@@ -71,7 +75,7 @@ public class AssertorMapTest extends AbstractTest {
 
         final Map<String, Integer> map = new HashMap<>();
 
-        final AssertorStepMap<Map<String, Integer>, String, Integer> assertMap = Assertor.that(map);
+        final AssertorStepMap<String, Integer> assertMap = Assertor.that(map);
 
         assertMap.isEmpty().orElseThrow();
 
@@ -110,7 +114,7 @@ public class AssertorMapTest extends AbstractTest {
         final Map<String, Integer> map = new HashMap<>();
         map.put(el, 1);
 
-        final AssertorStepMap<Map<String, Integer>, String, Integer> assertMap = Assertor.that(map);
+        final AssertorStepMap<String, Integer> assertMap = Assertor.that(map);
 
         assertMap.isNotEmpty().orElseThrow();
 
@@ -172,9 +176,8 @@ public class AssertorMapTest extends AbstractTest {
         assertFalse(Assertor.that((Map<String, Integer>) null).containsAny(map).isOK());
     }
 
-    private void checkContains(final AssertorStepMap<Map<String, Integer>, String, Integer> assertMap, final String key1, final String key2,
-            final Integer val1, final List<String> keys, final Map<String, Integer> map, final Map<String, Integer> map1)
-            throws IOException {
+    private void checkContains(final AssertorStepMap<String, Integer> assertMap, final String key1, final String key2, final Integer val1,
+            final List<String> keys, final Map<String, Integer> map, final Map<String, Integer> map1) throws IOException {
 
         assertMap.isNotNull().and().contains(key1).orElseThrow();
 
@@ -254,8 +257,8 @@ public class AssertorMapTest extends AbstractTest {
         assertFalse(Assertor.that((Map<String, Integer>) null).not().containsAll(map1).isOK());
     }
 
-    private void checkDoesNotContain(final AssertorStepMap<Map<String, Integer>, String, Integer> assertMap, final String key1,
-            final String key2, final Integer val1, final Integer val2, final List<String> keys, final Map<String, Integer> map,
+    private void checkDoesNotContain(final AssertorStepMap<String, Integer> assertMap, final String key1, final String key2,
+            final Integer val1, final Integer val2, final List<String> keys, final Map<String, Integer> map,
             final Map<String, Integer> map1) throws IOException {
 
         assertMap.isNotNull().and().contains(key1).orElseThrow();
@@ -333,6 +336,126 @@ public class AssertorMapTest extends AbstractTest {
     @Test(expected = IllegalArgumentException.class)
     public void testIsNotEmptyKOMapOfQQ() {
         Assertor.that(new HashMap<String, String>()).isNotEmpty().orElseThrow();
+    }
+
+    /**
+     * Test method for {@link AssertorMap#hasSizeGT}.
+     */
+    @Test
+    public void testHasSizeGT() {
+        final String key1 = "element1";
+        final String key2 = "element2";
+        final Integer val1 = 1;
+        final Integer val2 = 2;
+
+        final Map<String, Integer> map = new HashMap<>();
+        map.put(key1, val1);
+        map.put(key2, val2);
+
+        assertTrue(Assertor.that(map).hasSizeGT(1).isOK());
+        assertTrue(Assertor.that(map).hasSizeGT(0).isOK());
+        assertFalse(Assertor.that(map).hasSizeGT(2).isOK());
+        assertFalse(Assertor.that(map).hasSizeGT(3).isOK());
+
+        assertFalse(Assertor.that(map).hasSizeGT(-1).isOK());
+        assertFalse(Assertor.that((Map<String, Integer>) null).hasSizeGT(1).isOK());
+
+        assertException(() -> Assertor.that(map).hasSizeGT(-1).orElseThrow(), IllegalArgumentException.class,
+                "the size has to be greater than or equal to 0 and the map cannot be null");
+        assertException(() -> Assertor.that(map).hasSizeGT(2).orElseThrow(), IllegalArgumentException.class,
+                "the map '[element1=1, element2=2]' size should be greater than: 2");
+        assertException(() -> Assertor.that(map).not().hasSizeGT(1).orElseThrow(), IllegalArgumentException.class,
+                "the map '[element1=1, element2=2]' size should NOT be greater than: 1");
+    }
+
+    /**
+     * Test method for {@link AssertorMap#hasSizeGTE}.
+     */
+    @Test
+    public void testHasSizeGTE() {
+        final String key1 = "element1";
+        final String key2 = "element2";
+        final Integer val1 = 1;
+        final Integer val2 = 2;
+
+        final Map<String, Integer> map = new HashMap<>();
+        map.put(key1, val1);
+        map.put(key2, val2);
+
+        assertTrue(Assertor.that(map).hasSizeGTE(1).isOK());
+        assertTrue(Assertor.that(map).hasSizeGTE(0).isOK());
+        assertTrue(Assertor.that(map).hasSizeGTE(2).isOK());
+        assertFalse(Assertor.that(map).hasSizeGTE(3).isOK());
+
+        assertFalse(Assertor.that(map).hasSizeGTE(-1).isOK());
+        assertFalse(Assertor.that((Map<String, Integer>) null).hasSizeGTE(1).isOK());
+
+        assertException(() -> Assertor.that(map).hasSizeGTE(-1).orElseThrow(), IllegalArgumentException.class,
+                "the size has to be greater than or equal to 0 and the map cannot be null");
+        assertException(() -> Assertor.that(map).hasSizeGTE(3).orElseThrow(), IllegalArgumentException.class,
+                "the map '[element1=1, element2=2]' size should be greater than or equal to: 3");
+        assertException(() -> Assertor.that(map).not().hasSizeGTE(1).orElseThrow(), IllegalArgumentException.class,
+                "the map '[element1=1, element2=2]' size should NOT be greater than or equal to: 1");
+    }
+
+    /**
+     * Test method for {@link AssertorMap#hasSizeLT}.
+     */
+    @Test
+    public void testHasSizeLT() {
+        final String key1 = "element1";
+        final String key2 = "element2";
+        final Integer val1 = 1;
+        final Integer val2 = 2;
+
+        final Map<String, Integer> map = new HashMap<>();
+        map.put(key1, val1);
+        map.put(key2, val2);
+
+        assertFalse(Assertor.that(map).hasSizeLT(1).isOK());
+        assertFalse(Assertor.that(map).hasSizeLT(0).isOK());
+        assertFalse(Assertor.that(map).hasSizeLT(2).isOK());
+        assertTrue(Assertor.that(map).hasSizeLT(3).isOK());
+
+        assertFalse(Assertor.that(map).hasSizeLT(-1).isOK());
+        assertFalse(Assertor.that((Map<String, Integer>) null).hasSizeLT(1).isOK());
+
+        assertException(() -> Assertor.that(map).hasSizeLT(-1).orElseThrow(), IllegalArgumentException.class,
+                "the size has to be greater than or equal to 0 and the map cannot be null");
+        assertException(() -> Assertor.that(map).hasSizeLT(1).orElseThrow(), IllegalArgumentException.class,
+                "the map '[element1=1, element2=2]' size should be lower than: 1");
+        assertException(() -> Assertor.that(map).not().hasSizeLT(3).orElseThrow(), IllegalArgumentException.class,
+                "the map '[element1=1, element2=2]' size should NOT be lower than: 3");
+    }
+
+    /**
+     * Test method for {@link AssertorMap#hasSizeLTE}.
+     */
+    @Test
+    public void testHasSizeLTE() {
+        final String key1 = "element1";
+        final String key2 = "element2";
+        final Integer val1 = 1;
+        final Integer val2 = 2;
+
+        final Map<String, Integer> map = new HashMap<>();
+        map.put(key1, val1);
+        map.put(key2, val2);
+
+        assertFalse(Assertor.that(map).hasSizeLTE(1).isOK());
+        assertFalse(Assertor.that(map).hasSizeLTE(0).isOK());
+        assertTrue(Assertor.that(map).hasSizeLTE(2).isOK());
+        assertTrue(Assertor.that(map).hasSizeLTE(3).isOK());
+
+        assertFalse(Assertor.that(map).hasSizeLTE(-1).isOK());
+        assertFalse(Assertor.that((Map<String, Integer>) null).hasSizeLTE(1).isOK());
+
+        assertException(() -> Assertor.that(map).hasSizeLTE(-1).orElseThrow(), IllegalArgumentException.class,
+                "the size has to be greater than or equal to 0 and the map cannot be null");
+        assertException(() -> Assertor.that(map).hasSizeLTE(1).orElseThrow(), IllegalArgumentException.class,
+                "the map '[element1=1, element2=2]' size should be lower than or equal to: 1");
+        assertException(() -> Assertor.that(map).not().hasSizeLTE(3).orElseThrow(), IllegalArgumentException.class,
+                "the map '[element1=1, element2=2]' size should NOT be lower than or equal to: 3");
     }
 
     /**
@@ -450,21 +573,42 @@ public class AssertorMapTest extends AbstractTest {
             assertTrue(Assertor.that(mapTU, mode).containsInOrder(mapTU2.keySet()).isOK());
             assertFalse(Assertor.that(mapTU, mode).not().containsInOrder(mapTU2.keySet()).isOK());
 
-            assertException(() -> Assertor.that(mapTU, mode).containsInOrder(mapTUV).orElseThrow(), IllegalArgumentException.class,
-                    "the map '[t=1, u=2]' should contain all entries from second map '[t=1, u=2, v=3]' in the same order");
-
-            assertException(() -> Assertor.that(mapXTUV, mode).not().containsInOrder(mapTU).orElseThrow(), IllegalArgumentException.class,
-                    "the map '[x=4, t=1, u=2, v=3]' should NOT contain all entries from second map '[t=1, u=2]' or should be in an other order");
-
-            assertException(() -> Assertor.that((Map<String, Integer>) null, mode).containsInOrder(mapU).orElseThrow(),
-                    IllegalArgumentException.class, "neither maps can be null or empty");
-
-            assertException(() -> Assertor.that(Collections.<String, Integer> emptyMap(), mode).containsInOrder(mapU).orElseThrow(),
-                    IllegalArgumentException.class, "neither maps can be null or empty");
-
-            assertException(() -> Assertor.that(mapTU, mode).containsInOrder((Map<String, Integer>) null).orElseThrow(),
-                    IllegalArgumentException.class, "neither maps can be null or empty");
+            testContainsInOrderException(mapTUClone, mapTUV, mapXTUV, mode);
         }
+    }
+
+    private void testContainsInOrderException(final Map<String, Integer> mapTU, final Map<String, Integer> mapTUV,
+            final Map<String, Integer> mapXTUV, final EnumAnalysisMode mode) {
+
+        assertException(() -> Assertor.that(mapTU, mode).containsInOrder(mapTUV).orElseThrow(), IllegalArgumentException.class,
+                "the map '[t=1, u=2]' should contain all entries from second map '[t=1, u=2, v=3]' in the same order");
+
+        assertException(() -> Assertor.that(mapXTUV, mode).not().containsInOrder(mapTU).orElseThrow(), IllegalArgumentException.class,
+                "the map '[x=4, t=1, u=2, v=3]' should NOT contain all entries from second map '[t=1, u=2]' or should be in an other order");
+
+        assertException(() -> Assertor.that((Map<String, Integer>) null, mode).containsInOrder(mapTU).orElseThrow(),
+                IllegalArgumentException.class, "neither maps can be null or empty");
+
+        assertException(() -> Assertor.that(Collections.<String, Integer> emptyMap(), mode).containsInOrder(mapTU).orElseThrow(),
+                IllegalArgumentException.class, "neither maps can be null or empty");
+
+        assertException(() -> Assertor.that(mapTU, mode).containsInOrder((Map<String, Integer>) null).orElseThrow(),
+                IllegalArgumentException.class, "neither maps can be null or empty");
+
+        assertException(() -> Assertor.that(mapTU, mode).containsInOrder((List<String>) null).orElseThrow(), IllegalArgumentException.class,
+                "neither map nor keys can be null or empty");
+
+        assertException(() -> Assertor.that((Map<String, Integer>) null, mode).containsInOrder((List<String>) null).orElseThrow(),
+                IllegalArgumentException.class, "neither map nor keys can be null or empty");
+
+        assertException(() -> Assertor.that(mapTU, mode).containsValuesInOrder((List<Integer>) null).orElseThrow(),
+                IllegalArgumentException.class, "neither map nor values can be null or empty");
+
+        assertException(() -> Assertor.that((Map<String, Integer>) null, mode).containsValuesInOrder(mapTU.values()).orElseThrow(),
+                IllegalArgumentException.class, "neither map nor values can be null or empty");
+
+        assertException(() -> Assertor.that((Map<String, Integer>) null, mode).containsValuesInOrder((List<Integer>) null).orElseThrow(),
+                IllegalArgumentException.class, "neither map nor values can be null or empty");
     }
 
     /**
@@ -495,7 +639,7 @@ public class AssertorMapTest extends AbstractTest {
         Map<String, Integer> mapTU = MapUtils2.newMap(LinkedHashMap::new, Pair.of("t", 1), Pair.of("u", 2));
 
         for (EnumAnalysisMode mode : EnumAnalysisMode.values()) {
-            AssertorStepMap<Map<String, Integer>, String, Integer> assertorTU = Assertor.that(mapTU, mode);
+            AssertorStepMap<String, Integer> assertorTU = Assertor.that(mapTU, mode);
 
             assertTrue(assertorTU.containsAnyValues(Arrays.asList(1, 2)).isOK());
             assertTrue(assertorTU.containsAnyValues(Arrays.asList(1, 2, 3)).isOK());
@@ -509,10 +653,10 @@ public class AssertorMapTest extends AbstractTest {
                     "the map '[t=1, u=2]' should contain any values '[0]'");
 
             assertException(() -> Assertor.that((Map<String, Integer>) null, mode).containsAnyValues(Arrays.asList(0)).orElseThrow(),
-                    IllegalArgumentException.class, "the map and the values' list cannot be null or empty");
+                    IllegalArgumentException.class, "neither map nor values can be null or empty");
 
             assertException(() -> assertorTU.containsAnyValues((List<Integer>) null).orElseThrow(), IllegalArgumentException.class,
-                    "the map and the values' list cannot be null or empty");
+                    "neither map nor values can be null or empty");
         }
     }
 
@@ -524,7 +668,7 @@ public class AssertorMapTest extends AbstractTest {
         Map<String, Integer> mapTU = MapUtils2.newMap(LinkedHashMap::new, Pair.of("t", 1), Pair.of("u", 2));
 
         for (EnumAnalysisMode mode : EnumAnalysisMode.values()) {
-            AssertorStepMap<Map<String, Integer>, String, Integer> assertorTU = Assertor.that(mapTU, mode);
+            AssertorStepMap<String, Integer> assertorTU = Assertor.that(mapTU, mode);
 
             assertTrue(assertorTU.containsAllValues(Arrays.asList(1, 2)).isOK());
             assertFalse(assertorTU.containsAllValues(Arrays.asList(1, 2, 3)).isOK());
@@ -538,10 +682,80 @@ public class AssertorMapTest extends AbstractTest {
                     "the map '[t=1, u=2]' should contain all values '[0]'");
 
             assertException(() -> Assertor.that((Map<String, Integer>) null, mode).containsAllValues(Arrays.asList(0)).orElseThrow(),
-                    IllegalArgumentException.class, "the map and the values' list cannot be null or empty");
+                    IllegalArgumentException.class, "neither map nor values can be null or empty");
 
             assertException(() -> assertorTU.containsAllValues((List<Integer>) null).orElseThrow(), IllegalArgumentException.class,
-                    "the map and the values' list cannot be null or empty");
+                    "neither map nor values can be null or empty");
+        }
+    }
+
+    /**
+     * Check {@link AssertorMap#anyMatch}
+     */
+    @Test
+    public void testAnyMatch() {
+        Map<String, Integer> maptu = MapUtils2.newHashMap(Pair.of("t", 2), Pair.of("u", 3));
+        Map<String, Integer> mapTu = MapUtils2.newHashMap(Pair.of("T", 2), Pair.of("u", 2));
+        Map<String, Integer> mapTU = MapUtils2.newHashMap(Pair.of("T", 1), Pair.of("U", 2));
+        Map<String, Integer> maptNull = MapUtils2.newHashMap(Pair.of("t", 1), Pair.of(null, null));
+        Map<String, Integer> maptUNull = MapUtils2.newHashMap(Pair.of("t", 1), Pair.of("U", null));
+
+        Predicate<Entry<String, Integer>> predicate = e -> Objects.equals(e.getKey(), StringUtils.lowerCase(e.getKey()))
+                && e.getValue() > 1;
+
+        assertTrue(Assertor.that(maptu).anyMatch(predicate).isOK());
+
+        for (EnumAnalysisMode mode : EnumAnalysisMode.values()) {
+
+            assertTrue(Assertor.that(maptu, mode).anyMatch(predicate).isOK());
+            assertTrue(Assertor.that(mapTu, mode).anyMatch(predicate).isOK());
+            assertFalse(Assertor.that(mapTU, mode).anyMatch(predicate).isOK());
+            assertFalse(Assertor.that(maptNull, mode).anyMatch(predicate).isOK());
+            assertFalse(Assertor.that(maptUNull, mode).anyMatch(predicate).isOK());
+
+            assertException(() -> Assertor.that(Collections.<String, Integer> emptyMap(), mode).anyMatch(predicate).orElseThrow(),
+                    IllegalArgumentException.class, "the map cannot be null or empty and predicate cannot be null");
+            assertException(() -> Assertor.that((Map<String, Integer>) null, mode).anyMatch(predicate).orElseThrow(),
+                    IllegalArgumentException.class, "the map cannot be null or empty and predicate cannot be null");
+            assertException(() -> Assertor.that(mapTu, mode).anyMatch(null).orElseThrow(), IllegalArgumentException.class,
+                    "the map cannot be null or empty and predicate cannot be null");
+            assertException(() -> Assertor.that(mapTU, mode).anyMatch(predicate).orElseThrow(), IllegalArgumentException.class,
+                    "any map entry '[T=1, U=2]' should match the predicate");
+        }
+    }
+
+    /**
+     * Check {@link AssertorMap#allMatch}
+     */
+    @Test
+    public void testAllMatch() {
+        Map<String, Integer> maptu = MapUtils2.newHashMap(Pair.of("t", 2), Pair.of("u", 3));
+        Map<String, Integer> mapTu = MapUtils2.newHashMap(Pair.of("T", 2), Pair.of("u", 2));
+        Map<String, Integer> mapTU = MapUtils2.newHashMap(Pair.of("T", 1), Pair.of("U", 2));
+        Map<String, Integer> maptNull = MapUtils2.newHashMap(Pair.of("t", 1), Pair.of(null, null));
+        Map<String, Integer> maptUNull = MapUtils2.newHashMap(Pair.of("t", 1), Pair.of("U", null));
+
+        Predicate<Entry<String, Integer>> predicate = e -> Objects.equals(e.getKey(), StringUtils.lowerCase(e.getKey()))
+                && e.getValue() > 1;
+
+        assertTrue(Assertor.that(maptu).allMatch(predicate).isOK());
+
+        for (EnumAnalysisMode mode : EnumAnalysisMode.values()) {
+
+            assertTrue(Assertor.that(maptu, mode).allMatch(predicate).isOK());
+            assertFalse(Assertor.that(mapTu, mode).allMatch(predicate).isOK());
+            assertFalse(Assertor.that(mapTU, mode).allMatch(predicate).isOK());
+            assertFalse(Assertor.that(maptNull, mode).allMatch(predicate).isOK());
+            assertFalse(Assertor.that(maptUNull, mode).allMatch(predicate).isOK());
+
+            assertException(() -> Assertor.that(Collections.<String, Integer> emptyMap(), mode).allMatch(predicate).orElseThrow(),
+                    IllegalArgumentException.class, "the map cannot be null or empty and predicate cannot be null");
+            assertException(() -> Assertor.that((Map<String, Integer>) null, mode).allMatch(predicate).orElseThrow(),
+                    IllegalArgumentException.class, "the map cannot be null or empty and predicate cannot be null");
+            assertException(() -> Assertor.that(mapTu, mode).allMatch(null).orElseThrow(), IllegalArgumentException.class,
+                    "the map cannot be null or empty and predicate cannot be null");
+            assertException(() -> Assertor.that(mapTU, mode).allMatch(predicate).orElseThrow(), IllegalArgumentException.class,
+                    "all the map entries '[T=1, U=2]' should match the predicate");
         }
     }
 }

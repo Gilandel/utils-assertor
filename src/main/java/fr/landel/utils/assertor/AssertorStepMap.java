@@ -21,6 +21,8 @@ package fr.landel.utils.assertor;
 
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.function.Predicate;
 
 import fr.landel.utils.assertor.commons.MessageAssertor;
 import fr.landel.utils.assertor.helper.HelperStep;
@@ -43,13 +45,13 @@ import fr.landel.utils.assertor.utils.AssertorMap;
  *
  */
 @FunctionalInterface
-public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep<StepMap<M, K, V>, M> {
+public interface AssertorStepMap<K, V> extends AssertorStep<StepMap<K, V>, Map<K, V>> {
 
     /**
      * {@inheritDoc}
      */
     @Override
-    default StepMap<M, K, V> get(final StepAssertor<M> result) {
+    default StepMap<K, V> get(final StepAssertor<Map<K, V>> result) {
         return () -> result;
     }
 
@@ -57,7 +59,7 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
      * {@inheritDoc}
      */
     @Override
-    default AssertorStepMap<M, K, V> not() {
+    default AssertorStepMap<K, V> not() {
         return () -> HelperStep.not(getStep());
     }
 
@@ -78,7 +80,7 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
      * @return The operator
      * @category no_message
      */
-    default StepMap<M, K, V> hasSize(final int size) {
+    default StepMap<K, V> hasSize(final int size) {
         return this.hasSize(size, null);
     }
 
@@ -103,7 +105,7 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
      * @return The operator
      * @category message
      */
-    default StepMap<M, K, V> hasSize(final int size, final CharSequence message, final Object... arguments) {
+    default StepMap<K, V> hasSize(final int size, final CharSequence message, final Object... arguments) {
         return this.hasSize(size, null, message, arguments);
     }
 
@@ -131,8 +133,310 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
      * @return The operator
      * @category localized_message
      */
-    default StepMap<M, K, V> hasSize(final int size, final Locale locale, final CharSequence message, final Object... arguments) {
+    default StepMap<K, V> hasSize(final int size, final Locale locale, final CharSequence message, final Object... arguments) {
         return () -> AssertorMap.hasSize(this.getStep(), size, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
+     * Asserts that the given {@link Map} has a size greater than {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Map} cannot be {@code null} and size cannot be lower
+     * than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).hasSizeGT(size).orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @return The operator
+     * @category no_message
+     */
+    default StepMap<K, V> hasSizeGT(final int size) {
+        return this.hasSizeGT(size, null);
+    }
+
+    /**
+     * Asserts that the given {@link Map} has a size greater than {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Map} cannot be {@code null} and size cannot be lower
+     * than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).hasSizeGT(size, "bad size").orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category message
+     */
+    default StepMap<K, V> hasSizeGT(final int size, final CharSequence message, final Object... arguments) {
+        return this.hasSizeGT(size, null, message, arguments);
+    }
+
+    /**
+     * Asserts that the given {@link Map} has a size greater than {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Map} cannot be {@code null} and size cannot be lower
+     * than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).hasSizeGT(size, Locale.US, "bad size").orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @param locale
+     *            The locale of the message (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category localized_message
+     */
+    default StepMap<K, V> hasSizeGT(final int size, final Locale locale, final CharSequence message, final Object... arguments) {
+        return () -> AssertorMap.hasSizeGT(this.getStep(), size, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
+     * Asserts that the given {@link Map} has a size greater than or equal to
+     * {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Map} cannot be {@code null} and size cannot be lower
+     * than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).hasSizeGTE(size).orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @return The operator
+     * @category no_message
+     */
+    default StepMap<K, V> hasSizeGTE(final int size) {
+        return this.hasSizeGTE(size, null);
+    }
+
+    /**
+     * Asserts that the given {@link Map} has a size greater than or equal to
+     * {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Map} cannot be {@code null} and size cannot be lower
+     * than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).hasSizeGTE(size, "bad size").orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category message
+     */
+    default StepMap<K, V> hasSizeGTE(final int size, final CharSequence message, final Object... arguments) {
+        return this.hasSizeGTE(size, null, message, arguments);
+    }
+
+    /**
+     * Asserts that the given {@link Map} has a size greater than or equal to
+     * {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Map} cannot be {@code null} and size cannot be lower
+     * than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).hasSizeGTE(size, Locale.US, "bad size").orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @param locale
+     *            The locale of the message (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category localized_message
+     */
+    default StepMap<K, V> hasSizeGTE(final int size, final Locale locale, final CharSequence message, final Object... arguments) {
+        return () -> AssertorMap.hasSizeGTE(this.getStep(), size, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
+     * Asserts that the given {@link Map} has a size lower than {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Map} cannot be {@code null} and size cannot be lower
+     * than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).hasSizeLT(size).orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @return The operator
+     * @category no_message
+     */
+    default StepMap<K, V> hasSizeLT(final int size) {
+        return this.hasSizeLT(size, null);
+    }
+
+    /**
+     * Asserts that the given {@link Map} has a size lower than {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Map} cannot be {@code null} and size cannot be lower
+     * than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).hasSizeLT(size, "bad size").orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category message
+     */
+    default StepMap<K, V> hasSizeLT(final int size, final CharSequence message, final Object... arguments) {
+        return this.hasSizeLT(size, null, message, arguments);
+    }
+
+    /**
+     * Asserts that the given {@link Map} has a size lower than {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Map} cannot be {@code null} and size cannot be lower
+     * than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).hasSizeLT(size, Locale.US, "bad size").orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @param locale
+     *            The locale of the message (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category localized_message
+     */
+    default StepMap<K, V> hasSizeLT(final int size, final Locale locale, final CharSequence message, final Object... arguments) {
+        return () -> AssertorMap.hasSizeLT(this.getStep(), size, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
+     * Asserts that the given {@link Map} has a size lower than or equal to
+     * {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Map} cannot be {@code null} and size cannot be lower
+     * than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).hasSizeLTE(size).orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @return The operator
+     * @category no_message
+     */
+    default StepMap<K, V> hasSizeLTE(final int size) {
+        return this.hasSizeLTE(size, null);
+    }
+
+    /**
+     * Asserts that the given {@link Map} has a size lower than or equal to
+     * {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Map} cannot be {@code null} and size cannot be lower
+     * than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).hasSizeLTE(size, "bad size").orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category message
+     */
+    default StepMap<K, V> hasSizeLTE(final int size, final CharSequence message, final Object... arguments) {
+        return this.hasSizeLTE(size, null, message, arguments);
+    }
+
+    /**
+     * Asserts that the given {@link Map} has a size lower than or equal to
+     * {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Map} cannot be {@code null} and size cannot be lower
+     * than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).hasSizeLTE(size, Locale.US, "bad size").orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @param locale
+     *            The locale of the message (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category localized_message
+     */
+    default StepMap<K, V> hasSizeLTE(final int size, final Locale locale, final CharSequence message, final Object... arguments) {
+        return () -> AssertorMap.hasSizeLTE(this.getStep(), size, MessageAssertor.of(locale, message, arguments));
     }
 
     /**
@@ -149,7 +453,7 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
      * @return The operator
      * @category no_message
      */
-    default StepMap<M, K, V> isEmpty() {
+    default StepMap<K, V> isEmpty() {
         return this.isEmpty(null);
     }
 
@@ -171,7 +475,7 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
      * @return The operator
      * @category message
      */
-    default StepMap<M, K, V> isEmpty(final CharSequence message, final Object... arguments) {
+    default StepMap<K, V> isEmpty(final CharSequence message, final Object... arguments) {
         return this.isEmpty(null, message, arguments);
     }
 
@@ -196,7 +500,7 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
      * @return The operator
      * @category localized_message
      */
-    default StepMap<M, K, V> isEmpty(final Locale locale, final CharSequence message, final Object... arguments) {
+    default StepMap<K, V> isEmpty(final Locale locale, final CharSequence message, final Object... arguments) {
         return () -> AssertorMap.isEmpty(this.getStep(), MessageAssertor.of(locale, message, arguments));
     }
 
@@ -214,7 +518,7 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
      * @return The operator
      * @category no_message
      */
-    default StepMap<M, K, V> isNotEmpty() {
+    default StepMap<K, V> isNotEmpty() {
         return this.isNotEmpty(null);
     }
 
@@ -236,7 +540,7 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
      * @return The operator
      * @category message
      */
-    default StepMap<M, K, V> isNotEmpty(final CharSequence message, final Object... arguments) {
+    default StepMap<K, V> isNotEmpty(final CharSequence message, final Object... arguments) {
         return this.isNotEmpty(null, message, arguments);
     }
 
@@ -256,7 +560,7 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
      * @return The operator
      * @category no_message
      */
-    default StepMap<M, K, V> contains(final K key) {
+    default StepMap<K, V> contains(final K key) {
         return this.contains(key, (CharSequence) null);
     }
 
@@ -280,7 +584,7 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
      * @return The operator
      * @category message
      */
-    default StepMap<M, K, V> contains(final K key, final CharSequence message, final Object... arguments) {
+    default StepMap<K, V> contains(final K key, final CharSequence message, final Object... arguments) {
         return this.contains(key, (Locale) null, message, arguments);
     }
 
@@ -305,8 +609,159 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
      * @return The operator
      * @category localized_message
      */
-    default StepMap<M, K, V> isNotEmpty(final Locale locale, final CharSequence message, final Object... arguments) {
+    default StepMap<K, V> isNotEmpty(final Locale locale, final CharSequence message, final Object... arguments) {
         return () -> AssertorMap.isNotEmpty(this.getStep(), MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
+     * Check if any map's entry matches the predicate.
+     * 
+     * <p>
+     * precondition: {@code map} cannot be {@code null} or empty and predicate
+     * cannot be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).anyMatch(e -&gt; Objects.nonNull(e.getValue())).orElseThrow();
+     * </pre>
+     * 
+     * @param predicate
+     *            the predicate function that validates each element
+     * @return the assertor step
+     * @category no_message
+     */
+    default StepMap<K, V> anyMatch(final Predicate<Entry<K, V>> predicate) {
+        return this.anyMatch(predicate, null);
+    }
+
+    /**
+     * Check if any map's entry matches the predicate.
+     * 
+     * <p>
+     * precondition: {@code map} cannot be {@code null} or empty and predicate
+     * cannot be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).anyMatch(e -&gt; Objects.nonNull(e.getValue()), "the map must contain at least on non null value").orElseThrow();
+     * </pre>
+     * 
+     * @param predicate
+     *            the predicate function that validates each element
+     * @param message
+     *            the message on mismatch
+     * @param arguments
+     *            the message arguments
+     * @return the assertor step
+     * @category message
+     */
+    default StepMap<K, V> anyMatch(final Predicate<Entry<K, V>> predicate, final CharSequence message, final Object... arguments) {
+        return this.anyMatch(predicate, null, message, arguments);
+    }
+
+    /**
+     * Check if any map's entry matches the predicate.
+     * 
+     * <p>
+     * precondition: {@code map} cannot be {@code null} or empty and predicate
+     * cannot be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).anyMatch(e -&gt; Objects.nonNull(e.getValue()), Locale.US, "the map must contain at least on non null value")
+     *         .orElseThrow();
+     * </pre>
+     * 
+     * @param predicate
+     *            the predicate function that validates each element
+     * @param locale
+     *            the message locale (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            the message on mismatch
+     * @param arguments
+     *            the message arguments
+     * @return the assertor step
+     * @category localized_message
+     */
+    default StepMap<K, V> anyMatch(final Predicate<Entry<K, V>> predicate, final Locale locale, final CharSequence message,
+            final Object... arguments) {
+        return () -> AssertorMap.anyMatch(this.getStep(), predicate, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
+     * Check if all map's entries match the predicate.
+     * 
+     * <p>
+     * precondition: {@code map} cannot be {@code null} or empty and predicate
+     * cannot be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).allMatch(e -&gt; Objects.nonNull(e.getValue())).orElseThrow();
+     * </pre>
+     * 
+     * @param predicate
+     *            the predicate function that validates each entry
+     * @return the assertor step
+     * @category no_message
+     */
+    default StepMap<K, V> allMatch(final Predicate<Entry<K, V>> predicate) {
+        return this.allMatch(predicate, null);
+    }
+
+    /**
+     * Check if all map's entries match the predicate.
+     * 
+     * <p>
+     * precondition: {@code map} cannot be {@code null} or empty and predicate
+     * cannot be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).allMatch(e -&gt; Objects.nonNull(e.getValue()), "the map cannot contain null value").orElseThrow();
+     * </pre>
+     * 
+     * @param predicate
+     *            the predicate function that validates each entry
+     * @param message
+     *            the message on mismatch
+     * @param arguments
+     *            the message arguments
+     * @return the assertor step
+     * @category message
+     */
+    default StepMap<K, V> allMatch(final Predicate<Entry<K, V>> predicate, final CharSequence message, final Object... arguments) {
+        return this.allMatch(predicate, null, message, arguments);
+    }
+
+    /**
+     * Check if all map's entries match the predicate.
+     * 
+     * <p>
+     * precondition: {@code map} cannot be {@code null} or empty and predicate
+     * cannot be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).allMatch(e -&gt; Objects.nonNull(e.getValue()), Locale.US, "the map cannot contain null value").orElseThrow();
+     * </pre>
+     * 
+     * @param predicate
+     *            the predicate function that validates each entry
+     * @param locale
+     *            the message locale (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            the message on mismatch
+     * @param arguments
+     *            the message arguments
+     * @return the assertor step
+     * @category localized_message
+     */
+    default StepMap<K, V> allMatch(final Predicate<Entry<K, V>> predicate, final Locale locale, final CharSequence message,
+            final Object... arguments) {
+        return () -> AssertorMap.allMatch(this.getStep(), predicate, MessageAssertor.of(locale, message, arguments));
     }
 
     /**
@@ -332,7 +787,7 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
      * @return The operator
      * @category localized_message
      */
-    default StepMap<M, K, V> contains(final K key, final Locale locale, final CharSequence message, final Object... arguments) {
+    default StepMap<K, V> contains(final K key, final Locale locale, final CharSequence message, final Object... arguments) {
         return () -> AssertorMap.contains(this.getStep(), key, MessageAssertor.of(locale, message, arguments));
     }
 
@@ -355,7 +810,7 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
      * @return The operator
      * @category no_message
      */
-    default StepMap<M, K, V> contains(final K key, final V value) {
+    default StepMap<K, V> contains(final K key, final V value) {
         return this.contains(key, value, null);
     }
 
@@ -382,7 +837,7 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
      * @return The operator
      * @category message
      */
-    default StepMap<M, K, V> contains(final K key, final V value, final CharSequence message, final Object... arguments) {
+    default StepMap<K, V> contains(final K key, final V value, final CharSequence message, final Object... arguments) {
         return this.contains(key, value, null, message, arguments);
     }
 
@@ -412,8 +867,7 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
      * @return The operator
      * @category localized_message
      */
-    default StepMap<M, K, V> contains(final K key, final V value, final Locale locale, final CharSequence message,
-            final Object... arguments) {
+    default StepMap<K, V> contains(final K key, final V value, final Locale locale, final CharSequence message, final Object... arguments) {
         return () -> AssertorMap.contains(this.getStep(), key, value, MessageAssertor.of(locale, message, arguments));
     }
 
@@ -433,7 +887,7 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
      * @return The operator
      * @category no_message
      */
-    default StepMap<M, K, V> containsValue(final V value) {
+    default StepMap<K, V> containsValue(final V value) {
         return this.containsValue(value, null);
     }
 
@@ -457,7 +911,7 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
      * @return The operator
      * @category message
      */
-    default StepMap<M, K, V> containsValue(final V value, final CharSequence message, final Object... arguments) {
+    default StepMap<K, V> containsValue(final V value, final CharSequence message, final Object... arguments) {
         return this.containsValue(value, null, message, arguments);
     }
 
@@ -484,7 +938,7 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
      * @return The operator
      * @category localized_message
      */
-    default StepMap<M, K, V> containsValue(final V value, final Locale locale, final CharSequence message, final Object... arguments) {
+    default StepMap<K, V> containsValue(final V value, final Locale locale, final CharSequence message, final Object... arguments) {
         return () -> AssertorMap.containsValue(this.getStep(), value, MessageAssertor.of(locale, message, arguments));
     }
 
@@ -506,7 +960,7 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
      * @return The operator
      * @category no_message
      */
-    default StepMap<M, K, V> containsAll(final Iterable<K> keys) {
+    default StepMap<K, V> containsAll(final Iterable<K> keys) {
         return this.containsAll(keys, null);
     }
 
@@ -532,7 +986,7 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
      * @return The operator
      * @category message
      */
-    default StepMap<M, K, V> containsAll(final Iterable<K> keys, final CharSequence message, final Object... arguments) {
+    default StepMap<K, V> containsAll(final Iterable<K> keys, final CharSequence message, final Object... arguments) {
         return this.containsAll(keys, null, message, arguments);
     }
 
@@ -561,8 +1015,7 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
      * @return The operator
      * @category localized_message
      */
-    default StepMap<M, K, V> containsAll(final Iterable<K> keys, final Locale locale, final CharSequence message,
-            final Object... arguments) {
+    default StepMap<K, V> containsAll(final Iterable<K> keys, final Locale locale, final CharSequence message, final Object... arguments) {
         return () -> AssertorMap.containsAll(this.getStep(), keys, MessageAssertor.of(locale, message, arguments));
     }
 
@@ -583,7 +1036,7 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
      * @return The operator
      * @category no_message
      */
-    default StepMap<M, K, V> containsAll(final Map<K, V> map) {
+    default StepMap<K, V> containsAll(final Map<K, V> map) {
         return this.containsAll(map, null);
     }
 
@@ -608,7 +1061,7 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
      * @return The operator
      * @category message
      */
-    default StepMap<M, K, V> containsAll(final Map<K, V> map, final CharSequence message, final Object... arguments) {
+    default StepMap<K, V> containsAll(final Map<K, V> map, final CharSequence message, final Object... arguments) {
         return this.containsAll(map, null, message, arguments);
     }
 
@@ -636,7 +1089,7 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
      * @return The operator
      * @category localized_message
      */
-    default StepMap<M, K, V> containsAll(final Map<K, V> map, final Locale locale, final CharSequence message, final Object... arguments) {
+    default StepMap<K, V> containsAll(final Map<K, V> map, final Locale locale, final CharSequence message, final Object... arguments) {
         return () -> AssertorMap.containsAll(this.getStep(), map, MessageAssertor.of(locale, message, arguments));
     }
 
@@ -658,7 +1111,7 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
      * @return The operator
      * @category no_message
      */
-    default StepMap<M, K, V> containsAllValues(final Iterable<V> values) {
+    default StepMap<K, V> containsAllValues(final Iterable<V> values) {
         return this.containsAllValues(values, null);
     }
 
@@ -684,7 +1137,7 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
      * @return The operator
      * @category message
      */
-    default StepMap<M, K, V> containsAllValues(final Iterable<V> values, final CharSequence message, final Object... arguments) {
+    default StepMap<K, V> containsAllValues(final Iterable<V> values, final CharSequence message, final Object... arguments) {
         return this.containsAllValues(values, null, message, arguments);
     }
 
@@ -713,7 +1166,7 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
      * @return The operator
      * @category localized_message
      */
-    default StepMap<M, K, V> containsAllValues(final Iterable<V> values, final Locale locale, final CharSequence message,
+    default StepMap<K, V> containsAllValues(final Iterable<V> values, final Locale locale, final CharSequence message,
             final Object... arguments) {
         return () -> AssertorMap.containsAllValues(this.getStep(), values, MessageAssertor.of(locale, message, arguments));
     }
@@ -736,7 +1189,7 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
      * @return The operator
      * @category no_message
      */
-    default StepMap<M, K, V> containsAny(final Iterable<K> keys) {
+    default StepMap<K, V> containsAny(final Iterable<K> keys) {
         return this.containsAny(keys, null);
     }
 
@@ -762,7 +1215,7 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
      * @return The operator
      * @category message
      */
-    default StepMap<M, K, V> containsAny(final Iterable<K> keys, final CharSequence message, final Object... arguments) {
+    default StepMap<K, V> containsAny(final Iterable<K> keys, final CharSequence message, final Object... arguments) {
         return this.containsAny(keys, null, message, arguments);
     }
 
@@ -791,8 +1244,7 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
      * @return The operator
      * @category localized_message
      */
-    default StepMap<M, K, V> containsAny(final Iterable<K> keys, final Locale locale, final CharSequence message,
-            final Object... arguments) {
+    default StepMap<K, V> containsAny(final Iterable<K> keys, final Locale locale, final CharSequence message, final Object... arguments) {
         return () -> AssertorMap.containsAny(this.getStep(), keys, MessageAssertor.of(locale, message, arguments));
     }
 
@@ -813,7 +1265,7 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
      * @return The operator
      * @category no_message
      */
-    default StepMap<M, K, V> containsAny(final Map<K, V> map) {
+    default StepMap<K, V> containsAny(final Map<K, V> map) {
         return this.containsAny(map, null);
     }
 
@@ -838,7 +1290,7 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
      * @return The operator
      * @category message
      */
-    default StepMap<M, K, V> containsAny(final Map<K, V> map, final CharSequence message, final Object... arguments) {
+    default StepMap<K, V> containsAny(final Map<K, V> map, final CharSequence message, final Object... arguments) {
         return this.containsAny(map, null, message, arguments);
     }
 
@@ -866,7 +1318,7 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
      * @return The operator
      * @category localized_message
      */
-    default StepMap<M, K, V> containsAny(final Map<K, V> map, final Locale locale, final CharSequence message, final Object... arguments) {
+    default StepMap<K, V> containsAny(final Map<K, V> map, final Locale locale, final CharSequence message, final Object... arguments) {
         return () -> AssertorMap.containsAny(this.getStep(), map, MessageAssertor.of(locale, message, arguments));
     }
 
@@ -887,7 +1339,7 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
      * @return The operator
      * @category no_message
      */
-    default StepMap<M, K, V> containsAnyValues(final Iterable<V> values) {
+    default StepMap<K, V> containsAnyValues(final Iterable<V> values) {
         return this.containsAnyValues(values, null);
     }
 
@@ -912,7 +1364,7 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
      * @return The operator
      * @category message
      */
-    default StepMap<M, K, V> containsAnyValues(final Iterable<V> values, final CharSequence message, final Object... arguments) {
+    default StepMap<K, V> containsAnyValues(final Iterable<V> values, final CharSequence message, final Object... arguments) {
         return this.containsAnyValues(values, null, message, arguments);
     }
 
@@ -940,7 +1392,7 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
      * @return The operator
      * @category localized_message
      */
-    default StepMap<M, K, V> containsAnyValues(final Iterable<V> values, final Locale locale, final CharSequence message,
+    default StepMap<K, V> containsAnyValues(final Iterable<V> values, final Locale locale, final CharSequence message,
             final Object... arguments) {
         return () -> AssertorMap.containsAnyValues(this.getStep(), values, MessageAssertor.of(locale, message, arguments));
     }
@@ -963,7 +1415,7 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
      * @return The operator
      * @category no_message
      */
-    default StepMap<M, K, V> containsInOrder(final Map<K, V> map) {
+    default StepMap<K, V> containsInOrder(final Map<K, V> map) {
         return this.containsInOrder(map, null);
     }
 
@@ -989,7 +1441,7 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
      * @return The operator
      * @category message
      */
-    default StepMap<M, K, V> containsInOrder(final Map<K, V> map, final CharSequence message, final Object... arguments) {
+    default StepMap<K, V> containsInOrder(final Map<K, V> map, final CharSequence message, final Object... arguments) {
         return this.containsInOrder(map, null, message, arguments);
     }
 
@@ -1018,8 +1470,7 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
      * @return The operator
      * @category localized_message
      */
-    default StepMap<M, K, V> containsInOrder(final Map<K, V> map, final Locale locale, final CharSequence message,
-            final Object... arguments) {
+    default StepMap<K, V> containsInOrder(final Map<K, V> map, final Locale locale, final CharSequence message, final Object... arguments) {
         return () -> AssertorMap.containsInOrder(this.getStep(), map, MessageAssertor.of(locale, message, arguments));
     }
 
@@ -1042,7 +1493,7 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
      * @return The operator
      * @category no_message
      */
-    default StepMap<M, K, V> containsInOrder(final Iterable<K> keys) {
+    default StepMap<K, V> containsInOrder(final Iterable<K> keys) {
         return this.containsInOrder(keys, null);
     }
 
@@ -1069,7 +1520,7 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
      * @return The operator
      * @category localized_message
      */
-    default StepMap<M, K, V> containsInOrder(final Iterable<K> keys, final CharSequence message, final Object... arguments) {
+    default StepMap<K, V> containsInOrder(final Iterable<K> keys, final CharSequence message, final Object... arguments) {
         return this.containsInOrder(keys, null, message, arguments);
     }
 
@@ -1099,7 +1550,7 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
      * @return The operator
      * @category localized_message
      */
-    default StepMap<M, K, V> containsInOrder(final Iterable<K> keys, final Locale locale, final CharSequence message,
+    default StepMap<K, V> containsInOrder(final Iterable<K> keys, final Locale locale, final CharSequence message,
             final Object... arguments) {
         return () -> AssertorMap.containsKeysInOrder(this.getStep(), keys, MessageAssertor.of(locale, message, arguments));
     }
@@ -1123,7 +1574,7 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
      * @return The operator
      * @category no_message
      */
-    default StepMap<M, K, V> containsValuesInOrder(final Iterable<V> values) {
+    default StepMap<K, V> containsValuesInOrder(final Iterable<V> values) {
         return this.containsValuesInOrder(values, null);
     }
 
@@ -1150,7 +1601,7 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
      * @return The operator
      * @category message
      */
-    default StepMap<M, K, V> containsValuesInOrder(final Iterable<V> values, final CharSequence message, final Object... arguments) {
+    default StepMap<K, V> containsValuesInOrder(final Iterable<V> values, final CharSequence message, final Object... arguments) {
         return this.containsValuesInOrder(values, null, message, arguments);
     }
 
@@ -1180,7 +1631,7 @@ public interface AssertorStepMap<M extends Map<K, V>, K, V> extends AssertorStep
      * @return The operator
      * @category localized_message
      */
-    default StepMap<M, K, V> containsValuesInOrder(final Iterable<V> values, final Locale locale, final CharSequence message,
+    default StepMap<K, V> containsValuesInOrder(final Iterable<V> values, final Locale locale, final CharSequence message,
             final Object... arguments) {
         return () -> AssertorMap.containsValuesInOrder(this.getStep(), values, MessageAssertor.of(locale, message, arguments));
     }

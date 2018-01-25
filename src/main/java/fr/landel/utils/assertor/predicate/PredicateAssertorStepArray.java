@@ -137,6 +137,306 @@ public interface PredicateAssertorStepArray<T> extends PredicateAssertorStep<Pre
     }
 
     /**
+     * Check if the array has a length greater than {@code length}.
+     * 
+     * <p>
+     * precondition: {@code length} has to be a positive number or equal to zero
+     * and {@code array} cannot be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(array).hasLengthGT(length).orElseThrow();
+     * </pre>
+     * 
+     * @param length
+     *            the length to check
+     * @return the assertor step
+     * @category no_message
+     */
+    default PredicateStepArray<T> hasLengthGT(final int length) {
+        return this.hasLengthGT(length, null);
+    }
+
+    /**
+     * Check if the array has a length greater than {@code length}.
+     * 
+     * <p>
+     * precondition: {@code length} has to be a positive number or equal to zero
+     * and {@code array} cannot be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(array).hasLengthGT(length, "bad length").orElseThrow();
+     * </pre>
+     * 
+     * @param length
+     *            the length to check
+     * @param message
+     *            the message on incorrect length
+     * @param arguments
+     *            the message arguments
+     * @return the assertor step
+     * @category message
+     */
+    default PredicateStepArray<T> hasLengthGT(final int length, final CharSequence message, final Object... arguments) {
+        return this.hasLengthGT(length, null, message, arguments);
+    }
+
+    /**
+     * Check if the array has a length greater than {@code length}.
+     * 
+     * <p>
+     * precondition: {@code length} has to be a positive number or equal to zero
+     * and {@code array} cannot be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(array).hasLengthGT(length, Locale.US, "bad length").orElseThrow();
+     * </pre>
+     * 
+     * @param length
+     *            the length to check
+     * @param locale
+     *            the message locale (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            the message on incorrect length
+     * @param arguments
+     *            the message arguments
+     * @return the assertor step
+     * @category localized_message
+     */
+    default PredicateStepArray<T> hasLengthGT(final int length, final Locale locale, final CharSequence message,
+            final Object... arguments) {
+        return () -> AssertorArray.hasLengthGT(this.getStep(), length, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
+     * Check if the array has a length greater than or equal to {@code length}.
+     * 
+     * <p>
+     * precondition: {@code length} has to be a positive number or equal to zero
+     * and {@code array} cannot be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(array).hasLengthGTE(length).orElseThrow();
+     * </pre>
+     * 
+     * @param length
+     *            the length to check
+     * @return the assertor step
+     * @category no_message
+     */
+    default PredicateStepArray<T> hasLengthGTE(final int length) {
+        return this.hasLengthGTE(length, null);
+    }
+
+    /**
+     * Check if the array has a length greater than or equal to {@code length}.
+     * 
+     * <p>
+     * precondition: {@code length} has to be a positive number or equal to zero
+     * and {@code array} cannot be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(array).hasLengthGTE(length, "bad length").orElseThrow();
+     * </pre>
+     * 
+     * @param length
+     *            the length to check
+     * @param message
+     *            the message on incorrect length
+     * @param arguments
+     *            the message arguments
+     * @return the assertor step
+     * @category message
+     */
+    default PredicateStepArray<T> hasLengthGTE(final int length, final CharSequence message, final Object... arguments) {
+        return this.hasLengthGTE(length, null, message, arguments);
+    }
+
+    /**
+     * Check if the array has a length greater than or equal to {@code length}.
+     * 
+     * <p>
+     * precondition: {@code length} has to be a positive number or equal to zero
+     * and {@code array} cannot be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(array).hasLengthGTE(length, Locale.US, "bad length").orElseThrow();
+     * </pre>
+     * 
+     * @param length
+     *            the length to check
+     * @param locale
+     *            the message locale (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            the message on incorrect length
+     * @param arguments
+     *            the message arguments
+     * @return the assertor step
+     * @category localized_message
+     */
+    default PredicateStepArray<T> hasLengthGTE(final int length, final Locale locale, final CharSequence message,
+            final Object... arguments) {
+        return () -> AssertorArray.hasLengthGTE(this.getStep(), length, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
+     * Check if the array has a length lower than {@code length}.
+     * 
+     * <p>
+     * precondition: {@code length} has to be a positive number or equal to zero
+     * and {@code array} cannot be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(array).hasLengthLT(length).orElseThrow();
+     * </pre>
+     * 
+     * @param length
+     *            the length to check
+     * @return the assertor step
+     * @category no_message
+     */
+    default PredicateStepArray<T> hasLengthLT(final int length) {
+        return this.hasLengthLT(length, null);
+    }
+
+    /**
+     * Check if the array has a length lower than {@code length}.
+     * 
+     * <p>
+     * precondition: {@code length} has to be a positive number or equal to zero
+     * and {@code array} cannot be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(array).hasLengthLT(length, "bad length").orElseThrow();
+     * </pre>
+     * 
+     * @param length
+     *            the length to check
+     * @param message
+     *            the message on incorrect length
+     * @param arguments
+     *            the message arguments
+     * @return the assertor step
+     * @category message
+     */
+    default PredicateStepArray<T> hasLengthLT(final int length, final CharSequence message, final Object... arguments) {
+        return this.hasLengthLT(length, null, message, arguments);
+    }
+
+    /**
+     * Check if the array has a length lower than {@code length}.
+     * 
+     * <p>
+     * precondition: {@code length} has to be a positive number or equal to zero
+     * and {@code array} cannot be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(array).hasLengthLT(length, Locale.US, "bad length").orElseThrow();
+     * </pre>
+     * 
+     * @param length
+     *            the length to check
+     * @param locale
+     *            the message locale (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            the message on incorrect length
+     * @param arguments
+     *            the message arguments
+     * @return the assertor step
+     * @category localized_message
+     */
+    default PredicateStepArray<T> hasLengthLT(final int length, final Locale locale, final CharSequence message,
+            final Object... arguments) {
+        return () -> AssertorArray.hasLengthLT(this.getStep(), length, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
+     * Check if the array has a length lower than or equal to {@code length}.
+     * 
+     * <p>
+     * precondition: {@code length} has to be a positive number or equal to zero
+     * and {@code array} cannot be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(array).hasLengthLTE(length).orElseThrow();
+     * </pre>
+     * 
+     * @param length
+     *            the length to check
+     * @return the assertor step
+     * @category no_message
+     */
+    default PredicateStepArray<T> hasLengthLTE(final int length) {
+        return this.hasLengthLTE(length, null);
+    }
+
+    /**
+     * Check if the array has a length lower than or equal to {@code length}.
+     * 
+     * <p>
+     * precondition: {@code length} has to be a positive number or equal to zero
+     * and {@code array} cannot be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(array).hasLengthLTE(length, "bad length").orElseThrow();
+     * </pre>
+     * 
+     * @param length
+     *            the length to check
+     * @param message
+     *            the message on incorrect length
+     * @param arguments
+     *            the message arguments
+     * @return the assertor step
+     * @category message
+     */
+    default PredicateStepArray<T> hasLengthLTE(final int length, final CharSequence message, final Object... arguments) {
+        return this.hasLengthLTE(length, null, message, arguments);
+    }
+
+    /**
+     * Check if the array has a length lower than or equal to {@code length}.
+     * 
+     * <p>
+     * precondition: {@code length} has to be a positive number or equal to zero
+     * and {@code array} cannot be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(array).hasLengthLTE(length, Locale.US, "bad length").orElseThrow();
+     * </pre>
+     * 
+     * @param length
+     *            the length to check
+     * @param locale
+     *            the message locale (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            the message on incorrect length
+     * @param arguments
+     *            the message arguments
+     * @return the assertor step
+     * @category localized_message
+     */
+    default PredicateStepArray<T> hasLengthLTE(final int length, final Locale locale, final CharSequence message,
+            final Object... arguments) {
+        return () -> AssertorArray.hasLengthLTE(this.getStep(), length, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
      * Check if the array is {@code null} or empty.
      * 
      * <p>

@@ -22,8 +22,11 @@ package fr.landel.utils.assertor;
 import java.time.temporal.Temporal;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
 
 import fr.landel.utils.assertor.enums.EnumAnalysisMode;
 import fr.landel.utils.assertor.enums.EnumType;
@@ -315,15 +318,13 @@ public class Assertor {
      * 
      * @param map
      *            the {@link Map} to check
-     * @param <M>
-     *            the map type
      * @param <K>
      *            the type of map's key under checking
      * @param <V>
      *            the type of map's value under checking
      * @return the predicate {@link Map} assertor
      */
-    public static <M extends Map<K, V>, K, V> AssertorStepMap<M, K, V> that(final M map) {
+    public static <K, V> AssertorStepMap<K, V> that(final Map<K, V> map) {
         return that(map, null);
     }
 
@@ -334,15 +335,13 @@ public class Assertor {
      *            the {@link Map} to check
      * @param analysisMode
      *            the preferred analysis mode
-     * @param <M>
-     *            the map type
      * @param <K>
      *            the type of map's key under checking
      * @param <V>
      *            the type of map's value under checking
      * @return the predicate {@link Map} assertor
      */
-    public static <M extends Map<K, V>, K, V> AssertorStepMap<M, K, V> that(final M map, final EnumAnalysisMode analysisMode) {
+    public static <K, V> AssertorStepMap<K, V> that(final Map<K, V> map, final EnumAnalysisMode analysisMode) {
         return () -> new StepAssertor<>(map, EnumType.MAP, analysisMode);
     }
 
@@ -575,6 +574,26 @@ public class Assertor {
     }
 
     /**
+     * Create a predicate Assertor for {@link String} Matcher
+     * 
+     * @return the predicate assertor for {@link String}
+     */
+    public static PredicateAssertorStepCharSequence<String> ofString() {
+        return ofString(null);
+    }
+
+    /**
+     * Create a predicate Assertor for {@link String} Matcher
+     * 
+     * @param analysisMode
+     *            the preferred analysis mode
+     * @return the predicate assertor for {@link String}
+     */
+    public static PredicateAssertorStepCharSequence<String> ofString(final EnumAnalysisMode analysisMode) {
+        return () -> new StepAssertor<>(EnumType.CHAR_SEQUENCE, analysisMode);
+    }
+
+    /**
      * Create a predicate Assertor for {@link Boolean} Matcher
      * 
      * @return the predicate assertor for {@link Boolean}
@@ -683,6 +702,78 @@ public class Assertor {
      * @return the predicate assertor for {@link Iterable}
      */
     public static <I extends Iterable<T>, T> PredicateAssertorStepIterable<I, T> ofIterable(final EnumAnalysisMode analysisMode) {
+        return () -> new StepAssertor<>(EnumType.ITERABLE, analysisMode);
+    }
+
+    /**
+     * Create a predicate Assertor for {@link List} Matcher
+     * 
+     * @param <T>
+     *            the type of list elements
+     * @return the predicate assertor for {@link List}
+     */
+    public static <T> PredicateAssertorStepIterable<List<T>, T> ofList() {
+        return ofList(null);
+    }
+
+    /**
+     * Create a predicate Assertor for {@link List} Matcher
+     * 
+     * @param analysisMode
+     *            the preferred analysis mode
+     * @param <T>
+     *            the type of list elements
+     * @return the predicate assertor for {@link List}
+     */
+    public static <T> PredicateAssertorStepIterable<List<T>, T> ofList(final EnumAnalysisMode analysisMode) {
+        return () -> new StepAssertor<>(EnumType.ITERABLE, analysisMode);
+    }
+
+    /**
+     * Create a predicate Assertor for {@link Set} Matcher
+     * 
+     * @param <T>
+     *            the type of set elements
+     * @return the predicate assertor for {@link Set}
+     */
+    public static <T> PredicateAssertorStepIterable<Set<T>, T> ofSet() {
+        return ofSet(null);
+    }
+
+    /**
+     * Create a predicate Assertor for {@link Set} Matcher
+     * 
+     * @param analysisMode
+     *            the preferred analysis mode
+     * @param <T>
+     *            the type of set elements
+     * @return the predicate assertor for {@link Set}
+     */
+    public static <T> PredicateAssertorStepIterable<Set<T>, T> ofSet(final EnumAnalysisMode analysisMode) {
+        return () -> new StepAssertor<>(EnumType.ITERABLE, analysisMode);
+    }
+
+    /**
+     * Create a predicate Assertor for {@link Queue} Matcher
+     * 
+     * @param <T>
+     *            the type of queue elements
+     * @return the predicate assertor for {@link Queue}
+     */
+    public static <T> PredicateAssertorStepIterable<Queue<T>, T> ofQueue() {
+        return ofQueue(null);
+    }
+
+    /**
+     * Create a predicate Assertor for {@link Queue} Matcher
+     * 
+     * @param analysisMode
+     *            the preferred analysis mode
+     * @param <T>
+     *            the type of queue elements
+     * @return the predicate assertor for {@link Queue}
+     */
+    public static <T> PredicateAssertorStepIterable<Queue<T>, T> ofQueue(final EnumAnalysisMode analysisMode) {
         return () -> new StepAssertor<>(EnumType.ITERABLE, analysisMode);
     }
 

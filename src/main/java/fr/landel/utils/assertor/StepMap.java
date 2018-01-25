@@ -31,34 +31,34 @@ import fr.landel.utils.assertor.helper.HelperStep;
  *
  */
 @FunctionalInterface
-public interface StepMap<M extends Map<K, V>, K, V> extends Step<StepMap<M, K, V>, M> {
+public interface StepMap<K, V> extends Step<StepMap<K, V>, Map<K, V>> {
 
-    default StepMap<M, K, V> get(final StepAssertor<M> result) {
+    default StepMap<K, V> get(final StepAssertor<Map<K, V>> result) {
         return () -> result;
     }
 
     @Override
-    default AssertorStepMap<M, K, V> and() {
+    default AssertorStepMap<K, V> and() {
         return () -> HelperStep.and(this.getStep());
     }
 
     @Override
-    default AssertorStepMap<M, K, V> or() {
+    default AssertorStepMap<K, V> or() {
         return () -> HelperStep.or(this.getStep());
     }
 
     @Override
-    default AssertorStepMap<M, K, V> xor() {
+    default AssertorStepMap<K, V> xor() {
         return () -> HelperStep.xor(this.getStep());
     }
 
     @Override
-    default AssertorStepMap<M, K, V> nand() {
+    default AssertorStepMap<K, V> nand() {
         return () -> HelperStep.nand(this.getStep());
     }
 
     @Override
-    default AssertorStepMap<M, K, V> nor() {
+    default AssertorStepMap<K, V> nor() {
         return () -> HelperStep.nor(this.getStep());
     }
 }

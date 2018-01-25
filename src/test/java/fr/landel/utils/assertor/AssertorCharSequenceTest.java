@@ -57,6 +57,30 @@ public class AssertorCharSequenceTest extends AbstractTest {
         assertFalse(Assertor.that("text").hasLength(3).isOK());
         assertFalse(Assertor.that("text").hasLength(-1).isOK());
         assertFalse(Assertor.that((String) null).hasLength(1).isOK());
+
+        assertTrue(Assertor.that("text").hasLengthLT(5).isOK());
+        assertFalse(Assertor.that("text").hasLengthLT(4).isOK());
+        assertFalse(Assertor.that("text").hasLengthLT(3).isOK());
+        assertFalse(Assertor.that("text").hasLengthLT(-1).isOK());
+        assertFalse(Assertor.that((String) null).hasLengthLT(1).isOK());
+
+        assertTrue(Assertor.that("text").hasLengthLTE(5).isOK());
+        assertTrue(Assertor.that("text").hasLengthLTE(4).isOK());
+        assertFalse(Assertor.that("text").hasLengthLTE(3).isOK());
+        assertFalse(Assertor.that("text").hasLengthLTE(-1).isOK());
+        assertFalse(Assertor.that((String) null).hasLengthLTE(1).isOK());
+
+        assertFalse(Assertor.that("text").hasLengthGT(5).isOK());
+        assertFalse(Assertor.that("text").hasLengthGT(4).isOK());
+        assertTrue(Assertor.that("text").hasLengthGT(3).isOK());
+        assertFalse(Assertor.that("text").hasLengthGT(-1).isOK());
+        assertFalse(Assertor.that((String) null).hasLengthGT(1).isOK());
+
+        assertFalse(Assertor.that("text").hasLengthGTE(5).isOK());
+        assertTrue(Assertor.that("text").hasLengthGTE(4).isOK());
+        assertTrue(Assertor.that("text").hasLengthGTE(3).isOK());
+        assertFalse(Assertor.that("text").hasLengthGTE(-1).isOK());
+        assertFalse(Assertor.that((String) null).hasLengthGTE(1).isOK());
     }
 
     /**

@@ -20,6 +20,7 @@
 package fr.landel.utils.assertor;
 
 import java.util.Locale;
+import java.util.function.Predicate;
 
 import fr.landel.utils.assertor.commons.MessageAssertor;
 import fr.landel.utils.assertor.helper.HelperStep;
@@ -79,6 +80,7 @@ public interface AssertorStepIterable<I extends Iterable<T>, T> extends Assertor
      * @param size
      *            The wanted size
      * @return The operator
+     * @category no_message
      */
     default StepIterable<I, T> hasSize(final int size) {
         return this.hasSize(size, null);
@@ -103,6 +105,7 @@ public interface AssertorStepIterable<I extends Iterable<T>, T> extends Assertor
      * @param arguments
      *            The arguments of the message, use {@link String#format}
      * @return The operator
+     * @category message
      */
     default StepIterable<I, T> hasSize(final int size, final CharSequence message, final Object... arguments) {
         return this.hasSize(size, null, message, arguments);
@@ -130,9 +133,318 @@ public interface AssertorStepIterable<I extends Iterable<T>, T> extends Assertor
      * @param arguments
      *            The arguments of the message, use {@link String#format}
      * @return The operator
+     * @category localized_message
      */
     default StepIterable<I, T> hasSize(final int size, final Locale locale, final CharSequence message, final Object... arguments) {
         return () -> AssertorIterable.hasSize(this.getStep(), size, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
+     * Asserts that the given {@link Iterable} has a size greater than
+     * {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Iterable} cannot be {@code null} and size cannot be
+     * lower than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(iterable).hasSizeGT(size).orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @return The operator
+     * @category no_message
+     */
+    default StepIterable<I, T> hasSizeGT(final int size) {
+        return this.hasSizeGT(size, null);
+    }
+
+    /**
+     * Asserts that the given {@link Iterable} has a size greater than
+     * {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Iterable} cannot be {@code null} and size cannot be
+     * lower than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(iterable).hasSizeGT(size, "bad size").orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category message
+     */
+    default StepIterable<I, T> hasSizeGT(final int size, final CharSequence message, final Object... arguments) {
+        return this.hasSizeGT(size, null, message, arguments);
+    }
+
+    /**
+     * Asserts that the given {@link Iterable} has a size greater than
+     * {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Iterable} cannot be {@code null} and size cannot be
+     * lower than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(iterable).hasSizeGT(size, Locale.US, "bad size").orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @param locale
+     *            The locale of the message (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category localized_message
+     */
+    default StepIterable<I, T> hasSizeGT(final int size, final Locale locale, final CharSequence message, final Object... arguments) {
+        return () -> AssertorIterable.hasSizeGT(this.getStep(), size, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
+     * Asserts that the given {@link Iterable} has a size greater than or equal
+     * to {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Iterable} cannot be {@code null} and size cannot be
+     * lower than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(iterable).hasSizeGTE(size).orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @return The operator
+     * @category no_message
+     */
+    default StepIterable<I, T> hasSizeGTE(final int size) {
+        return this.hasSizeGTE(size, null);
+    }
+
+    /**
+     * Asserts that the given {@link Iterable} has a size greater than or equal
+     * to {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Iterable} cannot be {@code null} and size cannot be
+     * lower than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(iterable).hasSizeGTE(size, "bad size").orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category message
+     */
+    default StepIterable<I, T> hasSizeGTE(final int size, final CharSequence message, final Object... arguments) {
+        return this.hasSizeGTE(size, null, message, arguments);
+    }
+
+    /**
+     * Asserts that the given {@link Iterable} has a size greater than or equal
+     * to {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Iterable} cannot be {@code null} and size cannot be
+     * lower than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(iterable).hasSizeGTE(size, Locale.US, "bad size").orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @param locale
+     *            The locale of the message (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category localized_message
+     */
+    default StepIterable<I, T> hasSizeGTE(final int size, final Locale locale, final CharSequence message, final Object... arguments) {
+        return () -> AssertorIterable.hasSizeGTE(this.getStep(), size, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
+     * Asserts that the given {@link Iterable} has a size lower than
+     * {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Iterable} cannot be {@code null} and size cannot be
+     * lower than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(iterable).hasSizeLT(size).orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @return The operator
+     * @category no_message
+     */
+    default StepIterable<I, T> hasSizeLT(final int size) {
+        return this.hasSizeLT(size, null);
+    }
+
+    /**
+     * Asserts that the given {@link Iterable} has a size lower than
+     * {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Iterable} cannot be {@code null} and size cannot be
+     * lower than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(iterable).hasSizeLT(size, "bad size").orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category message
+     */
+    default StepIterable<I, T> hasSizeLT(final int size, final CharSequence message, final Object... arguments) {
+        return this.hasSizeLT(size, null, message, arguments);
+    }
+
+    /**
+     * Asserts that the given {@link Iterable} has a size lower than
+     * {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Iterable} cannot be {@code null} and size cannot be
+     * lower than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(iterable).hasSizeLT(size, Locale.US, "bad size").orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @param locale
+     *            The locale of the message (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category localized_message
+     */
+    default StepIterable<I, T> hasSizeLT(final int size, final Locale locale, final CharSequence message, final Object... arguments) {
+        return () -> AssertorIterable.hasSizeLT(this.getStep(), size, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
+     * Asserts that the given {@link Iterable} has a size lower than or equal to
+     * {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Iterable} cannot be {@code null} and size cannot be
+     * lower than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(iterable).hasSizeLTE(size).orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @return The operator
+     * @category no_message
+     */
+    default StepIterable<I, T> hasSizeLTE(final int size) {
+        return this.hasSizeLTE(size, null);
+    }
+
+    /**
+     * Asserts that the given {@link Iterable} has a size lower than or equal to
+     * {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Iterable} cannot be {@code null} and size cannot be
+     * lower than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(iterable).hasSizeLTE(size, "bad size").orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category message
+     */
+    default StepIterable<I, T> hasSizeLTE(final int size, final CharSequence message, final Object... arguments) {
+        return this.hasSizeLTE(size, null, message, arguments);
+    }
+
+    /**
+     * Asserts that the given {@link Iterable} has a size lower than or equal to
+     * {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Iterable} cannot be {@code null} and size cannot be
+     * lower than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(iterable).hasSizeLTE(size, Locale.US, "bad size").orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @param locale
+     *            The locale of the message (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category localized_message
+     */
+    default StepIterable<I, T> hasSizeLTE(final int size, final Locale locale, final CharSequence message, final Object... arguments) {
+        return () -> AssertorIterable.hasSizeLTE(this.getStep(), size, MessageAssertor.of(locale, message, arguments));
     }
 
     /**
@@ -147,6 +459,7 @@ public interface AssertorStepIterable<I extends Iterable<T>, T> extends Assertor
      * </pre>
      * 
      * @return The operator
+     * @category no_message
      */
     default StepIterable<I, T> isEmpty() {
         return this.isEmpty(null);
@@ -168,6 +481,7 @@ public interface AssertorStepIterable<I extends Iterable<T>, T> extends Assertor
      * @param arguments
      *            The arguments of the message, use {@link String#format}
      * @return The operator
+     * @category message
      */
     default StepIterable<I, T> isEmpty(final CharSequence message, final Object... arguments) {
         return this.isEmpty(null, message, arguments);
@@ -192,6 +506,7 @@ public interface AssertorStepIterable<I extends Iterable<T>, T> extends Assertor
      * @param arguments
      *            The arguments of the message, use {@link String#format}
      * @return The operator
+     * @category localized_message
      */
     default StepIterable<I, T> isEmpty(final Locale locale, final CharSequence message, final Object... arguments) {
         return () -> AssertorIterable.isEmpty(this.getStep(), MessageAssertor.of(locale, message, arguments));
@@ -210,6 +525,7 @@ public interface AssertorStepIterable<I extends Iterable<T>, T> extends Assertor
      * </pre>
      * 
      * @return The operator
+     * @category no_message
      */
     default StepIterable<I, T> isNotEmpty() {
         return this.isNotEmpty(null);
@@ -232,6 +548,7 @@ public interface AssertorStepIterable<I extends Iterable<T>, T> extends Assertor
      * @param arguments
      *            The arguments of the message, use {@link String#format}
      * @return The operator
+     * @category message
      */
     default StepIterable<I, T> isNotEmpty(final CharSequence message, final Object... arguments) {
         return this.isNotEmpty(null, message, arguments);
@@ -257,9 +574,160 @@ public interface AssertorStepIterable<I extends Iterable<T>, T> extends Assertor
      * @param arguments
      *            The arguments of the message, use {@link String#format}
      * @return The operator
+     * @category localized_message
      */
     default StepIterable<I, T> isNotEmpty(final Locale locale, final CharSequence message, final Object... arguments) {
         return () -> AssertorIterable.isNotEmpty(this.getStep(), MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
+     * Check if any iterable's element matches the predicate.
+     * 
+     * <p>
+     * precondition: {@code iterable} cannot be {@code null} or empty and
+     * predicate cannot be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(iterable).anyMatch(Objects::nonNull).orElseThrow();
+     * </pre>
+     * 
+     * @param predicate
+     *            the predicate function that validates each element
+     * @return the assertor step
+     * @category no_message
+     */
+    default StepIterable<I, T> anyMatch(final Predicate<T> predicate) {
+        return this.anyMatch(predicate, null);
+    }
+
+    /**
+     * Check if any iterable's element matches the predicate.
+     * 
+     * <p>
+     * precondition: {@code iterable} cannot be {@code null} or empty and
+     * predicate cannot be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(iterable).anyMatch(Objects::nonNull, "the iterable must contain at least on non null element").orElseThrow();
+     * </pre>
+     * 
+     * @param predicate
+     *            the predicate function that validates each element
+     * @param message
+     *            the message on mismatch
+     * @param arguments
+     *            the message arguments
+     * @return the assertor step
+     * @category message
+     */
+    default StepIterable<I, T> anyMatch(final Predicate<T> predicate, final CharSequence message, final Object... arguments) {
+        return this.anyMatch(predicate, null, message, arguments);
+    }
+
+    /**
+     * Check if any iterable's element matches the predicate.
+     * 
+     * <p>
+     * precondition: {@code iterable} cannot be {@code null} or empty and
+     * predicate cannot be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(iterable).anyMatch(Objects::nonNull, Locale.US, "the iterable must contain at least on non null element").orElseThrow();
+     * </pre>
+     * 
+     * @param predicate
+     *            the predicate function that validates each element
+     * @param locale
+     *            the message locale (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            the message on mismatch
+     * @param arguments
+     *            the message arguments
+     * @return the assertor step
+     * @category localized_message
+     */
+    default StepIterable<I, T> anyMatch(final Predicate<T> predicate, final Locale locale, final CharSequence message,
+            final Object... arguments) {
+        return () -> AssertorIterable.anyMatch(this.getStep(), predicate, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
+     * Check if all iterable's elements match the predicate.
+     * 
+     * <p>
+     * precondition: {@code iterable} cannot be {@code null} or empty and
+     * predicate cannot be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(iterable).allMatch(Objects::nonNull).orElseThrow();
+     * </pre>
+     * 
+     * @param predicate
+     *            the predicate function that validates each element
+     * @return the assertor step
+     * @category no_message
+     */
+    default StepIterable<I, T> allMatch(final Predicate<T> predicate) {
+        return this.allMatch(predicate, null);
+    }
+
+    /**
+     * Check if all iterable's elements match the predicate.
+     * 
+     * <p>
+     * precondition: {@code iterable} cannot be {@code null} or empty and
+     * predicate cannot be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(iterable).allMatch(Objects::nonNull, "the iterable cannot contain null element").orElseThrow();
+     * </pre>
+     * 
+     * @param predicate
+     *            the predicate function that validates each element
+     * @param message
+     *            the message on mismatch
+     * @param arguments
+     *            the message arguments
+     * @return the assertor step
+     * @category message
+     */
+    default StepIterable<I, T> allMatch(final Predicate<T> predicate, final CharSequence message, final Object... arguments) {
+        return this.allMatch(predicate, null, message, arguments);
+    }
+
+    /**
+     * Check if all iterable's elements match the predicate.
+     * 
+     * <p>
+     * precondition: {@code iterable} cannot be {@code null} or empty and
+     * predicate cannot be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(iterable).allMatch(Objects::nonNull, Locale.US, "the iterable cannot contain null element").orElseThrow();
+     * </pre>
+     * 
+     * @param predicate
+     *            the predicate function that validates each element
+     * @param locale
+     *            the message locale (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            the message on mismatch
+     * @param arguments
+     *            the message arguments
+     * @return the assertor step
+     * @category localized_message
+     */
+    default StepIterable<I, T> allMatch(final Predicate<T> predicate, final Locale locale, final CharSequence message,
+            final Object... arguments) {
+        return () -> AssertorIterable.allMatch(this.getStep(), predicate, MessageAssertor.of(locale, message, arguments));
     }
 
     /**
@@ -277,6 +745,7 @@ public interface AssertorStepIterable<I extends Iterable<T>, T> extends Assertor
      * @param value
      *            The value
      * @return The operator
+     * @category no_message
      */
     default StepIterable<I, T> contains(final T value) {
         return this.contains(value, null);
@@ -301,6 +770,7 @@ public interface AssertorStepIterable<I extends Iterable<T>, T> extends Assertor
      * @param arguments
      *            The arguments of the message, use {@link String#format}
      * @return The operator
+     * @category message
      */
     default StepIterable<I, T> contains(final T value, final CharSequence message, final Object... arguments) {
         return this.contains(value, (Locale) null, message, arguments);
@@ -328,6 +798,7 @@ public interface AssertorStepIterable<I extends Iterable<T>, T> extends Assertor
      * @param arguments
      *            The arguments of the message, use {@link String#format}
      * @return The operator
+     * @category localized_message
      */
     default StepIterable<I, T> contains(final T value, final Locale locale, final CharSequence message, final Object... arguments) {
         return () -> AssertorIterable.contains(this.getStep(), value, MessageAssertor.of(locale, message, arguments));
@@ -348,6 +819,7 @@ public interface AssertorStepIterable<I extends Iterable<T>, T> extends Assertor
      * @param values
      *            The {@link Iterable} values
      * @return The operator
+     * @category no_message
      */
     default StepIterable<I, T> containsAll(final Iterable<T> values) {
         return this.containsAll(values, null);
@@ -372,6 +844,7 @@ public interface AssertorStepIterable<I extends Iterable<T>, T> extends Assertor
      * @param arguments
      *            The arguments of the message, use {@link String#format}
      * @return The operator
+     * @category message
      */
     default StepIterable<I, T> containsAll(final Iterable<T> values, final CharSequence message, final Object... arguments) {
         return this.containsAll(values, null, message, arguments);
@@ -399,6 +872,7 @@ public interface AssertorStepIterable<I extends Iterable<T>, T> extends Assertor
      * @param arguments
      *            The arguments of the message, use {@link String#format}
      * @return The operator
+     * @category localized_message
      */
     default StepIterable<I, T> containsAll(final Iterable<T> values, final Locale locale, final CharSequence message,
             final Object... arguments) {
@@ -420,6 +894,7 @@ public interface AssertorStepIterable<I extends Iterable<T>, T> extends Assertor
      * @param values
      *            The {@link Iterable} values
      * @return The operator
+     * @category no_message
      */
     default StepIterable<I, T> containsAny(final Iterable<T> values) {
         return this.containsAny(values, null);
@@ -444,6 +919,7 @@ public interface AssertorStepIterable<I extends Iterable<T>, T> extends Assertor
      * @param arguments
      *            The arguments of the message, use {@link String#format}
      * @return The operator
+     * @category message
      */
     default StepIterable<I, T> containsAny(final Iterable<T> values, final CharSequence message, final Object... arguments) {
         return this.containsAny(values, null, message, arguments);
@@ -471,6 +947,7 @@ public interface AssertorStepIterable<I extends Iterable<T>, T> extends Assertor
      * @param arguments
      *            The arguments of the message, use {@link String#format}
      * @return The operator
+     * @category localized_message
      */
     default StepIterable<I, T> containsAny(final Iterable<T> values, final Locale locale, final CharSequence message,
             final Object... arguments) {
@@ -492,6 +969,7 @@ public interface AssertorStepIterable<I extends Iterable<T>, T> extends Assertor
      * @param values
      *            The {@link Iterable} values
      * @return The operator
+     * @category no_message
      */
     default StepIterable<I, T> containsInOrder(final Iterable<T> values) {
         return this.containsInOrder(values, null);
@@ -516,6 +994,7 @@ public interface AssertorStepIterable<I extends Iterable<T>, T> extends Assertor
      * @param arguments
      *            The arguments of the message, use {@link String#format}
      * @return The operator
+     * @category message
      */
     default StepIterable<I, T> containsInOrder(final Iterable<T> values, final CharSequence message, final Object... arguments) {
         return this.containsInOrder(values, null, message, arguments);
@@ -543,6 +1022,7 @@ public interface AssertorStepIterable<I extends Iterable<T>, T> extends Assertor
      * @param arguments
      *            The arguments of the message, use {@link String#format}
      * @return The operator
+     * @category localized_message
      */
     default StepIterable<I, T> containsInOrder(final Iterable<T> values, final Locale locale, final CharSequence message,
             final Object... arguments) {

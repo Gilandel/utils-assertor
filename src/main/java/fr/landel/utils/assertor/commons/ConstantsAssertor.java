@@ -319,6 +319,26 @@ public class ConstantsAssertor {
             String LENGTH = "csq.length";
 
             /**
+             * Message key for char sequence length greater than
+             */
+            String LENGTH_GT = "csq.length.gt";
+
+            /**
+             * Message key for char sequence length greater than or equal to
+             */
+            String LENGTH_GTE = "csq.length.gte";
+
+            /**
+             * Message key for char sequence length lower than
+             */
+            String LENGTH_LT = "csq.length.lt";
+
+            /**
+             * Message key for char sequence length lower than or equal to
+             */
+            String LENGTH_LTE = "csq.length.lte";
+
+            /**
              * Message key for empty char sequence
              */
             String EMPTY = "csq.empty";
@@ -464,9 +484,39 @@ public class ConstantsAssertor {
             String LENGTH = "array.length";
 
             /**
+             * Message key for array length greater than
+             */
+            String LENGTH_GT = "array.length.gt";
+
+            /**
+             * Message key for array length greater than or equal to
+             */
+            String LENGTH_GTE = "array.length.gte";
+
+            /**
+             * Message key for array length lower than
+             */
+            String LENGTH_LT = "array.length.lt";
+
+            /**
+             * Message key for array length lower than or equal to
+             */
+            String LENGTH_LTE = "array.length.lte";
+
+            /**
              * Message key for empty array
              */
             String EMPTY = "array.empty";
+
+            /**
+             * Message key for all array elements match predicate
+             */
+            String MATCH_ALL = "array.match.all";
+
+            /**
+             * Message key for any array element matches predicate
+             */
+            String MATCH_ANY = "array.match.any";
 
             /**
              * Message key for array contains object
@@ -504,9 +554,39 @@ public class ConstantsAssertor {
             String SIZE = "iterable.size";
 
             /**
+             * Message key for iterable size greater than
+             */
+            String SIZE_GT = "iterable.size.gt";
+
+            /**
+             * Message key for iterable size greater than or equal to
+             */
+            String SIZE_GTE = "iterable.size.gte";
+
+            /**
+             * Message key for iterable size lower than
+             */
+            String SIZE_LT = "iterable.size.lt";
+
+            /**
+             * Message key for iterable size lower than or equal to
+             */
+            String SIZE_LTE = "iterable.size.lte";
+
+            /**
              * Message key for empty iterable
              */
             String EMPTY = "iterable.empty";
+
+            /**
+             * Message key for all iterable elements match predicate
+             */
+            String MATCH_ALL = "iterable.match.all";
+
+            /**
+             * Message key for any iterable element matches predicate
+             */
+            String MATCH_ANY = "iterable.match.any";
 
             /**
              * Message key for iterable contains object
@@ -544,9 +624,39 @@ public class ConstantsAssertor {
             String SIZE = "map.size";
 
             /**
+             * Message key for map size greater than
+             */
+            String SIZE_GT = "map.size.gt";
+
+            /**
+             * Message key for map size greater than or equal to
+             */
+            String SIZE_GTE = "map.size.gte";
+
+            /**
+             * Message key for map size lower than
+             */
+            String SIZE_LT = "map.size.lt";
+
+            /**
+             * Message key for map size lower than or equal to
+             */
+            String SIZE_LTE = "map.size.lte";
+
+            /**
              * Message key for empty map
              */
             String EMPTY = "map.empty";
+
+            /**
+             * Message key for all map elements match predicate
+             */
+            String MATCH_ALL = "map.match.all";
+
+            /**
+             * Message key for any map element matches predicate
+             */
+            String MATCH_ANY = "map.match.any";
 
             /**
              * Message key for map contains key

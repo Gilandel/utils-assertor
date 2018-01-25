@@ -148,6 +148,330 @@ public interface PredicateAssertorStepCharSequence<T extends CharSequence> exten
     }
 
     /**
+     * Asserts that the given char sequence has a length greater than
+     * {@code length}. The input cannot not be {@code null} and the length
+     * cannot be lower than 0 (returns false).
+     * 
+     * <p>
+     * precondition: {@link CharSequence} cannot be null and {@code length} must
+     * be a positive number
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(name).hasLengthGT(5).orElseThrow();
+     * </pre>
+     * 
+     * @param length
+     *            The length (cannot be lower than 0)
+     * @return The operator
+     * @category no_message
+     */
+    default PredicateStepCharSequence<T> hasLengthGT(final int length) {
+        return this.hasLengthGT(length, null);
+    }
+
+    /**
+     * Asserts that the given char sequence has a length greater than
+     * {@code length}. The input cannot not be {@code null} and the length
+     * cannot be lower than 0 (returns false).
+     * 
+     * <p>
+     * precondition: {@link CharSequence} cannot be null and {@code length} must
+     * be a positive number
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(name).hasLengthGT(5, "not the good length").orElseThrow();
+     * </pre>
+     * 
+     * @param length
+     *            The length (cannot be lower than 0)
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category message
+     */
+    default PredicateStepCharSequence<T> hasLengthGT(final int length, final CharSequence message, final Object... arguments) {
+        return this.hasLengthGT(length, null, message, arguments);
+    }
+
+    /**
+     * Asserts that the given char sequence has a length greater than
+     * {@code length}. The input cannot not be {@code null} and the length
+     * cannot be lower than 0 (returns false).
+     * 
+     * <p>
+     * precondition: {@link CharSequence} cannot be null and {@code length} must
+     * be a positive number
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(name).hasLengthGT(5, Locale.US, "not the good length").orElseThrow();
+     * </pre>
+     * 
+     * @param length
+     *            The length (cannot be lower than 0)
+     * @param locale
+     *            The locale of the message (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category localized_message
+     */
+    default PredicateStepCharSequence<T> hasLengthGT(final int length, final Locale locale, final CharSequence message,
+            final Object... arguments) {
+        return () -> AssertorCharSequence.hasLengthGT(this.getStep(), length, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
+     * Asserts that the given char sequence has a length greater than or equal
+     * to {@code length}. The input cannot not be {@code null} and the length
+     * cannot be lower than 0 (returns false).
+     * 
+     * <p>
+     * precondition: {@link CharSequence} cannot be null and {@code length} must
+     * be a positive number
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(name).hasLengthGTE(5).orElseThrow();
+     * </pre>
+     * 
+     * @param length
+     *            The length (cannot be lower than 0)
+     * @return The next step
+     * @category no_message
+     */
+    default PredicateStepCharSequence<T> hasLengthGTE(final int length) {
+        return this.hasLengthGTE(length, null);
+    }
+
+    /**
+     * Asserts that the given char sequence has a length greater than or equal
+     * to {@code length}. The input cannot not be {@code null} and the length
+     * cannot be lower than 0 (returns false).
+     * 
+     * <p>
+     * precondition: {@link CharSequence} cannot be null and {@code length} must
+     * be a positive number
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(name).hasLengthGTE(5, "not the good length").orElseThrow();
+     * </pre>
+     * 
+     * @param length
+     *            The length (cannot be lower than 0)
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The next step
+     * @category message
+     */
+    default PredicateStepCharSequence<T> hasLengthGTE(final int length, final CharSequence message, final Object... arguments) {
+        return this.hasLengthGTE(length, null, message, arguments);
+    }
+
+    /**
+     * Asserts that the given char sequence has a length greater than or equal
+     * to {@code length}. The input cannot not be {@code null} and the length
+     * cannot be lower than 0 (returns false).
+     * 
+     * <p>
+     * precondition: {@link CharSequence} cannot be null and {@code length} must
+     * be a positive number
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(name).hasLengthGTE(5, Locale.US, "not the good length").orElseThrow();
+     * </pre>
+     * 
+     * @param length
+     *            The length (cannot be lower than 0)
+     * @param locale
+     *            The locale of the message (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category localized_message
+     */
+    default PredicateStepCharSequence<T> hasLengthGTE(final int length, final Locale locale, final CharSequence message,
+            final Object... arguments) {
+        return () -> AssertorCharSequence.hasLengthGTE(this.getStep(), length, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
+     * Asserts that the given char sequence has a length lower than
+     * {@code length}. The input cannot not be {@code null} and the length
+     * cannot be lower than 0 (returns false).
+     * 
+     * <p>
+     * precondition: {@link CharSequence} cannot be null and {@code length} must
+     * be a positive number
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(name).hasLengthLT(5).orElseThrow();
+     * </pre>
+     * 
+     * @param length
+     *            The length (cannot be lower than 0)
+     * @return The next step
+     * @category no_message
+     */
+    default PredicateStepCharSequence<T> hasLengthLT(final int length) {
+        return this.hasLengthLT(length, null);
+    }
+
+    /**
+     * Asserts that the given char sequence has a length lower than
+     * {@code length}. The input cannot not be {@code null} and the length
+     * cannot be lower than 0 (returns false).
+     * 
+     * <p>
+     * precondition: {@link CharSequence} cannot be null and {@code length} must
+     * be a positive number
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(name).hasLengthLT(5, "not the good length").orElseThrow();
+     * </pre>
+     * 
+     * @param length
+     *            The length (cannot be lower than 0)
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The next step
+     * @category message
+     */
+    default PredicateStepCharSequence<T> hasLengthLT(final int length, final CharSequence message, final Object... arguments) {
+        return this.hasLengthLT(length, null, message, arguments);
+    }
+
+    /**
+     * Asserts that the given char sequence has a length lower than
+     * {@code length}. The input cannot not be {@code null} and the length
+     * cannot be lower than 0 (returns false).
+     * 
+     * <p>
+     * precondition: {@link CharSequence} cannot be null and {@code length} must
+     * be a positive number
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(name).hasLengthLT(5, Locale.US, "not the good length").orElseThrow();
+     * </pre>
+     * 
+     * @param length
+     *            The length (cannot be lower than 0)
+     * @param locale
+     *            The locale of the message (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The next step
+     * @category localized_message
+     */
+    default PredicateStepCharSequence<T> hasLengthLT(final int length, final Locale locale, final CharSequence message,
+            final Object... arguments) {
+        return () -> AssertorCharSequence.hasLengthLT(this.getStep(), length, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
+     * Asserts that the given char sequence has a length lower than or equal to
+     * {@code length}. The input cannot not be {@code null} and the length
+     * cannot be lower than 0 (returns false).
+     * 
+     * <p>
+     * precondition: {@link CharSequence} cannot be null and {@code length} must
+     * be a positive number
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(name).hasLengthLTE(5).orElseThrow();
+     * </pre>
+     * 
+     * @param length
+     *            The length (cannot be lower than 0)
+     * @return The operator
+     * @category no_message
+     */
+    default PredicateStepCharSequence<T> hasLengthLTE(final int length) {
+        return this.hasLengthLTE(length, null);
+    }
+
+    /**
+     * Asserts that the given char sequence has a length lower than or equal to
+     * {@code length}. The input cannot not be {@code null} and the length
+     * cannot be lower than 0 (returns false).
+     * 
+     * <p>
+     * precondition: {@link CharSequence} cannot be null and {@code length} must
+     * be a positive number
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(name).hasLengthLTE(5, "not the good length").orElseThrow();
+     * </pre>
+     * 
+     * @param length
+     *            The length (cannot be lower than 0)
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category message
+     */
+    default PredicateStepCharSequence<T> hasLengthLTE(final int length, final CharSequence message, final Object... arguments) {
+        return this.hasLengthLTE(length, null, message, arguments);
+    }
+
+    /**
+     * Asserts that the given char sequence has a length lower than or equal to
+     * {@code length}. The input cannot not be {@code null} and the length
+     * cannot be lower than 0 (returns false).
+     * 
+     * <p>
+     * precondition: {@link CharSequence} cannot be null and {@code length} must
+     * be a positive number
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(name).hasLengthLTE(5, Locale.US, "not the good length").orElseThrow();
+     * </pre>
+     * 
+     * @param length
+     *            The length (cannot be lower than 0)
+     * @param locale
+     *            The locale of the message (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category localized_message
+     */
+    default PredicateStepCharSequence<T> hasLengthLTE(final int length, final Locale locale, final CharSequence message,
+            final Object... arguments) {
+        return () -> AssertorCharSequence.hasLengthLTE(this.getStep(), length, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
      * Asserts that the given char sequence is {@code null} or empty.
      * 
      * <p>

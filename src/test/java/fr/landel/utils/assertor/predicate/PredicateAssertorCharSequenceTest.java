@@ -62,10 +62,39 @@ public class PredicateAssertorCharSequenceTest extends AbstractTest {
      */
     @Test
     public void testHasLength() {
+        assertTrue(Assertor.ofString().hasLength(4).that("text").isOK());
+        assertFalse(Assertor.ofString().hasLength(3).that("text").isOK());
+        assertFalse(Assertor.ofString().hasLength(-1).that("text").isOK());
+        assertFalse(Assertor.ofString().hasLength(1).that((String) null).isOK());
+
         assertTrue(Assertor.ofCharSequence().hasLength(4).that("text").isOK());
         assertFalse(Assertor.ofCharSequence().hasLength(3).that("text").isOK());
         assertFalse(Assertor.ofCharSequence().hasLength(-1).that("text").isOK());
         assertFalse(Assertor.ofCharSequence().hasLength(1).that((String) null).isOK());
+
+        assertTrue(Assertor.ofCharSequence().hasLengthLT(5).that("text").isOK());
+        assertFalse(Assertor.ofCharSequence().hasLengthLT(4).that("text").isOK());
+        assertFalse(Assertor.ofCharSequence().hasLengthLT(3).that("text").isOK());
+        assertFalse(Assertor.ofCharSequence().hasLengthLT(-1).that("text").isOK());
+        assertFalse(Assertor.ofCharSequence().hasLengthLT(1).that((String) null).isOK());
+
+        assertTrue(Assertor.ofCharSequence().hasLengthLTE(5).that("text").isOK());
+        assertTrue(Assertor.ofCharSequence().hasLengthLTE(4).that("text").isOK());
+        assertFalse(Assertor.ofCharSequence().hasLengthLTE(3).that("text").isOK());
+        assertFalse(Assertor.ofCharSequence().hasLengthLTE(-1).that("text").isOK());
+        assertFalse(Assertor.ofCharSequence().hasLengthLTE(1).that((String) null).isOK());
+
+        assertFalse(Assertor.ofCharSequence().hasLengthGT(5).that("text").isOK());
+        assertFalse(Assertor.ofCharSequence().hasLengthGT(4).that("text").isOK());
+        assertTrue(Assertor.ofCharSequence().hasLengthGT(3).that("text").isOK());
+        assertFalse(Assertor.ofCharSequence().hasLengthGT(-1).that("text").isOK());
+        assertFalse(Assertor.ofCharSequence().hasLengthGT(1).that((String) null).isOK());
+
+        assertFalse(Assertor.ofCharSequence().hasLengthGTE(5).that("text").isOK());
+        assertTrue(Assertor.ofCharSequence().hasLengthGTE(4).that("text").isOK());
+        assertTrue(Assertor.ofCharSequence().hasLengthGTE(3).that("text").isOK());
+        assertFalse(Assertor.ofCharSequence().hasLengthGTE(-1).that("text").isOK());
+        assertFalse(Assertor.ofCharSequence().hasLengthGTE(1).that((String) null).isOK());
     }
 
     /**

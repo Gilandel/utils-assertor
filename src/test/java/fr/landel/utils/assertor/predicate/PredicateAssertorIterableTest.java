@@ -24,14 +24,18 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Queue;
 import java.util.Set;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import fr.landel.utils.assertor.AbstractTest;
@@ -48,7 +52,24 @@ import fr.landel.utils.assertor.utils.AssertorIterable;
  */
 public class PredicateAssertorIterableTest extends AbstractTest {
 
-    private final String ERROR = "error expected";
+    private static final String ERROR = "error expected";
+
+    private static final String EL1 = "element1";
+    private static final String EL2 = "element2";
+
+    private static Set<String> set = new HashSet<>();
+    private static Iterable<String> iterable = new Iterable<String>() {
+        @Override
+        public Iterator<String> iterator() {
+            return set.iterator();
+        }
+    };
+
+    @Before
+    public void init() {
+        set.add(EL1);
+        set.add(EL2);
+    }
 
     /**
      * Test method for {@link AssertorIterable} .
@@ -59,9 +80,143 @@ public class PredicateAssertorIterableTest extends AbstractTest {
 
         final Set<String> set = new HashSet<>();
         set.add(el);
+        final List<String> list = new ArrayList<>();
+        list.add(el);
+        final Queue<String> queue = new LinkedList<>();
+        queue.add(el);
 
         assertFalse(Assertor.<Set<String>, String> ofIterable().hasHashCode(0).that(set).isOK());
         assertTrue(Assertor.<Set<String>, String> ofIterable().hasHashCode(Objects.hashCode(set)).that(set).isOK());
+
+        assertFalse(Assertor.<String> ofSet().hasHashCode(0).that(set).isOK());
+        assertFalse(Assertor.<String> ofList().hasHashCode(0).that(list).isOK());
+        assertFalse(Assertor.<String> ofQueue().hasHashCode(0).that(queue).isOK());
+    }
+
+    /**
+     * Test method for {@link AssertorIterable#hasSizeGT}.
+     * 
+     * @throws IOException
+     *             On not empty iterable
+     */
+    @Test
+    public void testHasSizeGT() throws IOException {
+        assertTrue(Assertor.<Set<String>, String> ofIterable().hasSizeGT(1).that(set).isOK());
+        assertFalse(Assertor.<Set<String>, String> ofIterable().hasSizeGT(2).that(set).isOK());
+        assertFalse(Assertor.<Set<String>, String> ofIterable().hasSizeGT(1).that((Set<String>) null).isOK());
+        assertFalse(Assertor.<Set<String>, String> ofIterable().hasSizeGT(-1).that(set).isOK());
+
+        assertTrue(Assertor.<Set<String>, String> ofIterable().hasSizeGT(1).and().contains(EL1).that(set).isOK());
+        assertTrue(Assertor.<Set<String>, String> ofIterable().hasSizeGT(1).or().contains(EL1).that(set).isOK());
+        assertTrue(Assertor.<Set<String>, String> ofIterable().hasSizeGT(1).xor().not().contains(EL1).that(set).isOK());
+        assertFalse(Assertor.<Set<String>, String> ofIterable().hasSizeGT(1).nand().not().contains(EL1).that(set).isOK());
+        assertTrue(Assertor.<Set<String>, String> ofIterable().hasSizeGT(1).nor().not().contains(EL1).that(set).isOK());
+
+        assertTrue(Assertor.<Iterable<String>, String> ofIterable().hasSizeGT(1).that(iterable).isOK());
+        assertFalse(Assertor.<Iterable<String>, String> ofIterable().hasSizeGT(2).that(iterable).isOK());
+
+        assertException(() -> Assertor.<Set<String>, String> ofIterable().hasSizeGT(-1).that(set).orElseThrow(),
+                IllegalArgumentException.class, "the size has to be greater than or equal to 0 and the iterable cannot be null");
+        assertException(() -> Assertor.<Set<String>, String> ofIterable().hasSizeGT(2).that(set).orElseThrow(),
+                IllegalArgumentException.class, "the iterable '[element1, element2]' size should be greater than: 2");
+        assertException(() -> Assertor.<Set<String>, String> ofIterable().not().hasSizeGT(1).that(set).orElseThrow(),
+                IllegalArgumentException.class, "the iterable '[element1, element2]' size should NOT be greater than: 1");
+    }
+
+    /**
+     * Test method for {@link AssertorIterable#hasSizeGTE}.
+     * 
+     * @throws IOException
+     *             On not empty iterable
+     */
+    @Test
+    public void testHasSizeGTE() throws IOException {
+        assertTrue(Assertor.<Set<String>, String> ofIterable().hasSizeGTE(1).that(set).isOK());
+        assertTrue(Assertor.<Set<String>, String> ofIterable().hasSizeGTE(2).that(set).isOK());
+        assertFalse(Assertor.<Set<String>, String> ofIterable().hasSizeGTE(3).that(set).isOK());
+        assertFalse(Assertor.<Set<String>, String> ofIterable().hasSizeGTE(1).that((Set<String>) null).isOK());
+        assertFalse(Assertor.<Set<String>, String> ofIterable().hasSizeGTE(-1).that(set).isOK());
+
+        assertTrue(Assertor.<Set<String>, String> ofIterable().hasSizeGTE(1).and().contains(EL1).that(set).isOK());
+        assertTrue(Assertor.<Set<String>, String> ofIterable().hasSizeGTE(1).or().contains(EL1).that(set).isOK());
+        assertTrue(Assertor.<Set<String>, String> ofIterable().hasSizeGTE(1).xor().not().contains(EL1).that(set).isOK());
+        assertFalse(Assertor.<Set<String>, String> ofIterable().hasSizeGTE(1).nand().not().contains(EL1).that(set).isOK());
+        assertTrue(Assertor.<Set<String>, String> ofIterable().hasSizeGTE(1).nor().not().contains(EL1).that(set).isOK());
+
+        assertTrue(Assertor.<Iterable<String>, String> ofIterable().hasSizeGTE(1).that(iterable).isOK());
+        assertTrue(Assertor.<Iterable<String>, String> ofIterable().hasSizeGTE(2).that(iterable).isOK());
+        assertFalse(Assertor.<Iterable<String>, String> ofIterable().hasSizeGTE(3).that(iterable).isOK());
+
+        assertException(() -> Assertor.<Set<String>, String> ofIterable().hasSizeGTE(-1).that(set).orElseThrow(),
+                IllegalArgumentException.class, "the size has to be greater than or equal to 0 and the iterable cannot be null");
+        assertException(() -> Assertor.<Set<String>, String> ofIterable().hasSizeGTE(3).that(set).orElseThrow(),
+                IllegalArgumentException.class, "the iterable '[element1, element2]' size should be greater than or equal to: 3");
+        assertException(() -> Assertor.<Set<String>, String> ofIterable().not().hasSizeGTE(1).that(set).orElseThrow(),
+                IllegalArgumentException.class, "the iterable '[element1, element2]' size should NOT be greater than or equal to: 1");
+    }
+
+    /**
+     * Test method for {@link AssertorIterable#hasSizeLT}.
+     * 
+     * @throws IOException
+     *             On not empty iterable
+     */
+    @Test
+    public void testHasSizeLT() throws IOException {
+        assertTrue(Assertor.<Set<String>, String> ofIterable().hasSizeLT(3).that(set).isOK());
+        assertFalse(Assertor.<Set<String>, String> ofIterable().hasSizeLT(2).that(set).isOK());
+        assertFalse(Assertor.<Set<String>, String> ofIterable().hasSizeLT(1).that(set).isOK());
+        assertFalse(Assertor.<Set<String>, String> ofIterable().hasSizeLT(1).that((Set<String>) null).isOK());
+        assertFalse(Assertor.<Set<String>, String> ofIterable().hasSizeLT(-1).that(set).isOK());
+
+        assertTrue(Assertor.<Set<String>, String> ofIterable().hasSizeLT(3).and().contains(EL1).that(set).isOK());
+        assertTrue(Assertor.<Set<String>, String> ofIterable().hasSizeLT(3).or().contains(EL1).that(set).isOK());
+        assertTrue(Assertor.<Set<String>, String> ofIterable().hasSizeLT(3).xor().not().contains(EL1).that(set).isOK());
+        assertFalse(Assertor.<Set<String>, String> ofIterable().hasSizeLT(3).nand().not().contains(EL1).that(set).isOK());
+        assertTrue(Assertor.<Set<String>, String> ofIterable().hasSizeLT(3).nor().not().contains(EL1).that(set).isOK());
+
+        assertTrue(Assertor.<Iterable<String>, String> ofIterable().hasSizeLT(3).that(iterable).isOK());
+        assertFalse(Assertor.<Iterable<String>, String> ofIterable().hasSizeLT(2).that(iterable).isOK());
+        assertFalse(Assertor.<Iterable<String>, String> ofIterable().hasSizeLT(1).that(iterable).isOK());
+
+        assertException(() -> Assertor.<Set<String>, String> ofIterable().hasSizeLT(-1).that(set).orElseThrow(),
+                IllegalArgumentException.class, "the size has to be greater than or equal to 0 and the iterable cannot be null");
+        assertException(() -> Assertor.<Set<String>, String> ofIterable().hasSizeLT(1).that(set).orElseThrow(),
+                IllegalArgumentException.class, "the iterable '[element1, element2]' size should be lower than: 1");
+        assertException(() -> Assertor.<Set<String>, String> ofIterable().not().hasSizeLT(3).that(set).orElseThrow(),
+                IllegalArgumentException.class, "the iterable '[element1, element2]' size should NOT be lower than: 3");
+    }
+
+    /**
+     * Test method for {@link AssertorIterable#hasSizeLTE}.
+     * 
+     * @throws IOException
+     *             On not empty iterable
+     */
+    @Test
+    public void testHasSizeLTE() throws IOException {
+        assertTrue(Assertor.<Set<String>, String> ofIterable().hasSizeLTE(3).that(set).isOK());
+        assertTrue(Assertor.<Set<String>, String> ofIterable().hasSizeLTE(2).that(set).isOK());
+        assertFalse(Assertor.<Set<String>, String> ofIterable().hasSizeLTE(1).that(set).isOK());
+        assertFalse(Assertor.<Set<String>, String> ofIterable().hasSizeLTE(1).that((Set<String>) null).isOK());
+        assertFalse(Assertor.<Set<String>, String> ofIterable().hasSizeLTE(-1).that(set).isOK());
+
+        assertTrue(Assertor.<Set<String>, String> ofIterable().hasSizeLTE(3).and().contains(EL1).that(set).isOK());
+        assertTrue(Assertor.<Set<String>, String> ofIterable().hasSizeLTE(3).or().contains(EL1).that(set).isOK());
+        assertTrue(Assertor.<Set<String>, String> ofIterable().hasSizeLTE(3).xor().not().contains(EL1).that(set).isOK());
+        assertFalse(Assertor.<Set<String>, String> ofIterable().hasSizeLTE(3).nand().not().contains(EL1).that(set).isOK());
+        assertTrue(Assertor.<Set<String>, String> ofIterable().hasSizeLTE(3).nor().not().contains(EL1).that(set).isOK());
+
+        assertTrue(Assertor.<Iterable<String>, String> ofIterable().hasSizeLTE(3).that(iterable).isOK());
+        assertTrue(Assertor.<Iterable<String>, String> ofIterable().hasSizeLTE(2).that(iterable).isOK());
+        assertFalse(Assertor.<Iterable<String>, String> ofIterable().hasSizeLTE(1).that(iterable).isOK());
+
+        assertException(() -> Assertor.<Set<String>, String> ofIterable().hasSizeLTE(-1).that(set).orElseThrow(),
+                IllegalArgumentException.class, "the size has to be greater than or equal to 0 and the iterable cannot be null");
+        assertException(() -> Assertor.<Set<String>, String> ofIterable().hasSizeLTE(1).that(set).orElseThrow(),
+                IllegalArgumentException.class, "the iterable '[element1, element2]' size should be lower than or equal to: 1");
+        assertException(() -> Assertor.<Set<String>, String> ofIterable().not().hasSizeLTE(3).that(set).orElseThrow(),
+                IllegalArgumentException.class, "the iterable '[element1, element2]' size should NOT be lower than or equal to: 3");
     }
 
     /**
@@ -72,34 +227,22 @@ public class PredicateAssertorIterableTest extends AbstractTest {
      */
     @Test
     public void testHasSize() throws IOException {
-        final String el = "element";
-
-        final Set<String> set = new HashSet<>();
-        set.add(el);
-
-        assertTrue(Assertor.<Set<String>, String> ofIterable().isNotEmpty().and(Assertor.<Set<String>, String> ofIterable().contains(el))
+        assertTrue(Assertor.<Set<String>, String> ofIterable().isNotEmpty().and(Assertor.<Set<String>, String> ofIterable().contains(EL1))
                 .that(set).isOK());
 
-        assertTrue(Assertor.<Set<String>, String> ofIterable().hasSize(1).that(set).isOK());
-        assertFalse(Assertor.<Set<String>, String> ofIterable().hasSize(2).that(set).isOK());
+        assertTrue(Assertor.<Set<String>, String> ofIterable().hasSize(2).that(set).isOK());
+        assertFalse(Assertor.<Set<String>, String> ofIterable().hasSize(1).that(set).isOK());
         assertFalse(Assertor.<Set<String>, String> ofIterable().hasSize(1).that((Set<String>) null).isOK());
         assertFalse(Assertor.<Set<String>, String> ofIterable().hasSize(-1).that(set).isOK());
 
-        assertTrue(Assertor.<Set<String>, String> ofIterable().hasSize(1).and().contains(el).that(set).isOK());
-        assertTrue(Assertor.<Set<String>, String> ofIterable().hasSize(1).or().contains(el).that(set).isOK());
-        assertTrue(Assertor.<Set<String>, String> ofIterable().hasSize(1).xor().not().contains(el).that(set).isOK());
-        assertFalse(Assertor.<Set<String>, String> ofIterable().hasSize(1).nand().not().contains(el).that(set).isOK());
-        assertTrue(Assertor.<Set<String>, String> ofIterable().hasSize(1).nor().not().contains(el).that(set).isOK());
+        assertTrue(Assertor.<Set<String>, String> ofIterable().hasSize(2).and().contains(EL1).that(set).isOK());
+        assertTrue(Assertor.<Set<String>, String> ofIterable().hasSize(2).or().contains(EL1).that(set).isOK());
+        assertTrue(Assertor.<Set<String>, String> ofIterable().hasSize(2).xor().not().contains(EL1).that(set).isOK());
+        assertFalse(Assertor.<Set<String>, String> ofIterable().hasSize(2).nand().not().contains(EL1).that(set).isOK());
+        assertTrue(Assertor.<Set<String>, String> ofIterable().hasSize(2).nor().not().contains(EL1).that(set).isOK());
 
-        final Iterable<String> iterable = new Iterable<String>() {
-            @Override
-            public Iterator<String> iterator() {
-                return set.iterator();
-            }
-        };
-
-        assertTrue(Assertor.<Iterable<String>, String> ofIterable().hasSize(1).that(iterable).isOK());
-        assertFalse(Assertor.<Iterable<String>, String> ofIterable().hasSize(2).that(iterable).isOK());
+        assertTrue(Assertor.<Iterable<String>, String> ofIterable().hasSize(2).that(iterable).isOK());
+        assertFalse(Assertor.<Iterable<String>, String> ofIterable().hasSize(1).that(iterable).isOK());
     }
 
     /**
@@ -110,25 +253,13 @@ public class PredicateAssertorIterableTest extends AbstractTest {
      */
     @Test
     public void testHasNotSize() throws IOException {
-        final String el = "element";
-
-        final Set<String> set = new HashSet<>();
-        set.add(el);
-
-        assertFalse(Assertor.<Set<String>, String> ofIterable().not().hasSize(1).that(set).isOK());
-        assertTrue(Assertor.<Set<String>, String> ofIterable().not().hasSize(2).that(set).isOK());
-        assertFalse(Assertor.<Set<String>, String> ofIterable().not().hasSize(1).that((Set<String>) null).isOK());
+        assertFalse(Assertor.<Set<String>, String> ofIterable().not().hasSize(2).that(set).isOK());
+        assertTrue(Assertor.<Set<String>, String> ofIterable().not().hasSize(1).that(set).isOK());
+        assertFalse(Assertor.<Set<String>, String> ofIterable().not().hasSize(2).that((Set<String>) null).isOK());
         assertFalse(Assertor.<Set<String>, String> ofIterable().not().hasSize(-1).that(set).isOK());
 
-        final Iterable<String> iterable = new Iterable<String>() {
-            @Override
-            public Iterator<String> iterator() {
-                return set.iterator();
-            }
-        };
-
-        assertFalse(Assertor.<Iterable<String>, String> ofIterable().not().hasSize(1).that(iterable).isOK());
-        assertTrue(Assertor.<Iterable<String>, String> ofIterable().not().hasSize(2).that(iterable).isOK());
+        assertFalse(Assertor.<Iterable<String>, String> ofIterable().not().hasSize(2).that(iterable).isOK());
+        assertTrue(Assertor.<Iterable<String>, String> ofIterable().not().hasSize(1).that(iterable).isOK());
     }
 
     /**

@@ -64,11 +64,125 @@ public class AssertorCharSequence extends ConstantsAssertor {
     public static <T extends CharSequence> StepAssertor<T> hasLength(final StepAssertor<T> step, final int length,
             final MessageAssertor message) {
 
-        final Predicate<T> preChecker = (object) -> length >= 0 && object != null;
-
         final BiPredicate<T, Boolean> checker = (object, not) -> object.length() == length;
 
-        return new StepAssertor<>(step, preChecker, checker, false, message, MSG.CSQ.LENGTH, false,
+        return checkLength(step, length, checker, MSG.CSQ.LENGTH, message);
+    }
+
+    /**
+     * Prepare the next step to validate if the {@link CharSequence} has a
+     * length greater than {@code length}.
+     * 
+     * <p>
+     * precondition: {@link CharSequence} cannot be {@code null} and size cannot
+     * be lower than zero
+     * </p>
+     * 
+     * @param step
+     *            the current step
+     * @param length
+     *            the expected length
+     * @param message
+     *            the message if invalid
+     * @param <T>
+     *            the char sequence type
+     * @return the next step
+     */
+    public static <T extends CharSequence> StepAssertor<T> hasLengthGT(final StepAssertor<T> step, final int length,
+            final MessageAssertor message) {
+
+        final BiPredicate<T, Boolean> checker = (object, not) -> object.length() > length;
+
+        return checkLength(step, length, checker, MSG.CSQ.LENGTH_GT, message);
+    }
+
+    /**
+     * Prepare the next step to validate if the {@link CharSequence} has a
+     * length greater than or equal to {@code length}.
+     * 
+     * <p>
+     * precondition: {@link CharSequence} cannot be {@code null} and size cannot
+     * be lower than zero
+     * </p>
+     * 
+     * @param step
+     *            the current step
+     * @param length
+     *            the expected length
+     * @param message
+     *            the message if invalid
+     * @param <T>
+     *            the char sequence type
+     * @return the next step
+     */
+    public static <T extends CharSequence> StepAssertor<T> hasLengthGTE(final StepAssertor<T> step, final int length,
+            final MessageAssertor message) {
+
+        final BiPredicate<T, Boolean> checker = (object, not) -> object.length() >= length;
+
+        return checkLength(step, length, checker, MSG.CSQ.LENGTH_GTE, message);
+    }
+
+    /**
+     * Prepare the next step to validate if the {@link CharSequence} has a
+     * length lower than {@code length}.
+     * 
+     * <p>
+     * precondition: {@link CharSequence} cannot be {@code null} and size cannot
+     * be lower than zero
+     * </p>
+     * 
+     * @param step
+     *            the current step
+     * @param length
+     *            the expected length
+     * @param message
+     *            the message if invalid
+     * @param <T>
+     *            the char sequence type
+     * @return the next step
+     */
+    public static <T extends CharSequence> StepAssertor<T> hasLengthLT(final StepAssertor<T> step, final int length,
+            final MessageAssertor message) {
+
+        final BiPredicate<T, Boolean> checker = (object, not) -> object.length() < length;
+
+        return checkLength(step, length, checker, MSG.CSQ.LENGTH_LT, message);
+    }
+
+    /**
+     * Prepare the next step to validate if the {@link CharSequence} has a
+     * length lower than or equal to {@code length}.
+     * 
+     * <p>
+     * precondition: {@link CharSequence} cannot be {@code null} and size cannot
+     * be lower than zero
+     * </p>
+     * 
+     * @param step
+     *            the current step
+     * @param length
+     *            the expected length
+     * @param message
+     *            the message if invalid
+     * @param <T>
+     *            the char sequence type
+     * @return the next step
+     */
+    public static <T extends CharSequence> StepAssertor<T> hasLengthLTE(final StepAssertor<T> step, final int length,
+            final MessageAssertor message) {
+
+        final BiPredicate<T, Boolean> checker = (object, not) -> object.length() <= length;
+
+        return checkLength(step, length, checker, MSG.CSQ.LENGTH_LTE, message);
+    }
+
+    private static <T extends CharSequence> StepAssertor<T> checkLength(final StepAssertor<T> step, final int length,
+            final BiPredicate<T, Boolean> checker, final String messageKey, final MessageAssertor message) {
+
+        final Predicate<T> preChecker = (object) -> length >= 0 && object != null;
+
+        return new StepAssertor<>(step, preChecker, checker, false, message, messageKey, false,
                 new ParameterAssertor<>(length, EnumType.NUMBER_INTEGER));
     }
 

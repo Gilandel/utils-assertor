@@ -351,6 +351,126 @@ public class PredicateAssertorMapTest extends AbstractTest {
     }
 
     /**
+     * Test method for {@link AssertorMap#hasSizeGT}.
+     */
+    @Test
+    public void testHasSizeGT() {
+        final String key1 = "element1";
+        final String key2 = "element2";
+        final Integer val1 = 1;
+        final Integer val2 = 2;
+
+        final Map<String, Integer> map = new HashMap<>();
+        map.put(key1, val1);
+        map.put(key2, val2);
+
+        assertTrue(Assertor.<String, Integer> ofMap().hasSizeGT(1).that(map).isOK());
+        assertTrue(Assertor.<String, Integer> ofMap().hasSizeGT(0).that(map).isOK());
+        assertFalse(Assertor.<String, Integer> ofMap().hasSizeGT(2).that(map).isOK());
+        assertFalse(Assertor.<String, Integer> ofMap().hasSizeGT(3).that(map).isOK());
+
+        assertFalse(Assertor.<String, Integer> ofMap().hasSizeGT(-1).that(map).isOK());
+        assertFalse(Assertor.<String, Integer> ofMap().hasSizeGT(1).that((Map<String, Integer>) null).isOK());
+
+        assertException(() -> Assertor.<String, Integer> ofMap().hasSizeGT(-1).that(map).orElseThrow(), IllegalArgumentException.class,
+                "the size has to be greater than or equal to 0 and the map cannot be null");
+        assertException(() -> Assertor.<String, Integer> ofMap().hasSizeGT(2).that(map).orElseThrow(), IllegalArgumentException.class,
+                "the map '[element1=1, element2=2]' size should be greater than: 2");
+        assertException(() -> Assertor.<String, Integer> ofMap().not().hasSizeGT(1).that(map).orElseThrow(), IllegalArgumentException.class,
+                "the map '[element1=1, element2=2]' size should NOT be greater than: 1");
+    }
+
+    /**
+     * Test method for {@link AssertorMap#hasSizeGTE}.
+     */
+    @Test
+    public void testHasSizeGTE() {
+        final String key1 = "element1";
+        final String key2 = "element2";
+        final Integer val1 = 1;
+        final Integer val2 = 2;
+
+        final Map<String, Integer> map = new HashMap<>();
+        map.put(key1, val1);
+        map.put(key2, val2);
+
+        assertTrue(Assertor.<String, Integer> ofMap().hasSizeGTE(1).that(map).isOK());
+        assertTrue(Assertor.<String, Integer> ofMap().hasSizeGTE(0).that(map).isOK());
+        assertTrue(Assertor.<String, Integer> ofMap().hasSizeGTE(2).that(map).isOK());
+        assertFalse(Assertor.<String, Integer> ofMap().hasSizeGTE(3).that(map).isOK());
+
+        assertFalse(Assertor.<String, Integer> ofMap().hasSizeGTE(-1).that(map).isOK());
+        assertFalse(Assertor.<String, Integer> ofMap().hasSizeGTE(1).that((Map<String, Integer>) null).isOK());
+
+        assertException(() -> Assertor.<String, Integer> ofMap().hasSizeGTE(-1).that(map).orElseThrow(), IllegalArgumentException.class,
+                "the size has to be greater than or equal to 0 and the map cannot be null");
+        assertException(() -> Assertor.<String, Integer> ofMap().hasSizeGTE(3).that(map).orElseThrow(), IllegalArgumentException.class,
+                "the map '[element1=1, element2=2]' size should be greater than or equal to: 3");
+        assertException(() -> Assertor.<String, Integer> ofMap().not().hasSizeGTE(1).that(map).orElseThrow(),
+                IllegalArgumentException.class, "the map '[element1=1, element2=2]' size should NOT be greater than or equal to: 1");
+    }
+
+    /**
+     * Test method for {@link AssertorMap#hasSizeLT}.
+     */
+    @Test
+    public void testHasSizeLT() {
+        final String key1 = "element1";
+        final String key2 = "element2";
+        final Integer val1 = 1;
+        final Integer val2 = 2;
+
+        final Map<String, Integer> map = new HashMap<>();
+        map.put(key1, val1);
+        map.put(key2, val2);
+
+        assertFalse(Assertor.<String, Integer> ofMap().hasSizeLT(1).that(map).isOK());
+        assertFalse(Assertor.<String, Integer> ofMap().hasSizeLT(0).that(map).isOK());
+        assertFalse(Assertor.<String, Integer> ofMap().hasSizeLT(2).that(map).isOK());
+        assertTrue(Assertor.<String, Integer> ofMap().hasSizeLT(3).that(map).isOK());
+
+        assertFalse(Assertor.<String, Integer> ofMap().hasSizeLT(-1).that(map).isOK());
+        assertFalse(Assertor.<String, Integer> ofMap().hasSizeLT(1).that((Map<String, Integer>) null).isOK());
+
+        assertException(() -> Assertor.<String, Integer> ofMap().hasSizeLT(-1).that(map).orElseThrow(), IllegalArgumentException.class,
+                "the size has to be greater than or equal to 0 and the map cannot be null");
+        assertException(() -> Assertor.<String, Integer> ofMap().hasSizeLT(1).that(map).orElseThrow(), IllegalArgumentException.class,
+                "the map '[element1=1, element2=2]' size should be lower than: 1");
+        assertException(() -> Assertor.<String, Integer> ofMap().not().hasSizeLT(3).that(map).orElseThrow(), IllegalArgumentException.class,
+                "the map '[element1=1, element2=2]' size should NOT be lower than: 3");
+    }
+
+    /**
+     * Test method for {@link AssertorMap#hasSizeLTE}.
+     */
+    @Test
+    public void testHasSizeLTE() {
+        final String key1 = "element1";
+        final String key2 = "element2";
+        final Integer val1 = 1;
+        final Integer val2 = 2;
+
+        final Map<String, Integer> map = new HashMap<>();
+        map.put(key1, val1);
+        map.put(key2, val2);
+
+        assertFalse(Assertor.<String, Integer> ofMap().hasSizeLTE(1).that(map).isOK());
+        assertFalse(Assertor.<String, Integer> ofMap().hasSizeLTE(0).that(map).isOK());
+        assertTrue(Assertor.<String, Integer> ofMap().hasSizeLTE(2).that(map).isOK());
+        assertTrue(Assertor.<String, Integer> ofMap().hasSizeLTE(3).that(map).isOK());
+
+        assertFalse(Assertor.<String, Integer> ofMap().hasSizeLTE(-1).that(map).isOK());
+        assertFalse(Assertor.<String, Integer> ofMap().hasSizeLTE(1).that((Map<String, Integer>) null).isOK());
+
+        assertException(() -> Assertor.<String, Integer> ofMap().hasSizeLTE(-1).that(map).orElseThrow(), IllegalArgumentException.class,
+                "the size has to be greater than or equal to 0 and the map cannot be null");
+        assertException(() -> Assertor.<String, Integer> ofMap().hasSizeLTE(1).that(map).orElseThrow(), IllegalArgumentException.class,
+                "the map '[element1=1, element2=2]' size should be lower than or equal to: 1");
+        assertException(() -> Assertor.<String, Integer> ofMap().not().hasSizeLTE(3).that(map).orElseThrow(),
+                IllegalArgumentException.class, "the map '[element1=1, element2=2]' size should NOT be lower than or equal to: 3");
+    }
+
+    /**
      * Test method for {@link AssertorMap#hasSize}.
      */
     @Test

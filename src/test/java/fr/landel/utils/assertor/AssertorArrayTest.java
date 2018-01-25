@@ -26,7 +26,9 @@ import static org.junit.Assert.fail;
 
 import java.util.Locale;
 import java.util.Objects;
+import java.util.function.Predicate;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
 import fr.landel.utils.assertor.enums.EnumAnalysisMode;
@@ -66,6 +68,7 @@ public class AssertorArrayTest extends AbstractTest {
     @Test
     public void testHasLength() {
         String[] array = new String[] {null, "2"};
+
         assertTrue(Assertor.that(array).hasLength(2).isOK());
         assertFalse(Assertor.that(array).hasLength(1).isOK());
         assertFalse(Assertor.that((String[]) null).hasLength(1).isOK());
@@ -82,6 +85,107 @@ public class AssertorArrayTest extends AbstractTest {
 
         assertException(() -> Assertor.that(array).hasLength(12, Locale.US, "the array has not the specified length %2$d*").orElseThrow(),
                 IllegalArgumentException.class, "the array has not the specified length 12");
+    }
+
+    /**
+     * Test method for {@link AssertorArray#hasLengthGT} .
+     */
+    @Test
+    public void testHasLengthGT() {
+        String[] array = new String[] {null, "2"};
+
+        assertFalse(Assertor.that(array).hasLengthGT(2).isOK());
+        assertTrue(Assertor.that(array).hasLengthGT(1).isOK());
+        assertFalse(Assertor.that((String[]) null).hasLengthGT(1).isOK());
+        assertFalse(Assertor.that(array).hasLengthGT(-1).isOK());
+
+        assertFalse(Assertor.that(array).hasLengthGT(2).and(Assertor.that(true).isFalse().or().isTrue()).isOK());
+        assertFalse(Assertor.that(array).isNotEmpty().and().hasLengthGT(2).isOK());
+        assertFalse(Assertor.that(array).isEmpty().or().hasLengthGT(2).isOK());
+        assertFalse(Assertor.that(array).isEmpty().xor().hasLengthGT(2).isOK());
+        assertTrue(Assertor.that(array).isEmpty().nand().hasLengthGT(2).isOK());
+        assertTrue(Assertor.that(array).isEmpty().nor().hasLengthGT(2).isOK());
+
+        assertTrue(Assertor.that(array).hasLengthGT(1).and(Assertor.that("ee").contains("ee")).and().contains("2").isOK());
+
+        assertException(() -> Assertor.that(array).hasLengthGT(12, Locale.US, "the array has not the specified length %2$d*").orElseThrow(),
+                IllegalArgumentException.class, "the array has not the specified length 12");
+    }
+
+    /**
+     * Test method for {@link AssertorArray#hasLengthGTE} .
+     */
+    @Test
+    public void testHasLengthGTE() {
+        String[] array = new String[] {null, "2"};
+
+        assertTrue(Assertor.that(array).hasLengthGTE(2).isOK());
+        assertTrue(Assertor.that(array).hasLengthGTE(1).isOK());
+        assertFalse(Assertor.that((String[]) null).hasLengthGTE(1).isOK());
+        assertFalse(Assertor.that(array).hasLengthGTE(-1).isOK());
+
+        assertTrue(Assertor.that(array).hasLengthGTE(2).and(Assertor.that(true).isFalse().or().isTrue()).isOK());
+        assertTrue(Assertor.that(array).isNotEmpty().and().hasLengthGTE(2).isOK());
+        assertTrue(Assertor.that(array).isEmpty().or().hasLengthGTE(2).isOK());
+        assertTrue(Assertor.that(array).isEmpty().xor().hasLengthGTE(2).isOK());
+        assertFalse(Assertor.that(array).isEmpty().nand().hasLengthGTE(2).isOK());
+        assertTrue(Assertor.that(array).isEmpty().nor().hasLengthGTE(2).isOK());
+
+        assertTrue(Assertor.that(array).hasLengthGTE(1).and(Assertor.that("ee").contains("ee")).and().contains("2").isOK());
+
+        assertException(
+                () -> Assertor.that(array).hasLengthGTE(12, Locale.US, "the array has not the specified length %2$d*").orElseThrow(),
+                IllegalArgumentException.class, "the array has not the specified length 12");
+    }
+
+    /**
+     * Test method for {@link AssertorArray#hasLengthLT} .
+     */
+    @Test
+    public void testHasLengthLT() {
+        String[] array = new String[] {null, "2"};
+
+        assertFalse(Assertor.that(array).hasLengthLT(2).isOK());
+        assertTrue(Assertor.that(array).hasLengthLT(3).isOK());
+        assertFalse(Assertor.that((String[]) null).hasLengthLT(1).isOK());
+        assertFalse(Assertor.that(array).hasLengthLT(-1).isOK());
+
+        assertFalse(Assertor.that(array).hasLengthLT(2).and(Assertor.that(true).isFalse().or().isTrue()).isOK());
+        assertFalse(Assertor.that(array).isNotEmpty().and().hasLengthLT(2).isOK());
+        assertFalse(Assertor.that(array).isEmpty().or().hasLengthLT(2).isOK());
+        assertFalse(Assertor.that(array).isEmpty().xor().hasLengthLT(2).isOK());
+        assertTrue(Assertor.that(array).isEmpty().nand().hasLengthLT(2).isOK());
+        assertTrue(Assertor.that(array).isEmpty().nor().hasLengthLT(2).isOK());
+
+        assertFalse(Assertor.that(array).hasLengthLT(1).and(Assertor.that("ee").contains("ee")).and().contains("2").isOK());
+
+        assertException(() -> Assertor.that(array).hasLengthLT(1, Locale.US, "the array has not the specified length %2$d*").orElseThrow(),
+                IllegalArgumentException.class, "the array has not the specified length 1");
+    }
+
+    /**
+     * Test method for {@link AssertorArray#hasLengthLTE} .
+     */
+    @Test
+    public void testHasLengthLTE() {
+        String[] array = new String[] {null, "2"};
+
+        assertTrue(Assertor.that(array).hasLengthLTE(2).isOK());
+        assertTrue(Assertor.that(array).hasLengthLTE(3).isOK());
+        assertFalse(Assertor.that((String[]) null).hasLengthLTE(1).isOK());
+        assertFalse(Assertor.that(array).hasLengthLTE(-1).isOK());
+
+        assertTrue(Assertor.that(array).hasLengthLTE(2).and(Assertor.that(true).isFalse().or().isTrue()).isOK());
+        assertTrue(Assertor.that(array).isNotEmpty().and().hasLengthLTE(2).isOK());
+        assertTrue(Assertor.that(array).isEmpty().or().hasLengthLTE(2).isOK());
+        assertTrue(Assertor.that(array).isEmpty().xor().hasLengthLTE(2).isOK());
+        assertFalse(Assertor.that(array).isEmpty().nand().hasLengthLTE(2).isOK());
+        assertTrue(Assertor.that(array).isEmpty().nor().hasLengthLTE(2).isOK());
+
+        assertTrue(Assertor.that(array).hasLengthLTE(3).and(Assertor.that("ee").contains("ee")).and().contains("2").isOK());
+
+        assertException(() -> Assertor.that(array).hasLengthLTE(1, Locale.US, "the array has not the specified length %2$d*").orElseThrow(),
+                IllegalArgumentException.class, "the array has not the specified length 1");
     }
 
     /**
@@ -189,6 +293,8 @@ public class AssertorArrayTest extends AbstractTest {
         assertFalse(Assertor.that(new String[] {null, "2", "3"}).containsAll(new String[] {null, "4"}).isOK());
         assertFalse(Assertor.that(new String[] {null, "2", "3"}).containsAll(new String[] {"4"}).isOK());
         assertFalse(Assertor.that(new String[] {}).containsAll((String[]) null).isOK());
+        assertFalse(Assertor.that(new String[] {}).containsAll(new String[] {"2"}).isOK());
+        assertFalse(Assertor.that(new String[] {null, "2"}).containsAll((String[]) null).isOK());
         assertFalse(Assertor.that((String[]) null).containsAll(new String[] {null, "3"}).isOK());
 
         assertTrue(Assertor.that(new String[] {null, "2", "3"}).containsAny(new String[] {null, "3"}).isOK());
@@ -294,6 +400,70 @@ public class AssertorArrayTest extends AbstractTest {
 
             assertException(() -> assertorTU.containsInOrder((String[]) null).orElseThrow(), IllegalArgumentException.class,
                     "neither arrays can be null or empty");
+        }
+    }
+
+    /**
+     * Check {@link AssertorArray#anyMatch}
+     */
+    @Test
+    public void testAnyMatch() {
+        String[] arraytu = {"t", "u"};
+        String[] arrayTu = {"T", "u"};
+        String[] arrayTU = {"T", "U"};
+        String[] arraytNull = {"t", null};
+
+        Predicate<String> predicate = e -> Objects.equals(e, StringUtils.lowerCase(e));
+
+        assertTrue(Assertor.that(arraytu).allMatch(predicate).isOK());
+
+        for (EnumAnalysisMode mode : EnumAnalysisMode.values()) {
+
+            assertTrue(Assertor.that(arraytu, mode).allMatch(predicate).isOK());
+            assertTrue(Assertor.that(arrayTu, mode).anyMatch(predicate).isOK());
+            assertFalse(Assertor.that(arrayTU, mode).anyMatch(predicate).isOK());
+            assertTrue(Assertor.that(arraytNull, mode).anyMatch(predicate).isOK());
+
+            assertException(() -> Assertor.that(new String[0], mode).anyMatch(predicate).orElseThrow(), IllegalArgumentException.class,
+                    "the array cannot be null or empty and predicate cannot be null");
+            assertException(() -> Assertor.that((String[]) null, mode).anyMatch(predicate).orElseThrow(), IllegalArgumentException.class,
+                    "the array cannot be null or empty and predicate cannot be null");
+            assertException(() -> Assertor.that(arrayTu, mode).anyMatch(null).orElseThrow(), IllegalArgumentException.class,
+                    "the array cannot be null or empty and predicate cannot be null");
+            assertException(() -> Assertor.that(arrayTU, mode).anyMatch(predicate).orElseThrow(), IllegalArgumentException.class,
+                    "any array element '[T, U]' should match the predicate");
+        }
+    }
+
+    /**
+     * Check {@link AssertorArray#allMatch}
+     */
+    @Test
+    public void testAllMatch() {
+        String[] arraytu = {"t", "u"};
+        String[] arrayTu = {"T", "u"};
+        String[] arrayTU = {"T", "U"};
+        String[] arraytNull = {"t", null};
+
+        Predicate<String> predicate = e -> Objects.equals(e, StringUtils.lowerCase(e));
+
+        assertTrue(Assertor.that(arraytu).allMatch(predicate).isOK());
+
+        for (EnumAnalysisMode mode : EnumAnalysisMode.values()) {
+
+            assertTrue(Assertor.that(arraytu, mode).allMatch(predicate).isOK());
+            assertFalse(Assertor.that(arrayTu, mode).allMatch(predicate).isOK());
+            assertFalse(Assertor.that(arrayTU, mode).allMatch(predicate).isOK());
+            assertTrue(Assertor.that(arraytNull, mode).allMatch(predicate).isOK());
+
+            assertException(() -> Assertor.that(new String[0], mode).allMatch(predicate).orElseThrow(), IllegalArgumentException.class,
+                    "the array cannot be null or empty and predicate cannot be null");
+            assertException(() -> Assertor.that((String[]) null, mode).allMatch(predicate).orElseThrow(), IllegalArgumentException.class,
+                    "the array cannot be null or empty and predicate cannot be null");
+            assertException(() -> Assertor.that(arrayTu, mode).allMatch(null).orElseThrow(), IllegalArgumentException.class,
+                    "the array cannot be null or empty and predicate cannot be null");
+            assertException(() -> Assertor.that(arrayTU, mode).allMatch(predicate).orElseThrow(), IllegalArgumentException.class,
+                    "all the array elements '[T, U]' should match the predicate");
         }
     }
 }
