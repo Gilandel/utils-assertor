@@ -45,7 +45,8 @@ import fr.landel.utils.commons.ArrayUtils;
 public class AssertorArray extends ConstantsAssertor {
 
     /**
-     * Prepare the next step to validate the array length.
+     * Prepare the next step to validate that the array length is equal to
+     * {@code length}.
      * 
      * <p>
      * precondition: {@code length} has to be a positive number or equal to zero
@@ -64,11 +65,121 @@ public class AssertorArray extends ConstantsAssertor {
      */
     public static <T> StepAssertor<T[]> hasLength(final StepAssertor<T[]> step, final int length, final MessageAssertor message) {
 
-        final Predicate<T[]> preChecker = (object) -> length >= 0 && object != null;
+        final BiPredicate<T[], Boolean> checker = (array, not) -> array.length == length;
 
-        final BiPredicate<T[], Boolean> checker = (object, not) -> object.length == length;
+        return checkLength(step, length, checker, MSG.ARRAY.LENGTH, message);
+    }
 
-        return new StepAssertor<>(step, preChecker, checker, false, message, MSG.ARRAY.LENGTH, false,
+    /**
+     * Prepare the next step to validate that the array length is greater than
+     * {@code length}.
+     * 
+     * <p>
+     * precondition: {@code length} has to be a positive number or equal to zero
+     * and {@code array} cannot be {@code null}
+     * </p>
+     * 
+     * @param step
+     *            the current step
+     * @param length
+     *            the length to validate
+     * @param message
+     *            the message if invalid
+     * @param <T>
+     *            the array elements type
+     * @return the next step
+     */
+    public static <T> StepAssertor<T[]> hasLengthGT(final StepAssertor<T[]> step, final int length, final MessageAssertor message) {
+
+        final BiPredicate<T[], Boolean> checker = (array, not) -> array.length > length;
+
+        return checkLength(step, length, checker, MSG.ARRAY.LENGTH_GT, message);
+    }
+
+    /**
+     * Prepare the next step to validate that the array length is greater than
+     * or equal to {@code length}.
+     * 
+     * <p>
+     * precondition: {@code length} has to be a positive number or equal to zero
+     * and {@code array} cannot be {@code null}
+     * </p>
+     * 
+     * @param step
+     *            the current step
+     * @param length
+     *            the length to validate
+     * @param message
+     *            the message if invalid
+     * @param <T>
+     *            the array elements type
+     * @return the next step
+     */
+    public static <T> StepAssertor<T[]> hasLengthGTE(final StepAssertor<T[]> step, final int length, final MessageAssertor message) {
+
+        final BiPredicate<T[], Boolean> checker = (array, not) -> array.length >= length;
+
+        return checkLength(step, length, checker, MSG.ARRAY.LENGTH_GTE, message);
+    }
+
+    /**
+     * Prepare the next step to validate that the array length is lower than
+     * {@code length}.
+     * 
+     * <p>
+     * precondition: {@code length} has to be a positive number or equal to zero
+     * and {@code array} cannot be {@code null}
+     * </p>
+     * 
+     * @param step
+     *            the current step
+     * @param length
+     *            the length to validate
+     * @param message
+     *            the message if invalid
+     * @param <T>
+     *            the array elements type
+     * @return the next step
+     */
+    public static <T> StepAssertor<T[]> hasLengthLT(final StepAssertor<T[]> step, final int length, final MessageAssertor message) {
+
+        final BiPredicate<T[], Boolean> checker = (array, not) -> array.length < length;
+
+        return checkLength(step, length, checker, MSG.ARRAY.LENGTH_LT, message);
+    }
+
+    /**
+     * Prepare the next step to validate that the array length is lower than or
+     * equal to {@code length}.
+     * 
+     * <p>
+     * precondition: {@code length} has to be a positive number or equal to zero
+     * and {@code array} cannot be {@code null}
+     * </p>
+     * 
+     * @param step
+     *            the current step
+     * @param length
+     *            the length to validate
+     * @param message
+     *            the message if invalid
+     * @param <T>
+     *            the array elements type
+     * @return the next step
+     */
+    public static <T> StepAssertor<T[]> hasLengthLTE(final StepAssertor<T[]> step, final int length, final MessageAssertor message) {
+
+        final BiPredicate<T[], Boolean> checker = (array, not) -> array.length <= length;
+
+        return checkLength(step, length, checker, MSG.ARRAY.LENGTH_LTE, message);
+    }
+
+    private static <T> StepAssertor<T[]> checkLength(final StepAssertor<T[]> step, final int length,
+            final BiPredicate<T[], Boolean> checker, final String messageKey, final MessageAssertor message) {
+
+        final Predicate<T[]> preChecker = (array) -> length >= 0 && array != null;
+
+        return new StepAssertor<>(step, preChecker, checker, false, message, messageKey, false,
                 new ParameterAssertor<>(length, EnumType.NUMBER_INTEGER));
     }
 
@@ -89,7 +200,7 @@ public class AssertorArray extends ConstantsAssertor {
      */
     public static <T> StepAssertor<T[]> isEmpty(final StepAssertor<T[]> step, final MessageAssertor message) {
 
-        final BiPredicate<T[], Boolean> checker = (object, not) -> ArrayUtils.isEmpty(object);
+        final BiPredicate<T[], Boolean> checker = (array, not) -> ArrayUtils.isEmpty(array);
 
         return new StepAssertor<>(step, checker, false, message, MSG.ARRAY.EMPTY, false);
     }
@@ -112,9 +223,66 @@ public class AssertorArray extends ConstantsAssertor {
      */
     public static <T> StepAssertor<T[]> isNotEmpty(final StepAssertor<T[]> step, final MessageAssertor message) {
 
-        final BiPredicate<T[], Boolean> checker = (object, not) -> ArrayUtils.isNotEmpty(object);
+        final BiPredicate<T[], Boolean> checker = (array, not) -> ArrayUtils.isNotEmpty(array);
 
         return new StepAssertor<>(step, checker, false, message, MSG.ARRAY.EMPTY, true);
+    }
+
+    /**
+     * Prepare the next step to validate if all array elements match the
+     * predicate.
+     * 
+     * <p>
+     * precondition: {@code array} cannot be {@code null} or empty and
+     * {@code predicate} cannot be {@code null}
+     * </p>
+     * 
+     * @param step
+     *            the current step
+     * @param predicate
+     *            the predicate used to check each element
+     * @param <T>
+     *            the array elements type
+     * @return the next step
+     */
+    public static <T> StepAssertor<T[]> allMatch(final StepAssertor<T[]> step, final Predicate<T> predicate,
+            final MessageAssertor message) {
+
+        return match(step, predicate, true, MSG.ARRAY.MATCH_ALL, message);
+    }
+
+    /**
+     * Prepare the next step to validate if any array element matches the
+     * predicate.
+     * 
+     * <p>
+     * precondition: {@code array} cannot be {@code null} or empty and
+     * {@code predicate} cannot be {@code null}
+     * </p>
+     * 
+     * @param step
+     *            the current step
+     * @param predicate
+     *            the predicate used to check each element
+     * @param <T>
+     *            the array elements type
+     * @return the next step
+     */
+    public static <T> StepAssertor<T[]> anyMatch(final StepAssertor<T[]> step, final Predicate<T> predicate,
+            final MessageAssertor message) {
+
+        return match(step, predicate, false, MSG.ARRAY.MATCH_ANY, message);
+    }
+
+    private static <T> StepAssertor<T[]> match(final StepAssertor<T[]> step, final Predicate<T> predicate, final boolean all,
+            final String messageKey, final MessageAssertor message) {
+
+        final Predicate<T[]> preChecker = (array) -> ArrayUtils.isNotEmpty(array) && predicate != null;
+
+        final BiPredicate<T[], Boolean> checker = (array, not) -> AssertorArray.has(array, predicate, all, step.getAnalysisMode());
+
+        return new StepAssertor<>(step, preChecker, checker, false, message, messageKey, false,
+                new ParameterAssertor<>(predicate, EnumType.UNKNOWN));
     }
 
     /**
@@ -136,9 +304,9 @@ public class AssertorArray extends ConstantsAssertor {
      */
     public static <T> StepAssertor<T[]> contains(final StepAssertor<T[]> step, final T element, final MessageAssertor message) {
 
-        final Predicate<T[]> preChecker = (object) -> ArrayUtils.isNotEmpty(object);
+        final Predicate<T[]> preChecker = (array) -> ArrayUtils.isNotEmpty(array);
 
-        final BiPredicate<T[], Boolean> checker = (object, not) -> AssertorArray.has(object, element, step.getAnalysisMode());
+        final BiPredicate<T[], Boolean> checker = (array, not) -> AssertorArray.has(array, element, step.getAnalysisMode());
 
         return new StepAssertor<>(step, preChecker, checker, false, message, MSG.ARRAY.CONTAINS_OBJECT, false,
                 new ParameterAssertor<>(element, EnumType.UNKNOWN));
@@ -147,7 +315,7 @@ public class AssertorArray extends ConstantsAssertor {
     private static <T> StepAssertor<T[]> contains(final StepAssertor<T[]> step, final T[] array, final boolean all, final CharSequence key,
             final MessageAssertor message) {
 
-        final Predicate<T[]> preChecker = (object) -> ArrayUtils.isNotEmpty(array) && ArrayUtils.isNotEmpty(object);
+        final Predicate<T[]> preChecker = (object) -> ArrayUtils.isNotEmpty(object) && ArrayUtils.isNotEmpty(array);
 
         final BiPredicate<T[], Boolean> checker = (object, not) -> AssertorArray.has(object, array, all, not, step.getAnalysisMode());
 
@@ -236,21 +404,37 @@ public class AssertorArray extends ConstantsAssertor {
             predicate = Objects::isNull;
         }
 
+        return has(array, predicate, false, analysisMode);
+    }
+
+    private static <T> boolean has(final T[] array, final Predicate<T> predicate, final boolean all, final EnumAnalysisMode analysisMode) {
         if (EnumAnalysisMode.STANDARD.equals(analysisMode)) {
-            for (T objectArray : array) {
-                if (predicate.test(objectArray)) {
-                    return true;
+            if (all) {
+                for (final T objectArray : array) {
+                    if (!predicate.test(objectArray)) {
+                        return false;
+                    }
                 }
+                return true;
+            } else {
+                for (final T objectArray : array) {
+                    if (predicate.test(objectArray)) {
+                        return true;
+                    }
+                }
+                return false;
             }
         } else {
             Stream<T> stream = Stream.of(array);
             if (EnumAnalysisMode.PARALLEL.equals(analysisMode)) {
                 stream = stream.parallel();
             }
-            return stream.anyMatch(predicate);
+            if (all) {
+                return stream.allMatch(predicate);
+            } else {
+                return stream.anyMatch(predicate);
+            }
         }
-
-        return false;
     }
 
     private static <T> boolean has(final T[] array1, final T[] array2, final boolean all, final boolean not,

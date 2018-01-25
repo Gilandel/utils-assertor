@@ -275,15 +275,13 @@ public interface OperatorNor<S extends Step<S, T>, T> {
      * 
      * @param other
      *            the other or next checked {@link Map} to check
-     * @param <M>
-     *            the {@link Map} type
      * @param <K>
      *            the {@link Map} key elements type
      * @param <V>
      *            the {@link Map} value elements type
      * @return the predicate assertor
      */
-    default <M extends Map<K, V>, K, V> AssertorStepMap<M, K, V> nor(final M other) {
+    default <K, V> AssertorStepMap<K, V> nor(final Map<K, V> other) {
         return this.nor(other, null);
     }
 
@@ -295,15 +293,13 @@ public interface OperatorNor<S extends Step<S, T>, T> {
      *            the other or next checked {@link Map} to check
      * @param analysisMode
      *            the preferred analysis mode
-     * @param <M>
-     *            the {@link Map} type
      * @param <K>
      *            the {@link Map} key elements type
      * @param <V>
      *            the {@link Map} value elements type
      * @return the predicate assertor
      */
-    default <M extends Map<K, V>, K, V> AssertorStepMap<M, K, V> nor(final M other, final EnumAnalysisMode analysisMode) {
+    default <K, V> AssertorStepMap<K, V> nor(final Map<K, V> other, final EnumAnalysisMode analysisMode) {
         return () -> HelperStep.nor(this.getStep(), other, EnumType.MAP, analysisMode);
     }
 
@@ -898,15 +894,13 @@ public interface OperatorNor<S extends Step<S, T>, T> {
      * 
      * @param mapper
      *            the mapper function
-     * @param <M>
-     *            the type of the {@link Map}
      * @param <K>
      *            the type of the {@link Map} keys
      * @param <V>
      *            the type of the {@link Map} values
      * @return the assertor step
      */
-    default <M extends Map<K, V>, K, V> AssertorStepMap<M, K, V> norMap(final Function<T, M> mapper) {
+    default <K, V> AssertorStepMap<K, V> norMap(final Function<T, Map<K, V>> mapper) {
         return this.norMap(mapper, null);
     }
 
@@ -920,15 +914,13 @@ public interface OperatorNor<S extends Step<S, T>, T> {
      *            the analysis mode ({@link EnumAnalysisMode#STANDARD},
      *            {@link EnumAnalysisMode#STREAM} or
      *            {@link EnumAnalysisMode#PARALLEL})
-     * @param <M>
-     *            the type of the {@link Map}
      * @param <K>
      *            the type of the {@link Map} keys
      * @param <V>
      *            the type of the {@link Map} values
      * @return the assertor step
      */
-    default <M extends Map<K, V>, K, V> AssertorStepMap<M, K, V> norMap(final Function<T, M> mapper, final EnumAnalysisMode analysisMode) {
+    default <K, V> AssertorStepMap<K, V> norMap(final Function<T, Map<K, V>> mapper, final EnumAnalysisMode analysisMode) {
         return () -> HelperStep.nor(this.getStep(), mapper, EnumType.MAP, analysisMode);
     }
 }

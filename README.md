@@ -25,7 +25,7 @@ Work progress:
 <dependency>
 	<groupId>fr.landel.utils</groupId>
 	<artifactId>utils-assertor</artifactId>
-	<version>1.1.3</version>
+	<version>1.1.4</version>
 </dependency>
 ```
 
@@ -63,16 +63,27 @@ Work progress:
       1. [validates](#validates)
    1. [Array](#array)
       1. [hasLength](#haslength)
+	  1. [hasLengthGT] (#haslengthgt)
+	  1. [hasLengthGTE] (#haslengthgte)
+	  1. [hasLengthLT] (#haslengthlt)
+	  1. [hasLengthLTE] (#haslengthlte)
       1. [isEmpty](#isempty)
       1. [isNotEmpty](#isnotempty)
+	  1. [allMatch](#allmatch) ---------------------
+	  1. [anyMatch](#anymatch) ---------------------
       1. [contains](#contains)
       1. [containsAll](#containsall)
       1. [containsAny](#containsany)
+      1. [containsInOrder](#containsinorder) ---------------------
    1. [Boolean](#boolean)
       1. [isTrue](#istrue)
       1. [isFalse](#isfalse)
    1. [CharSequence](#charsequence)
-      1. [hasLength](#haslength)
+      1. [hasLength](#haslength-1)
+	  1. [hasLengthGT] (#haslengthgt-1) ---------------------
+	  1. [hasLengthGTE] (#haslengthgte-1) ---------------------
+	  1. [hasLengthLT] (#haslengthlt-1) ---------------------
+	  1. [hasLengthLTE] (#haslengthlte-1) ---------------------
       1. [isEmpty](#isempty-1)
       1. [isNotEmpty](#isnotempty-1)
       1. [isBlank](#isblank)
@@ -108,6 +119,7 @@ Work progress:
       1. [isAfterOrEqual](#isafterorequal)
       1. [isBefore](#isbefore)
       1. [isBeforeOrEqual](#isbeforeorequal)
+	  1. [isBetween] (#isbetween) ---------------------
    1. [Temporal](#temporal)
       1. [isEqual](#isequal-3)
       1. [isNotEqual](#isnotequal-3)
@@ -117,24 +129,40 @@ Work progress:
       1. [isAfterOrEqual](#isafterorequal-1)
       1. [isBefore](#isbefore-1)
       1. [isBeforeOrEqual](#isbeforeorequal-1)
+	  1. [isBetween] (#isbetween-1) ---------------------
    1. [Enum](#enum)
       1. [hasName](#hasname-1)
       1. [hasNameIgnoreCase](#hasnameignorecase)
       1. [hasOrdinal](#hasordinal)
    1. [Iterable](#iterable)
       1. [hasSize](#hassize)
+	  1. [hasSizeGT] (#hassizegt) -----------------------------------
+	  1. [hasSizeGTE] (#hassizegte) -----------------------------------
+	  1. [hasSizeLT] (#hassizelt) -----------------------------------
+	  1. [hasSizeLTE] (#hassizelte) -----------------------------------
       1. [isEmpty](#isempty-1)
       1. [isNotEmpty](#isnotempty-1)
+	  1. [allMatch](#allmatch-1) -----------------------------------
+	  1. [anyMatch](#anymatch-1) -----------------------------------
       1. [contains](#contains-2)
       1. [containsAll](#containsall-1)
       1. [containsAny](#containsany-1)
+      1. [containsInOrder](#containsinorder-1) -----------------------------------
    1. [Map](#map)
       1. [hasSize](#hassize-1)
+	  1. [hasSizeGT] (#hassizegt-1) -----------------------------------
+	  1. [hasSizeGTE] (#hassizegte-1) -----------------------------------
+	  1. [hasSizeLT] (#hassizelt-1) -----------------------------------
+	  1. [hasSizeLTE] (#hassizelte-1) -----------------------------------
       1. [isEmpty](#isempty-2)
       1. [isNotEmpty](#isnotempty-2)
+	  1. [allMatch](#allmatch-2) -----------------------------------
+	  1. [anyMatch](#anymatch-2) -----------------------------------
       1. [contains](#contains-3)
       1. [containsAll](#containsall-2)
       1. [containsAny](#containsany-2)
+      1. [containsInOrder](#containsinorder-2) -----------------------------------
+      1. [containsValuesInOrder](#containsvaluesinorder) -----------------------------------
    1. [Number](#number)
       1. [isEqual](#isequal-4)
       1. [isNotEqual](#isnotequal-4)
@@ -145,6 +173,7 @@ Work progress:
       1. [isGTE](#isgte)
       1. [isLT](#islt)
       1. [isLTE](#islte)
+	  1. [isBetween] (#isbetween-2) ---------------------
    1. [Throwable](#throwable)
       1. [isAssignableFrom](#isassignablefrom-2)
       1. [isInstanceOf](#isinstanceof-1)
@@ -209,6 +238,7 @@ PredicateStepDate predicateDate = Assertor.ofDate().isAfter(new Date());
 PredicateStepTemporal<ChronoLocalDateTime<?>> predicateTemporal = Assertor.<ChronoLocalDateTime<?>>ofTemporal().isAfter(localDateTime1);
 PredicateStepEnum<EnumType> predicateEnum = Assertor.<EnumType>ofEnum().hasName("UNKNOWN");
 PredicateStepIterable<List<String>, String> predicateIterable = Assertor.<List<String>, String>ofIterable().contains("");
+PredicateStepIterable<List<String>, String> predicateIterable = Assertor.<String>ofList().contains("");
 PredicateStepMap<String, Integer> predicateMap = Assertor.<String, Integer>ofMap().contains("test");
 PredicateStepThrowable<Throwable> predicateThrowable = Assertor.ofThrowable().hasCauseAssignableFrom(IllegalArgumentException.class, false);
 PredicateStepNumber<Integer> predicateNumber = Assertor.<Integer>ofNumber().isGT(13).and(Assertor.<Long> ofNumber().isGT(18L));
@@ -824,7 +854,7 @@ Assert that array has the specified length.
 * Examples:
 ```java
 Assertor.that(new String[] {"text"}).hasLength(3).orElseThrow(); // -> throws an exception
-Assertor.that(new String[] {"text"}).hasLength(1, "Bad status").orElseThrow(); // -> OK
+Assertor.that(new String[] {"text"}).hasLength(4, "Bad status").orElseThrow(); // -> OK
 Assertor.that(new String[] {"text"}).not().hasLength(3).orElseThrow(); // -> OK
 
 // prerequisite errors
@@ -832,6 +862,104 @@ Assertor.that((Object[]) null).hasLength(4, "Bad status").orElseThrow(); // -> t
 Assertor.that(new String[] {"text"}).hasLength(-1, "Bad status").orElseThrow(); // -> throws an exception
 Assertor.that((Object[]) null).not().hasLength(4, "Bad status").orElseThrow(); // -> throws an exception
 Assertor.that(new String[] {"text"}).not().hasLength(-1, "Bad status").orElseThrow(); // -> throws an exception
+```
+
+#### hasLengthGT
+Assert that array has a length greater than the specified one.
+
+* Signatures:
+	- `hasLengthGT(int length)`
+	- `hasLengthGT(int length, CharSequence message, Object[] arguments)`
+	- `hasLengthGT(int length, Locale locale, CharSequence message, Object[] arguments)`
+
+* Prerequisites:
+	- array NOT null
+	- length >= 0
+
+* Examples:
+```java
+Assertor.that(new String[] {"text"}).hasLengthGT(4).orElseThrow(); // -> throws an exception
+Assertor.that(new String[] {"text"}).hasLengthGT(3, "Bad status").orElseThrow(); // -> OK
+Assertor.that(new String[] {"text"}).not().hasLengthGT(4).orElseThrow(); // -> OK
+
+// prerequisite errors
+Assertor.that((Object[]) null).hasLengthGT(4, "Bad status").orElseThrow(); // -> throws an exception
+Assertor.that(new String[] {"text"}).hasLengthGT(-1, "Bad status").orElseThrow(); // -> throws an exception
+Assertor.that((Object[]) null).not().hasLengthGT(4, "Bad status").orElseThrow(); // -> throws an exception
+Assertor.that(new String[] {"text"}).not().hasLengthGT(-1, "Bad status").orElseThrow(); // -> throws an exception
+```
+#### hasLengthGTE
+Assert that array has a length greater than or equal to the specified one.
+
+* Signatures:
+	- `hasLengthGTE(int length)`
+	- `hasLengthGTE(int length, CharSequence message, Object[] arguments)`
+	- `hasLengthGTE(int length, Locale locale, CharSequence message, Object[] arguments)`
+
+* Prerequisites:
+	- array NOT null
+	- length >= 0
+
+* Examples:
+```java
+Assertor.that(new String[] {"text"}).hasLengthGTE(5).orElseThrow(); // -> throws an exception
+Assertor.that(new String[] {"text"}).hasLengthGTE(4, "Bad status").orElseThrow(); // -> OK
+Assertor.that(new String[] {"text"}).not().hasLengthGTE(5).orElseThrow(); // -> OK
+
+// prerequisite errors
+Assertor.that((Object[]) null).hasLengthGTE(4, "Bad status").orElseThrow(); // -> throws an exception
+Assertor.that(new String[] {"text"}).hasLengthGTE(-1, "Bad status").orElseThrow(); // -> throws an exception
+Assertor.that((Object[]) null).not().hasLengthGTE(4, "Bad status").orElseThrow(); // -> throws an exception
+Assertor.that(new String[] {"text"}).not().hasLengthGTE(-1, "Bad status").orElseThrow(); // -> throws an exception
+```
+
+#### hasLengthLT
+Assert that array has a length lower than the specified one.
+
+* Signatures:
+	- `hasLengthLT(int length)`
+	- `hasLengthLT(int length, CharSequence message, Object[] arguments)`
+	- `hasLengthLT(int length, Locale locale, CharSequence message, Object[] arguments)`
+
+* Prerequisites:
+	- array NOT null
+	- length >= 0
+
+* Examples:
+```java
+Assertor.that(new String[] {"text"}).hasLengthLT(4).orElseThrow(); // -> throws an exception
+Assertor.that(new String[] {"text"}).hasLengthLT(5, "Bad status").orElseThrow(); // -> OK
+Assertor.that(new String[] {"text"}).not().hasLengthLT(4).orElseThrow(); // -> OK
+
+// prerequisite errors
+Assertor.that((Object[]) null).hasLengthLT(4, "Bad status").orElseThrow(); // -> throws an exception
+Assertor.that(new String[] {"text"}).hasLengthLT(-1, "Bad status").orElseThrow(); // -> throws an exception
+Assertor.that((Object[]) null).not().hasLengthLT(4, "Bad status").orElseThrow(); // -> throws an exception
+Assertor.that(new String[] {"text"}).not().hasLengthLT(-1, "Bad status").orElseThrow(); // -> throws an exception
+```
+#### hasLengthLTE
+Assert that array has a length lower than or equal to the specified one.
+
+* Signatures:
+	- `hasLengthLTE(int length)`
+	- `hasLengthLTE(int length, CharSequence message, Object[] arguments)`
+	- `hasLengthLTE(int length, Locale locale, CharSequence message, Object[] arguments)`
+
+* Prerequisites:
+	- array NOT null
+	- length >= 0
+
+* Examples:
+```java
+Assertor.that(new String[] {"text"}).hasLengthLTE(3).orElseThrow(); // -> throws an exception
+Assertor.that(new String[] {"text"}).hasLengthLTE(4, "Bad status").orElseThrow(); // -> OK
+Assertor.that(new String[] {"text"}).not().hasLengthLTE(3).orElseThrow(); // -> OK
+
+// prerequisite errors
+Assertor.that((Object[]) null).hasLengthLTE(4, "Bad status").orElseThrow(); // -> throws an exception
+Assertor.that(new String[] {"text"}).hasLengthLTE(-1, "Bad status").orElseThrow(); // -> throws an exception
+Assertor.that((Object[]) null).not().hasLengthLTE(4, "Bad status").orElseThrow(); // -> throws an exception
+Assertor.that(new String[] {"text"}).not().hasLengthLTE(-1, "Bad status").orElseThrow(); // -> throws an exception
 ```
 
 #### isEmpty
@@ -869,6 +997,10 @@ Assertor.that(new String[0]).isNotEmpty().orElseThrow(); // -> throws an excepti
 Assertor.that(new String[] {"text"}).isNotEmpty("Param '%1$s*' empty or null").orElseThrow(); // -> OK
 Assertor.that(new String[0]).not().isNotEmpty("Param '%1$s*' empty or null").orElseThrow(); // -> OK
 ```
+
+#### allMatch
+
+#### anyMatch
 
 #### contains
 Assert that array contains the element.
@@ -951,6 +1083,8 @@ Assertor.that(new String[] {"text"}).not().containsAny(null, "Param '%1$s*' not 
 Assertor.that(new String[] {"text"}).not().containsAny(new String[0], "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
 ```
 
+#### containsInOrder
+
 ### Boolean
 #### isTrue
 Assert that the boolean is true.
@@ -1011,6 +1145,14 @@ Assertor.that("text").hasLength(-1, "Bad status").orElseThrow(); // -> throws an
 Assertor.that((String) null).not().hasLength(4, "Bad status").orElseThrow(); // -> throws an exception
 Assertor.that("text").not().hasLength(-1, "Bad status").orElseThrow(); // -> throws an exception
 ```
+
+#### hasLengthGT
+
+#### hasLengthGTE
+
+#### hasLengthLT
+
+#### hasLengthLTE
 
 #### isEmpty
 Assert that char sequence is empty or null.
@@ -1641,6 +1783,8 @@ Assertor.that(date1).isNotEqual(date2, "Bad status").orElseThrow(); // -> throws
 Assertor.that(date1).not().isNotEqual(date2).orElseThrow(); // -> throws an exception
 ```
 
+#### isBetween
+
 #### isAround
 Assert that date1 is around the date2.
 * Signatures:
@@ -1973,6 +2117,8 @@ Assertor.that(date1).isNotEqual(date2, "Bad status").orElseThrow(); // -> throws
 Assertor.that(date1).not().isNotEqual(date2).orElseThrow(); // -> throws an exception
 ```
 
+#### isBetween
+
 #### isAround
 Assert that date1 is around the date2.
 * Signatures:
@@ -2261,6 +2407,14 @@ Assertor.that((List<String>) null).not().hasSize(4, "Bad status").orElseThrow();
 Assertor.that(Arrays.asList("text")).not().hasSize(-1, "Bad status").orElseThrow(); // -> throws an exception
 ```
 
+#### hasLengthGT
+
+#### hasLengthGTE
+
+#### hasLengthLT
+
+#### hasLengthLTE
+
 #### isEmpty
 Assert that iterable is empty or null.
 
@@ -2296,6 +2450,10 @@ Assertor.that((List<String>) null).isNotEmpty("Param '%1$s*' not empty").orElseT
 Assertor.that(Collections.emptySet()).isNotEmpty("Param '%1$s*' not empty").orElseThrow(); // -> throws an exception
 Assertor.that(Arrays.asList("text")).not().isNotEmpty("Param '%1$s*' not empty").orElseThrow(); // -> throws an exception
 ```
+
+#### allMatch
+
+#### anyMatch
 
 #### contains
 Assert that iterable contains the element.
@@ -2377,6 +2535,7 @@ Assertor.that(Collections.emptySet()).not().containsAny(Arrays.asList((String) n
 Assertor.that(Arrays.asList("text")).not().containsAny(null, "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
 Assertor.that(Arrays.asList("text")).not().containsAny(Collections.emptySet(), "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
 ```
+#### containsInOrder
 
 ### Map
 #### hasSize
@@ -2403,6 +2562,14 @@ Assertor.that(MapUtils2.newHashMap("key", "value")).hasSize(-1, "Bad status").or
 Assertor.that((Map<String, String>) null).not().hasSize(4, "Bad status").orElseThrow(); // -> throws an exception
 Assertor.that(MapUtils2.newHashMap("key", "value")).not().hasSize(-1, "Bad status").orElseThrow(); // -> throws an exception
 ```
+
+#### hasLengthGT
+
+#### hasLengthGTE
+
+#### hasLengthLT
+
+#### hasLengthLTE
 
 #### isEmpty
 Assert that map is empty or null.
@@ -2439,6 +2606,10 @@ Assertor.that((Map<String, String>) null).isNotEmpty("Param '%1$s*' not empty").
 Assertor.that(Collections.emptyMap()).isNotEmpty("Param '%1$s*' not empty").orElseThrow(); // -> throws an exception
 Assertor.that(MapUtils2.newHashMap("key", "value")).not().isNotEmpty("Param '%1$s*' not empty").orElseThrow(); // -> throws an exception
 ```
+
+#### allMatch
+
+#### anyMatch
 
 #### contains
 Assert that map contains the element.
@@ -2529,6 +2700,9 @@ Assertor.that(MapUtils2.newHashMap("key1", "value1")).not().containsAny((List<St
 Assertor.that(MapUtils2.newHashMap("key1", "value1")).not().containsAny((Map<String, String>) null, "Param '%1$s*' not null or empty").orElseThrow(); // -> throws an exception
 ```
 
+#### containsInOrder
+
+#### containsValuesInOrder
 
 ### Number
 #### isEqual
@@ -2726,6 +2900,8 @@ Assertor.that(null).not().isLTE(12).orElseThrow(); // -> throws an exception
 Assertor.that(12).not().isLTE(null).orElseThrow(); // -> throws an exception
 ```
 
+#### isBetween
+
 ### Throwable
 #### isAssignableFrom
 Assert that throwable is assignable from clazz and has the specified message or matches the pattern.
@@ -2920,6 +3096,11 @@ Assertor.that(new IOException()).hasCauseInstanceOf(Exception.class, (Pattern) n
 ```
 
 ## Changelog
+### 1.1.4 - 2018-01-22
+- New: Add methods to check char sequence: hasLengthGT, hasLengthGTE, hasLengthLT, hasLengthLTE
+- New: Add methods to check array: hasLengthGT, hasLengthGTE, hasLengthLT, hasLengthLTE, allMatch, anyMatch
+- New: Add methods to check map and iterable: hasSizeGT, hasSizeGTE, hasSizeLT, hasSizeLTE, allMatch, anyMatch
+
 ### 1.1.3 - 2018-01-06
 - Fix: Error on generating message on multiple checked types combination (ex: `Assertor.that(12).isGT(12).nand("text").contains("ex").orElseThrow()`)
 
@@ -2930,7 +3111,7 @@ Assertor.that(new IOException()).hasCauseInstanceOf(Exception.class, (Pattern) n
 - New: add new methods to check map, iterable and array ordered content (containsInOrder, containsValuesInOrder, containsAnyValues, containsAllValues)
 - New: Add isBeetween functions for date, calendar and temporal
 - Update: Assertor.that() supports varArgs to create an array
-- Fix: Correct message for iterable precondictions
+- Fix: Correct message for iterable preconditions
 
 ### 1.1.0 - 2017-11-19
 - New: Messages are now only generates on demand (at the end of the chain)

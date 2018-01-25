@@ -52,7 +52,8 @@ import fr.landel.utils.commons.MapUtils2;
 public class AssertorMap extends ConstantsAssertor {
 
     /**
-     * Prepare the next step to validate the {@link Map} size
+     * Prepare the next step to validate that the {@link Map} size is equal to
+     * {@code size}.
      * 
      * <p>
      * precondition: {@link Map} cannot be {@code null} and size cannot be lower
@@ -76,11 +77,141 @@ public class AssertorMap extends ConstantsAssertor {
     public static <M extends Map<K, V>, K, V> StepAssertor<M> hasSize(final StepAssertor<M> step, final int size,
             final MessageAssertor message) {
 
-        final Predicate<M> preChecker = (map) -> size >= 0 && map != null;
-
         final BiPredicate<M, Boolean> checker = (map, not) -> map.size() == size;
 
-        return new StepAssertor<>(step, preChecker, checker, false, message, MSG.MAP.SIZE, false,
+        return checkSize(step, size, checker, MSG.MAP.SIZE, message);
+    }
+
+    /**
+     * Prepare the next step to validate that the {@link Map} size is greater
+     * than {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Map} cannot be {@code null} and size cannot be lower
+     * than zero
+     * </p>
+     * 
+     * @param step
+     *            the current step
+     * @param size
+     *            the size to validate
+     * @param message
+     *            the message if invalid
+     * @param <M>
+     *            the {@link Map} type
+     * @param <K>
+     *            the {@link Map} key elements type
+     * @param <V>
+     *            the {@link Map} value elements type
+     * @return the next step
+     */
+    public static <M extends Map<K, V>, K, V> StepAssertor<M> hasSizeGT(final StepAssertor<M> step, final int size,
+            final MessageAssertor message) {
+
+        final BiPredicate<M, Boolean> checker = (map, not) -> map.size() > size;
+
+        return checkSize(step, size, checker, MSG.MAP.SIZE_GT, message);
+    }
+
+    /**
+     * Prepare the next step to validate that the {@link Map} size is greater
+     * than or equal to {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Map} cannot be {@code null} and size cannot be lower
+     * than zero
+     * </p>
+     * 
+     * @param step
+     *            the current step
+     * @param size
+     *            the size to validate
+     * @param message
+     *            the message if invalid
+     * @param <M>
+     *            the {@link Map} type
+     * @param <K>
+     *            the {@link Map} key elements type
+     * @param <V>
+     *            the {@link Map} value elements type
+     * @return the next step
+     */
+    public static <M extends Map<K, V>, K, V> StepAssertor<M> hasSizeGTE(final StepAssertor<M> step, final int size,
+            final MessageAssertor message) {
+
+        final BiPredicate<M, Boolean> checker = (map, not) -> map.size() >= size;
+
+        return checkSize(step, size, checker, MSG.MAP.SIZE_GTE, message);
+    }
+
+    /**
+     * Prepare the next step to validate that the {@link Map} size is lower than
+     * {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Map} cannot be {@code null} and size cannot be lower
+     * than zero
+     * </p>
+     * 
+     * @param step
+     *            the current step
+     * @param size
+     *            the size to validate
+     * @param message
+     *            the message if invalid
+     * @param <M>
+     *            the {@link Map} type
+     * @param <K>
+     *            the {@link Map} key elements type
+     * @param <V>
+     *            the {@link Map} value elements type
+     * @return the next step
+     */
+    public static <M extends Map<K, V>, K, V> StepAssertor<M> hasSizeLT(final StepAssertor<M> step, final int size,
+            final MessageAssertor message) {
+
+        final BiPredicate<M, Boolean> checker = (map, not) -> map.size() < size;
+
+        return checkSize(step, size, checker, MSG.MAP.SIZE_LT, message);
+    }
+
+    /**
+     * Prepare the next step to validate that the {@link Map} size is lower than
+     * or equal to {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Map} cannot be {@code null} and size cannot be lower
+     * than zero
+     * </p>
+     * 
+     * @param step
+     *            the current step
+     * @param size
+     *            the size to validate
+     * @param message
+     *            the message if invalid
+     * @param <M>
+     *            the {@link Map} type
+     * @param <K>
+     *            the {@link Map} key elements type
+     * @param <V>
+     *            the {@link Map} value elements type
+     * @return the next step
+     */
+    public static <M extends Map<K, V>, K, V> StepAssertor<M> hasSizeLTE(final StepAssertor<M> step, final int size,
+            final MessageAssertor message) {
+
+        final BiPredicate<M, Boolean> checker = (map, not) -> map.size() <= size;
+
+        return checkSize(step, size, checker, MSG.MAP.SIZE_LTE, message);
+    }
+
+    public static <M extends Map<K, V>, K, V> StepAssertor<M> checkSize(final StepAssertor<M> step, final int size,
+            final BiPredicate<M, Boolean> checker, final String messageKey, final MessageAssertor message) {
+
+        final Predicate<M> preChecker = (map) -> size >= 0 && map != null;
+
+        return new StepAssertor<>(step, preChecker, checker, false, message, messageKey, false,
                 new ParameterAssertor<>(size, EnumType.NUMBER_INTEGER));
     }
 
@@ -136,6 +267,105 @@ public class AssertorMap extends ConstantsAssertor {
         final BiPredicate<M, Boolean> checker = (map, not) -> MapUtils.isNotEmpty(map);
 
         return new StepAssertor<>(step, checker, false, message, MSG.MAP.EMPTY, true);
+    }
+
+    /**
+     * Prepare the next step to validate if all map entries match the predicate.
+     * 
+     * <p>
+     * precondition: {@code map} cannot be {@code null} or empty and
+     * {@code predicate} cannot be {@code null}
+     * </p>
+     * 
+     * @param step
+     *            the current step
+     * @param predicate
+     *            the predicate used to check each entry
+     * @param <M>
+     *            the {@link Map} type
+     * @param <K>
+     *            the {@link Map} key elements type
+     * @param <V>
+     *            the {@link Map} value elements type
+     * @return the next step
+     */
+    public static <M extends Map<K, V>, K, V> StepAssertor<M> allMatch(final StepAssertor<M> step, final Predicate<Entry<K, V>> predicate,
+            final MessageAssertor message) {
+
+        return match(step, predicate, true, MSG.MAP.MATCH_ALL, message);
+    }
+
+    /**
+     * Prepare the next step to validate if any map entry matches the predicate.
+     * 
+     * <p>
+     * precondition: {@code map} cannot be {@code null} or empty and
+     * {@code predicate} cannot be {@code null}
+     * </p>
+     * 
+     * @param step
+     *            the current step
+     * @param predicate
+     *            the predicate used to check each entry
+     * @param <M>
+     *            the {@link Map} type
+     * @param <K>
+     *            the {@link Map} key elements type
+     * @param <V>
+     *            the {@link Map} value elements type
+     * @return the next step
+     */
+    public static <M extends Map<K, V>, K, V> StepAssertor<M> anyMatch(final StepAssertor<M> step, final Predicate<Entry<K, V>> predicate,
+            final MessageAssertor message) {
+
+        return match(step, predicate, false, MSG.MAP.MATCH_ANY, message);
+    }
+
+    private static <M extends Map<K, V>, K, V> StepAssertor<M> match(final StepAssertor<M> step, final Predicate<Entry<K, V>> predicate,
+            final boolean all, final String messageKey, final MessageAssertor message) {
+
+        final Predicate<M> preChecker = (map) -> MapUtils.isNotEmpty(map) && predicate != null;
+
+        final BiPredicate<M, Boolean> checker = (object, not) -> AssertorMap.match(object, predicate, all, step.getAnalysisMode());
+
+        return new StepAssertor<>(step, preChecker, checker, false, message, messageKey, false,
+                new ParameterAssertor<>(predicate, EnumType.UNKNOWN));
+    }
+
+    private static <K, V> boolean match(final Map<K, V> map, final Predicate<Entry<K, V>> predicate, final boolean all,
+            final EnumAnalysisMode analysisMode) {
+
+        final Set<Entry<K, V>> entries = map.entrySet();
+
+        if (EnumAnalysisMode.STANDARD.equals(analysisMode)) {
+            if (all) {
+                for (final Entry<K, V> entry : entries) {
+                    if (!predicate.test(entry)) {
+                        return false;
+                    }
+                }
+                return true;
+            } else {
+                for (final Entry<K, V> entry : entries) {
+                    if (predicate.test(entry)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        } else {
+            final Stream<Entry<K, V>> stream;
+            if (EnumAnalysisMode.PARALLEL.equals(analysisMode)) {
+                stream = entries.parallelStream();
+            } else {
+                stream = entries.stream();
+            }
+            if (all) {
+                return stream.allMatch(predicate);
+            } else {
+                return stream.anyMatch(predicate);
+            }
+        }
     }
 
     /**

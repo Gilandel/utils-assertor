@@ -25,6 +25,7 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.apache.commons.collections4.IterableUtils;
@@ -47,7 +48,8 @@ import fr.landel.utils.assertor.helper.HelperAssertor;
 public class AssertorIterable extends ConstantsAssertor {
 
     /**
-     * Prepare the next step to validate the {@link Iterable} size
+     * Prepare the next step to validate that the {@link Iterable} size is equal
+     * to {@code size}.
      * 
      * <p>
      * precondition: {@link Iterable} cannot be {@code null} and size cannot be
@@ -69,11 +71,133 @@ public class AssertorIterable extends ConstantsAssertor {
     public static <I extends Iterable<T>, T> StepAssertor<I> hasSize(final StepAssertor<I> step, final int size,
             final MessageAssertor message) {
 
-        final Predicate<I> preChecker = (iterable) -> size >= 0 && iterable != null;
-
         final BiPredicate<I, Boolean> checker = (iterable, not) -> IterableUtils.size(iterable) == size;
 
-        return new StepAssertor<>(step, preChecker, checker, false, message, MSG.ITERABLE.SIZE, false,
+        return checkSize(step, size, checker, MSG.ITERABLE.SIZE, message);
+    }
+
+    /**
+     * Prepare the next step to validate that the {@link Iterable} size is
+     * greater than {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Iterable} cannot be {@code null} and size cannot be
+     * lower than zero
+     * </p>
+     * 
+     * @param step
+     *            the current step
+     * @param size
+     *            the size to validate
+     * @param message
+     *            the message if invalid
+     * @param <I>
+     *            the {@link Iterable} type
+     * @param <T>
+     *            the {@link Iterable} elements type
+     * @return the next step
+     */
+    public static <I extends Iterable<T>, T> StepAssertor<I> hasSizeGT(final StepAssertor<I> step, final int size,
+            final MessageAssertor message) {
+
+        final BiPredicate<I, Boolean> checker = (iterable, not) -> IterableUtils.size(iterable) > size;
+
+        return checkSize(step, size, checker, MSG.ITERABLE.SIZE_GT, message);
+    }
+
+    /**
+     * Prepare the next step to validate that the {@link Iterable} size is
+     * greater than or equal to {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Iterable} cannot be {@code null} and size cannot be
+     * lower than zero
+     * </p>
+     * 
+     * @param step
+     *            the current step
+     * @param size
+     *            the size to validate
+     * @param message
+     *            the message if invalid
+     * @param <I>
+     *            the {@link Iterable} type
+     * @param <T>
+     *            the {@link Iterable} elements type
+     * @return the next step
+     */
+    public static <I extends Iterable<T>, T> StepAssertor<I> hasSizeGTE(final StepAssertor<I> step, final int size,
+            final MessageAssertor message) {
+
+        final BiPredicate<I, Boolean> checker = (iterable, not) -> IterableUtils.size(iterable) >= size;
+
+        return checkSize(step, size, checker, MSG.ITERABLE.SIZE_GTE, message);
+    }
+
+    /**
+     * Prepare the next step to validate that the {@link Iterable} size is lower
+     * than {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Iterable} cannot be {@code null} and size cannot be
+     * lower than zero
+     * </p>
+     * 
+     * @param step
+     *            the current step
+     * @param size
+     *            the size to validate
+     * @param message
+     *            the message if invalid
+     * @param <I>
+     *            the {@link Iterable} type
+     * @param <T>
+     *            the {@link Iterable} elements type
+     * @return the next step
+     */
+    public static <I extends Iterable<T>, T> StepAssertor<I> hasSizeLT(final StepAssertor<I> step, final int size,
+            final MessageAssertor message) {
+
+        final BiPredicate<I, Boolean> checker = (iterable, not) -> IterableUtils.size(iterable) < size;
+
+        return checkSize(step, size, checker, MSG.ITERABLE.SIZE_LT, message);
+    }
+
+    /**
+     * Prepare the next step to validate that the {@link Iterable} size is lower
+     * than or equal to {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Iterable} cannot be {@code null} and size cannot be
+     * lower than zero
+     * </p>
+     * 
+     * @param step
+     *            the current step
+     * @param size
+     *            the size to validate
+     * @param message
+     *            the message if invalid
+     * @param <I>
+     *            the {@link Iterable} type
+     * @param <T>
+     *            the {@link Iterable} elements type
+     * @return the next step
+     */
+    public static <I extends Iterable<T>, T> StepAssertor<I> hasSizeLTE(final StepAssertor<I> step, final int size,
+            final MessageAssertor message) {
+
+        final BiPredicate<I, Boolean> checker = (iterable, not) -> IterableUtils.size(iterable) <= size;
+
+        return checkSize(step, size, checker, MSG.ITERABLE.SIZE_LTE, message);
+    }
+
+    private static <I extends Iterable<T>, T> StepAssertor<I> checkSize(final StepAssertor<I> step, final int size,
+            final BiPredicate<I, Boolean> checker, final String messageKey, final MessageAssertor message) {
+
+        final Predicate<I> preChecker = (iterable) -> size >= 0 && iterable != null;
+
+        return new StepAssertor<>(step, preChecker, checker, false, message, messageKey, false,
                 new ParameterAssertor<>(size, EnumType.NUMBER_INTEGER, false));
     }
 
@@ -125,6 +249,67 @@ public class AssertorIterable extends ConstantsAssertor {
         final BiPredicate<I, Boolean> checker = (iterable, not) -> !IterableUtils.isEmpty(iterable);
 
         return new StepAssertor<>(step, checker, false, message, MSG.ITERABLE.EMPTY, true);
+    }
+
+    /**
+     * Prepare the next step to validate if all {@link Iterable} elements match
+     * the predicate.
+     * 
+     * <p>
+     * precondition: {@link Iterable} cannot be {@code null} or empty and
+     * {@code predicate} cannot be {@code null}
+     * </p>
+     * 
+     * @param step
+     *            the current step
+     * @param predicate
+     *            the predicate used to check each element
+     * @param <I>
+     *            the {@link Iterable} type
+     * @param <T>
+     *            the {@link Iterable} elements type
+     * @return the next step
+     */
+    public static <I extends Iterable<T>, T> StepAssertor<I> allMatch(final StepAssertor<I> step, final Predicate<T> predicate,
+            final MessageAssertor message) {
+
+        return match(step, predicate, true, MSG.ITERABLE.MATCH_ALL, message);
+    }
+
+    /**
+     * Prepare the next step to validate if any {@link Iterable} element matches
+     * the predicate.
+     * 
+     * <p>
+     * precondition: {@link Iterable} cannot be {@code null} or empty and
+     * {@code predicate} cannot be {@code null}
+     * </p>
+     * 
+     * @param step
+     *            the current step
+     * @param predicate
+     *            the predicate used to check each element
+     * @param <I>
+     *            the {@link Iterable} type
+     * @param <T>
+     *            the {@link Iterable} elements type
+     * @return the next step
+     */
+    public static <I extends Iterable<T>, T> StepAssertor<I> anyMatch(final StepAssertor<I> step, final Predicate<T> predicate,
+            final MessageAssertor message) {
+
+        return match(step, predicate, false, MSG.ITERABLE.MATCH_ANY, message);
+    }
+
+    private static <I extends Iterable<T>, T> StepAssertor<I> match(final StepAssertor<I> step, final Predicate<T> predicate,
+            final boolean all, final String messageKey, final MessageAssertor message) {
+
+        final Predicate<I> preChecker = (iterable) -> !IterableUtils.isEmpty(iterable) && predicate != null;
+
+        final BiPredicate<I, Boolean> checker = (iterable, not) -> AssertorIterable.has(iterable, predicate, all, step.getAnalysisMode());
+
+        return new StepAssertor<>(step, preChecker, checker, false, message, messageKey, false,
+                new ParameterAssertor<>(predicate, EnumType.UNKNOWN));
     }
 
     /**
@@ -262,17 +447,35 @@ public class AssertorIterable extends ConstantsAssertor {
             predicate = Objects::isNull;
         }
 
+        return has(iterable, predicate, false, analysisMode);
+    }
+
+    private static <I extends Iterable<T>, T> boolean has(final I iterable, final Predicate<T> predicate, final boolean all,
+            final EnumAnalysisMode analysisMode) {
         if (EnumAnalysisMode.STANDARD.equals(analysisMode)) {
-            for (T objectRef : iterable) {
-                if (predicate.test(objectRef)) {
-                    return true;
+            if (all) {
+                for (final T object : iterable) {
+                    if (!predicate.test(object)) {
+                        return false;
+                    }
                 }
+                return true;
+            } else {
+                for (final T object : iterable) {
+                    if (predicate.test(object)) {
+                        return true;
+                    }
+                }
+                return false;
             }
         } else {
-            return StreamSupport.stream(iterable.spliterator(), EnumAnalysisMode.PARALLEL.equals(analysisMode)).anyMatch(predicate);
+            final Stream<T> stream = StreamSupport.stream(iterable.spliterator(), EnumAnalysisMode.PARALLEL.equals(analysisMode));
+            if (all) {
+                return stream.allMatch(predicate);
+            } else {
+                return stream.anyMatch(predicate);
+            }
         }
-
-        return false;
     }
 
     private static <I extends Iterable<T>, T> boolean has(final I iterable1, final Iterable<T> iterable2, final boolean all,

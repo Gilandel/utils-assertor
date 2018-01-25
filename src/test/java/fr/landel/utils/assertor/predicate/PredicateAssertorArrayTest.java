@@ -54,6 +54,94 @@ public class PredicateAssertorArrayTest extends AbstractTest {
     }
 
     /**
+     * Test method for {@link AssertorArray#hasLengthGT} .
+     */
+    @Test
+    public void testHasLengthGT() {
+        String[] array = new String[] {null, "2"};
+
+        assertFalse(Assertor.<String> ofArray().hasLengthGT(2).that(array).isOK());
+        assertTrue(Assertor.<String> ofArray().hasLengthGT(1).that(array).isOK());
+        assertFalse(Assertor.<String> ofArray().hasLengthGT(1).that((String[]) null).isOK());
+        assertFalse(Assertor.<String> ofArray().hasLengthGT(-1).that(array).isOK());
+
+        assertFalse(Assertor.<String> ofArray().isNotEmpty().and().hasLengthGT(2).that(array).isOK());
+        assertFalse(Assertor.<String> ofArray().isEmpty().or().hasLengthGT(2).that(array).isOK());
+        assertFalse(Assertor.<String> ofArray().isEmpty().xor().hasLengthGT(2).that(array).isOK());
+        assertTrue(Assertor.<String> ofArray().isEmpty().nand().hasLengthGT(2).that(array).isOK());
+        assertTrue(Assertor.<String> ofArray().isEmpty().nor().hasLengthGT(2).that(array).isOK());
+
+        assertException(() -> Assertor.<String> ofArray().hasLengthGT(12, Locale.US, "the array has not the specified length %2$d*")
+                .that(array).orElseThrow(), IllegalArgumentException.class, "the array has not the specified length 12");
+    }
+
+    /**
+     * Test method for {@link AssertorArray#hasLengthGTE} .
+     */
+    @Test
+    public void testHasLengthGTE() {
+        String[] array = new String[] {null, "2"};
+
+        assertTrue(Assertor.<String> ofArray().hasLengthGTE(2).that(array).isOK());
+        assertTrue(Assertor.<String> ofArray().hasLengthGTE(1).that(array).isOK());
+        assertFalse(Assertor.<String> ofArray().hasLengthGTE(1).that((String[]) null).isOK());
+        assertFalse(Assertor.<String> ofArray().hasLengthGTE(-1).that(array).isOK());
+
+        assertTrue(Assertor.<String> ofArray().isNotEmpty().and().hasLengthGTE(2).that(array).isOK());
+        assertTrue(Assertor.<String> ofArray().isEmpty().or().hasLengthGTE(2).that(array).isOK());
+        assertTrue(Assertor.<String> ofArray().isEmpty().xor().hasLengthGTE(2).that(array).isOK());
+        assertFalse(Assertor.<String> ofArray().isEmpty().nand().hasLengthGTE(2).that(array).isOK());
+        assertTrue(Assertor.<String> ofArray().isEmpty().nor().hasLengthGTE(2).that(array).isOK());
+
+        assertException(() -> Assertor.<String> ofArray().hasLengthGTE(12, Locale.US, "the array has not the specified length %2$d*")
+                .that(array).orElseThrow(), IllegalArgumentException.class, "the array has not the specified length 12");
+    }
+
+    /**
+     * Test method for {@link AssertorArray#hasLengthLT} .
+     */
+    @Test
+    public void testHasLengthLT() {
+        String[] array = new String[] {null, "2"};
+
+        assertFalse(Assertor.<String> ofArray().hasLengthLT(2).that(array).isOK());
+        assertTrue(Assertor.<String> ofArray().hasLengthLT(3).that(array).isOK());
+        assertFalse(Assertor.<String> ofArray().hasLengthLT(1).that((String[]) null).isOK());
+        assertFalse(Assertor.<String> ofArray().hasLengthLT(-1).that(array).isOK());
+
+        assertFalse(Assertor.<String> ofArray().isNotEmpty().and().hasLengthLT(2).that(array).isOK());
+        assertFalse(Assertor.<String> ofArray().isEmpty().or().hasLengthLT(2).that(array).isOK());
+        assertFalse(Assertor.<String> ofArray().isEmpty().xor().hasLengthLT(2).that(array).isOK());
+        assertTrue(Assertor.<String> ofArray().isEmpty().nand().hasLengthLT(2).that(array).isOK());
+        assertTrue(Assertor.<String> ofArray().isEmpty().nor().hasLengthLT(2).that(array).isOK());
+
+        assertException(() -> Assertor.<String> ofArray().hasLengthLT(1, Locale.US, "the array has not the specified length %2$d*")
+                .that(array).orElseThrow(), IllegalArgumentException.class, "the array has not the specified length 1");
+    }
+
+    /**
+     * Test method for {@link AssertorArray#hasLengthLTE} .
+     */
+    @Test
+    public void testHasLengthLTE() {
+        String[] array = new String[] {null, "2"};
+
+        assertTrue(Assertor.<String> ofArray().hasLengthLTE(2).that(array).isOK());
+        assertTrue(Assertor.<String> ofArray().hasLengthLTE(3).that(array).isOK());
+        assertFalse(Assertor.<String> ofArray().hasLengthLTE(1).that((String[]) null).isOK());
+        assertFalse(Assertor.<String> ofArray().hasLengthLTE(-1).that(array).isOK());
+
+        assertTrue(Assertor.<String> ofArray().isNotEmpty().and().hasLengthLTE(2).that(array).isOK());
+        assertTrue(Assertor.<String> ofArray().isEmpty().or().hasLengthLTE(2).that(array).isOK());
+        assertTrue(Assertor.<String> ofArray().isEmpty().xor().hasLengthLTE(2).that(array).isOK());
+        assertFalse(Assertor.<String> ofArray().isEmpty().nand().hasLengthLTE(2).that(array).isOK());
+        assertTrue(Assertor.<String> ofArray().isEmpty().nor().hasLengthLTE(2).that(array).isOK());
+
+        assertException(() -> Assertor.<String> ofArray().hasLengthLTE(1, Locale.US, "the array has not the specified length %2$d*")
+                .that(array).orElseThrow(), IllegalArgumentException.class, "the array has not the specified length 1");
+    }
+
+    /**
      * Test method for {@link AssertorArray#hasLength} .
      */
     @Test

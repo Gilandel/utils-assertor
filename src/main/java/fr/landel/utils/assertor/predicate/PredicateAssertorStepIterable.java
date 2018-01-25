@@ -139,6 +139,306 @@ public interface PredicateAssertorStepIterable<I extends Iterable<T>, T> extends
     }
 
     /**
+     * Asserts that the given {@link Iterable} has a size greater than
+     * {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Iterable} cannot be {@code null} and size cannot be
+     * lower than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(iterable).hasSizeGT(size).orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @return The operator
+     */
+    default PredicateStepIterable<I, T> hasSizeGT(final int size) {
+        return this.hasSizeGT(size, null);
+    }
+
+    /**
+     * Asserts that the given {@link Iterable} has a size greater than
+     * {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Iterable} cannot be {@code null} and size cannot be
+     * lower than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(iterable).hasSizeGT(size, "bad size").orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     */
+    default PredicateStepIterable<I, T> hasSizeGT(final int size, final CharSequence message, final Object... arguments) {
+        return this.hasSizeGT(size, null, message, arguments);
+    }
+
+    /**
+     * Asserts that the given {@link Iterable} has a size greater than
+     * {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Iterable} cannot be {@code null} and size cannot be
+     * lower than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(iterable).hasSizeGT(size, Locale.US, "bad size").orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @param locale
+     *            The locale of the message (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     */
+    default PredicateStepIterable<I, T> hasSizeGT(final int size, final Locale locale, final CharSequence message,
+            final Object... arguments) {
+        return () -> AssertorIterable.hasSizeGT(this.getStep(), size, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
+     * Asserts that the given {@link Iterable} has a size greater than or equal
+     * to {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Iterable} cannot be {@code null} and size cannot be
+     * lower than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(iterable).hasSizeGTE(size).orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @return The operator
+     */
+    default PredicateStepIterable<I, T> hasSizeGTE(final int size) {
+        return this.hasSizeGTE(size, null);
+    }
+
+    /**
+     * Asserts that the given {@link Iterable} has a size greater than or equal
+     * to {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Iterable} cannot be {@code null} and size cannot be
+     * lower than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(iterable).hasSizeGTE(size, "bad size").orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     */
+    default PredicateStepIterable<I, T> hasSizeGTE(final int size, final CharSequence message, final Object... arguments) {
+        return this.hasSizeGTE(size, null, message, arguments);
+    }
+
+    /**
+     * Asserts that the given {@link Iterable} has a size greater than or equal
+     * to {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Iterable} cannot be {@code null} and size cannot be
+     * lower than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(iterable).hasSizeGTE(size, Locale.US, "bad size").orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @param locale
+     *            The locale of the message (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     */
+    default PredicateStepIterable<I, T> hasSizeGTE(final int size, final Locale locale, final CharSequence message,
+            final Object... arguments) {
+        return () -> AssertorIterable.hasSizeGTE(this.getStep(), size, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
+     * Asserts that the given {@link Iterable} has a size lower than
+     * {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Iterable} cannot be {@code null} and size cannot be
+     * lower than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(iterable).hasSizeLT(size).orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @return The operator
+     */
+    default PredicateStepIterable<I, T> hasSizeLT(final int size) {
+        return this.hasSizeLT(size, null);
+    }
+
+    /**
+     * Asserts that the given {@link Iterable} has a size lower than
+     * {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Iterable} cannot be {@code null} and size cannot be
+     * lower than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(iterable).hasSizeLT(size, "bad size").orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     */
+    default PredicateStepIterable<I, T> hasSizeLT(final int size, final CharSequence message, final Object... arguments) {
+        return this.hasSizeLT(size, null, message, arguments);
+    }
+
+    /**
+     * Asserts that the given {@link Iterable} has a size lower than
+     * {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Iterable} cannot be {@code null} and size cannot be
+     * lower than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(iterable).hasSizeLT(size, Locale.US, "bad size").orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @param locale
+     *            The locale of the message (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     */
+    default PredicateStepIterable<I, T> hasSizeLT(final int size, final Locale locale, final CharSequence message,
+            final Object... arguments) {
+        return () -> AssertorIterable.hasSizeLT(this.getStep(), size, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
+     * Asserts that the given {@link Iterable} has a size lower than or equal to
+     * {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Iterable} cannot be {@code null} and size cannot be
+     * lower than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(iterable).hasSizeLTE(size).orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @return The operator
+     */
+    default PredicateStepIterable<I, T> hasSizeLTE(final int size) {
+        return this.hasSizeLTE(size, null);
+    }
+
+    /**
+     * Asserts that the given {@link Iterable} has a size lower than or equal to
+     * {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Iterable} cannot be {@code null} and size cannot be
+     * lower than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(iterable).hasSizeLTE(size, "bad size").orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     */
+    default PredicateStepIterable<I, T> hasSizeLTE(final int size, final CharSequence message, final Object... arguments) {
+        return this.hasSizeLTE(size, null, message, arguments);
+    }
+
+    /**
+     * Asserts that the given {@link Iterable} has a size lower than or equal to
+     * {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Iterable} cannot be {@code null} and size cannot be
+     * lower than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(iterable).hasSizeLTE(size, Locale.US, "bad size").orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @param locale
+     *            The locale of the message (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     */
+    default PredicateStepIterable<I, T> hasSizeLTE(final int size, final Locale locale, final CharSequence message,
+            final Object... arguments) {
+        return () -> AssertorIterable.hasSizeLTE(this.getStep(), size, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
      * Asserts that the given {@link Iterable} is {@code null} or empty.
      * 
      * <p>

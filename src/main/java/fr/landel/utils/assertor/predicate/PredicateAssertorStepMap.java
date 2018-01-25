@@ -141,6 +141,308 @@ public interface PredicateAssertorStepMap<K, V> extends PredicateAssertorStep<Pr
     }
 
     /**
+     * Asserts that the given {@link Map} has a size greater than {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Map} cannot be {@code null} and size cannot be lower
+     * than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).hasSizeGT(size).orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @return The operator
+     * @category localized_message
+     */
+    default PredicateStepMap<K, V> hasSizeGT(final int size) {
+        return this.hasSizeGT(size, null);
+    }
+
+    /**
+     * Asserts that the given {@link Map} has a size greater than {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Map} cannot be {@code null} and size cannot be lower
+     * than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).hasSizeGT(size, "bad size").orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category localized_message
+     */
+    default PredicateStepMap<K, V> hasSizeGT(final int size, final CharSequence message, final Object... arguments) {
+        return this.hasSizeGT(size, null, message, arguments);
+    }
+
+    /**
+     * Asserts that the given {@link Map} has a size greater than {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Map} cannot be {@code null} and size cannot be lower
+     * than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).hasSizeGT(size, Locale.US, "bad size").orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @param locale
+     *            The locale of the message (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category localized_message
+     */
+    default PredicateStepMap<K, V> hasSizeGT(final int size, final Locale locale, final CharSequence message, final Object... arguments) {
+        return () -> AssertorMap.hasSizeGT(this.getStep(), size, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
+     * Asserts that the given {@link Map} has a size greater than or equal to
+     * {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Map} cannot be {@code null} and size cannot be lower
+     * than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).hasSizeGTE(size).orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @return The operator
+     * @category no_message
+     */
+    default PredicateStepMap<K, V> hasSizeGTE(final int size) {
+        return this.hasSizeGTE(size, null);
+    }
+
+    /**
+     * Asserts that the given {@link Map} has a size greater than or equal to
+     * {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Map} cannot be {@code null} and size cannot be lower
+     * than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).hasSizeGTE(size, "bad size").orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category message
+     */
+    default PredicateStepMap<K, V> hasSizeGTE(final int size, final CharSequence message, final Object... arguments) {
+        return this.hasSizeGTE(size, null, message, arguments);
+    }
+
+    /**
+     * Asserts that the given {@link Map} has a size greater than or equal to
+     * {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Map} cannot be {@code null} and size cannot be lower
+     * than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).hasSizeGTE(size, Locale.US, "bad size").orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @param locale
+     *            The locale of the message (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category localized_message
+     */
+    default PredicateStepMap<K, V> hasSizeGTE(final int size, final Locale locale, final CharSequence message, final Object... arguments) {
+        return () -> AssertorMap.hasSizeGTE(this.getStep(), size, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
+     * Asserts that the given {@link Map} has a size lower than {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Map} cannot be {@code null} and size cannot be lower
+     * than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).hasSizeLT(size).orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @return The operator
+     * @category no_message
+     */
+    default PredicateStepMap<K, V> hasSizeLT(final int size) {
+        return this.hasSizeLT(size, null);
+    }
+
+    /**
+     * Asserts that the given {@link Map} has a size lower than {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Map} cannot be {@code null} and size cannot be lower
+     * than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).hasSizeLT(size, "bad size").orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category message
+     */
+    default PredicateStepMap<K, V> hasSizeLT(final int size, final CharSequence message, final Object... arguments) {
+        return this.hasSizeLT(size, null, message, arguments);
+    }
+
+    /**
+     * Asserts that the given {@link Map} has a size lower than {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Map} cannot be {@code null} and size cannot be lower
+     * than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).hasSizeLT(size, Locale.US, "bad size").orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @param locale
+     *            The locale of the message (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category localized_message
+     */
+    default PredicateStepMap<K, V> hasSizeLT(final int size, final Locale locale, final CharSequence message, final Object... arguments) {
+        return () -> AssertorMap.hasSizeLT(this.getStep(), size, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
+     * Asserts that the given {@link Map} has a size lower than or equal to
+     * {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Map} cannot be {@code null} and size cannot be lower
+     * than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).hasSizeLTE(size).orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @return The operator
+     * @category no_message
+     */
+    default PredicateStepMap<K, V> hasSizeLTE(final int size) {
+        return this.hasSizeLTE(size, null);
+    }
+
+    /**
+     * Asserts that the given {@link Map} has a size lower than or equal to
+     * {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Map} cannot be {@code null} and size cannot be lower
+     * than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).hasSizeLTE(size, "bad size").orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category message
+     */
+    default PredicateStepMap<K, V> hasSizeLTE(final int size, final CharSequence message, final Object... arguments) {
+        return this.hasSizeLTE(size, null, message, arguments);
+    }
+
+    /**
+     * Asserts that the given {@link Map} has a size lower than or equal to
+     * {@code size}.
+     * 
+     * <p>
+     * precondition: {@link Map} cannot be {@code null} and size cannot be lower
+     * than zero
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).hasSizeLTE(size, Locale.US, "bad size").orElseThrow();
+     * </pre>
+     * 
+     * @param size
+     *            The wanted size
+     * @param locale
+     *            The locale of the message (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            The message on mismatch
+     * @param arguments
+     *            The arguments of the message, use {@link String#format}
+     * @return The operator
+     * @category localized_message
+     */
+    default PredicateStepMap<K, V> hasSizeLTE(final int size, final Locale locale, final CharSequence message, final Object... arguments) {
+        return () -> AssertorMap.hasSizeLTE(this.getStep(), size, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
      * Asserts that the given {@link Map} is {@code null} or empty.
      * 
      * <p>
