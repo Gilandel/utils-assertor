@@ -63,10 +63,10 @@ Work progress:
       1. [validates](#validates)
    1. [Array](#array)
       1. [hasLength](#haslength)
-	  1. [hasLengthGT] (#haslengthgt)
-	  1. [hasLengthGTE] (#haslengthgte)
-	  1. [hasLengthLT] (#haslengthlt)
-	  1. [hasLengthLTE] (#haslengthlte)
+	  1. [hasLengthGT](#haslengthgt)
+	  1. [hasLengthGTE](#haslengthgte)
+	  1. [hasLengthLT](#haslengthlt)
+	  1. [hasLengthLTE](#haslengthlte)
       1. [isEmpty](#isempty)
       1. [isNotEmpty](#isnotempty)
 	  1. [allMatch](#allmatch) ---------------------
@@ -80,10 +80,10 @@ Work progress:
       1. [isFalse](#isfalse)
    1. [CharSequence](#charsequence)
       1. [hasLength](#haslength-1)
-	  1. [hasLengthGT] (#haslengthgt-1) ---------------------
-	  1. [hasLengthGTE] (#haslengthgte-1) ---------------------
-	  1. [hasLengthLT] (#haslengthlt-1) ---------------------
-	  1. [hasLengthLTE] (#haslengthlte-1) ---------------------
+	  1. [hasLengthGT](#haslengthgt-1) ---------------------
+	  1. [hasLengthGTE](#haslengthgte-1) ---------------------
+	  1. [hasLengthLT](#haslengthlt-1) ---------------------
+	  1. [hasLengthLTE](#haslengthlte-1) ---------------------
       1. [isEmpty](#isempty-1)
       1. [isNotEmpty](#isnotempty-1)
       1. [isBlank](#isblank)
@@ -119,7 +119,7 @@ Work progress:
       1. [isAfterOrEqual](#isafterorequal)
       1. [isBefore](#isbefore)
       1. [isBeforeOrEqual](#isbeforeorequal)
-	  1. [isBetween] (#isbetween) ---------------------
+	  1. [isBetween](#isbetween) ---------------------
    1. [Temporal](#temporal)
       1. [isEqual](#isequal-3)
       1. [isNotEqual](#isnotequal-3)
@@ -129,17 +129,17 @@ Work progress:
       1. [isAfterOrEqual](#isafterorequal-1)
       1. [isBefore](#isbefore-1)
       1. [isBeforeOrEqual](#isbeforeorequal-1)
-	  1. [isBetween] (#isbetween-1) ---------------------
+	  1. [isBetween](#isbetween-1) ---------------------
    1. [Enum](#enum)
       1. [hasName](#hasname-1)
       1. [hasNameIgnoreCase](#hasnameignorecase)
       1. [hasOrdinal](#hasordinal)
    1. [Iterable](#iterable)
       1. [hasSize](#hassize)
-	  1. [hasSizeGT] (#hassizegt) -----------------------------------
-	  1. [hasSizeGTE] (#hassizegte) -----------------------------------
-	  1. [hasSizeLT] (#hassizelt) -----------------------------------
-	  1. [hasSizeLTE] (#hassizelte) -----------------------------------
+	  1. [hasSizeGT](#hassizegt) -----------------------------------
+	  1. [hasSizeGTE](#hassizegte) -----------------------------------
+	  1. [hasSizeLT](#hassizelt) -----------------------------------
+	  1. [hasSizeLTE](#hassizelte) -----------------------------------
       1. [isEmpty](#isempty-1)
       1. [isNotEmpty](#isnotempty-1)
 	  1. [allMatch](#allmatch-1) -----------------------------------
@@ -150,10 +150,10 @@ Work progress:
       1. [containsInOrder](#containsinorder-1) -----------------------------------
    1. [Map](#map)
       1. [hasSize](#hassize-1)
-	  1. [hasSizeGT] (#hassizegt-1) -----------------------------------
-	  1. [hasSizeGTE] (#hassizegte-1) -----------------------------------
-	  1. [hasSizeLT] (#hassizelt-1) -----------------------------------
-	  1. [hasSizeLTE] (#hassizelte-1) -----------------------------------
+	  1. [hasSizeGT](#hassizegt-1) -----------------------------------
+	  1. [hasSizeGTE](#hassizegte-1) -----------------------------------
+	  1. [hasSizeLT](#hassizelt-1) -----------------------------------
+	  1. [hasSizeLTE](#hassizelte-1) -----------------------------------
       1. [isEmpty](#isempty-2)
       1. [isNotEmpty](#isnotempty-2)
 	  1. [allMatch](#allmatch-2) -----------------------------------
@@ -173,7 +173,7 @@ Work progress:
       1. [isGTE](#isgte)
       1. [isLT](#islt)
       1. [isLTE](#islte)
-	  1. [isBetween] (#isbetween-2) ---------------------
+	  1. [isBetween](#isbetween-2) ---------------------
    1. [Throwable](#throwable)
       1. [isAssignableFrom](#isassignablefrom-2)
       1. [isInstanceOf](#isinstanceof-1)
