@@ -651,7 +651,7 @@ public interface AssertorStepArray<T> extends AssertorStep<StepArray<T>, T[]> {
      * @param predicate
      *            the predicate function that validates each element
      * @return the assertor step
-     * @category localized_message
+     * @category no_message
      */
     default StepArray<T> anyMatch(final Predicate<T> predicate) {
         return this.anyMatch(predicate, null);
@@ -676,7 +676,7 @@ public interface AssertorStepArray<T> extends AssertorStep<StepArray<T>, T[]> {
      * @param arguments
      *            the message arguments
      * @return the assertor step
-     * @category localized_message
+     * @category message
      */
     default StepArray<T> anyMatch(final Predicate<T> predicate, final CharSequence message, final Object... arguments) {
         return this.anyMatch(predicate, null, message, arguments);

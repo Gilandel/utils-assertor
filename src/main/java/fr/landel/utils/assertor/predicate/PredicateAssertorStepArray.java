@@ -20,6 +20,7 @@
 package fr.landel.utils.assertor.predicate;
 
 import java.util.Locale;
+import java.util.function.Predicate;
 
 import fr.landel.utils.assertor.Assertor;
 import fr.landel.utils.assertor.StepAssertor;
@@ -564,6 +565,156 @@ public interface PredicateAssertorStepArray<T> extends PredicateAssertorStep<Pre
      */
     default PredicateStepArray<T> isNotEmpty(final Locale locale, final CharSequence message, final Object... arguments) {
         return () -> AssertorArray.isNotEmpty(this.getStep(), MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
+     * Check if all array's elements match the predicate.
+     * 
+     * <p>
+     * precondition: {@code array} cannot be {@code null} or empty and predicate
+     * cannot be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(array).allMatch(Objects::nonNull).orElseThrow();
+     * </pre>
+     * 
+     * @param predicate
+     *            the predicate function that validates each element
+     * @return the assertor step
+     * @category no_message
+     */
+    default PredicateStepArray<T> allMatch(final Predicate<T> predicate) {
+        return this.allMatch(predicate, null);
+    }
+
+    /**
+     * Check if all array's elements match the predicate.
+     * 
+     * <p>
+     * precondition: {@code array} cannot be {@code null} or empty and predicate
+     * cannot be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(array).allMatch(Objects::nonNull, "the array cannot contain null element").orElseThrow();
+     * </pre>
+     * 
+     * @param predicate
+     *            the predicate function that validates each element
+     * @param message
+     *            the message on mismatch
+     * @param arguments
+     *            the message arguments
+     * @return the assertor step
+     * @category message
+     */
+    default PredicateStepArray<T> allMatch(final Predicate<T> predicate, final CharSequence message, final Object... arguments) {
+        return this.allMatch(predicate, null, message, arguments);
+    }
+
+    /**
+     * Check if all array's elements match the predicate.
+     * 
+     * <p>
+     * precondition: {@code array} cannot be {@code null} or empty and predicate
+     * cannot be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(array).allMatch(Objects::nonNull, Locale.US, "the array cannot contain null element").orElseThrow();
+     * </pre>
+     * 
+     * @param predicate
+     *            the predicate function that validates each element
+     * @param locale
+     *            the message locale (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            the message on mismatch
+     * @param arguments
+     *            the message arguments
+     * @return the assertor step
+     * @category localized_message
+     */
+    default PredicateStepArray<T> allMatch(final Predicate<T> predicate, final Locale locale, final CharSequence message,
+            final Object... arguments) {
+        return () -> AssertorArray.allMatch(this.getStep(), predicate, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
+     * Check if any array's element match the predicate.
+     * 
+     * <p>
+     * precondition: {@code array} cannot be {@code null} or empty and predicate
+     * cannot be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(array).anyMatch(Objects::nonNull).orElseThrow();
+     * </pre>
+     * 
+     * @param predicate
+     *            the predicate function that validates each element
+     * @return the assertor step
+     * @category no_message
+     */
+    default PredicateStepArray<T> anyMatch(final Predicate<T> predicate) {
+        return this.anyMatch(predicate, null);
+    }
+
+    /**
+     * Check if any array's element match the predicate.
+     * 
+     * <p>
+     * precondition: {@code array} cannot be {@code null} or empty and predicate
+     * cannot be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(array).anyMatch(Objects::nonNull, "the array has to contain at least one non-null element").orElseThrow();
+     * </pre>
+     * 
+     * @param predicate
+     *            the predicate function that validates each element
+     * @param message
+     *            the message on mismatch
+     * @param arguments
+     *            the message arguments
+     * @return the assertor step
+     * @category message
+     */
+    default PredicateStepArray<T> anyMatch(final Predicate<T> predicate, final CharSequence message, final Object... arguments) {
+        return this.anyMatch(predicate, null, message, arguments);
+    }
+
+    /**
+     * Check if any array's element match the predicate.
+     * 
+     * <p>
+     * precondition: {@code array} cannot be {@code null} or empty and predicate
+     * cannot be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(array).anyMatch(Objects::nonNull, Locale.US, "the array has to contain at least one non-null element").orElseThrow();
+     * </pre>
+     * 
+     * @param predicate
+     *            the predicate function that validates each element
+     * @param locale
+     *            the message locale (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            the message on mismatch
+     * @param arguments
+     *            the message arguments
+     * @return the assertor step
+     * @category localized_message
+     */
+    default PredicateStepArray<T> anyMatch(final Predicate<T> predicate, final Locale locale, final CharSequence message,
+            final Object... arguments) {
+        return () -> AssertorArray.anyMatch(this.getStep(), predicate, MessageAssertor.of(locale, message, arguments));
     }
 
     /**

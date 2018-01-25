@@ -685,11 +685,11 @@ public class AssertorIterableTest extends AbstractTest {
 
         Predicate<String> predicate = e -> Objects.equals(e, StringUtils.lowerCase(e));
 
-        assertTrue(Assertor.that(listtu).allMatch(predicate).isOK());
+        assertTrue(Assertor.that(listtu).anyMatch(predicate).isOK());
 
         for (EnumAnalysisMode mode : EnumAnalysisMode.values()) {
 
-            assertTrue(Assertor.that(listtu, mode).allMatch(predicate).isOK());
+            assertTrue(Assertor.that(listtu, mode).anyMatch(predicate).isOK());
             assertTrue(Assertor.that(listTu, mode).anyMatch(predicate).isOK());
             assertFalse(Assertor.that(listTU, mode).anyMatch(predicate).isOK());
             assertTrue(Assertor.that(listtNull, mode).anyMatch(predicate).isOK());

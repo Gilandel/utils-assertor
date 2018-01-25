@@ -31,8 +31,11 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.function.Predicate;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
 
@@ -637,6 +640,82 @@ public class PredicateAssertorMapTest extends AbstractTest {
 
             assertFalse(predicate.containsAllValues(Arrays.asList(0)).that((Map<String, Integer>) null).isOK());
             assertFalse(predicate.containsAllValues((List<Integer>) null).that(mapTU).isOK());
+        }
+    }
+
+    /**
+     * Check {@link AssertorMap#anyMatch}
+     */
+    @Test
+    public void testAnyMatch() {
+        Map<String, Integer> maptu = MapUtils2.newHashMap(Pair.of("t", 2), Pair.of("u", 3));
+        Map<String, Integer> mapTu = MapUtils2.newHashMap(Pair.of("T", 2), Pair.of("u", 2));
+        Map<String, Integer> mapTU = MapUtils2.newHashMap(Pair.of("T", 1), Pair.of("U", 2));
+        Map<String, Integer> maptNull = MapUtils2.newHashMap(Pair.of("t", 1), Pair.of(null, null));
+        Map<String, Integer> maptUNull = MapUtils2.newHashMap(Pair.of("t", 1), Pair.of("U", null));
+
+        Predicate<Entry<String, Integer>> predicate = e -> Objects.equals(e.getKey(), StringUtils.lowerCase(e.getKey()))
+                && e.getValue() > 1;
+
+        assertTrue(Assertor.<String, Integer> ofMap().anyMatch(predicate).that(maptu).isOK());
+
+        for (EnumAnalysisMode mode : EnumAnalysisMode.values()) {
+
+            PredicateAssertorStepMap<String, Integer> predicateAssertor = Assertor.<String, Integer> ofMap(mode);
+            PredicateStepMap<String, Integer> predicateStep = predicateAssertor.anyMatch(predicate);
+
+            assertTrue(predicateStep.that(maptu).isOK());
+            assertTrue(predicateStep.that(mapTu).isOK());
+            assertFalse(predicateStep.that(mapTU).isOK());
+            assertFalse(predicateStep.that(maptNull).isOK());
+            assertFalse(predicateStep.that(maptUNull).isOK());
+
+            assertException(() -> predicateStep.that(Collections.<String, Integer> emptyMap()).orElseThrow(),
+                    IllegalArgumentException.class, "the map cannot be null or empty and predicate cannot be null");
+            assertException(() -> predicateStep.that((Map<String, Integer>) null).orElseThrow(), IllegalArgumentException.class,
+                    "the map cannot be null or empty and predicate cannot be null");
+            assertException(() -> predicateAssertor.anyMatch(null).that(mapTu).orElseThrow(), IllegalArgumentException.class,
+                    "the map cannot be null or empty and predicate cannot be null");
+            assertException(() -> predicateStep.that(mapTU).orElseThrow(), IllegalArgumentException.class,
+                    "any map entry '[T=1, U=2]' should match the predicate");
+        }
+    }
+
+    /**
+     * Check {@link AssertorMap#allMatch}
+     */
+    @Test
+    public void testAllMatch() {
+        Map<String, Integer> maptu = MapUtils2.newHashMap(Pair.of("t", 2), Pair.of("u", 3));
+        Map<String, Integer> mapTu = MapUtils2.newHashMap(Pair.of("T", 2), Pair.of("u", 2));
+        Map<String, Integer> mapTU = MapUtils2.newHashMap(Pair.of("T", 1), Pair.of("U", 2));
+        Map<String, Integer> maptNull = MapUtils2.newHashMap(Pair.of("t", 1), Pair.of(null, null));
+        Map<String, Integer> maptUNull = MapUtils2.newHashMap(Pair.of("t", 1), Pair.of("U", null));
+
+        Predicate<Entry<String, Integer>> predicate = e -> Objects.equals(e.getKey(), StringUtils.lowerCase(e.getKey()))
+                && e.getValue() > 1;
+
+        assertTrue(Assertor.<String, Integer> ofMap().allMatch(predicate).that(maptu).isOK());
+
+        for (EnumAnalysisMode mode : EnumAnalysisMode.values()) {
+
+            PredicateAssertorStepMap<String, Integer> predicateAssertor = Assertor.<String, Integer> ofMap(mode);
+            PredicateStepMap<String, Integer> predicateStep = predicateAssertor.allMatch(predicate);
+
+            assertTrue(predicateStep.that(maptu).isOK());
+            assertFalse(predicateStep.that(mapTu).isOK());
+            assertFalse(predicateStep.that(mapTU).isOK());
+            assertFalse(predicateStep.that(maptNull).isOK());
+            assertFalse(predicateStep.that(maptUNull).isOK());
+
+            assertException(() -> predicateStep.that(Collections.<String, Integer> emptyMap()).orElseThrow(),
+                    IllegalArgumentException.class, "the map cannot be null or empty and predicate cannot be null");
+            assertException(() -> predicateStep.that((Map<String, Integer>) null).orElseThrow(), IllegalArgumentException.class,
+                    "the map cannot be null or empty and predicate cannot be null");
+            assertException(() -> predicateAssertor.allMatch(null).that(mapTu).orElseThrow(), IllegalArgumentException.class,
+                    "the map cannot be null or empty and predicate cannot be null");
+            assertException(() -> predicateStep.that(mapTU).orElseThrow(), IllegalArgumentException.class,
+                    "all the map entries '[T=1, U=2]' should match the predicate");
         }
     }
 }

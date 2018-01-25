@@ -25,7 +25,9 @@ import static org.junit.Assert.fail;
 
 import java.util.Locale;
 import java.util.Objects;
+import java.util.function.Predicate;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
 import fr.landel.utils.assertor.AbstractTest;
@@ -374,6 +376,76 @@ public class PredicateAssertorArrayTest extends AbstractTest {
 
             assertException(() -> predicate.containsInOrder((String[]) null).that(arrayTU).orElseThrow(), IllegalArgumentException.class,
                     "neither arrays can be null or empty");
+        }
+    }
+
+    /**
+     * Check {@link AssertorArray#anyMatch}
+     */
+    @Test
+    public void testAnyMatch() {
+        String[] arraytu = {"t", "u"};
+        String[] arrayTu = {"T", "u"};
+        String[] arrayTU = {"T", "U"};
+        String[] arraytNull = {"t", null};
+
+        Predicate<String> predicate = e -> Objects.equals(e, StringUtils.lowerCase(e));
+
+        assertTrue(Assertor.<String> ofArray().anyMatch(predicate).that(arraytu).isOK());
+
+        for (EnumAnalysisMode mode : EnumAnalysisMode.values()) {
+
+            PredicateAssertorStepArray<String> predicateAssertor = Assertor.<String> ofArray(mode);
+            PredicateStepArray<String> predicateStep = predicateAssertor.anyMatch(predicate);
+
+            assertTrue(predicateStep.that(arraytu).isOK());
+            assertTrue(predicateStep.that(arrayTu).isOK());
+            assertFalse(predicateStep.that(arrayTU).isOK());
+            assertTrue(predicateStep.that(arraytNull).isOK());
+
+            assertException(() -> predicateStep.that(new String[0]).orElseThrow(), IllegalArgumentException.class,
+                    "the array cannot be null or empty and predicate cannot be null");
+            assertException(() -> predicateStep.that((String[]) null).orElseThrow(), IllegalArgumentException.class,
+                    "the array cannot be null or empty and predicate cannot be null");
+            assertException(() -> predicateAssertor.anyMatch(null).that(arrayTu).orElseThrow(), IllegalArgumentException.class,
+                    "the array cannot be null or empty and predicate cannot be null");
+            assertException(() -> predicateStep.that(arrayTU).orElseThrow(), IllegalArgumentException.class,
+                    "any array element '[T, U]' should match the predicate");
+        }
+    }
+
+    /**
+     * Check {@link AssertorArray#allMatch}
+     */
+    @Test
+    public void testAllMatch() {
+        String[] arraytu = {"t", "u"};
+        String[] arrayTu = {"T", "u"};
+        String[] arrayTU = {"T", "U"};
+        String[] arraytNull = {"t", null};
+
+        Predicate<String> predicate = e -> Objects.equals(e, StringUtils.lowerCase(e));
+
+        assertTrue(Assertor.<String> ofArray().allMatch(predicate).that(arraytu).isOK());
+
+        for (EnumAnalysisMode mode : EnumAnalysisMode.values()) {
+
+            PredicateAssertorStepArray<String> predicateAssertor = Assertor.<String> ofArray(mode);
+            PredicateStepArray<String> predicateStep = predicateAssertor.allMatch(predicate);
+
+            assertTrue(predicateStep.that(arraytu).isOK());
+            assertFalse(predicateStep.that(arrayTu).isOK());
+            assertFalse(predicateStep.that(arrayTU).isOK());
+            assertTrue(predicateStep.that(arraytNull).isOK());
+
+            assertException(() -> predicateStep.that(new String[0]).orElseThrow(), IllegalArgumentException.class,
+                    "the array cannot be null or empty and predicate cannot be null");
+            assertException(() -> predicateStep.that((String[]) null).orElseThrow(), IllegalArgumentException.class,
+                    "the array cannot be null or empty and predicate cannot be null");
+            assertException(() -> predicateAssertor.allMatch(null).that(arrayTu).orElseThrow(), IllegalArgumentException.class,
+                    "the array cannot be null or empty and predicate cannot be null");
+            assertException(() -> predicateStep.that(arrayTU).orElseThrow(), IllegalArgumentException.class,
+                    "all the array elements '[T, U]' should match the predicate");
         }
     }
 }
