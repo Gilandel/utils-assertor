@@ -25,7 +25,6 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import fr.landel.utils.assertor.AbstractTest;
-import fr.landel.utils.assertor.commons.ConstantsAssertor;
 
 /**
  * Check {@link ConstantsAssertor}
@@ -41,11 +40,11 @@ public class ConstantsAssertorTest extends AbstractTest {
      */
     @Test
     public void testGetProperty() {
-        assertEquals(DEFAULT_ASSERTION, ConstantsAssertor.getProperty(null, ""));
-        assertEquals("the boolean should be true", ConstantsAssertor.getProperty("boolean.true"));
-        assertEquals("the boolean should be true", ConstantsAssertor.getProperty("boolean.true", "arg"));
-        assertEquals("the object '{0}' should be null", ConstantsAssertor.getProperty("object.null"));
-        assertEquals("the object 'arg' should be null", ConstantsAssertor.getProperty("object.null", "arg"));
-        assertEquals("the object 'arg' should be null", ConstantsAssertor.getProperty("object.null", "arg", ""));
+        assertEquals(DEFAULT_ASSERTION, ConstantsAssertor.getProperty(null, null, ""));
+        assertEquals("the boolean should be true", ConstantsAssertor.getProperty("boolean.true", null));
+        assertEquals("the boolean should be true", ConstantsAssertor.getProperty("boolean.true", null, "arg"));
+        assertEquals("the object '{0}' should be null", ConstantsAssertor.getProperty("object.null", null));
+        assertEquals("the object 'arg' should be null", ConstantsAssertor.getProperty("object.null", null, "arg"));
+        assertEquals("the object 'arg' should be null", ConstantsAssertor.getProperty("object.null", null, "arg", ""));
     }
 }

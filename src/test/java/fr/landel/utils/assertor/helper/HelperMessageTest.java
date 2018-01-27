@@ -234,11 +234,11 @@ public class HelperMessageTest extends AbstractTest {
         parameters.add(new ParameterAssertor<>(time, EnumType.TEMPORAL));
         parameters.add(new ParameterAssertor<>(Color.BLACK, EnumType.UNKNOWN));
 
-        HelperMessage.getDefaultMessage(MSG.BOOLEAN.TRUE, true, false, parameters);
+        HelperMessage.getDefaultMessage(MSG.BOOLEAN.TRUE, true, false, null, parameters);
 
         parameters.add(new ParameterAssertor<>(null, null));
 
-        assertException(() -> HelperMessage.getDefaultMessage(MSG.BOOLEAN.TRUE, true, false, parameters), NullPointerException.class,
+        assertException(() -> HelperMessage.getDefaultMessage(MSG.BOOLEAN.TRUE, true, false, null, parameters), NullPointerException.class,
                 "parameter type");
 
         Object[] convertedParams = HelperMessage.convertParams(parameters);

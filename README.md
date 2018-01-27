@@ -999,7 +999,27 @@ Assertor.that(new String[0]).not().isNotEmpty("Param '%1$s*' empty or null").orE
 ```
 
 #### allMatch
+Assert that all array elements match the predicate.
 
+* Signatures:
+	- `allMatch(Predicate<T> predicate)`
+	- `allMatch(Predicate<T> predicate, CharSequence message, Object[] arguments)`
+	- `allMatch(Predicate<T> predicate, Locale locale, CharSequence message, Object[] arguments)`
+
+* Prerequisites:
+	- array NOT null and NOT empty
+	- predicate not null
+
+* Examples:
+```java
+Predicate<String> isLowerCase = e -> Objects.equals(e, StringUtils.lowerCase(e));
+Assertor.that(new String[] {"a", "B"}).allMatch(isLowerCase).orElseThrow(); // -> throws an exception
+Assertor.that(new String[0]).allMatch(isLowerCase).orElseThrow(); // -> throws an exception
+Assertor.that((String[]) null).allMatch(isLowerCase).orElseThrow(); // -> throws an exception
+Assertor.that(new String[] {"a", "b"}).allMatch(isLowerCase).orElseThrow(); // -> OK
+Assertor.that(new String[] {"a", "B"}).not().allMatch(isLowerCase, "Param '%1$s*' at least one NOT all lower case").orElseThrow(); // -> OK
+```
+	
 #### anyMatch
 
 #### contains

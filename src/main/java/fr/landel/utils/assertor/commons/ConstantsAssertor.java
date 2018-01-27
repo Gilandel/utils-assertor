@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 
 import fr.landel.utils.assertor.Assertor;
 import fr.landel.utils.commons.EnumChar;
+import fr.landel.utils.commons.StringUtils;
 
 /**
  * Assertor constants
@@ -102,13 +103,18 @@ public class ConstantsAssertor {
      * 
      * @param key
      *            The property key
+     * @param values
+     *            The property values applied before arguments
      * @param arguments
      *            The arguments to replace
      * @return The property
      */
-    public static String getProperty(final CharSequence key, final CharSequence... arguments) {
+    public static String getProperty(final CharSequence key, final CharSequence[] values, final CharSequence... arguments) {
         String property = PROPS.getProperty(String.valueOf(key));
         if (property != null) {
+            if (ArrayUtils.isNotEmpty(values)) {
+                property = StringUtils.inject(property, (Object[]) values);
+            }
             if (ArrayUtils.isNotEmpty(arguments)) {
                 for (int i = 0; i < arguments.length; ++i) {
                     property = property.replace(new StringBuilder(EnumChar.BRACE_OPEN.toString()).append(i).append(EnumChar.BRACE_CLOSE),

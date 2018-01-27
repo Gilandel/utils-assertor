@@ -453,7 +453,9 @@ public class AssertorArrayTest extends AbstractTest {
 
             assertTrue(Assertor.that(arraytu, mode).allMatch(predicate).isOK());
             assertFalse(Assertor.that(arrayTu, mode).allMatch(predicate).isOK());
+            assertTrue(Assertor.that(arrayTu, mode).not().allMatch(predicate).isOK());
             assertFalse(Assertor.that(arrayTU, mode).allMatch(predicate).isOK());
+            assertFalse(Assertor.that(arrayTU, mode).not().allMatch(predicate).isOK());
             assertTrue(Assertor.that(arraytNull, mode).allMatch(predicate).isOK());
 
             assertException(() -> Assertor.that(new String[0], mode).allMatch(predicate).orElseThrow(), IllegalArgumentException.class,

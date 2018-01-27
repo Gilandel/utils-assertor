@@ -26,7 +26,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -131,43 +130,37 @@ public final class HelperMessage extends ConstantsAssertor {
     }
 
     /**
-     * Gets the message supplier (if the locale is not specified, function uses
+     * Gets the formatted message (if the locale is not specified, function uses
      * the locale defined through {@link Assertor#setLocale(Locale)}). Supports
      * injecting parameters and arguments in message by using %s* or %1$s*
      * 
      * @param message
      *            the message object
-     * @param defaultKey
-     *            the default message key
-     * @param not
-     *            If not has to be appended to the default message key
-     * @param parameters
-     *            The list of parameters to inject in message
-     * @return The message formatted supplier
+     * @return The formatted message
      */
-    public static Supplier<CharSequence> getMessage(final MessageAssertor message, final CharSequence defaultKey, final boolean not,
-            final List<ParameterAssertor<?>> parameters) {
+    public static String getMessage(final MessageAssertor message) {
 
-        return () -> {
-            final Locale locale;
-            final String currentMessage;
-            final Object[] currentArguments;
-            if (message != null && message.getMessage() != null) {
-                currentMessage = message.getMessage().toString();
-                currentArguments = message.getArguments();
-                locale = message.getLocale();
-            } else {
-                currentMessage = HelperMessage.getDefaultMessage(defaultKey, false, not, parameters).toString();
-                currentArguments = null;
-                locale = null;
-            }
+        final Locale locale;
+        final String currentMessage;
+        final Object[] currentArguments;
+        if (message.getMessage() != null) {
+            currentMessage = message.getMessage().toString();
+            currentArguments = message.getArguments();
+            locale = message.getLocale();
+        } else {
+            currentMessage = HelperMessage.getDefaultMessage(message.getKey(), message.isPrecondition(), message.isNot(),
+                    message.getValues(), message.getParameters()).toString();
 
-            if (currentMessage.indexOf(PERCENT) > -1) {
-                return HelperMessage.getMessage(ConstantsAssertor.DEFAULT_ASSERTION, locale, currentMessage, parameters, currentArguments);
-            } else {
-                return currentMessage;
-            }
-        };
+            currentArguments = null;
+            locale = null;
+        }
+
+        if (currentMessage.indexOf(PERCENT) > -1) {
+            return HelperMessage.getMessage(ConstantsAssertor.DEFAULT_ASSERTION, locale, currentMessage, message.getParameters(),
+                    currentArguments);
+        } else {
+            return currentMessage;
+        }
     }
 
     /**
@@ -184,7 +177,7 @@ public final class HelperMessage extends ConstantsAssertor {
      *            The method parameters
      * @param arguments
      *            The user arguments
-     * @return The message formatted
+     * @return The formatted message
      */
     public static String getMessage(final CharSequence defaultString, final Locale locale, final CharSequence message,
             final List<ParameterAssertor<?>> parameters, final Object[] arguments) {
@@ -220,31 +213,39 @@ public final class HelperMessage extends ConstantsAssertor {
      *            If 'precondition' suffix has to be appended
      * @param not
      *            If 'not' suffix has to be appended
+     * @param values
+     *            the message values
      * @param parameters
      *            The parameters
      * @return The loaded property
      */
     public static String getDefaultMessage(final CharSequence key, final boolean precondition, final boolean not,
-            final List<ParameterAssertor<?>> parameters) {
+            final CharSequence[] values, final List<ParameterAssertor<?>> parameters) {
 
         Objects.requireNonNull(key, MISSING_DEFAULT_MESSAGE_KEY);
 
         final StringBuilder keyProperty = new StringBuilder(key);
 
         if (precondition) {
-            keyProperty.append(MSG.PRE);
+            if (!MSG.INVALID_WITHOUT_MESSAGE.equals(key)) {
+                keyProperty.append(MSG.PRE);
+            }
         } else if (not) {
             // NOT is ignored if precondition mode
             // precondition is the same with or without not
             keyProperty.append(MSG.NOT);
         }
 
-        final CharSequence[] arguments = new CharSequence[parameters.size()];
-        for (int i = 0; i < parameters.size(); i++) {
-            arguments[i] = HelperMessage.getParam(i + 1, parameters.get(i).getType());
-        }
+        if (CollectionUtils.isNotEmpty(parameters)) {
+            final CharSequence[] arguments = new CharSequence[parameters.size()];
+            for (int i = 0; i < parameters.size(); i++) {
+                arguments[i] = HelperMessage.getParam(i + 1, parameters.get(i).getType());
+            }
 
-        return getProperty(keyProperty, arguments);
+            return getProperty(keyProperty, values, arguments);
+        } else {
+            return getProperty(keyProperty, values);
+        }
     }
 
     /**

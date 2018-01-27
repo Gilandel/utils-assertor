@@ -107,9 +107,9 @@ public class StepAssertorTest extends AbstractTest {
         StepAssertor<Integer> step2 = new StepAssertor<>(step, 1, EnumType.NUMBER_INTEGER, EnumOperator.AND, null);
         assertEquals("{OBJECT, object: 1, type: NUMBER_INTEGER, analysisMode: STANDARD, operator: AND}", step2.toString());
 
-        step = new StepAssertor<>(step, (string) -> true, (string, not) -> true, false, MessageAssertor.of(null, "msg", null), "key",
-                false);
-        assertEquals("{ASSERTION, key: key, key not: false, parameters: [], message: {message: msg}}", step.toString());
+        step = new StepAssertor<>(step, (string) -> true, (string, not) -> true, false, MessageAssertor.of(null, "msg"), "key", false);
+        assertEquals("{ASSERTION, key: key, key not: false, parameters: [], message: {precondition: false, not: false, message: msg}}",
+                step.toString());
 
         step = new StepAssertor<>(step, step2, EnumOperator.AND);
         assertEquals("{SUB, operator: AND}", step.toString());

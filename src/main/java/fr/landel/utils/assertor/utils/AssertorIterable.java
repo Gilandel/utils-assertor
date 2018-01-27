@@ -264,6 +264,8 @@ public class AssertorIterable extends ConstantsAssertor {
      *            the current step
      * @param predicate
      *            the predicate used to check each element
+     * @param message
+     *            the message on predicate failed
      * @param <I>
      *            the {@link Iterable} type
      * @param <T>
@@ -289,6 +291,8 @@ public class AssertorIterable extends ConstantsAssertor {
      *            the current step
      * @param predicate
      *            the predicate used to check each element
+     * @param message
+     *            the message on predicate failed
      * @param <I>
      *            the {@link Iterable} type
      * @param <T>
@@ -480,7 +484,6 @@ public class AssertorIterable extends ConstantsAssertor {
 
     private static <I extends Iterable<T>, T> boolean has(final I iterable1, final Iterable<T> iterable2, final boolean all,
             final boolean not, final EnumAnalysisMode analysisMode) {
-        long found = 0;
 
         final int size2 = IterableUtils.size(iterable2);
 
@@ -489,17 +492,34 @@ public class AssertorIterable extends ConstantsAssertor {
         }
 
         if (EnumAnalysisMode.STANDARD.equals(analysisMode)) {
-            for (T objectRef : iterable2) {
-                if (AssertorIterable.has(iterable1, objectRef, analysisMode)) {
-                    ++found;
+            if (all && !not) {
+                for (final T objectRef : iterable2) {
+                    if (!AssertorIterable.has(iterable1, objectRef, analysisMode)) {
+                        return false;
+                    }
                 }
+                return true;
+            } else if (!all) { // any and not any
+                for (final T objectRef : iterable2) {
+                    if (AssertorIterable.has(iterable1, objectRef, analysisMode)) {
+                        return !not;
+                    }
+                }
+                return not;
+            } else { // not all
+                long found = 0;
+                for (final T objectRef : iterable2) {
+                    if (AssertorIterable.has(iterable1, objectRef, analysisMode)) {
+                        ++found;
+                    }
+                }
+                return HelperAssertor.isValid(all, not, found, size2);
             }
-        } else {
-            found = StreamSupport.stream(iterable2.spliterator(), EnumAnalysisMode.PARALLEL.equals(analysisMode))
-                    .filter(o -> AssertorIterable.has(iterable1, o, analysisMode)).count();
-        }
 
-        return HelperAssertor.isValid(all, not, found, size2);
+        } else {
+            return HelperAssertor.isValid(StreamSupport.stream(iterable2.spliterator(), EnumAnalysisMode.PARALLEL.equals(analysisMode)),
+                    o -> AssertorIterable.has(iterable1, o, analysisMode), all, not, () -> size2);
+        }
     }
 
     private static <I extends Iterable<T>, T> boolean hasInOrder(final I iterable1, final Iterable<T> iterable2, final boolean not,
