@@ -57,11 +57,15 @@ public class PredicateAssertorEnumTest extends AbstractTest {
      */
     @Test
     public void testValues() {
-        Assertor.that(EnumType.values())
-                .containsAll(new EnumType[] {EnumType.BOOLEAN, EnumType.NUMBER_INTEGER, EnumType.NUMBER_DECIMAL, EnumType.ARRAY,
-                        EnumType.ENUMERATION, EnumType.ITERABLE, EnumType.MAP, EnumType.DATE, EnumType.CHAR_SEQUENCE, EnumType.CLASS,
-                        EnumType.CHARACTER, EnumType.UNKNOWN})
-                .orElseThrow();
+        EnumType[] all = new EnumType[] {EnumType.BOOLEAN, EnumType.NUMBER_INTEGER, EnumType.NUMBER_DECIMAL, EnumType.ARRAY,
+                EnumType.ENUMERATION, EnumType.ITERABLE, EnumType.MAP, EnumType.DATE, EnumType.CHAR_SEQUENCE, EnumType.CLASS,
+                EnumType.CHARACTER, EnumType.UNKNOWN};
+
+        EnumType[] notAll = new EnumType[] {EnumType.BOOLEAN, EnumType.NUMBER_INTEGER};
+
+        Assertor.that(EnumType.values()).containsAll(all).orElseThrow();
+
+        Assertor.that(notAll).not().containsAll(EnumType.BOOLEAN, EnumType.UNKNOWN).orElseThrow();
 
         assertTrue(Assertor.that(EnumType.BOOLEAN).hasName("BOOLEAN").isOK());
     }

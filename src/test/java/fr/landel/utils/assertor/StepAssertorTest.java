@@ -128,6 +128,6 @@ public class StepAssertorTest extends AbstractTest {
 
         setFinalField(StepAssertor.class, "stepType", step, null);
         final StepAssertor<String> stepFinal = step;
-        assertException(() -> stepFinal.toString(), NullPointerException.class, "stepType");
+        assertException(() -> stepFinal.toString(), NullPointerException.class, "stepType is missing");
     }
 }

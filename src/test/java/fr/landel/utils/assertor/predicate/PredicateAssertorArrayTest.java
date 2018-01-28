@@ -403,6 +403,9 @@ public class PredicateAssertorArrayTest extends AbstractTest {
             assertFalse(predicateStep.that(arrayTU).isOK());
             assertTrue(predicateStep.that(arraytNull).isOK());
 
+            assertTrue(predicateAssertor.not().anyMatch(predicate).that(arrayTU).isOK());
+            assertFalse(predicateAssertor.not().anyMatch(predicate).that(arrayTu).isOK());
+
             assertException(() -> predicateStep.that(new String[0]).orElseThrow(), IllegalArgumentException.class,
                     "the array cannot be null or empty and predicate cannot be null");
             assertException(() -> predicateStep.that((String[]) null).orElseThrow(), IllegalArgumentException.class,

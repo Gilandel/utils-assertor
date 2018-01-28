@@ -215,6 +215,8 @@ public class PredicateAssertorMapTest extends AbstractTest {
         assertMap.containsAny(keys).that(map).orElseThrow("map doesn't contain the element %2$s*");
         assertMap.containsAny(keys).that(map).orElseThrow(new IOException(), true);
         assertMap.containsAny(map).that(map).orElseThrow();
+        assertMap.not().containsAny(Collections.singletonMap("k", 1)).that(map).orElseThrow();
+        assertFalse(assertMap.not().containsAny(map).that(map).isOK());
         assertMap.containsAny(map).that(map).orElseThrow("map doesn't contain the element %2$s*");
         assertMap.containsAny(map).that(map).orElseThrow(new IOException(), true);
 

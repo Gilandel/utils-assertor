@@ -310,7 +310,7 @@ public class AssertorArray extends ConstantsAssertor {
 
         final Predicate<T[]> preChecker = (array) -> ArrayUtils.isNotEmpty(array);
 
-        final BiPredicate<T[], Boolean> checker = (array, not) -> AssertorArray.has(array, element, step.getAnalysisMode());
+        final BiPredicate<T[], Boolean> checker = (array, not) -> AssertorArray.has(array, element, false, false, step.getAnalysisMode());
 
         return new StepAssertor<>(step, preChecker, checker, false, message, MSG.ARRAY.CONTAINS_OBJECT, false,
                 new ParameterAssertor<>(element, EnumType.UNKNOWN));
@@ -400,7 +400,8 @@ public class AssertorArray extends ConstantsAssertor {
                 new ParameterAssertor<>(array, EnumType.ARRAY));
     }
 
-    private static <T> boolean has(final T[] array, final T object, final EnumAnalysisMode analysisMode) {
+    private static <T> boolean has(final T[] array, final T object, final boolean not, final boolean all,
+            final EnumAnalysisMode analysisMode) {
         final Predicate<T> predicate;
         if (object != null) {
             predicate = object::equals;
@@ -408,11 +409,12 @@ public class AssertorArray extends ConstantsAssertor {
             predicate = Objects::isNull;
         }
 
-        return has(array, predicate, false, false, analysisMode);
+        return has(array, predicate, not, all, analysisMode);
     }
 
     private static <T> boolean has(final T[] array, final Predicate<T> predicate, final boolean not, final boolean all,
             final EnumAnalysisMode analysisMode) {
+
         if (EnumAnalysisMode.STANDARD.equals(analysisMode)) {
             if (all && !not) {
                 for (final T objectArray : array) {
@@ -458,7 +460,7 @@ public class AssertorArray extends ConstantsAssertor {
 
         if (EnumAnalysisMode.STANDARD.equals(analysisMode)) {
             for (T objectArray : array2) {
-                if (AssertorArray.has(array1, objectArray, analysisMode)) {
+                if (AssertorArray.has(array1, objectArray, false, false, analysisMode)) {
                     ++found;
                 }
             }
@@ -467,7 +469,7 @@ public class AssertorArray extends ConstantsAssertor {
             if (EnumAnalysisMode.PARALLEL.equals(analysisMode)) {
                 stream = stream.parallel();
             }
-            found = stream.filter(o -> AssertorArray.has(array1, o, analysisMode)).count();
+            found = stream.filter(o -> AssertorArray.has(array1, o, false, false, analysisMode)).count();
         }
 
         return HelperAssertor.isValid(all, not, found, array2.length);

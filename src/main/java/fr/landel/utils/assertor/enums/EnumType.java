@@ -141,41 +141,41 @@ public enum EnumType {
      *            the object type
      * @return The type or {@link EnumType#UNKNOWN}
      */
-    protected static <T> EnumType getTypeFromClass(final Class<T> clazz, final T object) {
+    private static <T> EnumType getTypeFromClass(final Class<T> clazz, final T object) {
         EnumType type = UNKNOWN;
-        if (clazz != null) {
-            if (Number.class.isAssignableFrom(clazz)) {
-                if (NumberUtils.isNumberInteger(clazz)) {
-                    type = NUMBER_INTEGER;
-                } else {
-                    type = NUMBER_DECIMAL;
-                }
-            } else if (CharSequence.class.isAssignableFrom(clazz)) {
-                type = CHAR_SEQUENCE;
-            } else if (Boolean.class.isAssignableFrom(clazz)) {
-                type = BOOLEAN;
-            } else if (Character.class.isAssignableFrom(clazz)) {
-                type = CHARACTER;
-            } else if (clazz.isArray()) {
-                type = ARRAY;
-            } else if (Iterable.class.isAssignableFrom(clazz)) {
-                type = ITERABLE;
-            } else if (Map.class.isAssignableFrom(clazz)) {
-                type = MAP;
-            } else if (clazz.isEnum()) {
-                type = ENUMERATION;
-            } else if (Date.class.isAssignableFrom(clazz)) {
-                type = DATE;
-            } else if (Calendar.class.isAssignableFrom(clazz)) {
-                type = CALENDAR;
-            } else if (Temporal.class.isAssignableFrom(clazz)) {
-                type = TEMPORAL;
-            } else if (Throwable.class.isAssignableFrom(clazz)) {
-                type = THROWABLE;
-            } else if (Class.class.isInstance(object)) {
-                type = CLASS;
+
+        if (Number.class.isAssignableFrom(clazz)) {
+            if (NumberUtils.isNumberInteger(clazz)) {
+                type = NUMBER_INTEGER;
+            } else {
+                type = NUMBER_DECIMAL;
             }
+        } else if (CharSequence.class.isAssignableFrom(clazz)) {
+            type = CHAR_SEQUENCE;
+        } else if (Boolean.class.isAssignableFrom(clazz)) {
+            type = BOOLEAN;
+        } else if (Character.class.isAssignableFrom(clazz)) {
+            type = CHARACTER;
+        } else if (clazz.isArray()) {
+            type = ARRAY;
+        } else if (Iterable.class.isAssignableFrom(clazz)) {
+            type = ITERABLE;
+        } else if (Map.class.isAssignableFrom(clazz)) {
+            type = MAP;
+        } else if (clazz.isEnum()) {
+            type = ENUMERATION;
+        } else if (Date.class.isAssignableFrom(clazz)) {
+            type = DATE;
+        } else if (Calendar.class.isAssignableFrom(clazz)) {
+            type = CALENDAR;
+        } else if (Temporal.class.isAssignableFrom(clazz)) {
+            type = TEMPORAL;
+        } else if (Throwable.class.isAssignableFrom(clazz)) {
+            type = THROWABLE;
+        } else if (Class.class.isInstance(object)) {
+            type = CLASS;
         }
+
         return type;
     }
 }

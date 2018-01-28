@@ -27,6 +27,7 @@ import org.apache.commons.lang3.builder.Builder;
 
 import fr.landel.utils.assertor.enums.EnumOperator;
 import fr.landel.utils.assertor.helper.HelperMessage;
+import fr.landel.utils.commons.EnumChar;
 
 /**
  * Class that contains current errors messages and provides build method.
@@ -35,6 +36,11 @@ import fr.landel.utils.assertor.helper.HelperMessage;
  * @author Gilles
  */
 public class MessagesAssertor implements Builder<String> {
+
+    private static final MessageAssertor PARENTHESIS_OPEN = MessageAssertor.of(null, false, null, null, null,
+            EnumChar.PARENTHESIS_OPEN.getUnicode());
+    private static final MessageAssertor PARENTHESIS_CLOSE = MessageAssertor.of(null, false, null, null, null,
+            EnumChar.PARENTHESIS_CLOSE.getUnicode());
 
     private final List<MessageAssertor> preconditions;
     private final List<MessageAssertor> messages;
@@ -69,28 +75,19 @@ public class MessagesAssertor implements Builder<String> {
     }
 
     /**
-     * Append an Object mapped as String to the current errors list
-     * 
-     * @param object
-     *            the object to append
-     */
-    public void append(final Object object) {
-        final MessageAssertor operator = MessageAssertor.of(null, false, null, null, null, String.valueOf(object));
-        if (this.isPreconditionsNotEmpty()) {
-            this.preconditions.add(operator);
-        } else {
-            this.messages.add(operator);
-        }
-    }
-
-    /**
      * Append an operator to the current errors list
      * 
      * @param operator
      *            the operator to append
      */
     public void append(final EnumOperator operator) {
-        this.append((Object) operator);
+        if (this.isPreconditionsNotEmpty()) {
+            this.preconditions.add(operator.getMessageAssertor());
+        } else if (this.isMessagesNotEmpty()) {
+            this.messages.add(operator.getMessageAssertor());
+        } else {
+            throw new UnsupportedOperationException("An operator can only be applied on a previous error");
+        }
     }
 
     /**
@@ -101,9 +98,13 @@ public class MessagesAssertor implements Builder<String> {
      */
     public void append(final MessagesAssertor sub) {
         if (sub.isPreconditionsNotEmpty()) {
+            this.preconditions.add(PARENTHESIS_OPEN);
             this.preconditions.addAll(sub.preconditions);
+            this.preconditions.add(PARENTHESIS_CLOSE);
         } else if (sub.isMessagesNotEmpty()) {
+            this.messages.add(PARENTHESIS_OPEN);
             this.messages.addAll(sub.messages);
+            this.messages.add(PARENTHESIS_CLOSE);
         }
     }
 
@@ -157,18 +158,17 @@ public class MessagesAssertor implements Builder<String> {
         if (this.isNotEmpty()) {
             final StringBuilder sb = new StringBuilder();
 
-            List<MessageAssertor> messages = null;
+            final List<MessageAssertor> messages;
             if (this.isPreconditionsNotEmpty()) {
                 messages = this.preconditions;
-            } else if (this.isMessagesNotEmpty()) {
+            } else {
                 messages = this.messages;
             }
 
-            if (messages != null) {
-                for (final MessageAssertor message : messages) {
-                    sb.append(HelperMessage.getMessage(message));
-                }
+            for (final MessageAssertor message : messages) {
+                sb.append(HelperMessage.getMessage(message));
             }
+
             return sb.toString();
         }
         return StringUtils.EMPTY;
