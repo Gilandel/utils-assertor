@@ -120,6 +120,9 @@ public class OperatorTest extends AbstractTest {
         // right part error
         assertEquals("(the char sequence 'text' should contain 's')",
                 Assertor.that(true).isTrue().and(Assertor.that("text").contains("s")).getErrors().get());
+        assertFalse(Assertor.that(true).isTrue().and(Assertor.that("text").contains("s")).isOK());
+        assertTrue(Assertor.that(true).isTrue().or(Assertor.that("text").contains("s")).isOK());
+        assertFalse(Assertor.that(true).isTrue().or(Assertor.that("text").contains("s")).getErrors().isPresent());
         // both parts error
         assertEquals("the boolean should be false",
                 Assertor.that(true).isFalse().and(Assertor.that("text").isEmpty().or().contains("s")).getErrors().get());

@@ -198,6 +198,9 @@ public class HelperMessageTest extends AbstractTest {
                 Assertor.that(12).not().isGT(12).and("text").not().contains("ex").getErrors().get());
         assertEquals("the char sequence 'text' should NOT contain 'ex'",
                 Assertor.that(12).isLTE(12).and("text").not().contains("ex").getErrors().get());
+
+        assertFalse(Assertor.that("text").isNotEmpty().and(Assertor.that("other").contains((String) null)).isOK());
+        assertFalse(Assertor.that("text").isEmpty().and(Assertor.that("other").contains((String) null)).isOK());
     }
 
     /**

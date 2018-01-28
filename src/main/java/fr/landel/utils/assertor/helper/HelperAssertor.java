@@ -458,38 +458,31 @@ public class HelperAssertor extends ConstantsAssertor {
         EnumOperator nextOperator = operator;
         boolean nextValid = valid;
 
-        final boolean dontNeedCheck = VALID.test(nextValid, stepOperator) || INVALID.test(nextValid, stepOperator);
+        final ResultAssertor subResult = HelperAssertor.combine(subStep, matcherObject, marcherMode, loadMessage);
 
-        if (!dontNeedCheck) {
+        // in matcher mode, the matcher is not required, so we remove it
+        final int size = subResult.getParameters().size();
+        if (matcherObject != null && size > 1) {
+            parameters.addAll(subResult.getParameters().subList(1, size));
+        } else {
+            parameters.addAll(subResult.getParameters());
+        }
 
-            final ResultAssertor subResult = HelperAssertor.combine(subStep, matcherObject, marcherMode, loadMessage);
-
-            // in matcher mode, the matcher is not required, so we remove it
-            final int size = subResult.getParameters().size();
-            if (matcherObject != null && size > 1) {
-                parameters.addAll(subResult.getParameters().subList(1, size));
-            } else {
-                parameters.addAll(subResult.getParameters());
-            }
-
-            if (!subResult.isPrecondition()) {
-                return Triple.of(false, null, subResult);
-            } else {
-                nextOperator = stepOperator;
-
-                nextValid = HelperAssertor.isValid(nextValid, subResult.isValid(), nextOperator);
-
-                if (!nextValid && loadMessage && subResult.getMessages() != null) {
-
-                    if (messages.isNotEmpty() && nextOperator != null) {
-                        messages.append(nextOperator);
-                    }
-
-                    messages.append(subResult.getMessages());
-                }
-            }
+        if (!subResult.isPrecondition()) {
+            return Triple.of(false, null, subResult);
         } else {
             nextOperator = stepOperator;
+
+            nextValid = HelperAssertor.isValid(nextValid, subResult.isValid(), nextOperator);
+
+            if (!nextValid && loadMessage && subResult.getMessages() != null) {
+
+                if (messages.isNotEmpty() && nextOperator != null) {
+                    messages.append(nextOperator);
+                }
+
+                messages.append(subResult.getMessages());
+            }
         }
 
         return Triple.of(nextValid, nextOperator, null);

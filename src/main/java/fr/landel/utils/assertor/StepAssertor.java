@@ -531,11 +531,6 @@ public class StepAssertor<T> implements Serializable {
             sb.append(ATT_OBJECT, this.object);
             sb.append(ATT_ANALYSIS_MODE, this.analysisMode);
             break;
-        case OPERATOR: // intentional fall-through
-        case SUB_ASSERTOR: // intentional fall-through
-        case SUB:
-            sb.append(ATT_OPERATOR, this.operator);
-            break;
         case NOT:
             sb.append(ATT_NOT, this.not);
             break;
@@ -545,7 +540,11 @@ public class StepAssertor<T> implements Serializable {
             sb.appendAndFormat(ATT_PARAMETERS, this.parameters, StringUtils::joinComma);
             sb.append(ATT_MESSAGE, this.message);
             break;
+        case OPERATOR: // intentional fall-through
+        case SUB_ASSERTOR: // intentional fall-through
+        case SUB: // intentional fall-through
         default:
+            sb.append(ATT_OPERATOR, this.operator);
         }
 
         return sb.build();
