@@ -44,7 +44,7 @@ import fr.landel.utils.assertor.enums.EnumOperator;
 import fr.landel.utils.assertor.enums.EnumStep;
 import fr.landel.utils.assertor.enums.EnumType;
 import fr.landel.utils.commons.CastUtils;
-import fr.landel.utils.commons.EnumChar;
+import fr.landel.utils.commons.ObjectUtils;
 import fr.landel.utils.commons.tuple.PairIso;
 
 /**
@@ -88,6 +88,8 @@ public class HelperAssertor extends ConstantsAssertor {
      */
     private static final BiPredicate<Boolean, EnumOperator> INVALID = (valid, operator) -> (!valid && EnumOperator.AND.equals(operator))
             || (valid && EnumOperator.NAND.equals(operator));
+
+    private static final String ERROR_CHECKER = "checker is missing";
 
     /**
      * Validates matcher mode and return the steps list reversed
@@ -352,9 +354,7 @@ public class HelperAssertor extends ConstantsAssertor {
                             if (messages.isNotEmpty()) {
                                 messages.append(operator);
                             }
-                            messages.append(EnumChar.PARENTHESIS_OPEN);
                             messages.append(intermediateResult.getMessages());
-                            messages.append(EnumChar.PARENTHESIS_CLOSE);
                         }
 
                         if (intermediateResult.isPrecondition()) {
@@ -485,9 +485,7 @@ public class HelperAssertor extends ConstantsAssertor {
                         messages.append(nextOperator);
                     }
 
-                    messages.append(EnumChar.PARENTHESIS_OPEN);
                     messages.append(subResult.getMessages());
-                    messages.append(EnumChar.PARENTHESIS_CLOSE);
                 }
             }
         } else {
@@ -505,44 +503,21 @@ public class HelperAssertor extends ConstantsAssertor {
     }
 
     private static <T> boolean check(final StepAssertor<T> step, final T object, final boolean not) {
-        if (step.getChecker() != null) {
-            try {
-                if (step.isNotAppliedByChecker()) {
-                    return step.getChecker().test(object, not);
-                } else {
-                    return not ^ step.getChecker().test(object, not);
-                }
-            } catch (Throwable e) {
-                return false;
+        Objects.requireNonNull(step.getChecker(), ERROR_CHECKER);
+
+        try {
+            if (step.isNotAppliedByChecker()) {
+                return step.getChecker().test(object, not);
+            } else {
+                return not ^ step.getChecker().test(object, not);
             }
+        } catch (Throwable e) {
+            return false;
         }
-        return !not;
     }
 
     public static boolean isValid(final boolean previousOK, final boolean currentOK, final EnumOperator operator) {
-        boolean ok = false;
-        if (operator == null) { // AND
-            ok = previousOK & currentOK;
-        } else {
-            switch (operator) {
-            case OR:
-                ok = previousOK | currentOK;
-                break;
-            case XOR:
-                ok = previousOK ^ currentOK;
-                break;
-            case NAND:
-                ok = !previousOK & !currentOK;
-                break;
-            case NOR:
-                ok = !previousOK | !currentOK;
-                break;
-            case AND: // intentional fall-through
-            default:
-                ok = previousOK & currentOK;
-            }
-        }
-        return ok;
+        return ObjectUtils.defaultIfNull(operator, EnumOperator.AND).isValid(previousOK, currentOK);
     }
 
     public static boolean isValid(final boolean all, final boolean not, final long found, final int size) {

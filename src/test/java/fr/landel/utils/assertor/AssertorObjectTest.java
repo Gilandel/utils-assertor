@@ -496,6 +496,7 @@ public class AssertorObjectTest extends AbstractTest {
         };
 
         assertFalse(Assertor.that("/var/log/dev.log").validates(predicateFile).isOK());
+        assertFalse(Assertor.that("/var/log/dev.log").not().validates(predicateFile).isOK());
 
         assertFalse(Assertor.that("/var/log/dev.log").validates(null).isOK());
 

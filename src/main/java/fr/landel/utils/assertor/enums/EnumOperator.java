@@ -19,7 +19,10 @@
  */
 package fr.landel.utils.assertor.enums;
 
+import java.util.function.BiPredicate;
+
 import fr.landel.utils.assertor.commons.ConstantsAssertor;
+import fr.landel.utils.assertor.commons.MessageAssertor;
 
 /**
  * 
@@ -43,7 +46,7 @@ public enum EnumOperator {
      * false AND false = false
      * </pre>
      */
-    AND("operator.and"),
+    AND("operator.and", (a, b) -> a & b),
 
     /**
      * Or operator
@@ -57,7 +60,7 @@ public enum EnumOperator {
      * false OR false = false
      * </pre>
      */
-    OR("operator.or"),
+    OR("operator.or", (a, b) -> a | b),
 
     /**
      * Xor operator
@@ -71,7 +74,7 @@ public enum EnumOperator {
      * false XOR false = false
      * </pre>
      */
-    XOR("operator.xor"),
+    XOR("operator.xor", (a, b) -> a ^ b),
 
     /**
      * Nand operator (negative and)
@@ -85,7 +88,7 @@ public enum EnumOperator {
      * false NAND false = true
      * </pre>
      */
-    NAND("operator.nand"),
+    NAND("operator.nand", (a, b) -> !a & !b),
 
     /**
      * Nor operator (negative or)
@@ -99,12 +102,15 @@ public enum EnumOperator {
      * false NOR false = true
      * </pre>
      */
-    NOR("operator.nor");
+    NOR("operator.nor", (a, b) -> !a | !b);
 
     private final String key;
+    private final BiPredicate<Boolean, Boolean> predicate;
+    private MessageAssertor message;
 
-    private EnumOperator(final String key) {
+    private EnumOperator(final String key, final BiPredicate<Boolean, Boolean> predicate) {
         this.key = key;
+        this.predicate = predicate;
     }
 
     /**
@@ -112,6 +118,29 @@ public enum EnumOperator {
      */
     public String getKey() {
         return this.key;
+    }
+
+    /**
+     * Validates if booleans matches the predicate of the operator
+     * 
+     * @param previousOK
+     *            the first part
+     * @param currentOK
+     *            the second part
+     * @return true if matches
+     */
+    public boolean isValid(final boolean previousOK, final boolean currentOK) {
+        return this.predicate.test(previousOK, currentOK);
+    }
+
+    /**
+     * @return the message Assertor for the operator
+     */
+    public MessageAssertor getMessageAssertor() {
+        if (this.message == null) {
+            this.message = MessageAssertor.of(null, false, null, null, null, this.toString());
+        }
+        return this.message;
     }
 
     @Override
