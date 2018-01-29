@@ -61,15 +61,7 @@ public class ConstantsAssertor {
     /**
      * Messages properties (for now doesn't support locale, maybe later)
      */
-    public static final Properties PROPS;
-    static {
-        PROPS = new Properties();
-        try (final InputStream is = Assertor.class.getClassLoader().getResourceAsStream("assertor_messages.properties")) {
-            PROPS.load(is);
-        } catch (final IOException | IllegalArgumentException e) {
-            LOGGER.error("Cannot load the assertor configuration file", e);
-        }
-    }
+    public static final Properties PROPS = loadProperties("assertor_messages.properties");
 
     // ---------- OTHERS
 
@@ -96,6 +88,18 @@ public class ConstantsAssertor {
     }
 
     // ---------- PROPERTIES LOADER
+
+    private static Properties loadProperties(final String path) {
+        final Properties properties = new Properties();
+        if (StringUtils.isNotEmpty(path)) {
+            try (final InputStream is = Assertor.class.getClassLoader().getResourceAsStream(path)) {
+                properties.load(is);
+            } catch (final IOException | IllegalArgumentException | NullPointerException e) {
+                LOGGER.error("Cannot load the assertor configuration file", e);
+            }
+        }
+        return properties;
+    }
 
     /**
      * Returns the property associated to the key with replaced arguments or the
