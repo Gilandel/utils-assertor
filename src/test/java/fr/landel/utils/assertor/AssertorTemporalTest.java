@@ -385,6 +385,16 @@ public class AssertorTemporalTest extends AbstractTest {
 
         assertException(() -> Assertor.that((LocalDateTime) null).isBetween(null, null).orElseThrow(), IllegalArgumentException.class,
                 "neither temporals can be null");
+        assertException(() -> Assertor.that((LocalDateTime) null).isBetween(localDateTime1, localDateTime3).orElseThrow(),
+                IllegalArgumentException.class, "neither temporals can be null");
+        assertException(() -> Assertor.that((LocalDateTime) null).isBetween(null, localDateTime3).orElseThrow(),
+                IllegalArgumentException.class, "neither temporals can be null");
+        assertException(() -> Assertor.that((LocalDateTime) null).isBetween(localDateTime1, null).orElseThrow(),
+                IllegalArgumentException.class, "neither temporals can be null");
+        assertException(() -> Assertor.that(localDateTime1).isBetween(localDateTime1, null).orElseThrow(), IllegalArgumentException.class,
+                "neither temporals can be null");
+        assertException(() -> Assertor.that(localDateTime1).isBetween(null, localDateTime3).orElseThrow(), IllegalArgumentException.class,
+                "neither temporals can be null");
 
         assertException(() -> Assertor.that(localDateTime1).isBetween(localDateTime2, localDateTime3).orElseThrow(),
                 IllegalArgumentException.class, Pattern.compile("the temporal '.*' should be between '.*' and '.*'"));
