@@ -46,7 +46,7 @@ public class AssertorLongestPerf extends AbstractMicrobenchmark {
 
     @Override
     protected double getExpectedMinNbOpsPerSeconds() {
-        return 100_000d;
+        return 50_000d;
     }
 
     /**
