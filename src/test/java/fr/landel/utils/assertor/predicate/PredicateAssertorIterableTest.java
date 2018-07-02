@@ -34,7 +34,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
+import java.util.function.Predicate;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -681,6 +683,76 @@ public class PredicateAssertorIterableTest extends AbstractTest {
 
             assertFalse(predicate.not().containsInOrder(listU).that((List<String>) null).isOK());
             assertFalse(predicate.not().containsInOrder((List<String>) null).that(listTU).isOK());
+        }
+    }
+
+    /**
+     * Check {@link AssertorIterable#anyMatch}
+     */
+    @Test
+    public void testAnyMatch() {
+        List<String> listtu = Arrays.asList("t", "u");
+        List<String> listTu = Arrays.asList("T", "u");
+        List<String> listTU = Arrays.asList("T", "U");
+        List<String> listtNull = Arrays.asList("t", null);
+
+        Predicate<String> predicate = e -> Objects.equals(e, StringUtils.lowerCase(e));
+
+        assertTrue(Assertor.<String> ofList().anyMatch(predicate).that(listtu).isOK());
+
+        for (EnumAnalysisMode mode : EnumAnalysisMode.values()) {
+
+            PredicateAssertorStepIterable<List<String>, String> predicateAssertor = Assertor.<String> ofList(mode);
+            PredicateStepIterable<List<String>, String> predicateStep = predicateAssertor.anyMatch(predicate);
+
+            assertTrue(predicateStep.that(listtu).isOK());
+            assertTrue(predicateStep.that(listTu).isOK());
+            assertFalse(predicateStep.that(listTU).isOK());
+            assertTrue(predicateStep.that(listtNull).isOK());
+
+            assertException(() -> predicateStep.that(Collections.<String> emptyList()).orElseThrow(), IllegalArgumentException.class,
+                    "the iterable cannot be null or empty and predicate cannot be null");
+            assertException(() -> predicateStep.that((List<String>) null).orElseThrow(), IllegalArgumentException.class,
+                    "the iterable cannot be null or empty and predicate cannot be null");
+            assertException(() -> predicateAssertor.anyMatch(null).that(listTu).orElseThrow(), IllegalArgumentException.class,
+                    "the iterable cannot be null or empty and predicate cannot be null");
+            assertException(() -> predicateStep.that(listTU).orElseThrow(), IllegalArgumentException.class,
+                    "any iterable element '[T, U]' should match the predicate");
+        }
+    }
+
+    /**
+     * Check {@link AssertorIterable#allMatch}
+     */
+    @Test
+    public void testAllMatch() {
+        List<String> listtu = Arrays.asList("t", "u");
+        List<String> listTu = Arrays.asList("T", "u");
+        List<String> listTU = Arrays.asList("T", "U");
+        List<String> listtNull = Arrays.asList("t", null);
+
+        Predicate<String> predicate = e -> Objects.equals(e, StringUtils.lowerCase(e));
+
+        assertTrue(Assertor.<String> ofList().allMatch(predicate).that(listtu).isOK());
+
+        for (EnumAnalysisMode mode : EnumAnalysisMode.values()) {
+
+            PredicateAssertorStepIterable<List<String>, String> predicateAssertor = Assertor.<String> ofList(mode);
+            PredicateStepIterable<List<String>, String> predicateStep = predicateAssertor.allMatch(predicate);
+
+            assertTrue(predicateStep.that(listtu).isOK());
+            assertFalse(predicateStep.that(listTu).isOK());
+            assertFalse(predicateStep.that(listTU).isOK());
+            assertTrue(predicateStep.that(listtNull).isOK());
+
+            assertException(() -> predicateStep.that(Collections.<String> emptyList()).orElseThrow(), IllegalArgumentException.class,
+                    "the iterable cannot be null or empty and predicate cannot be null");
+            assertException(() -> predicateStep.that((List<String>) null).orElseThrow(), IllegalArgumentException.class,
+                    "the iterable cannot be null or empty and predicate cannot be null");
+            assertException(() -> predicateAssertor.allMatch(null).that(listTu).orElseThrow(), IllegalArgumentException.class,
+                    "the iterable cannot be null or empty and predicate cannot be null");
+            assertException(() -> predicateStep.that(listTU).orElseThrow(), IllegalArgumentException.class,
+                    "all the iterable elements '[T, U]' should match the predicate");
         }
     }
 }

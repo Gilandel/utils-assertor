@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 
 import fr.landel.utils.assertor.Assertor;
 import fr.landel.utils.commons.EnumChar;
+import fr.landel.utils.commons.StringUtils;
 
 /**
  * Assertor constants
@@ -60,15 +61,7 @@ public class ConstantsAssertor {
     /**
      * Messages properties (for now doesn't support locale, maybe later)
      */
-    public static final Properties PROPS;
-    static {
-        PROPS = new Properties();
-        try (final InputStream is = Assertor.class.getClassLoader().getResourceAsStream("assertor_messages.properties")) {
-            PROPS.load(is);
-        } catch (final IOException | IllegalArgumentException e) {
-            LOGGER.error("Cannot load the assertor configuration file", e);
-        }
-    }
+    public static final Properties PROPS = loadProperties("assertor_messages.properties");
 
     // ---------- OTHERS
 
@@ -96,19 +89,36 @@ public class ConstantsAssertor {
 
     // ---------- PROPERTIES LOADER
 
+    private static Properties loadProperties(final String path) {
+        final Properties properties = new Properties();
+        if (StringUtils.isNotEmpty(path)) {
+            try (final InputStream is = Assertor.class.getClassLoader().getResourceAsStream(path)) {
+                properties.load(is);
+            } catch (final IOException | IllegalArgumentException | NullPointerException e) {
+                LOGGER.error("Cannot load the assertor configuration file", e);
+            }
+        }
+        return properties;
+    }
+
     /**
      * Returns the property associated to the key with replaced arguments or the
      * default string if not found {@link ConstantsAssertor#DEFAULT_ASSERTION}.
      * 
      * @param key
      *            The property key
+     * @param values
+     *            The property values applied before arguments
      * @param arguments
      *            The arguments to replace
      * @return The property
      */
-    public static String getProperty(final CharSequence key, final CharSequence... arguments) {
+    public static String getProperty(final CharSequence key, final CharSequence[] values, final CharSequence... arguments) {
         String property = PROPS.getProperty(String.valueOf(key));
         if (property != null) {
+            if (ArrayUtils.isNotEmpty(values)) {
+                property = StringUtils.inject(property, (Object[]) values);
+            }
             if (ArrayUtils.isNotEmpty(arguments)) {
                 for (int i = 0; i < arguments.length; ++i) {
                     property = property.replace(new StringBuilder(EnumChar.BRACE_OPEN.toString()).append(i).append(EnumChar.BRACE_CLOSE),

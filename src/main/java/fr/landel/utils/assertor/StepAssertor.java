@@ -78,6 +78,18 @@ public class StepAssertor<T> implements Serializable {
      */
     private static final long serialVersionUID = -8316517833558101416L;
 
+    private static final String ERROR_STEP_TYPE = "stepType is missing";
+
+    private static final String ATT_OBJECT = "object";
+    private static final String ATT_TYPE = "type";
+    private static final String ATT_ANALYSIS_MODE = "analysisMode";
+    private static final String ATT_OPERATOR = "operator";
+    private static final String ATT_NOT = "not";
+    private static final String ATT_KEY = "key";
+    private static final String ATT_KEY_NOT = "key not";
+    private static final String ATT_PARAMETERS = "parameters";
+    private static final String ATT_MESSAGE = "message";
+
     private final StepAssertor<?> previousStep;
     private final Optional<StepAssertor<?>> subStep;
     private final Optional<Function<Object, ? extends Step<?, ?>>> subAssertor;
@@ -488,7 +500,7 @@ public class StepAssertor<T> implements Serializable {
 
     @Override
     public String toString() {
-        Objects.requireNonNull(this.stepType, "stepType");
+        Objects.requireNonNull(this.stepType, ERROR_STEP_TYPE);
 
         final ToStringBuilder sb = new ToStringBuilder(ToStringStyles.JSON_SPACED);
 
@@ -496,44 +508,43 @@ public class StepAssertor<T> implements Serializable {
 
         switch (this.stepType) {
         case CREATION:
-            sb.append("object", this.object);
-            sb.append("type", this.type);
-            sb.append("analysisMode", this.analysisMode);
+            sb.append(ATT_OBJECT, this.object);
+            sb.append(ATT_TYPE, this.type);
+            sb.append(ATT_ANALYSIS_MODE, this.analysisMode);
             break;
         case OBJECT:
-            sb.append("object", this.object);
-            sb.append("type", this.type);
-            sb.append("analysisMode", this.analysisMode);
-            sb.append("operator", this.operator);
+            sb.append(ATT_OBJECT, this.object);
+            sb.append(ATT_TYPE, this.type);
+            sb.append(ATT_ANALYSIS_MODE, this.analysisMode);
+            sb.append(ATT_OPERATOR, this.operator);
             break;
         case PROPERTY:
-            sb.append("type", this.type);
-            sb.append("analysisMode", this.analysisMode);
-            sb.append("operator", this.operator);
+            sb.append(ATT_TYPE, this.type);
+            sb.append(ATT_ANALYSIS_MODE, this.analysisMode);
+            sb.append(ATT_OPERATOR, this.operator);
             break;
         case PREDICATE:
-            sb.append("type", this.type);
-            sb.append("analysisMode", this.analysisMode);
+            sb.append(ATT_TYPE, this.type);
+            sb.append(ATT_ANALYSIS_MODE, this.analysisMode);
             break;
         case PREDICATE_OBJECT:
-            sb.append("object", this.object);
-            sb.append("analysisMode", this.analysisMode);
+            sb.append(ATT_OBJECT, this.object);
+            sb.append(ATT_ANALYSIS_MODE, this.analysisMode);
+            break;
+        case NOT:
+            sb.append(ATT_NOT, this.not);
+            break;
+        case ASSERTION:
+            sb.append(ATT_KEY, this.messageKey);
+            sb.append(ATT_KEY_NOT, this.messageKeyNot);
+            sb.appendAndFormat(ATT_PARAMETERS, this.parameters, StringUtils::joinComma);
+            sb.append(ATT_MESSAGE, this.message);
             break;
         case OPERATOR: // intentional fall-through
         case SUB_ASSERTOR: // intentional fall-through
-        case SUB:
-            sb.append("operator", this.operator);
-            break;
-        case NOT:
-            sb.append("not", this.not);
-            break;
-        case ASSERTION:
-            sb.append("key", this.messageKey);
-            sb.append("key not", this.messageKeyNot);
-            sb.appendAndFormat("parameters", this.parameters, StringUtils::joinComma);
-            sb.append("message", this.message);
-            break;
+        case SUB: // intentional fall-through
         default:
+            sb.append(ATT_OPERATOR, this.operator);
         }
 
         return sb.build();

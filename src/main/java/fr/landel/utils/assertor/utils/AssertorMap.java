@@ -281,6 +281,8 @@ public class AssertorMap extends ConstantsAssertor {
      *            the current step
      * @param predicate
      *            the predicate used to check each entry
+     * @param message
+     *            the message on predicate failed
      * @param <M>
      *            the {@link Map} type
      * @param <K>
@@ -307,6 +309,8 @@ public class AssertorMap extends ConstantsAssertor {
      *            the current step
      * @param predicate
      *            the predicate used to check each entry
+     * @param message
+     *            the message on predicate failed
      * @param <M>
      *            the {@link Map} type
      * @param <K>
@@ -691,14 +695,31 @@ public class AssertorMap extends ConstantsAssertor {
 
     private static <M extends Map<K, V>, K, V> boolean contains(final M map, final Map<K, V> objects, final boolean all, final boolean not,
             final EnumAnalysisMode analysisMode) {
-        long found = 0;
 
         final Set<Entry<K, V>> entries = objects.entrySet();
         if (EnumAnalysisMode.STANDARD.equals(analysisMode)) {
-            for (Entry<K, V> entry : entries) {
-                if (AssertorMap.contains(map, entry.getKey(), entry.getValue())) {
-                    ++found;
+            if (all && !not) {
+                for (final Entry<K, V> entry : entries) {
+                    if (!AssertorMap.contains(map, entry.getKey(), entry.getValue())) {
+                        return false;
+                    }
                 }
+                return true;
+            } else if (!all) { // any and not any
+                for (final Entry<K, V> entry : entries) {
+                    if (AssertorMap.contains(map, entry.getKey(), entry.getValue())) {
+                        return !not;
+                    }
+                }
+                return not;
+            } else { // not all
+                long found = 0;
+                for (final Entry<K, V> entry : entries) {
+                    if (AssertorMap.contains(map, entry.getKey(), entry.getValue())) {
+                        ++found;
+                    }
+                }
+                return HelperAssertor.isValid(all, not, found, entries.size());
             }
         } else {
             final Stream<Entry<K, V>> stream;
@@ -707,10 +728,9 @@ public class AssertorMap extends ConstantsAssertor {
             } else {
                 stream = entries.stream();
             }
-            found = stream.filter(e -> AssertorMap.contains(map, e.getKey(), e.getValue())).count();
-        }
 
-        return HelperAssertor.isValid(all, not, found, objects.size());
+            return HelperAssertor.isValid(stream, e -> AssertorMap.contains(map, e.getKey(), e.getValue()), all, not, objects::size);
+        }
     }
 
     private static <M extends Map<K, V>, K, V> boolean contains(final M map, final K key, final V value) {

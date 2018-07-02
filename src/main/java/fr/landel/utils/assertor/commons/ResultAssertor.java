@@ -21,7 +21,6 @@ package fr.landel.utils.assertor.commons;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 /**
  * To store the Assertor result
@@ -34,7 +33,7 @@ public class ResultAssertor {
 
     private final boolean precondition;
     private final boolean valid;
-    private final List<Supplier<CharSequence>> messages;
+    private final MessagesAssertor messages;
     private final List<ParameterAssertor<?>> parameters;
 
     /**
@@ -49,7 +48,7 @@ public class ResultAssertor {
      * @param parameters
      *            the complete list of parameters
      */
-    public ResultAssertor(final boolean precondition, final boolean valid, final List<Supplier<CharSequence>> messages,
+    public ResultAssertor(final boolean precondition, final boolean valid, final MessagesAssertor messages,
             final List<ParameterAssertor<?>> parameters) {
 
         this.precondition = precondition;
@@ -75,7 +74,7 @@ public class ResultAssertor {
     /**
      * @return the messages
      */
-    public List<Supplier<CharSequence>> getMessages() {
+    public MessagesAssertor getMessages() {
         return this.messages;
     }
 

@@ -241,6 +241,8 @@ public class AssertorArray extends ConstantsAssertor {
      *            the current step
      * @param predicate
      *            the predicate used to check each element
+     * @param message
+     *            the message on predicate failed
      * @param <T>
      *            the array elements type
      * @return the next step
@@ -264,6 +266,8 @@ public class AssertorArray extends ConstantsAssertor {
      *            the current step
      * @param predicate
      *            the predicate used to check each element
+     * @param message
+     *            the message on predicate failed
      * @param <T>
      *            the array elements type
      * @return the next step
@@ -279,9 +283,9 @@ public class AssertorArray extends ConstantsAssertor {
 
         final Predicate<T[]> preChecker = (array) -> ArrayUtils.isNotEmpty(array) && predicate != null;
 
-        final BiPredicate<T[], Boolean> checker = (array, not) -> AssertorArray.has(array, predicate, all, step.getAnalysisMode());
+        final BiPredicate<T[], Boolean> checker = (array, not) -> AssertorArray.has(array, predicate, not, all, step.getAnalysisMode());
 
-        return new StepAssertor<>(step, preChecker, checker, false, message, messageKey, false,
+        return new StepAssertor<>(step, preChecker, checker, true, message, messageKey, false,
                 new ParameterAssertor<>(predicate, EnumType.UNKNOWN));
     }
 
@@ -306,7 +310,7 @@ public class AssertorArray extends ConstantsAssertor {
 
         final Predicate<T[]> preChecker = (array) -> ArrayUtils.isNotEmpty(array);
 
-        final BiPredicate<T[], Boolean> checker = (array, not) -> AssertorArray.has(array, element, step.getAnalysisMode());
+        final BiPredicate<T[], Boolean> checker = (array, not) -> AssertorArray.has(array, element, false, false, step.getAnalysisMode());
 
         return new StepAssertor<>(step, preChecker, checker, false, message, MSG.ARRAY.CONTAINS_OBJECT, false,
                 new ParameterAssertor<>(element, EnumType.UNKNOWN));
@@ -396,7 +400,8 @@ public class AssertorArray extends ConstantsAssertor {
                 new ParameterAssertor<>(array, EnumType.ARRAY));
     }
 
-    private static <T> boolean has(final T[] array, final T object, final EnumAnalysisMode analysisMode) {
+    private static <T> boolean has(final T[] array, final T object, final boolean not, final boolean all,
+            final EnumAnalysisMode analysisMode) {
         final Predicate<T> predicate;
         if (object != null) {
             predicate = object::equals;
@@ -404,36 +409,43 @@ public class AssertorArray extends ConstantsAssertor {
             predicate = Objects::isNull;
         }
 
-        return has(array, predicate, false, analysisMode);
+        return has(array, predicate, not, all, analysisMode);
     }
 
-    private static <T> boolean has(final T[] array, final Predicate<T> predicate, final boolean all, final EnumAnalysisMode analysisMode) {
+    private static <T> boolean has(final T[] array, final Predicate<T> predicate, final boolean not, final boolean all,
+            final EnumAnalysisMode analysisMode) {
+
         if (EnumAnalysisMode.STANDARD.equals(analysisMode)) {
-            if (all) {
+            if (all && !not) {
                 for (final T objectArray : array) {
                     if (!predicate.test(objectArray)) {
                         return false;
                     }
                 }
                 return true;
-            } else {
+            } else if (!all) { // any and not any
                 for (final T objectArray : array) {
                     if (predicate.test(objectArray)) {
-                        return true;
+                        return !not;
                     }
                 }
-                return false;
+                return not;
+            } else { // not all
+                long found = 0;
+                for (final T objectArray : array) {
+                    if (predicate.test(objectArray)) {
+                        ++found;
+                    }
+                }
+                return HelperAssertor.isValid(all, not, found, array.length);
             }
         } else {
             Stream<T> stream = Stream.of(array);
             if (EnumAnalysisMode.PARALLEL.equals(analysisMode)) {
                 stream = stream.parallel();
             }
-            if (all) {
-                return stream.allMatch(predicate);
-            } else {
-                return stream.anyMatch(predicate);
-            }
+
+            return HelperAssertor.isValid(stream, predicate, all, not, () -> array.length);
         }
     }
 
@@ -448,7 +460,7 @@ public class AssertorArray extends ConstantsAssertor {
 
         if (EnumAnalysisMode.STANDARD.equals(analysisMode)) {
             for (T objectArray : array2) {
-                if (AssertorArray.has(array1, objectArray, analysisMode)) {
+                if (AssertorArray.has(array1, objectArray, false, false, analysisMode)) {
                     ++found;
                 }
             }
@@ -457,7 +469,7 @@ public class AssertorArray extends ConstantsAssertor {
             if (EnumAnalysisMode.PARALLEL.equals(analysisMode)) {
                 stream = stream.parallel();
             }
-            found = stream.filter(o -> AssertorArray.has(array1, o, analysisMode)).count();
+            found = stream.filter(o -> AssertorArray.has(array1, o, false, false, analysisMode)).count();
         }
 
         return HelperAssertor.isValid(all, not, found, array2.length);

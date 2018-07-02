@@ -2,7 +2,6 @@
 
 [![Build Status](https://api.travis-ci.org/Gilandel/utils-assertor.svg?branch=master)](https://travis-ci.org/Gilandel/utils-assertor/builds)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/778ffc15500647ce9d54b74fba878c8e)](https://www.codacy.com/app/gilles/utils-assertor)
-[![Dependency Status](https://www.versioneye.com/user/projects/58b29b6f7b9e15003a17e544/badge.svg?style=flat)](https://www.versioneye.com/user/projects/58b29b6f7b9e15003a17e544)
 [![codecov.io](https://codecov.io/github/Gilandel/utils-assertor/coverage.svg?branch=master)](https://codecov.io/github/Gilandel/utils-assertor?branch=master)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/fr.landel.utils/utils-assertor/badge.svg)](https://maven-badges.herokuapp.com/maven-central/fr.landel.utils/utils-assertor)
 [![Javadocs](http://www.javadoc.io/badge/fr.landel.utils/utils-assertor.svg)](http://www.javadoc.io/doc/fr.landel.utils/utils-assertor)
@@ -25,7 +24,7 @@ Work progress:
 <dependency>
 	<groupId>fr.landel.utils</groupId>
 	<artifactId>utils-assertor</artifactId>
-	<version>1.1.4</version>
+	<version>1.1.5</version>
 </dependency>
 ```
 
@@ -999,7 +998,27 @@ Assertor.that(new String[0]).not().isNotEmpty("Param '%1$s*' empty or null").orE
 ```
 
 #### allMatch
+Assert that all array elements match the predicate.
 
+* Signatures:
+	- `allMatch(Predicate<T> predicate)`
+	- `allMatch(Predicate<T> predicate, CharSequence message, Object[] arguments)`
+	- `allMatch(Predicate<T> predicate, Locale locale, CharSequence message, Object[] arguments)`
+
+* Prerequisites:
+	- array NOT null and NOT empty
+	- predicate not null
+
+* Examples:
+```java
+Predicate<String> isLowerCase = e -> Objects.equals(e, StringUtils.lowerCase(e));
+Assertor.that(new String[] {"a", "B"}).allMatch(isLowerCase).orElseThrow(); // -> throws an exception
+Assertor.that(new String[0]).allMatch(isLowerCase).orElseThrow(); // -> throws an exception
+Assertor.that((String[]) null).allMatch(isLowerCase).orElseThrow(); // -> throws an exception
+Assertor.that(new String[] {"a", "b"}).allMatch(isLowerCase).orElseThrow(); // -> OK
+Assertor.that(new String[] {"a", "B"}).not().allMatch(isLowerCase, "Param '%1$s*' at least one NOT all lower case").orElseThrow(); // -> OK
+```
+	
 #### anyMatch
 
 #### contains
@@ -3096,6 +3115,10 @@ Assertor.that(new IOException()).hasCauseInstanceOf(Exception.class, (Pattern) n
 ```
 
 ## Changelog
+### 1.1.5 - 2018-07-02
+- Misc: update dependencies
+- Misc: remove classpath definition from JAR (Wildfly warning when some dependencies are in multiple versions and defined provided)
+
 ### 1.1.4 - 2018-01-22
 - New: Add methods to check char sequence: hasLengthGT, hasLengthGTE, hasLengthLT, hasLengthLTE
 - New: Add methods to check array: hasLengthGT, hasLengthGTE, hasLengthLT, hasLengthLTE, allMatch, anyMatch

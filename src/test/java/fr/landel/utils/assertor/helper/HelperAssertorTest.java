@@ -26,8 +26,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Properties;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
@@ -37,6 +41,7 @@ import fr.landel.utils.assertor.AbstractTest;
 import fr.landel.utils.assertor.Assertor;
 import fr.landel.utils.assertor.StepAssertor;
 import fr.landel.utils.assertor.StepCharSequence;
+import fr.landel.utils.assertor.commons.ConstantsAssertor;
 import fr.landel.utils.assertor.commons.MessageAssertor;
 import fr.landel.utils.assertor.commons.ParameterAssertor;
 import fr.landel.utils.assertor.commons.ResultAssertor;
@@ -107,6 +112,8 @@ public class HelperAssertorTest extends AbstractTest {
         assertEquals("the char sequence cannot be null and the searched substring cannot be null or empty",
                 HelperAssertor.getMessage(result));
 
+        assertEquals("", HelperAssertor.getMessage(new ResultAssertor(false, true, null, Collections.emptyList())));
+
         // INVALID SUB
 
         step1 = new StepAssertor<>(a, apTrue, aTrue, false, null, MSG.CSQ.BLANK, false);
@@ -150,7 +157,18 @@ public class HelperAssertorTest extends AbstractTest {
 
         assertException(() -> {
             HelperAssertor.combine(a, "test", true, false);
-        }, IllegalArgumentException.class);
+        }, IllegalArgumentException.class, "StepAssertor chain must contain a matcher step");
+
+        assertException(() -> {
+            final StepAssertor<String> a1 = new StepAssertor<>(EnumType.CHAR_SEQUENCE, null);
+            final StepAssertor<String> b1 = new StepAssertor<>(a1, "test", EnumType.CHAR_SEQUENCE, EnumOperator.AND, null);
+            HelperAssertor.combine(new StepAssertor<>(b1), null, true, false);
+        }, UnsupportedOperationException.class, "Creation step cannot be used in Predicate mode");
+
+        assertException(() -> {
+            final StepAssertor<String> a1 = new StepAssertor<>("", EnumType.CHAR_SEQUENCE, null);
+            HelperAssertor.combine(new StepAssertor<>(a1), null, true, false);
+        }, UnsupportedOperationException.class, "Creation step cannot be used in Predicate mode");
 
         // check step type null
 
@@ -178,5 +196,61 @@ public class HelperAssertorTest extends AbstractTest {
         params.add(new ParameterAssertor<>(true, EnumType.BOOLEAN, true));
 
         assertTrue(HelperAssertor.getLastChecked(params));
+    }
+
+    /**
+     * Test method for {@link HelperAssertor#isValid} .
+     */
+    @Test
+    public void testIsValid() {
+        assertTrue(HelperAssertor.isValid(true, true, null));
+        assertFalse(HelperAssertor.isValid(true, false, null));
+        assertFalse(HelperAssertor.isValid(false, true, null));
+        assertFalse(HelperAssertor.isValid(false, false, null));
+
+        assertTrue(HelperAssertor.isValid(true, true, EnumOperator.AND));
+        assertFalse(HelperAssertor.isValid(true, false, EnumOperator.AND));
+        assertFalse(HelperAssertor.isValid(false, true, EnumOperator.AND));
+        assertFalse(HelperAssertor.isValid(false, false, EnumOperator.AND));
+
+        assertTrue(HelperAssertor.isValid(true, true, EnumOperator.OR));
+        assertTrue(HelperAssertor.isValid(true, false, EnumOperator.OR));
+        assertTrue(HelperAssertor.isValid(false, true, EnumOperator.OR));
+        assertFalse(HelperAssertor.isValid(false, false, EnumOperator.OR));
+
+        assertFalse(HelperAssertor.isValid(true, true, EnumOperator.XOR));
+        assertTrue(HelperAssertor.isValid(true, false, EnumOperator.XOR));
+        assertTrue(HelperAssertor.isValid(false, true, EnumOperator.XOR));
+        assertFalse(HelperAssertor.isValid(false, false, EnumOperator.XOR));
+
+        assertFalse(HelperAssertor.isValid(true, true, EnumOperator.NAND));
+        assertFalse(HelperAssertor.isValid(true, false, EnumOperator.NAND));
+        assertFalse(HelperAssertor.isValid(false, true, EnumOperator.NAND));
+        assertTrue(HelperAssertor.isValid(false, false, EnumOperator.NAND));
+
+        assertFalse(HelperAssertor.isValid(true, true, EnumOperator.NOR));
+        assertTrue(HelperAssertor.isValid(true, false, EnumOperator.NOR));
+        assertTrue(HelperAssertor.isValid(false, true, EnumOperator.NOR));
+        assertTrue(HelperAssertor.isValid(false, false, EnumOperator.NOR));
+    }
+
+    /**
+     * Check {@link ConstantsAssertor}
+     */
+    @Test
+    public void testConstantsAssertor()
+            throws NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+
+        final Method loadProperties = ConstantsAssertor.class.getDeclaredMethod("loadProperties", String.class);
+        loadProperties.setAccessible(true);
+
+        Properties props = (Properties) loadProperties.invoke(null, "assertor_messages.properties");
+        assertEquals(308, props.size());
+
+        props = (Properties) loadProperties.invoke(null, "assertor_messages2.properties");
+        assertEquals(0, props.size());
+
+        props = (Properties) loadProperties.invoke(null, "");
+        assertEquals(0, props.size());
     }
 }

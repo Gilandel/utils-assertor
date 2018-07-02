@@ -32,7 +32,7 @@ import fr.landel.utils.assertor.commons.ParameterAssertor;
 import fr.landel.utils.assertor.commons.ResultAssertor;
 import fr.landel.utils.commons.Result;
 import fr.landel.utils.commons.StringUtils;
-import fr.landel.utils.commons.function.ConsumerThrowable;
+import fr.landel.utils.commons.function.FunctionThrowable;
 
 /**
  * Helper end class, to build end steps
@@ -101,7 +101,7 @@ public final class HelperEnd {
             final E exception = function.apply(HelperAssertor.getMessage(result), result.getParameters());
             exception.addSuppressed(new IllegalArgumentException(HelperAssertor.getMessage(result)));
 
-            throw exception;
+            return exception;
         });
     }
 
@@ -109,7 +109,7 @@ public final class HelperEnd {
         Objects.requireNonNull(exceptionSupplier, MISSING_SUPPLIER_EXCEPTION);
 
         return orElseThrow(step, false, result -> {
-            throw exceptionSupplier.get();
+            return exceptionSupplier.get();
         });
     }
 
@@ -120,7 +120,7 @@ public final class HelperEnd {
                 if (injectSuppressed) {
                     exception.addSuppressed(new IllegalArgumentException(HelperAssertor.getMessage(result)));
                 }
-                throw exception;
+                return exception;
             } else {
                 throw new IllegalArgumentException(HelperAssertor.getMessage(result));
             }
@@ -128,11 +128,12 @@ public final class HelperEnd {
     }
 
     private static <T, E extends Throwable> T orElseThrow(final StepAssertor<T> step, final boolean loadMessage,
-            final ConsumerThrowable<ResultAssertor, E> consumer) throws E {
+            final FunctionThrowable<ResultAssertor, E, IllegalArgumentException> consumer) throws E {
+
         final ResultAssertor result = HelperAssertor.combine(step, loadMessage);
 
         if (!result.isPrecondition() || !result.isValid()) {
-            consumer.acceptThrows(result);
+            throw consumer.apply(result);
         }
 
         return HelperAssertor.getLastChecked(result.getParameters());

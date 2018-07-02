@@ -25,25 +25,26 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiPredicate;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Transformer;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 
-import fr.landel.utils.assertor.Assertor;
 import fr.landel.utils.assertor.Step;
 import fr.landel.utils.assertor.StepAssertor;
 import fr.landel.utils.assertor.commons.ConstantsAssertor;
+import fr.landel.utils.assertor.commons.MessagesAssertor;
 import fr.landel.utils.assertor.commons.ParameterAssertor;
 import fr.landel.utils.assertor.commons.ResultAssertor;
 import fr.landel.utils.assertor.enums.EnumOperator;
 import fr.landel.utils.assertor.enums.EnumStep;
 import fr.landel.utils.assertor.enums.EnumType;
 import fr.landel.utils.commons.CastUtils;
-import fr.landel.utils.commons.EnumChar;
-import fr.landel.utils.commons.StringUtils;
+import fr.landel.utils.commons.ObjectUtils;
 import fr.landel.utils.commons.tuple.PairIso;
 
 /**
@@ -87,6 +88,8 @@ public class HelperAssertor extends ConstantsAssertor {
      */
     private static final BiPredicate<Boolean, EnumOperator> INVALID = (valid, operator) -> (!valid && EnumOperator.AND.equals(operator))
             || (valid && EnumOperator.NAND.equals(operator));
+
+    private static final String ERROR_CHECKER = "checker is missing";
 
     /**
      * Validates matcher mode and return the steps list reversed
@@ -194,7 +197,7 @@ public class HelperAssertor extends ConstantsAssertor {
         boolean valid = true;
         PairIso<Boolean> resultValid;
         EnumOperator operator = null;
-        final List<Supplier<CharSequence>> messages = new ArrayList<>();
+        final MessagesAssertor messages = new MessagesAssertor();
         Object obj;
         final Object matcherObject;
         boolean checked = false;
@@ -203,7 +206,7 @@ public class HelperAssertor extends ConstantsAssertor {
 
         final List<ParameterAssertor<?>> parameters = new ArrayList<>();
 
-        Optional<Pair<Boolean, List<Supplier<CharSequence>>>> dontNeedCheck = Optional.empty();
+        Optional<Pair<Boolean, MessagesAssertor>> dontNeedCheck = Optional.empty();
 
         // get the object to check
         // in matcher mode, two ways are available to inject the object:
@@ -348,12 +351,10 @@ public class HelperAssertor extends ConstantsAssertor {
                         parameters.addAll(intermediateResult.getParameters());
 
                         if (!valid && loadMessage && intermediateResult.getMessages() != null) {
-                            if (!messages.isEmpty()) {
-                                messages.add(operator::toString);
+                            if (messages.isNotEmpty()) {
+                                messages.append(operator);
                             }
-                            messages.add(EnumChar.PARENTHESIS_OPEN::toString);
-                            messages.addAll(intermediateResult.getMessages());
-                            messages.add(EnumChar.PARENTHESIS_CLOSE::toString);
+                            messages.append(intermediateResult.getMessages());
                         }
 
                         if (intermediateResult.isPrecondition()) {
@@ -377,10 +378,10 @@ public class HelperAssertor extends ConstantsAssertor {
         return new ResultAssertor(true, valid, messages, parameters);
     }
 
-    private static Optional<Pair<Boolean, List<Supplier<CharSequence>>>> checkValidityAndOperator(final boolean valid,
-            final EnumOperator operator, final List<Supplier<CharSequence>> messages, final boolean loadMessage) {
+    private static Optional<Pair<Boolean, MessagesAssertor>> checkValidityAndOperator(final boolean valid, final EnumOperator operator,
+            final MessagesAssertor messages, final boolean loadMessage) {
 
-        Pair<Boolean, List<Supplier<CharSequence>>> result = null;
+        Pair<Boolean, MessagesAssertor> result = null;
 
         if (VALID.test(valid, operator)) {
 
@@ -388,14 +389,15 @@ public class HelperAssertor extends ConstantsAssertor {
 
         } else if (INVALID.test(valid, operator)) {
 
-            final List<Supplier<CharSequence>> formattedMessage;
+            final MessagesAssertor formattedMessage;
             if (loadMessage) {
-                if (!messages.isEmpty()) {
+                if (messages.isNotEmpty()) {
                     formattedMessage = messages;
                 } else {
-                    formattedMessage = new ArrayList<>();
-                    formattedMessage
-                            .add(() -> StringUtils.inject(ConstantsAssertor.getProperty(MSG.INVALID_WITHOUT_MESSAGE), valid, operator));
+
+                    formattedMessage = new MessagesAssertor();
+                    formattedMessage.append(MSG.INVALID_WITHOUT_MESSAGE, false,
+                            new CharSequence[] {String.valueOf(valid), String.valueOf(operator)}, null);
                 }
             } else {
                 formattedMessage = null;
@@ -414,11 +416,10 @@ public class HelperAssertor extends ConstantsAssertor {
         assertParameters.add(param);
         assertParameters.addAll(step.getParameters());
 
-        final List<Supplier<CharSequence>> error;
+        final MessagesAssertor error;
         if (loadMessage) {
-            error = new ArrayList<>();
-            error.add(() -> String.format(Assertor.getLocale(),
-                    HelperMessage.getDefaultMessage(step.getMessageKey(), true, false, assertParameters), assertParameters));
+            error = new MessagesAssertor();
+            error.append(step.getMessageKey(), false, null, assertParameters);
         } else {
             error = null;
         }
@@ -427,22 +428,22 @@ public class HelperAssertor extends ConstantsAssertor {
     }
 
     private static <T> PairIso<Boolean> validatesAndGetMessage(final StepAssertor<T> step, final ParameterAssertor<?> param,
-            final Object object, final boolean valid, final boolean not, final EnumOperator operator,
-            final List<Supplier<CharSequence>> messages, final boolean loadMessage) {
+            final Object object, final boolean valid, final boolean not, final EnumOperator operator, final MessagesAssertor messages,
+            final boolean loadMessage) {
 
         final boolean currentValid = HelperAssertor.check(step, CastUtils.cast(object), not);
         final boolean nextValid = HelperAssertor.isValid(valid, currentValid, operator);
 
         if (!nextValid && loadMessage) {
-            if (!messages.isEmpty() && operator != null) {
-                messages.add(operator::toString);
+            if (messages.isNotEmpty() && operator != null) {
+                messages.append(operator);
             }
 
             final List<ParameterAssertor<?>> assertParameters = new ArrayList<>();
             assertParameters.add(param);
             assertParameters.addAll(step.getParameters());
 
-            messages.add(HelperMessage.getMessage(step.getMessage(), step.getMessageKey(), not ^ step.isMessageKeyNot(), assertParameters));
+            messages.append(step.getMessageKey(), not ^ step.isMessageKeyNot(), null, assertParameters, step.getMessage());
         }
 
         return PairIso.of(currentValid, nextValid);
@@ -450,47 +451,38 @@ public class HelperAssertor extends ConstantsAssertor {
 
     private static Triple<Boolean, EnumOperator, ResultAssertor> managesSub(final StepAssertor<?> step, final Object matcherObject,
             final boolean marcherMode, final List<ParameterAssertor<?>> parameters, final boolean valid, final EnumOperator operator,
-            final List<Supplier<CharSequence>> messages, final boolean loadMessage) {
+            final MessagesAssertor messages, final boolean loadMessage) {
 
         final StepAssertor<?> subStep = step.getSubStep().get();
         final EnumOperator stepOperator = step.getOperator();
         EnumOperator nextOperator = operator;
         boolean nextValid = valid;
 
-        final boolean dontNeedCheck = VALID.test(nextValid, stepOperator) || INVALID.test(nextValid, stepOperator);
+        final ResultAssertor subResult = HelperAssertor.combine(subStep, matcherObject, marcherMode, loadMessage);
 
-        if (!dontNeedCheck) {
+        // in matcher mode, the matcher is not required, so we remove it
+        final int size = subResult.getParameters().size();
+        if (matcherObject != null && size > 1) {
+            parameters.addAll(subResult.getParameters().subList(1, size));
+        } else {
+            parameters.addAll(subResult.getParameters());
+        }
 
-            final ResultAssertor subResult = HelperAssertor.combine(subStep, matcherObject, marcherMode, loadMessage);
-
-            // in matcher mode, the matcher is not required, so we remove it
-            final int size = subResult.getParameters().size();
-            if (matcherObject != null && size > 1) {
-                parameters.addAll(subResult.getParameters().subList(1, size));
-            } else {
-                parameters.addAll(subResult.getParameters());
-            }
-
-            if (!subResult.isPrecondition()) {
-                return Triple.of(false, null, subResult);
-            } else {
-                nextOperator = stepOperator;
-
-                nextValid = HelperAssertor.isValid(nextValid, subResult.isValid(), nextOperator);
-
-                if (!nextValid && loadMessage && subResult.getMessages() != null) {
-
-                    if (!messages.isEmpty() && nextOperator != null) {
-                        messages.add(nextOperator::toString);
-                    }
-
-                    messages.add(EnumChar.PARENTHESIS_OPEN::toString);
-                    messages.addAll(subResult.getMessages());
-                    messages.add(EnumChar.PARENTHESIS_CLOSE::toString);
-                }
-            }
+        if (!subResult.isPrecondition()) {
+            return Triple.of(false, null, subResult);
         } else {
             nextOperator = stepOperator;
+
+            nextValid = HelperAssertor.isValid(nextValid, subResult.isValid(), nextOperator);
+
+            if (!nextValid && loadMessage && subResult.getMessages() != null) {
+
+                if (messages.isNotEmpty() && nextOperator != null) {
+                    messages.append(nextOperator);
+                }
+
+                messages.append(subResult.getMessages());
+            }
         }
 
         return Triple.of(nextValid, nextOperator, null);
@@ -504,44 +496,21 @@ public class HelperAssertor extends ConstantsAssertor {
     }
 
     private static <T> boolean check(final StepAssertor<T> step, final T object, final boolean not) {
-        if (step.getChecker() != null) {
-            try {
-                if (step.isNotAppliedByChecker()) {
-                    return step.getChecker().test(object, not);
-                } else {
-                    return not ^ step.getChecker().test(object, not);
-                }
-            } catch (Throwable e) {
-                return false;
+        Objects.requireNonNull(step.getChecker(), ERROR_CHECKER);
+
+        try {
+            if (step.isNotAppliedByChecker()) {
+                return step.getChecker().test(object, not);
+            } else {
+                return not ^ step.getChecker().test(object, not);
             }
+        } catch (Throwable e) {
+            return false;
         }
-        return !not;
     }
 
     public static boolean isValid(final boolean previousOK, final boolean currentOK, final EnumOperator operator) {
-        boolean ok = false;
-        if (operator == null) { // AND
-            ok = previousOK & currentOK;
-        } else {
-            switch (operator) {
-            case OR:
-                ok = previousOK | currentOK;
-                break;
-            case XOR:
-                ok = previousOK ^ currentOK;
-                break;
-            case NAND:
-                ok = !previousOK & !currentOK;
-                break;
-            case NOR:
-                ok = !previousOK | !currentOK;
-                break;
-            case AND: // intentional fall-through
-            default:
-                ok = previousOK & currentOK;
-            }
-        }
-        return ok;
+        return ObjectUtils.defaultIfNull(operator, EnumOperator.AND).isValid(previousOK, currentOK);
     }
 
     public static boolean isValid(final boolean all, final boolean not, final long found, final int size) {
@@ -555,6 +524,19 @@ public class HelperAssertor extends ConstantsAssertor {
             return found == 0;
         } else { // ANY
             return found > 0;
+        }
+    }
+
+    public static <T> boolean isValid(final Stream<T> stream, final Predicate<T> predicate, final boolean all, final boolean not,
+            final Supplier<Integer> size) {
+        if (all && !not) { // ALL
+            return stream.allMatch(predicate);
+        } else if (!all && !not) { // ANY
+            return stream.anyMatch(predicate);
+        } else if (!all) { // NOT ANY
+            return stream.noneMatch(predicate);
+        } else { // NOT ALL
+            return isValid(all, not, stream.filter(predicate).count(), size.get());
         }
     }
 
@@ -587,12 +569,10 @@ public class HelperAssertor extends ConstantsAssertor {
      * @return the message (can be empty)
      */
     public static String getMessage(final ResultAssertor result) {
-        final StringBuilder sb = new StringBuilder();
-        if (CollectionUtils.isNotEmpty(result.getMessages())) {
-            for (final Supplier<CharSequence> message : result.getMessages()) {
-                sb.append(message.get());
-            }
+        if (result.getMessages() != null) {
+            return result.getMessages().build();
+        } else {
+            return StringUtils.EMPTY;
         }
-        return sb.toString();
     }
 }

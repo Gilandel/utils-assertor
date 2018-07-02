@@ -390,6 +390,16 @@ public class AssertorDateAndCalendarTest extends AbstractTest {
 
         assertException(() -> Assertor.that((Date) null).isBetween(null, null).orElseThrow(), IllegalArgumentException.class,
                 "neither dates can be null");
+        assertException(() -> Assertor.that((Date) null).isBetween(date1, date3).orElseThrow(), IllegalArgumentException.class,
+                "neither dates can be null");
+        assertException(() -> Assertor.that((Date) null).isBetween(null, date3).orElseThrow(), IllegalArgumentException.class,
+                "neither dates can be null");
+        assertException(() -> Assertor.that((Date) null).isBetween(date1, null).orElseThrow(), IllegalArgumentException.class,
+                "neither dates can be null");
+        assertException(() -> Assertor.that(date1).isBetween(date1, null).orElseThrow(), IllegalArgumentException.class,
+                "neither dates can be null");
+        assertException(() -> Assertor.that(date1).isBetween(null, date3).orElseThrow(), IllegalArgumentException.class,
+                "neither dates can be null");
 
         assertException(() -> Assertor.that(date1).isBetween(date2, date3).orElseThrow(), IllegalArgumentException.class,
                 Pattern.compile("the date '.*' should be between '.*' and '.*'"));

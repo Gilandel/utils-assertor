@@ -21,6 +21,8 @@ package fr.landel.utils.assertor.predicate;
 
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.function.Predicate;
 
 import fr.landel.utils.assertor.Assertor;
 import fr.landel.utils.assertor.StepAssertor;
@@ -578,6 +580,157 @@ public interface PredicateAssertorStepMap<K, V> extends PredicateAssertorStep<Pr
      */
     default PredicateStepMap<K, V> isNotEmpty(final Locale locale, final CharSequence message, final Object... arguments) {
         return () -> AssertorMap.isNotEmpty(this.getStep(), MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
+     * Check if any map's entry matches the predicate.
+     * 
+     * <p>
+     * precondition: {@code map} cannot be {@code null} or empty and predicate
+     * cannot be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).anyMatch(e -&gt; Objects.nonNull(e.getValue())).orElseThrow();
+     * </pre>
+     * 
+     * @param predicate
+     *            the predicate function that validates each element
+     * @return the assertor step
+     * @category no_message
+     */
+    default PredicateStepMap<K, V> anyMatch(final Predicate<Entry<K, V>> predicate) {
+        return this.anyMatch(predicate, null);
+    }
+
+    /**
+     * Check if any map's entry matches the predicate.
+     * 
+     * <p>
+     * precondition: {@code map} cannot be {@code null} or empty and predicate
+     * cannot be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).anyMatch(e -&gt; Objects.nonNull(e.getValue()), "the map must contain at least on non null value").orElseThrow();
+     * </pre>
+     * 
+     * @param predicate
+     *            the predicate function that validates each element
+     * @param message
+     *            the message on mismatch
+     * @param arguments
+     *            the message arguments
+     * @return the assertor step
+     * @category message
+     */
+    default PredicateStepMap<K, V> anyMatch(final Predicate<Entry<K, V>> predicate, final CharSequence message, final Object... arguments) {
+        return this.anyMatch(predicate, null, message, arguments);
+    }
+
+    /**
+     * Check if any map's entry matches the predicate.
+     * 
+     * <p>
+     * precondition: {@code map} cannot be {@code null} or empty and predicate
+     * cannot be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).anyMatch(e -&gt; Objects.nonNull(e.getValue()), Locale.US, "the map must contain at least on non null value")
+     *         .orElseThrow();
+     * </pre>
+     * 
+     * @param predicate
+     *            the predicate function that validates each element
+     * @param locale
+     *            the message locale (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            the message on mismatch
+     * @param arguments
+     *            the message arguments
+     * @return the assertor step
+     * @category localized_message
+     */
+    default PredicateStepMap<K, V> anyMatch(final Predicate<Entry<K, V>> predicate, final Locale locale, final CharSequence message,
+            final Object... arguments) {
+        return () -> AssertorMap.anyMatch(this.getStep(), predicate, MessageAssertor.of(locale, message, arguments));
+    }
+
+    /**
+     * Check if all map's entries match the predicate.
+     * 
+     * <p>
+     * precondition: {@code map} cannot be {@code null} or empty and predicate
+     * cannot be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).allMatch(e -&gt; Objects.nonNull(e.getValue())).orElseThrow();
+     * </pre>
+     * 
+     * @param predicate
+     *            the predicate function that validates each entry
+     * @return the assertor step
+     * @category no_message
+     */
+    default PredicateStepMap<K, V> allMatch(final Predicate<Entry<K, V>> predicate) {
+        return this.allMatch(predicate, null);
+    }
+
+    /**
+     * Check if all map's entries match the predicate.
+     * 
+     * <p>
+     * precondition: {@code map} cannot be {@code null} or empty and predicate
+     * cannot be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).allMatch(e -&gt; Objects.nonNull(e.getValue()), "the map cannot contain null value").orElseThrow();
+     * </pre>
+     * 
+     * @param predicate
+     *            the predicate function that validates each entry
+     * @param message
+     *            the message on mismatch
+     * @param arguments
+     *            the message arguments
+     * @return the assertor step
+     * @category message
+     */
+    default PredicateStepMap<K, V> allMatch(final Predicate<Entry<K, V>> predicate, final CharSequence message, final Object... arguments) {
+        return this.allMatch(predicate, null, message, arguments);
+    }
+
+    /**
+     * Check if all map's entries match the predicate.
+     * 
+     * <p>
+     * precondition: {@code map} cannot be {@code null} or empty and predicate
+     * cannot be {@code null}
+     * </p>
+     * 
+     * <pre>
+     * Assertor.that(map).allMatch(e -&gt; Objects.nonNull(e.getValue()), Locale.US, "the map cannot contain null value").orElseThrow();
+     * </pre>
+     * 
+     * @param predicate
+     *            the predicate function that validates each entry
+     * @param locale
+     *            the message locale (only used to format this message,
+     *            otherwise use {@link Assertor#setLocale})
+     * @param message
+     *            the message on mismatch
+     * @param arguments
+     *            the message arguments
+     * @return the assertor step
+     * @category localized_message
+     */
+    default PredicateStepMap<K, V> allMatch(final Predicate<Entry<K, V>> predicate, final Locale locale, final CharSequence message,
+            final Object... arguments) {
+        return () -> AssertorMap.allMatch(this.getStep(), predicate, MessageAssertor.of(locale, message, arguments));
     }
 
     /**

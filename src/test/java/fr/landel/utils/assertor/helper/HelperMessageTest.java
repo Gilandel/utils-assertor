@@ -20,7 +20,9 @@
 package fr.landel.utils.assertor.helper;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.awt.Color;
@@ -40,6 +42,7 @@ import org.junit.Test;
 
 import fr.landel.utils.assertor.AbstractTest;
 import fr.landel.utils.assertor.Assertor;
+import fr.landel.utils.assertor.commons.MessagesAssertor;
 import fr.landel.utils.assertor.commons.ParameterAssertor;
 import fr.landel.utils.assertor.enums.EnumOperator;
 import fr.landel.utils.assertor.enums.EnumType;
@@ -119,6 +122,11 @@ public class HelperMessageTest extends AbstractTest {
         }, IllegalArgumentException.class,
                 "the char sequence 'texte11' should be null, empty or blank OR the char sequence 'texte11' should NOT be equal to 'texte11'");
 
+        assertException(() -> {
+            Assertor.that((String) null).contains('a').or().isEqual("texte11").orElseThrow();
+            fail("Expect an exception");
+        }, IllegalArgumentException.class, "the char sequence cannot be null and the searched substring cannot be null or empty");
+
         try {
             Assertor.that("texte11").isNotBlank().and().isNotEqual("texte11").orElseThrow();
             fail("Expect an exception");
@@ -190,6 +198,9 @@ public class HelperMessageTest extends AbstractTest {
                 Assertor.that(12).not().isGT(12).and("text").not().contains("ex").getErrors().get());
         assertEquals("the char sequence 'text' should NOT contain 'ex'",
                 Assertor.that(12).isLTE(12).and("text").not().contains("ex").getErrors().get());
+
+        assertFalse(Assertor.that("text").isNotEmpty().and(Assertor.that("other").contains((String) null)).isOK());
+        assertFalse(Assertor.that("text").isEmpty().and(Assertor.that("other").contains((String) null)).isOK());
     }
 
     /**
@@ -234,11 +245,11 @@ public class HelperMessageTest extends AbstractTest {
         parameters.add(new ParameterAssertor<>(time, EnumType.TEMPORAL));
         parameters.add(new ParameterAssertor<>(Color.BLACK, EnumType.UNKNOWN));
 
-        HelperMessage.getDefaultMessage(MSG.BOOLEAN.TRUE, true, false, parameters);
+        HelperMessage.getDefaultMessage(MSG.BOOLEAN.TRUE, true, false, null, parameters);
 
         parameters.add(new ParameterAssertor<>(null, null));
 
-        assertException(() -> HelperMessage.getDefaultMessage(MSG.BOOLEAN.TRUE, true, false, parameters), NullPointerException.class,
+        assertException(() -> HelperMessage.getDefaultMessage(MSG.BOOLEAN.TRUE, true, false, null, parameters), NullPointerException.class,
                 "parameter type");
 
         Object[] convertedParams = HelperMessage.convertParams(parameters);
@@ -271,5 +282,47 @@ public class HelperMessageTest extends AbstractTest {
     public void testParameterToString() {
         assertEquals("{" + ParameterAssertor.class.getCanonicalName() + ": {object: true, type: BOOLEAN, checked: false}}",
                 new ParameterAssertor<>(true, EnumType.BOOLEAN).toString());
+    }
+
+    /**
+     * Test method for {@link MessagesAssertor#append}.
+     */
+    @Test
+    public void testMessagesAssertor() {
+        MessagesAssertor m = new MessagesAssertor();
+
+        assertException(() -> m.append(EnumOperator.AND), UnsupportedOperationException.class,
+                "An operator can only be applied on a previous error");
+
+        m.append("key", false, null, null);
+        assertTrue(m.isPreconditionsNotEmpty());
+        assertFalse(m.isMessagesNotEmpty());
+
+        m.append(EnumOperator.AND);
+        m.append("key", false, null, null, null);
+
+        assertTrue(m.isPreconditionsNotEmpty());
+        assertTrue(m.isMessagesNotEmpty());
+
+        MessagesAssertor m2 = new MessagesAssertor();
+
+        m2.append(m);
+
+        assertTrue(m2.isPreconditionsNotEmpty());
+        assertFalse(m2.isMessagesNotEmpty());
+
+        MessagesAssertor m3 = new MessagesAssertor();
+        MessagesAssertor m4 = new MessagesAssertor();
+
+        m4.append(m3);
+
+        assertFalse(m4.isPreconditionsNotEmpty());
+        assertFalse(m4.isMessagesNotEmpty());
+
+        m3.append("key", false, null, null, null);
+        m4.append(m3);
+
+        assertFalse(m4.isPreconditionsNotEmpty());
+        assertTrue(m4.isMessagesNotEmpty());
     }
 }
