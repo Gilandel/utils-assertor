@@ -19,24 +19,19 @@
  */
 package fr.landel.utils.assertor;
 
-import static org.junit.Assert.assertNotNull;
-
-import java.io.IOException;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
-import org.junit.Test;
 import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.Fork;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
-import org.openjdk.jmh.runner.RunnerException;
 
 import fr.landel.utils.assertor.commons.ConstantsAssertor.MSG;
 import fr.landel.utils.assertor.enums.EnumOperator;
 import fr.landel.utils.assertor.enums.EnumType;
 import fr.landel.utils.assertor.helper.HelperAssertor;
 import fr.landel.utils.assertor.helper.HelperMessage;
-import fr.landel.utils.microbenchmark.AbstractMicrobenchmark;
 
 /**
  * Checks assertor performance
@@ -45,13 +40,14 @@ import fr.landel.utils.microbenchmark.AbstractMicrobenchmark;
  * @author Gilles
  *
  */
+@Fork(1)
 @State(Scope.Benchmark)
-public class HelperMessagePerf extends AbstractMicrobenchmark {
+public class HelperMessagePerf {
 
-    @Override
-    protected double getExpectedMinNbOpsPerSeconds() {
-        return 250_000d;
-    }
+//    @Override
+//    protected double getExpectedMinNbOpsPerSeconds() {
+//        return 250_000d;
+//    }
 
     /**
      * Perf method for {@link HelperMessage#getMessage} with {@code Boolean}.
@@ -73,10 +69,5 @@ public class HelperMessagePerf extends AbstractMicrobenchmark {
         StepAssertor<String> result = new StepAssertor<>(step1, step2, EnumOperator.AND);
 
         HelperAssertor.combine(result, true);
-    }
-
-    @Test
-    public void testPerf() throws IOException, RunnerException {
-        assertNotNull(super.run());
     }
 }

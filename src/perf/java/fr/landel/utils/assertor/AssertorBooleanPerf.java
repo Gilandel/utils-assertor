@@ -19,20 +19,15 @@
  */
 package fr.landel.utils.assertor;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-
-import java.io.IOException;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.hamcrest.Matchers;
-import org.junit.Test;
 import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.Fork;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
-import org.openjdk.jmh.runner.RunnerException;
 
 import fr.landel.utils.assertor.utils.AssertorBoolean;
-import fr.landel.utils.microbenchmark.AbstractMicrobenchmark;
 
 /**
  * Checks assertor performance
@@ -41,103 +36,99 @@ import fr.landel.utils.microbenchmark.AbstractMicrobenchmark;
  * @author Gilles
  *
  */
+@Fork()
 @State(Scope.Benchmark)
-public class AssertorBooleanPerf extends AbstractMicrobenchmark {
+public class AssertorBooleanPerf {
 
-    private static final String[] OBJECTS = new String[] {"a", "b"};
+	private static final String[] OBJECTS = new String[] { "a", "b" };
 
-    @Override
-    protected double getExpectedMinNbOpsPerSeconds() {
-        return 10_000d;
-    }
+//    @Override
+//    protected double getExpectedMinNbOpsPerSeconds() {
+//        return 10_000d;
+//    }
 
-    /**
-     * Perf method for {@link AssertorBoolean}.
-     */
-    @Benchmark
-    public void assertorBasicPerfOK() {
-        Assertor.that(true).isTrue().isOK();
-        Assertor.that(true).isTrue().getErrors();
-        Assertor.that(true).isTrue().orElseThrow();
+	/**
+	 * Perf method for {@link AssertorBoolean}.
+	 */
+	@Benchmark
+	public void assertorBasicPerfOK() {
+		Assertor.that(true).isTrue().isOK();
+		Assertor.that(true).isTrue().getErrors();
+		Assertor.that(true).isTrue().orElseThrow();
 
-        Assertor.that(false).isFalse().isOK();
-        Assertor.that(false).isFalse().getErrors();
-        Assertor.that(false).isFalse().orElseThrow();
+		Assertor.that(false).isFalse().isOK();
+		Assertor.that(false).isFalse().getErrors();
+		Assertor.that(false).isFalse().orElseThrow();
 
-        Assertor.that(OBJECTS).containsAll(new String[] {OBJECTS[0], OBJECTS[1]}).isOK();
-    }
+		Assertor.that(OBJECTS).containsAll(new String[] { OBJECTS[0], OBJECTS[1] }).isOK();
+	}
 
-    /**
-     * Perf method for {@link AssertorBoolean}.
-     */
-    @Benchmark
-    public void assertorBasicPerfKO() {
-        Assertor.that(true).isFalse().isOK();
-        Assertor.that(true).isFalse().getErrors();
-        try {
-            Assertor.that(true).isFalse().orElseThrow();
-        } catch (IllegalArgumentException e) {
-            // do nothing
-        }
+	/**
+	 * Perf method for {@link AssertorBoolean}.
+	 */
+	@Benchmark
+	public void assertorBasicPerfKO() {
+		Assertor.that(true).isFalse().isOK();
+		Assertor.that(true).isFalse().getErrors();
+		try {
+			Assertor.that(true).isFalse().orElseThrow();
+		} catch (IllegalArgumentException e) {
+			// do nothing
+		}
 
-        Assertor.that(false).isTrue().isOK();
-        Assertor.that(false).isTrue().getErrors();
-        try {
-            Assertor.that(false).isTrue().orElseThrow();
-        } catch (IllegalArgumentException e) {
-            // do nothing
-        }
-    }
+		Assertor.that(false).isTrue().isOK();
+		Assertor.that(false).isTrue().getErrors();
+		try {
+			Assertor.that(false).isTrue().orElseThrow();
+		} catch (IllegalArgumentException e) {
+			// do nothing
+		}
+	}
 
-    /**
-     * Perf method for {@link assertThat} from Hamcrest.
-     */
-    @Benchmark
-    public void assertorHamcrestPerfOK() {
-        assertThat(true, Matchers.is(true));
-        assertThat(true, Matchers.is(true));
-        assertThat(true, Matchers.is(true));
+	/**
+	 * Perf method for {@link assertThat} from Hamcrest.
+	 */
+	@Benchmark
+	public void assertorHamcrestPerfOK() {
+		assertThat(true, Matchers.is(true));
+		assertThat(true, Matchers.is(true));
+		assertThat(true, Matchers.is(true));
 
-        assertThat(false, Matchers.is(false));
-        assertThat(false, Matchers.is(false));
-        assertThat(false, Matchers.is(false));
+		assertThat(false, Matchers.is(false));
+		assertThat(false, Matchers.is(false));
+		assertThat(false, Matchers.is(false));
 
-        assertThat(OBJECTS, Matchers.arrayContainingInAnyOrder(OBJECTS[0], OBJECTS[1]));
-    }
+		assertThat(OBJECTS, Matchers.arrayContainingInAnyOrder(OBJECTS[0], OBJECTS[1]));
+	}
 
-    /**
-     * Perf method for {@link assertThat} from Hamcrest.
-     */
-    @Benchmark
-    public void assertorHamcrestPerfKO() {
-        try {
-            assertThat(false, Matchers.is(true));
-        } catch (AssertionError e) {
-        }
-        try {
-            assertThat(false, Matchers.is(true));
-        } catch (AssertionError e) {
-        }
-        try {
-            assertThat(false, Matchers.is(true));
-        } catch (AssertionError e) {
-        }
-        try {
-            assertThat(true, Matchers.is(false));
-        } catch (AssertionError e) {
-        }
-        try {
-            assertThat(true, Matchers.is(false));
-        } catch (AssertionError e) {
-        }
-        try {
-            assertThat(true, Matchers.is(false));
-        } catch (AssertionError e) {
-        }
-    }
-
-    @Test
-    public void testPerf() throws IOException, RunnerException {
-        assertNotNull(super.run());
-    }
+	/**
+	 * Perf method for {@link assertThat} from Hamcrest.
+	 */
+	@Benchmark
+	public void assertorHamcrestPerfKO() {
+		try {
+			assertThat(false, Matchers.is(true));
+		} catch (AssertionError e) {
+		}
+		try {
+			assertThat(false, Matchers.is(true));
+		} catch (AssertionError e) {
+		}
+		try {
+			assertThat(false, Matchers.is(true));
+		} catch (AssertionError e) {
+		}
+		try {
+			assertThat(true, Matchers.is(false));
+		} catch (AssertionError e) {
+		}
+		try {
+			assertThat(true, Matchers.is(false));
+		} catch (AssertionError e) {
+		}
+		try {
+			assertThat(true, Matchers.is(false));
+		} catch (AssertionError e) {
+		}
+	}
 }

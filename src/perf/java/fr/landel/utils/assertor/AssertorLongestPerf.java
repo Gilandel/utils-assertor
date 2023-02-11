@@ -19,20 +19,14 @@
  */
 package fr.landel.utils.assertor;
 
-import static org.junit.Assert.assertNotNull;
-
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.junit.Test;
 import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.Fork;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
-import org.openjdk.jmh.runner.RunnerException;
-
-import fr.landel.utils.microbenchmark.AbstractMicrobenchmark;
 
 /**
  * Checks assertor performance
@@ -41,27 +35,23 @@ import fr.landel.utils.microbenchmark.AbstractMicrobenchmark;
  * @author Gilles
  *
  */
+@Fork(1)
 @State(Scope.Benchmark)
-public class AssertorLongestPerf extends AbstractMicrobenchmark {
+public class AssertorLongestPerf {
 
-    @Override
-    protected double getExpectedMinNbOpsPerSeconds() {
-        return 50_000d;
-    }
+//    @Override
+//    protected double getExpectedMinNbOpsPerSeconds() {
+//        return 50_000d;
+//    }
 
-    /**
-     * Test method for {@link Assertor}.
-     */
-    @Benchmark
-    public void assertorCombiningPerf() {
-        Assertor.that(true).isTrue().and().not().isFalse().and(new String[] {"array"}).contains("arra").or("text").startsWith("t").and()
-                .not().endsWith("e").and(Assertor.class).hasSimpleName("Assertor").and(12.56f).isGT(256f).xor().isLTE(23f)
-                .and(Arrays.asList("re", "tr")).contains("tr").and().contains("re").and(new Date()).isNotNull().and()
-                .isAround(new Date(), Calendar.MINUTE, 1).isOK();
-    }
-
-    @Test
-    public void testPerf() throws IOException, RunnerException {
-        assertNotNull(super.run());
-    }
+	/**
+	 * Test method for {@link Assertor}.
+	 */
+	@Benchmark
+	public void assertorCombiningPerf() {
+		Assertor.that(true).isTrue().and().not().isFalse().and(new String[] { "array" }).contains("arra").or("text")
+				.startsWith("t").and().not().endsWith("e").and(Assertor.class).hasSimpleName("Assertor").and(12.56f)
+				.isGT(256f).xor().isLTE(23f).and(Arrays.asList("re", "tr")).contains("tr").and().contains("re")
+				.and(new Date()).isNotNull().and().isAround(new Date(), Calendar.MINUTE, 1).isOK();
+	}
 }

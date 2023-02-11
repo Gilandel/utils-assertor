@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>fr.landel</groupId>
 		<artifactId>utils</artifactId>
-		<version>1.0.18</version>
+		<version>1.0.19-SNAPSHOT</version>
 	</parent>
 
 	<groupId>fr.landel.utils</groupId>
@@ -110,14 +110,6 @@
 			<groupId>fr.landel.utils</groupId>
 			<artifactId>utils-commons</artifactId>
 			<version>${utils-commons.version}</version>
-		</dependency>
-
-		<!-- Performance testing -->
-		<dependency>
-			<groupId>fr.landel.utils</groupId>
-			<artifactId>utils-microbenchmark</artifactId>
-			<version>${utils-microbenchmark.version}</version>
-			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>

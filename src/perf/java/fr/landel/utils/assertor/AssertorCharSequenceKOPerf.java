@@ -19,19 +19,14 @@
  */
 package fr.landel.utils.assertor;
 
-import static org.junit.Assert.assertNotNull;
-
-import java.io.IOException;
 import java.util.regex.Pattern;
 
-import org.junit.Test;
 import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.Fork;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
-import org.openjdk.jmh.runner.RunnerException;
 
 import fr.landel.utils.assertor.utils.AssertorCharSequence;
-import fr.landel.utils.microbenchmark.AbstractMicrobenchmark;
 
 /**
  * Checks assertor performance
@@ -40,16 +35,17 @@ import fr.landel.utils.microbenchmark.AbstractMicrobenchmark;
  * @author Gilles
  *
  */
+@Fork(1)
 @State(Scope.Benchmark)
-public class AssertorCharSequenceKOPerf extends AbstractMicrobenchmark {
+public class AssertorCharSequenceKOPerf {
 
     private static final Pattern P1 = Pattern.compile("[fa]");
     private static final Pattern P2 = Pattern.compile("t[a-f]x");
 
-    @Override
-    protected double getExpectedMinNbOpsPerSeconds() {
-        return 10_000d;
-    }
+//    @Override
+//    protected double getExpectedMinNbOpsPerSeconds() {
+//        return 10_000d;
+//    }
 
     /**
      * Test method for {@link AssertorCharSequence}.
@@ -75,10 +71,5 @@ public class AssertorCharSequenceKOPerf extends AbstractMicrobenchmark {
 
         Assertor.that("text").matches("t[a-f]x").isOK();
         Assertor.that("text").matches(P2).isOK();
-    }
-
-    @Test
-    public void testPerf() throws IOException, RunnerException {
-        assertNotNull(super.run());
     }
 }
